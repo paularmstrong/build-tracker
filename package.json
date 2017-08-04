@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "lerna": "^2.0.0"
+  },
+  "name": "bundle-analyzer",
+  "version": "0.0.0",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "license": "MIT"
+}

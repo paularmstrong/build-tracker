@@ -1,19 +1,25 @@
+import Bundles from './Bundles';
+import Home from './Home';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { View } from 'react-native';
+
+const ViewAll = ({ match }) => (match ? <Link to="/">View All</Link> : null);
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Router>
+        <View>
+          <View>
+            <Route children={ViewAll} exact path="/bundles/:bundle" />
+            <Bundles />
+          </View>
+          <View>
+            <Route exact path="/" component={Home} />
+          </View>
+        </View>
+      </Router>
     );
   }
 }

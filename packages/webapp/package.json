@@ -1,0 +1,22 @@
+{
+  "name": "bundle-analyzer-app",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "express": "^4.15.3",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-native-web": "^0.0.119",
+    "react-scripts": "1.0.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prepublish": "npm run build"
+  },
+  "main": "index.js",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "license": "MIT"
+}

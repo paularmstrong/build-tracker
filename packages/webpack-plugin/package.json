@@ -1,7 +1,7 @@
 {
-  "name": "bundle-analyzer-webpack-plugin",
+  "name": "bundle-tracker-webpack-plugin",
   "version": "0.0.0",
-  "description": "A webpack plugin that builds and exports stats for consumption in the bundle analyzer",
+  "description": "A webpack plugin that builds and exports stats for consumption in the bundle tracker application",
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",

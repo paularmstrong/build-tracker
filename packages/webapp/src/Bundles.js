@@ -1,3 +1,5 @@
+import { defaultStyles } from './theme';
+import SparkLine from './charts/SparkLine';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { View } from 'react-native';
@@ -9,10 +11,9 @@ export default class Bundles extends Component {
     return (
       <View>
         {bundles.map(bundle =>
-          <Link key={bundle} to={`/bundles/${bundle}`}>
-            <View>
-              {bundle}
-            </View>
+          <Link key={bundle} style={defaultStyles.link} to={`/bundles/${bundle}`}>
+            {bundle}
+            <SparkLine />
           </Link>
         )}
       </View>

@@ -9,12 +9,7 @@ const querystring = require('querystring');
 const url = require('url');
 
 class AnalyzerStatsPlugin {
-  constructor({
-    buildRevision,
-    buildBranch,
-    outputPath,
-    outputUrl
-  }, options) {
+  constructor({ buildRevision, buildBranch, outputPath, outputUrl }, options) {
     this._revision = buildRevision;
     this._branch = buildBranch;
     this._outputPath = outputPath;
@@ -35,25 +30,27 @@ class AnalyzerStatsPlugin {
       hashLength = parseInt(hashLength[1], 10);
     }
 
-    const outputStats = compilation.chunks.map((chunk) => {
-      const fileName = fileNameFormat
-        .replace('[name]', chunk.name)
-        .replace(/\[chunkhash\:\d+\]/, chunk.hash.slice(0, hashLength));
-      const filePath = path.join(compilation.outputOptions.path, fileName);
+    const outputStats = compilation.chunks
+      .map(chunk => {
+        const fileName = fileNameFormat
+          .replace('[name]', chunk.name)
+          .replace(/\[chunkhash\:\d+\]/, chunk.hash.slice(0, hashLength));
+        const filePath = path.join(compilation.outputOptions.path, fileName);
 
-      try {
-        const file = fs.readFileSync(filePath);
-        const gzippedSize = gzipSize.sync(file);
-        return {
-          hash: chunk.hash,
-          name: chunk.name,
-          size: chunk.size({}),
-          gzipSize: gzippedSize
-        };
-      } catch (e) {
-        return;
-      }
-    }).filter(Boolean);
+        try {
+          const file = fs.readFileSync(filePath);
+          const gzippedSize = gzipSize.sync(file);
+          return {
+            hash: chunk.hash,
+            name: chunk.name,
+            size: chunk.size({}),
+            gzipSize: gzippedSize
+          };
+        } catch (e) {
+          return;
+        }
+      })
+      .filter(Boolean);
 
     const output = {
       build: {
@@ -75,7 +72,9 @@ class AnalyzerStatsPlugin {
 
   _write(output) {
     mkdirp.sync(this._outputPath);
-    const fileTitle = [ 'stats', this._branch, this._revision ].filter(Boolean).join('-');
+    const fileTitle = ['stats', this._branch, this._revision]
+      .filter(Boolean)
+      .join('-');
     const outputFilePath = path.join(this._outputPath, `${fileTitle}.json`);
     fs.writeFileSync(outputFilePath, JSON.stringify(output));
   }
@@ -83,7 +82,7 @@ class AnalyzerStatsPlugin {
   _post(output) {
     const parsedUrl = url.parse(this._outputUrl);
     assert(
-      parsedUrl.protocol && (/^https?/).test(parsedUrl.protocol),
+      parsedUrl.protocol && /^https?/.test(parsedUrl.protocol),
       `Expected "${this._outputUrl}" to start with http or https`
     );
 
@@ -96,11 +95,13 @@ class AnalyzerStatsPlugin {
       }
     });
 
-    let httpModule = (requestOptions.protocol === 'https:') ? https : http;
+    let httpModule = requestOptions.protocol === 'https:' ? https : http;
 
-    const request = httpModule.request(requestOptions, (response) => {
+    const request = httpModule.request(requestOptions, response => {
       if (response.statusCode < 200 || response.statusCode >= 400) {
-        throw new Error(`Failed to post stats to URL: ${response.statusCode} - ${response.statusMessage}`);
+        throw new Error(
+          `Failed to post stats to URL: ${response.statusCode} - ${response.statusMessage}`
+        );
         process.exit(1);
       }
     });

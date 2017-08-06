@@ -3,11 +3,11 @@ import SparkLine from './charts/SparkLine';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-
-const bundles = ['main', 'shared', 'bundle.App'];
+import { getBundles } from './stats';
 
 export default class Bundles extends Component {
   render() {
+    const bundles = getBundles();
     return (
       <View>
         {bundles.map(bundle =>

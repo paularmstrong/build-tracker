@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   nav: {
     flexGrow: 0,
-    flexBasis: `${2 * (100 / theme.columns)}%`,
+    flexBasis: `${3 * (100 / theme.columns)}%`,
     overflowY: 'scroll'
   },
   main: {

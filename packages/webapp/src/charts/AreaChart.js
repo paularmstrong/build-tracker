@@ -1,5 +1,5 @@
 import { area, stack } from 'd3-shape';
-import { extent, max, sum } from 'd3-array';
+import { extent, max } from 'd3-array';
 import { select } from 'd3-selection';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -72,7 +72,7 @@ export default class AreaChart extends Component {
     const chartStack = stack();
     // .keys((d) => Object.keys(d.stats))
     // .values((d, key) => d.stats[key]);
-    chartStack.keys(bundles);
+    chartStack.keys(bundles.sort((a, b) => stats[0].stats[b].gzipSize - stats[0].stats[a].gzipSize));
     chartStack.value((d, key) => (d.stats[key] ? d.stats[key].gzipSize : 0));
     // chartStack.order()
     // chartStack.offset()

@@ -8,7 +8,7 @@ import statsb4098b3a46c207924e1e9edfa22fc21960524c72 from './stats-b4098b3a46c20
 import statsbf4c66a3ee2a8c8355f8bd1c207593d32fa29d6b from './stats-bf4c66a3ee2a8c8355f8bd1c207593d32fa29d6b.json';
 import statsd691af0754ce7dcc08c76a1ed2d8259962cb9d1d from './stats-d691af0754ce7dcc08c76a1ed2d8259962cb9d1d.json';
 
-const stats = [
+export const stats = [
   stats1bf811ec249c2b13a314e127312b2d760f6658e2,
   stats5113828d6b0e628a78fa383a53933c413b6bdbef,
   stats703baac11f1be4b2d02ddb89de6789c7605183b0,
@@ -18,14 +18,19 @@ const stats = [
   statsb4098b3a46c207924e1e9edfa22fc21960524c72,
   statsbf4c66a3ee2a8c8355f8bd1c207593d32fa29d6b,
   statsd691af0754ce7dcc08c76a1ed2d8259962cb9d1d
-].sort((a, b) => a.build.timestamp < b.build.timestamp);
+]
+  .map(commit => {
+    const stats = commit.stats.reduce((memo, bundle) => ({ ...memo, [bundle.name]: bundle }), {});
+    return {
+      ...commit,
+      stats
+    };
+  })
+  .sort((a, b) => a.build.timestamp < b.build.timestamp);
 
-export const getBundles = () =>
-  stats
-    .reduce((memo, commit) => {
-      const bundles = commit.stats.map(bundle => bundle.name);
-      console.log(bundles);
-      memo = memo.concat(bundles).filter((value, index, self) => self.indexOf(value) === index);
-      return memo;
-    }, [])
-    .sort();
+export const bundles = stats
+  .reduce((memo, commit) => {
+    const bundles = Object.keys(commit.stats);
+    return memo.concat(bundles).filter((value, index, self) => self.indexOf(value) === index);
+  }, [])
+  .sort();

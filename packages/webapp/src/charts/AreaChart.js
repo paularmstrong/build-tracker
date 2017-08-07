@@ -3,11 +3,11 @@ import { extent, max } from 'd3-array';
 import { select } from 'd3-selection';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { schemeCategory20, scaleOrdinal, scaleTime, scaleLinear } from 'd3-scale';
+import { interpolateRainbow, schemeCategory20, scaleSequential, scaleOrdinal, scaleTime, scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 
-const color = scaleOrdinal(schemeCategory20);
+const color = scaleSequential(interpolateRainbow);
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
 const singleItemData = [[]];
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
@@ -30,10 +30,9 @@ export default class AreaChart extends Component {
   }
 
   render() {
-    const { height, width } = this.state;
     return (
       <View onLayout={this._handleLayout} style={styles.root}>
-        <svg ref={this._setSvgRef} width={width} height={height} />
+        <svg ref={this._setSvgRef} />
       </View>
     );
   }
@@ -57,7 +56,7 @@ export default class AreaChart extends Component {
       return Object.values(commit.stats).reduce((memo, bundle) => memo + bundle.gzipSize, 0);
     });
 
-    color.domain(bundles);
+    color.domain([0, bundles.length - 1]);
 
     const x = scaleTime().range([0, width - (margin.left + margin.right)]);
     const y = scaleLinear().range([height - (margin.top + margin.bottom), 0]);
@@ -70,17 +69,14 @@ export default class AreaChart extends Component {
     const areaChart = area().x(d => x(d.data.build.timestamp)).y0(d => y(d[0])).y1(d => y(d[1]));
 
     const chartStack = stack();
-    // .keys((d) => Object.keys(d.stats))
-    // .values((d, key) => d.stats[key]);
     chartStack.keys(bundles.sort((a, b) => stats[0].stats[b].gzipSize - stats[0].stats[a].gzipSize));
     chartStack.value((d, key) => (d.stats[key] ? d.stats[key].gzipSize : 0));
-    // chartStack.order()
-    // chartStack.offset()
+
     const data = chartStack(stats);
 
     const bundle = g.selectAll('.bundle').data(data).enter().append('g').attr('data-key', d => d.key);
 
-    bundle.append('path').attr('d', areaChart).style('fill', d => color(d.key));
+    bundle.append('path').attr('d', areaChart).style('fill', (d, i) => color(bundles.indexOf(d.key)));
 
     g
       .append('g')
@@ -88,10 +84,10 @@ export default class AreaChart extends Component {
       .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
       .call(xAxis)
       .selectAll('text')
-      .attr('y', 5)
-      .attr('x', 9)
+      .attr('y', 9)
+      .attr('x', 5)
       .attr('dy', '.35em')
-      .attr('transform', 'rotate(45)')
+      .attr('transform', 'rotate(20)')
       .style('text-anchor', 'start');
 
     g.append('g').attr('class', 'y axis').call(yAxis);
@@ -111,7 +107,7 @@ export default class AreaChart extends Component {
 
 const styles = StyleSheet.create({
   root: {
-    height: '100%',
-    width: '100%'
+    flexGrow: 1,
+    height: '100%'
   }
 });

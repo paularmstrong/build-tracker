@@ -20,16 +20,11 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
   root: {
     flexDirection: 'column',
-    height: '100%'
+    height: '100vh'
   },
-  title: {
-    flexGrow: 0
-  },
+  title: {},
   chart: {
     flexGrow: 1
   },
-  meta: {
-    flexGrow: 1,
-    flexShrink: 1
-  }
+  meta: {}
 });

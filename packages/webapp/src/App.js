@@ -28,9 +28,9 @@ class App extends Component {
 const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
-    height: '100%',
+    height: '100vh',
     position: 'absolute',
-    width: '100%',
+    width: '100vw',
     top: 0,
     left: 0
   },
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   main: {
     flexGrow: 1,
-    height: '100%'
+    height: '100vh'
   }
 });
 

@@ -90,6 +90,16 @@ export const stats = [
   })
   .sort((a, b) => new Date(b.build.timestamp) - new Date(a.build.timestamp));
 
+export const statsForBundle = bundleName =>
+  stats.map(commit => {
+    return {
+      ...commit,
+      stats: {
+        [bundleName]: commit.stats[bundleName]
+      }
+    };
+  });
+
 export const bundles = stats
   .reduce((memo, commit) => {
     const bundles = Object.keys(commit.stats);

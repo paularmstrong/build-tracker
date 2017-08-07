@@ -27,5 +27,9 @@
   },
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "flow-bin": "^0.52.0",
+    "flow-typed": "^2.1.5"
+  }
 }

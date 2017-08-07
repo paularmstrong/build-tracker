@@ -8,11 +8,17 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 
 const color = scaleSequential(interpolateRainbow);
+const singleColor = scaleOrdinal(schemeCategory20);
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
 const singleItemData = [[]];
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 export default class AreaChart extends Component {
+  props: {
+    bundles: Array<string>,
+    stats: Array<object>
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -76,7 +82,9 @@ export default class AreaChart extends Component {
 
     const bundle = g.selectAll('.bundle').data(data).enter().append('g').attr('data-key', d => d.key);
 
-    bundle.append('path').attr('d', areaChart).style('fill', (d, i) => color(bundles.indexOf(d.key)));
+    bundle.append('path').attr('d', areaChart).style('fill', (d, i) => {
+      return bundles.length > 1 ? color(bundles.indexOf(d.key)) : singleColor(bundles.indexOf(d.key));
+    });
 
     g
       .append('g')

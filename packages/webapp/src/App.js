@@ -18,6 +18,7 @@ class App extends Component {
           </View>
           <View style={styles.main}>
             <Route exact path="/" component={Home} />
+            <Route path="/bundles/:bundleName" component={Home} />
           </View>
         </View>
       </Router>

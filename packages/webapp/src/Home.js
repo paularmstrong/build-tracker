@@ -1,7 +1,7 @@
 // @flow
 import AreaChart, { ScaleType } from './charts/AreaChart';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { bundles, stats, statsForBundle } from './stats';
 
 export default class Home extends Component {
@@ -28,15 +28,19 @@ export default class Home extends Component {
     const commitByTimestamp = chartStats.find(commit => commit.build.timestamp === date) || { build: {}, stats: {} };
     return (
       <View style={styles.root}>
-        <View style={styles.title}>
-          {bundleName || 'All'}
-        </View>
-        <View>
-          {Object.values(ScaleType).map(scale =>
-            <button key={scale} value={scale} onClick={this._handleScaleChange}>
-              {scale}
-            </button>
-          )}
+        <View style={styles.header}>
+          <View style={styles.title}>
+            {bundleName || 'All'}
+          </View>
+          <View style={styles.scaleTypeButtons}>
+            {Object.values(ScaleType).map(scale =>
+              <View key={scale} style={styles.scaleTypeButton}>
+                <button value={scale} onClick={this._handleScaleChange}>
+                  {scale}
+                </button>
+              </View>
+            )}
+          </View>
         </View>
         <View style={styles.chart}>
           <AreaChart bundles={chartBundles} onHover={this._handleHover} scaleType={scaleType} stats={chartStats} />
@@ -96,7 +100,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: '100vh'
   },
-  title: {},
+  header: {
+    flexDirection: 'row'
+  },
+  title: {
+    flexGrow: 1
+  },
+  scaleTypeButtons: {
+    flexDirection: 'row'
+  },
+  scaleTypeButton: {
+    flexGrow: 1
+  },
   chart: {
     flexGrow: 1
   },

@@ -1,6 +1,6 @@
 import { area, stack } from 'd3-shape';
 import { extent, max } from 'd3-array';
-import { select } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { interpolateRainbow, scaleSequential, scaleTime, scaleLinear } from 'd3-scale';
@@ -10,7 +10,6 @@ import 'd3-transition';
 
 const color = scaleSequential(interpolateRainbow);
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
-const singleItemData = [[]];
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 const PERCENT_Y_HEADROOM = 1.05;
@@ -18,6 +17,7 @@ const PERCENT_Y_HEADROOM = 1.05;
 export default class AreaChart extends Component {
   props: {
     bundles: Array<string>,
+    onHover: Function,
     stats: Array<object>
   };
 
@@ -75,7 +75,7 @@ export default class AreaChart extends Component {
 
     const data = chartStack(stats);
 
-    const bundle = this._svg.selectAll('.bundle').data(data, d => (bundles.length > 1 ? d.key : 'constant'));
+    const bundle = this._chartContents.selectAll('.bundle').data(data, d => (bundles.length > 1 ? d.key : 'constant'));
 
     // Remove old areas
     bundle.exit().remove();
@@ -103,12 +103,39 @@ export default class AreaChart extends Component {
       .style('text-anchor', 'start');
 
     this._yAxis.transition().duration(150).call(yAxis);
+
+    this._overlay
+      .attr('width', width - margin.left - margin.right)
+      .attr('height', height - margin.top - margin.bottom)
+      .on('mousemove', (d, index, nodes) => {
+        const [xPos, yPos] = mouse(nodes[0]);
+        const hoverDate = x.invert(xPos);
+        const validTimestamps = stats.map(d => d.build.timestamp);
+        const closestDate = validTimestamps.reduce(
+          (prev, curr) => (Math.abs(curr - hoverDate) < Math.abs(prev - hoverDate) ? curr : prev),
+          0
+        );
+        this._hoverLine
+          .attr('x1', x(closestDate))
+          .attr('x2', x(closestDate))
+          .attr('y1', 0)
+          .attr('y2', height - margin.top - margin.bottom);
+        this.props.onHover(closestDate);
+      });
   }
 
   _setSvgRef = node => {
     if (node !== this._svgNode) {
       this._svgNode = node;
       this._svg = select(node).append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+      this._chartContents = this._svg.append('g');
+      this._overlay = this._svg.append('rect').style('fill', 'none').style('pointer-events', 'all');
+      this._hoverLine = this._svg
+        .append('line')
+        .style('stroke', 'black')
+        .style('fill', 'none')
+        .style('stroke-width', '1.5px')
+        .style('stroke-dasharray', '3 3');
       this._xAxis = this._svg.append('g').attr('class', 'x axis');
       this._yAxis = this._svg.append('g').attr('class', 'y axis');
     }

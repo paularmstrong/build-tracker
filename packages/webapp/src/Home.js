@@ -9,22 +9,49 @@ export default class Home extends Component {
     match: Object
   };
 
+  constructor(props, context) {
+    super(props, context);
+    this.state = { date: null };
+  }
+
   render() {
     const { params: { bundleName } } = this.props.match || { params: {} };
+    const { date } = this.state;
     const chartBundles = bundleName ? [bundleName] : bundles;
     const chartStats = bundleName ? statsForBundle(bundleName) : stats;
+    const statsForMeta = chartStats.find(commit => commit.build.timestamp === date) || { build: {} };
     return (
       <View style={styles.root}>
         <View style={styles.title}>
           {bundleName || 'All'}
         </View>
         <View style={styles.chart}>
-          <AreaChart bundles={chartBundles} stats={chartStats} />
+          <AreaChart bundles={chartBundles} onHover={this._handleHover} stats={chartStats} />
         </View>
-        <View style={styles.meta}>Meta</View>
+        <View style={styles.meta}>
+          Meta
+          <table>
+            <tbody>
+              {Object.entries(statsForMeta.build).map(([key, value]) =>
+                <tr key={key}>
+                  <th>
+                    {key}
+                  </th>
+                  <td>
+                    {value}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </View>
       </View>
     );
   }
+
+  _handleHover = date => {
+    this.setState({ date });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -36,5 +63,7 @@ const styles = StyleSheet.create({
   chart: {
     flexGrow: 1
   },
-  meta: {}
+  meta: {
+    minHeight: '20vh'
+  }
 });

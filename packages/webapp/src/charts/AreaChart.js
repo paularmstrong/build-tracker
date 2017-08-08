@@ -3,15 +3,17 @@ import { extent, max } from 'd3-array';
 import { select } from 'd3-selection';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { interpolateRainbow, schemeCategory20, scaleSequential, scaleOrdinal, scaleTime, scaleLinear } from 'd3-scale';
+import { interpolateRainbow, scaleSequential, scaleTime, scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
+import 'd3-transition';
 
 const color = scaleSequential(interpolateRainbow);
-const singleColor = scaleOrdinal(schemeCategory20);
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
 const singleItemData = [[]];
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
+
+const PERCENT_Y_HEADROOM = 1.05;
 
 export default class AreaChart extends Component {
   props: {
@@ -36,9 +38,10 @@ export default class AreaChart extends Component {
   }
 
   render() {
+    const { height, width } = this.state;
     return (
       <View onLayout={this._handleLayout} style={styles.root}>
-        <svg ref={this._setSvgRef} />
+        <svg ref={this._setSvgRef} height={height} width={width} />
       </View>
     );
   }
@@ -49,25 +52,17 @@ export default class AreaChart extends Component {
       return;
     }
     const { bundles, stats } = this.props;
-    const svg = select(this._svg).attr('width', width).attr('height', height);
-
-    const g = svg
-      .selectAll('g')
-      .data(singleItemData)
-      .enter()
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const maxDateVal = max(this.props.stats, commit => {
-      return Object.values(commit.stats).reduce((memo, bundle) => memo + bundle.gzipSize, 0);
+      return Object.values(commit.stats).reduce((memo, bundle) => memo + (bundle ? bundle.gzipSize : 0), 0);
     });
 
-    color.domain([0, bundles.length - 1]);
+    color.domain([0, bundles.length]);
 
     const x = scaleTime().range([0, width - (margin.left + margin.right)]);
     const y = scaleLinear().range([height - (margin.top + margin.bottom), 0]);
     x.domain(extent(stats, d => d.build.timestamp));
-    y.domain([0, maxDateVal]);
+    y.domain([0, maxDateVal * PERCENT_Y_HEADROOM]);
 
     const xAxis = axisBottom().scale(x).tickFormat(formatTime);
     const yAxis = axisLeft().scale(y);
@@ -80,16 +75,25 @@ export default class AreaChart extends Component {
 
     const data = chartStack(stats);
 
-    const bundle = g.selectAll('.bundle').data(data).enter().append('g').attr('data-key', d => d.key);
+    const bundle = this._svg.selectAll('.bundle').data(data, d => (bundles.length > 1 ? d.key : 'constant'));
 
-    bundle.append('path').attr('d', areaChart).style('fill', (d, i) => {
-      return bundles.length > 1 ? color(bundles.indexOf(d.key)) : singleColor(bundles.indexOf(d.key));
-    });
+    // Remove old areas
+    bundle.exit().remove();
 
-    g
-      .append('g')
-      .attr('class', 'x axis')
+    bundle
+      .enter()
+      .append('path')
+      .attr('class', 'bundle')
+      .merge(bundle)
+      .transition()
+      .duration(150)
+      .attr('d', areaChart)
+      .style('fill', (d, i) => color(bundles.indexOf(d.key)));
+
+    this._xAxis
       .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
+      .transition()
+      .duration(150)
       .call(xAxis)
       .selectAll('text')
       .attr('y', 9)
@@ -98,11 +102,16 @@ export default class AreaChart extends Component {
       .attr('transform', 'rotate(20)')
       .style('text-anchor', 'start');
 
-    g.append('g').attr('class', 'y axis').call(yAxis);
+    this._yAxis.transition().duration(150).call(yAxis);
   }
 
   _setSvgRef = node => {
-    this._svg = node;
+    if (node !== this._svgNode) {
+      this._svgNode = node;
+      this._svg = select(node).append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+      this._xAxis = this._svg.append('g').attr('class', 'x axis');
+      this._yAxis = this._svg.append('g').attr('class', 'y axis');
+    }
   };
 
   _handleLayout = event => {

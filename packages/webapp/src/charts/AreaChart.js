@@ -25,6 +25,13 @@ const ScaleTypeFunction = {
   [ScaleType.POW]: () => scalePow().exponent(4)
 };
 
+type bundleStatType = {
+  hash: string,
+  name: string,
+  size: number,
+  gzipSize: number
+};
+
 export default class AreaChart extends Component {
   props: {
     bundles: Array<string>,
@@ -32,7 +39,7 @@ export default class AreaChart extends Component {
     scaleType: 'linear' | 'pow',
     stats: Array<{
       build: { timestamp: number, revision: string },
-      stats: Array<{ hash: string, name: string, size: number, gzipSize: number }>
+      stats: { [bundleName: string]: bundleStatType }
     }>
   };
 
@@ -79,14 +86,16 @@ export default class AreaChart extends Component {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { scaleType } = this.props;
+    const { bundles, scaleType, stats } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
-    const { bundles, stats } = this.props;
 
-    const [minDateVal, maxDateVal] = extent(this.props.stats, commit => {
-      return Object.values(commit.stats).reduce((memo, bundle) => memo + (bundle ? bundle.gzipSize : 0), 0);
+    const [minDateVal, maxDateVal] = extent(stats, commit => {
+      return Object.values(commit.stats).reduce(
+        (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
+        0
+      );
     });
 
     color.domain([0, bundles.length]);

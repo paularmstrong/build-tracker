@@ -13,13 +13,13 @@ const SizeValue = ({ bytes, label }) =>
 
 class Bundle extends Component {
   props: {
-    bundle: String,
+    bundle: string,
     date: Object
   };
 
   render() {
     const { bundle } = this.props;
-    const stats = this.stats.stats[bundle];
+    const stats = this._getStats().stats[bundle];
     return (
       <View style={styles.bundle}>
         <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
@@ -35,7 +35,7 @@ class Bundle extends Component {
     );
   }
 
-  get stats() {
+  _getStats() {
     const { bundle, date } = this.props;
     return statsForBundle(bundle).find(commit => commit.build.timestamp === date) || { build: {}, stats: {} };
   }

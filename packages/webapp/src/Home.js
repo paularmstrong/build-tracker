@@ -12,12 +12,12 @@ export default class Home extends Component {
 
   state: {
     date?: Object,
-    scaleType: 'linear' | 'pow'
+    scaleType: string
   };
 
-  constructor(props, context) {
+  constructor(props: Object, context: Object) {
     super(props, context);
-    this.state = { date: null, scaleType: 'linear' };
+    this.state = { scaleType: 'linear' };
   }
 
   render() {
@@ -59,7 +59,7 @@ export default class Home extends Component {
                 <th>Stat Size</th>
                 <td>
                   {Object.values(commitByTimestamp.stats).reduce(
-                    (memo, bundle) => memo + (bundle ? bundle.size : 0),
+                    (memo, bundle) => memo + (bundle && bundle.size ? parseInt(bundle.size, 10) : 0),
                     0
                   )}
                 </td>
@@ -68,7 +68,7 @@ export default class Home extends Component {
                 <th>Gzip Size</th>
                 <td>
                   {Object.values(commitByTimestamp.stats).reduce(
-                    (memo, bundle) => memo + (bundle ? bundle.gzipSize : 0),
+                    (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
                     0
                   )}
                 </td>
@@ -80,12 +80,12 @@ export default class Home extends Component {
     );
   }
 
-  _handleHover = date => {
+  _handleHover = (date: Object) => {
     this.setState({ date });
     this.props.onPickDate && this.props.onPickDate(date);
   };
 
-  _handleScaleChange = event => {
+  _handleScaleChange = (event: { target: { value: string } }) => {
     const { target: { value: scaleType } } = event;
     this.setState({ scaleType });
   };

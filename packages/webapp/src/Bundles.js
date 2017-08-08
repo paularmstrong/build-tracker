@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { bundles, statsForBundle } from './stats';
+import theme from './theme';
 
 const SizeValue = ({ bytes, label }) =>
   <Text style={styles.value}>
@@ -20,14 +21,16 @@ class Bundle extends Component {
     const { bundle } = this.props;
     const stats = this.stats.stats[bundle];
     return (
-      <View>
+      <View style={styles.bundle}>
         <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
-          {bundle}
+          <Text style={styles.bundleName}>
+            {bundle}
+          </Text>
+          <View style={styles.values}>
+            {stats ? <SizeValue bytes={stats.size} label="stat" /> : null}
+            {stats ? <SizeValue bytes={stats.gzipSize} label="gzip" /> : null}
+          </View>
         </Link>
-        <View style={styles.values}>
-          {stats ? <SizeValue bytes={stats.size} label="stat" /> : null}
-          {stats ? <SizeValue bytes={stats.gzipSize} label="gzip" /> : null}
-        </View>
       </View>
     );
   }
@@ -54,8 +57,20 @@ export default class Bundles extends Component {
 }
 
 const styles = StyleSheet.create({
+  bundle: {
+    borderBottomWidth: '1px',
+    borderBottomColor: theme.colorGray,
+    paddingLeft: theme.spaceXSmall,
+    paddingRight: theme.spaceXSmall,
+    paddingTop: theme.spaceXXSmall,
+    paddingBottom: theme.spaceXXSmall
+  },
+  bundleName: {
+    fontSize: theme.fontSizeSmall
+  },
   values: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    color: theme.colorBlack
   },
   value: {
     flexGrow: 1,

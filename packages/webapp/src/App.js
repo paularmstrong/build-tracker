@@ -2,7 +2,7 @@ import Bundles from './Bundles';
 import Home from './Home';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import theme from './theme';
 
 const ViewAll = ({ match }) => (match ? <Link to="/">View All</Link> : null);
@@ -19,6 +19,7 @@ class App extends Component {
       <Router>
         <View style={styles.root}>
           <View style={styles.nav}>
+            <Text role="heading">Bundles</Text>
             <Route children={ViewAll} exact path="/bundles/:bundle" />
             <Bundles date={date} />
           </View>

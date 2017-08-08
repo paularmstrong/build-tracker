@@ -8,22 +8,36 @@ import theme from './theme';
 const ViewAll = ({ match }) => (match ? <Link to="/">View All</Link> : null);
 
 class App extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = { date: null };
+  }
+
   render() {
+    const { date } = this.state;
     return (
       <Router>
         <View style={styles.root}>
           <View style={styles.nav}>
             <Route children={ViewAll} exact path="/bundles/:bundle" />
-            <Bundles />
+            <Bundles date={date} />
           </View>
           <View style={styles.main}>
-            <Route exact path="/" component={Home} />
-            <Route path="/bundles/:bundleName" component={Home} />
+            <Route exact path="/" render={this._renderHome} />
+            <Route path="/bundles/:bundleName" render={this._renderHome} />
           </View>
         </View>
       </Router>
     );
   }
+
+  _renderHome = props => {
+    return <Home {...props} onPickDate={this._handlePickDate} />;
+  };
+
+  _handlePickDate = date => {
+    this.setState({ date });
+  };
 }
 
 const styles = StyleSheet.create({

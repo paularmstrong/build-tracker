@@ -1832,7 +1832,7 @@ d3-timer@1:
 
 d3-transition@^1.1.0:
   version "1.1.0"
-  resolved "https://artifactory.twitter.biz:443/api/npm/js-virtual/d3-transition/-/d3-transition-1.1.0.tgz#cfc85c74e5239324290546623572990560c3966f"
+  resolved "https://registry.yarnpkg.com/d3-transition/-/d3-transition-1.1.0.tgz#cfc85c74e5239324290546623572990560c3966f"
   dependencies:
     d3-color "1"
     d3-dispatch "1"

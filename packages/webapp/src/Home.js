@@ -7,11 +7,11 @@ import { bundles, stats, statsForBundle } from './stats';
 export default class Home extends Component {
   props: {
     match: Object,
-    onPickDate: Function
+    onPickCommit: Function
   };
 
   state: {
-    date?: Object,
+    commit?: Object,
     xScaleType: string,
     yScaleType: string
   };
@@ -23,10 +23,9 @@ export default class Home extends Component {
 
   render() {
     const { params: { bundleName } } = this.props.match || { params: {} };
-    const { date, xScaleType, yScaleType } = this.state;
+    const { commit, xScaleType, yScaleType } = this.state;
     const chartBundles = bundleName ? [bundleName] : bundles;
     const chartStats = bundleName ? statsForBundle(bundleName) : stats;
-    const commitByTimestamp = chartStats.find(commit => commit.build.timestamp === date) || { build: {}, stats: {} };
     return (
       <View style={styles.root}>
         <View style={styles.header}>
@@ -63,32 +62,38 @@ export default class Home extends Component {
           Meta
           <table>
             <tbody>
-              {Object.entries(commitByTimestamp.build).map(([key, value]) =>
-                <tr key={key}>
-                  <th>
-                    {key}
-                  </th>
-                  <td>
-                    {value}
-                  </td>
-                </tr>
-              )}
+              {commit
+                ? Object.entries(commit.build).map(([key, value]) =>
+                    <tr key={key}>
+                      <th>
+                        {key}
+                      </th>
+                      <td>
+                        {value}
+                      </td>
+                    </tr>
+                  )
+                : null}
               <tr>
                 <th>Stat Size</th>
                 <td>
-                  {Object.values(commitByTimestamp.stats).reduce(
-                    (memo, bundle) => memo + (bundle && bundle.size ? parseInt(bundle.size, 10) : 0),
-                    0
-                  )}
+                  {commit
+                    ? Object.values(commit.stats).reduce(
+                        (memo, bundle) => memo + (bundle && bundle.size ? parseInt(bundle.size, 10) : 0),
+                        0
+                      )
+                    : null}
                 </td>
               </tr>
               <tr>
                 <th>Gzip Size</th>
                 <td>
-                  {Object.values(commitByTimestamp.stats).reduce(
-                    (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
-                    0
-                  )}
+                  {commit
+                    ? Object.values(commit.stats).reduce(
+                        (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
+                        0
+                      )
+                    : null}
                 </td>
               </tr>
             </tbody>
@@ -98,9 +103,9 @@ export default class Home extends Component {
     );
   }
 
-  _handleHover = (date: Object) => {
-    this.setState({ date });
-    this.props.onPickDate && this.props.onPickDate(date);
+  _handleHover = (commit: Object) => {
+    this.setState({ commit });
+    this.props.onPickCommit && this.props.onPickCommit(commit);
   };
 
   _handleYScaleChange = (event: { target: { value: string } }) => {

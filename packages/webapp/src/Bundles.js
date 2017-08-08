@@ -14,12 +14,12 @@ const SizeValue = ({ bytes, label }) =>
 class Bundle extends Component {
   props: {
     bundle: string,
-    date: Object
+    commit: Object
   };
 
   render() {
-    const { bundle } = this.props;
-    const stats = this._getStats().stats[bundle];
+    const { bundle, commit } = this.props;
+    const stats = commit && commit.stats[bundle];
     return (
       <View style={styles.bundle}>
         <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
@@ -34,23 +34,18 @@ class Bundle extends Component {
       </View>
     );
   }
-
-  _getStats() {
-    const { bundle, date } = this.props;
-    return statsForBundle(bundle).find(commit => commit.build.timestamp === date) || { build: {}, stats: {} };
-  }
 }
 
 export default class Bundles extends Component {
   props: {
-    date: Object
+    commit: Object
   };
 
   render() {
-    const { date } = this.props;
+    const { commit } = this.props;
     return (
       <View>
-        {bundles.sort().map(bundle => <Bundle bundle={bundle} date={date} key={bundle} />)}
+        {bundles.sort().map(bundle => <Bundle bundle={bundle} commit={commit} key={bundle} />)}
       </View>
     );
   }

@@ -134,6 +134,7 @@ export default class AreaChart extends Component {
         const [xPos, yPos] = mouse(nodes[0]);
 
         let xValue;
+        let hoveredStats;
         if (xScale.invert) {
           const xDate = xScale.invert(xPos);
           const validTimestamps = stats.map(d => d.build.timestamp);
@@ -141,18 +142,20 @@ export default class AreaChart extends Component {
             (prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev),
             0
           );
+          hoveredStats = stats.find(commit => commit.build.timestamp === xValue);
         } else {
           const domain = xScale.domain();
           xValue = domain.reduce((prev, curr, i) => {
             return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
           }, domain[0]);
+          hoveredStats = stats.find(commit => commit.build.revision === xValue);
         }
         this._hoverLine
           .attr('x1', xScale(xValue))
           .attr('x2', xScale(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(xValue);
+        this.props.onHover(hoveredStats);
       });
   }
 

@@ -14,14 +14,14 @@ class App extends Component {
   }
 
   render() {
-    const { date } = this.state;
+    const { commit } = this.state;
     return (
       <Router>
         <View style={styles.root}>
           <View style={styles.nav}>
             <Text role="heading">Bundles</Text>
             <Route children={ViewAll} exact path="/bundles/:bundle" />
-            <Bundles date={date} />
+            <Bundles commit={commit} />
           </View>
           <View style={styles.main}>
             <Route exact path="/" render={this._renderHome} />
@@ -33,11 +33,11 @@ class App extends Component {
   }
 
   _renderHome = props => {
-    return <Home {...props} onPickDate={this._handlePickDate} />;
+    return <Home {...props} onPickCommit={this._handlePickCommit} />;
   };
 
-  _handlePickDate = date => {
-    this.setState({ date });
+  _handlePickCommit = commit => {
+    this.setState({ commit });
   };
 }
 

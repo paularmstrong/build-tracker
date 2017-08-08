@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSizeSmall
   },
   values: {
-    flexDirection: 'row',
-    color: theme.colorBlack
+    flexDirection: 'row'
   },
   value: {
     flexGrow: 1,
-    fontSize: '0.7em'
+    fontSize: '0.7em',
+    color: theme.colorBlack
   }
 });

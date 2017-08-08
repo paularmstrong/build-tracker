@@ -1,7 +1,7 @@
 // @flow
-import AreaChart from './charts/AreaChart';
+import AreaChart, { ScaleType } from './charts/AreaChart';
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { bundles, stats, statsForBundle } from './stats';
 
 export default class Home extends Component {
@@ -10,14 +10,19 @@ export default class Home extends Component {
     onPickDate: Function
   };
 
+  state: {
+    date?: Object,
+    scaleType: 'linear' | 'pow'
+  };
+
   constructor(props, context) {
     super(props, context);
-    this.state = { date: null };
+    this.state = { date: null, scaleType: 'linear' };
   }
 
   render() {
     const { params: { bundleName } } = this.props.match || { params: {} };
-    const { date } = this.state;
+    const { date, scaleType } = this.state;
     const chartBundles = bundleName ? [bundleName] : bundles;
     const chartStats = bundleName ? statsForBundle(bundleName) : stats;
     const commitByTimestamp = chartStats.find(commit => commit.build.timestamp === date) || { build: {}, stats: {} };
@@ -26,8 +31,15 @@ export default class Home extends Component {
         <View style={styles.title}>
           {bundleName || 'All'}
         </View>
+        <View>
+          {Object.values(ScaleType).map(scale =>
+            <button key={scale} value={scale} onClick={this._handleScaleChange}>
+              {scale}
+            </button>
+          )}
+        </View>
         <View style={styles.chart}>
-          <AreaChart bundles={chartBundles} onHover={this._handleHover} stats={chartStats} />
+          <AreaChart bundles={chartBundles} onHover={this._handleHover} scaleType={scaleType} stats={chartStats} />
         </View>
         <View style={styles.meta}>
           Meta
@@ -71,6 +83,11 @@ export default class Home extends Component {
   _handleHover = date => {
     this.setState({ date });
     this.props.onPickDate && this.props.onPickDate(date);
+  };
+
+  _handleScaleChange = event => {
+    const { target: { value: scaleType } } = event;
+    this.setState({ scaleType });
   };
 }
 

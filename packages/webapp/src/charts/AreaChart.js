@@ -4,7 +4,7 @@ import { extent, max } from 'd3-array';
 import { mouse, select } from 'd3-selection';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { interpolateRainbow, scaleSequential, scaleTime, scaleLinear, scalePow } from 'd3-scale';
+import { interpolateRainbow, scaleSequential, scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import 'd3-transition';
@@ -15,14 +15,16 @@ const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 const PERCENT_Y_HEADROOM = 1.05;
 
-export const ScaleType = {
+const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
+
+export const YScaleType = {
   LINEAR: 'linear',
   POW: 'pow'
 };
 
-const ScaleTypeFunction = {
-  [ScaleType.LINEAR]: () => scaleLinear(),
-  [ScaleType.POW]: () => scalePow().exponent(4)
+export const XScaleType = {
+  TIME: 'time',
+  COMMIT: 'commit'
 };
 
 type bundleStatType = {
@@ -36,7 +38,8 @@ export default class AreaChart extends Component {
   props: {
     bundles: Array<string>,
     onHover: Function,
-    scaleType: 'linear' | 'pow',
+    yScaleType: 'linear' | 'pow',
+    xScaleType: 'time' | 'commit',
     stats: Array<{
       build: { timestamp: number, revision: string },
       stats: { [bundleName: string]: bundleStatType }
@@ -56,7 +59,8 @@ export default class AreaChart extends Component {
   _xAxis: any;
 
   static defaultProps = {
-    scaleType: ScaleType.LINEAR
+    yScaleType: YScaleType.LINEAR,
+    xScaleType: XScaleType.COMMIT
   };
 
   constructor(props: Object, context: Object) {
@@ -86,34 +90,21 @@ export default class AreaChart extends Component {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { bundles, scaleType, stats } = this.props;
+    const { bundles, stats, xScaleType } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
 
-    const [minDateVal, maxDateVal] = extent(stats, commit => {
-      return Object.values(commit.stats).reduce(
-        (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
-        0
-      );
-    });
-
     color.domain([0, bundles.length]);
 
-    const x = scaleTime()
-      .range([0, width - (margin.left + margin.right)])
-      .domain(extent(stats, d => d.build.timestamp));
-    const y = ScaleTypeFunction[scaleType]()
-      .range([height - (margin.top + margin.bottom), 0])
-      .domain([0, maxDateVal * PERCENT_Y_HEADROOM]);
+    const yScale = this._getYScale();
+    const xScale = this._getXScale();
 
-    const xAxis = axisBottom().scale(x).tickFormat(formatTime);
-    const yAxis = axisLeft().scale(y);
-
-    const areaChart = area().x(d => x(d.data.build.timestamp)).y0(d => y(d[0])).y1(d => y(d[1]));
+    const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
+    const areaChart = area().x(d => xScale(d.data.build[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
 
     const chartStack = stack();
-    chartStack.keys(bundles.sort((a, b) => stats[0].stats[b].gzipSize - stats[0].stats[a].gzipSize));
+    chartStack.keys(bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a)));
     chartStack.value((d, key) => (d.stats[key] ? d.stats[key].gzipSize : 0));
 
     const data = chartStack(stats);
@@ -133,37 +124,35 @@ export default class AreaChart extends Component {
       .attr('d', areaChart)
       .style('fill', (d, i) => color(bundles.indexOf(d.key)));
 
-    this._xAxis
-      .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
-      .transition()
-      .duration(150)
-      .call(xAxis)
-      .selectAll('text')
-      .attr('y', 9)
-      .attr('x', 5)
-      .attr('dy', '.35em')
-      .attr('transform', 'rotate(20)')
-      .style('text-anchor', 'start');
-
-    this._yAxis.transition().duration(150).call(yAxis);
+    this._drawXAxis(xScale);
+    this._drawYAxis(yScale);
 
     this._overlay
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
       .on('mousemove', (d, index, nodes) => {
         const [xPos, yPos] = mouse(nodes[0]);
-        const hoverDate = x.invert(xPos);
-        const validTimestamps = stats.map(d => d.build.timestamp);
-        const closestDate = validTimestamps.reduce(
-          (prev, curr) => (Math.abs(curr - hoverDate) < Math.abs(prev - hoverDate) ? curr : prev),
-          0
-        );
+
+        let xValue;
+        if (xScale.invert) {
+          const xDate = xScale.invert(xPos);
+          const validTimestamps = stats.map(d => d.build.timestamp);
+          xValue = validTimestamps.reduce(
+            (prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev),
+            0
+          );
+        } else {
+          const domain = xScale.domain();
+          xValue = domain.reduce((prev, curr, i) => {
+            return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
+          }, domain[0]);
+        }
         this._hoverLine
-          .attr('x1', x(closestDate))
-          .attr('x2', x(closestDate))
+          .attr('x1', xScale(xValue))
+          .attr('x2', xScale(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(closestDate);
+        this.props.onHover(xValue);
       });
   }
 
@@ -184,12 +173,90 @@ export default class AreaChart extends Component {
     }
   };
 
+  _drawXAxis(xScale: Object) {
+    const { height } = this.state;
+    const xAxis = this._getXAxis(xScale);
+    this._xAxis
+      .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
+      .transition()
+      .duration(150)
+      .call(xAxis)
+      .selectAll('text')
+      .attr('y', 9)
+      .attr('x', 5)
+      .attr('dy', '.35em')
+      .attr('transform', 'rotate(24)')
+      .style('text-anchor', 'start');
+  }
+
+  _drawYAxis(yScale: Object) {
+    const yAxis = axisLeft().scale(yScale);
+    this._yAxis.transition().duration(150).call(yAxis);
+  }
+
   _handleLayout = (event: Object) => {
     const { nativeEvent: { layout: { width, height } } } = event;
     if (width !== this.state.width) {
       this.setState({ height, width });
     }
   };
+
+  _getXScale() {
+    const { stats, xScaleType } = this.props;
+    const { width } = this.state;
+
+    const range = [0, width - (margin.left + margin.right)];
+    switch (xScaleType) {
+      case XScaleType.TIME:
+        return scaleTime().range(range).domain(extent(stats, d => d.build.timestamp));
+
+      case XScaleType.COMMIT:
+      default: {
+        const domain = stats
+          .sort((a, b) => new Date(a.build.timestamp) - new Date(b.build.timestamp))
+          .map(d => d.build.revision);
+        return scalePoint().range(range).round(true).domain(domain);
+      }
+    }
+  }
+
+  _getXAxis(scale: Object) {
+    const { stats, xScaleType } = this.props;
+    const axis = axisBottom().scale(scale);
+    switch (xScaleType) {
+      case XScaleType.TIME:
+        axis.tickFormat(formatTime);
+        break;
+
+      default:
+        axis.tickFormat(d => d && d.slice(0, 7));
+        break;
+    }
+    return axis;
+  }
+
+  _getYScale() {
+    const { stats, yScaleType } = this.props;
+    const { height } = this.state;
+
+    const maxDateVal = max(stats, commit => {
+      return Object.values(commit.stats).reduce(
+        (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
+        0
+      );
+    });
+
+    const range = [height - (margin.top + margin.bottom), 0];
+    const domain = [0, maxDateVal * PERCENT_Y_HEADROOM];
+
+    switch (yScaleType) {
+      case YScaleType.POW:
+        return scalePow().exponent(4).range(range).domain(domain);
+      case YScaleType.LINEAR:
+      default:
+        return scaleLinear().range(range).domain(domain);
+    }
+  }
 }
 
 const styles = StyleSheet.create({

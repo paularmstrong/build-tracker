@@ -1,5 +1,5 @@
 // @flow
-import AreaChart, { ScaleType } from './charts/AreaChart';
+import AreaChart, { XScaleType, YScaleType } from './charts/AreaChart';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { bundles, stats, statsForBundle } from './stats';
@@ -12,17 +12,18 @@ export default class Home extends Component {
 
   state: {
     date?: Object,
-    scaleType: string
+    xScaleType: string,
+    yScaleType: string
   };
 
   constructor(props: Object, context: Object) {
     super(props, context);
-    this.state = { scaleType: 'linear' };
+    this.state = { xScaleType: 'commit', yScaleType: 'linear' };
   }
 
   render() {
     const { params: { bundleName } } = this.props.match || { params: {} };
-    const { date, scaleType } = this.state;
+    const { date, xScaleType, yScaleType } = this.state;
     const chartBundles = bundleName ? [bundleName] : bundles;
     const chartStats = bundleName ? statsForBundle(bundleName) : stats;
     const commitByTimestamp = chartStats.find(commit => commit.build.timestamp === date) || { build: {}, stats: {} };
@@ -33,9 +34,16 @@ export default class Home extends Component {
             {bundleName || 'All'}
           </View>
           <View style={styles.scaleTypeButtons}>
-            {Object.values(ScaleType).map(scale =>
+            {Object.values(YScaleType).map(scale =>
               <View key={scale} style={styles.scaleTypeButton}>
-                <button value={scale} onClick={this._handleScaleChange}>
+                <button value={scale} onClick={this._handleYScaleChange}>
+                  {scale}
+                </button>
+              </View>
+            )}
+            {Object.values(XScaleType).map(scale =>
+              <View key={scale} style={styles.scaleTypeButton}>
+                <button value={scale} onClick={this._handleXScaleChange}>
                   {scale}
                 </button>
               </View>
@@ -43,7 +51,13 @@ export default class Home extends Component {
           </View>
         </View>
         <View style={styles.chart}>
-          <AreaChart bundles={chartBundles} onHover={this._handleHover} scaleType={scaleType} stats={chartStats} />
+          <AreaChart
+            bundles={chartBundles}
+            onHover={this._handleHover}
+            xScaleType={xScaleType}
+            yScaleType={yScaleType}
+            stats={chartStats}
+          />
         </View>
         <View style={styles.meta}>
           Meta
@@ -89,9 +103,14 @@ export default class Home extends Component {
     this.props.onPickDate && this.props.onPickDate(date);
   };
 
-  _handleScaleChange = (event: { target: { value: string } }) => {
-    const { target: { value: scaleType } } = event;
-    this.setState({ scaleType });
+  _handleYScaleChange = (event: { target: { value: string } }) => {
+    const { target: { value: yScaleType } } = event;
+    this.setState({ yScaleType });
+  };
+
+  _handleXScaleChange = (event: { target: { value: string } }) => {
+    const { target: { value: xScaleType } } = event;
+    this.setState({ xScaleType });
   };
 }
 

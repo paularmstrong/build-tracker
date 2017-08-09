@@ -36,6 +36,7 @@ type bundleStatType = {
 
 export default class AreaChart extends Component {
   props: {
+    allBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
     onHover: Function,
@@ -91,7 +92,7 @@ export default class AreaChart extends Component {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { bundles, colorScale, stats, xScaleType } = this.props;
+    const { allBundles, bundles, colorScale, stats, xScaleType } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
@@ -104,7 +105,6 @@ export default class AreaChart extends Component {
 
     const chartStack = stack();
     chartStack.keys(bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a)));
-    // chartStack.keys(bundles);
     chartStack.value((d, key) => (d.stats[key] ? d.stats[key].gzipSize : 0));
 
     const data = chartStack(stats);
@@ -122,7 +122,7 @@ export default class AreaChart extends Component {
       .transition()
       .duration(150)
       .attr('d', areaChart)
-      .style('fill', (d, i) => colorScale(bundles.length - bundles.indexOf(d.key)));
+      .style('fill', (d, i) => colorScale(allBundles.indexOf(d.key)));
 
     this._drawXAxis(xScale);
     this._drawYAxis(yScale);

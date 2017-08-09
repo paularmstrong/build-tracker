@@ -55,6 +55,7 @@ export default class Home extends Component {
         </View>
         <View style={styles.chart}>
           <AreaChart
+            allBundles={bundles}
             bundles={chartBundles}
             colorScale={colorScale}
             onHover={this._handleHover}

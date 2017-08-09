@@ -1,4 +1,5 @@
 // @flow
+import { bytesToKb } from './formatting';
 import AreaChart, { XScaleType, YScaleType } from './charts/AreaChart';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -78,9 +79,11 @@ export default class Home extends Component {
                 <th>Stat Size</th>
                 <td>
                   {commit
-                    ? Object.values(commit.stats).reduce(
-                        (memo, bundle) => memo + (bundle && bundle.size ? parseInt(bundle.size, 10) : 0),
-                        0
+                    ? bytesToKb(
+                        Object.values(commit.stats).reduce(
+                          (memo, bundle) => memo + (bundle && bundle.size ? parseInt(bundle.size, 10) : 0),
+                          0
+                        )
                       )
                     : null}
                 </td>
@@ -89,9 +92,11 @@ export default class Home extends Component {
                 <th>Gzip Size</th>
                 <td>
                   {commit
-                    ? Object.values(commit.stats).reduce(
-                        (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
-                        0
+                    ? bytesToKb(
+                        Object.values(commit.stats).reduce(
+                          (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
+                          0
+                        )
                       )
                     : null}
                 </td>

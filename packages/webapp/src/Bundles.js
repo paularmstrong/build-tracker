@@ -1,4 +1,5 @@
 // @flow
+import { bytesToKb } from './formatting';
 import { defaultStyles } from './theme';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
@@ -8,7 +9,7 @@ import theme from './theme';
 
 const SizeValue = ({ bytes, label }) =>
   <Text style={styles.value}>
-    {label}: {bytes}
+    {label}: {bytesToKb(bytes)}
   </Text>;
 
 class Bundle extends Component {

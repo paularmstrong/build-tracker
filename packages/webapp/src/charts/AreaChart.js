@@ -7,6 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { interpolateRainbow, scaleSequential, scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
+import { bytesToKb } from '../formatting';
 import 'd3-transition';
 
 const color = scaleSequential(interpolateRainbow);
@@ -193,7 +194,7 @@ export default class AreaChart extends Component {
   }
 
   _drawYAxis(yScale: Object) {
-    const yAxis = axisLeft().scale(yScale);
+    const yAxis = axisLeft().scale(yScale).tickFormat(bytesToKb);
     this._yAxis.transition().duration(150).call(yAxis);
   }
 

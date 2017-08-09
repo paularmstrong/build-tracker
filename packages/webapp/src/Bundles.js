@@ -21,17 +21,19 @@ class Bundle extends Component {
     const { bundle, commit } = this.props;
     const stats = commit && commit.stats[bundle];
     return (
-      <View style={styles.bundle}>
-        <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
-          <Text style={styles.bundleName}>
-            {bundle}
-          </Text>
-          <View style={styles.values}>
-            {stats ? <SizeValue bytes={stats.size} label="stat" /> : null}
-            {stats ? <SizeValue bytes={stats.gzipSize} label="gzip" /> : null}
+      <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
+        <View style={styles.bundle}>
+          <View style={styles.bundleName}>
+            <Text style={styles.bundleNameText}>
+              {bundle}
+            </Text>
           </View>
-        </Link>
-      </View>
+          <View style={styles.values}>
+            {<SizeValue bytes={stats && stats.size} label="stat" />}
+            {<SizeValue bytes={stats && stats.gzipSize} label="gzip" />}
+          </View>
+        </View>
+      </Link>
     );
   }
 }
@@ -58,13 +60,19 @@ const styles = StyleSheet.create({
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
     paddingTop: theme.spaceXXSmall,
-    paddingBottom: theme.spaceXXSmall
+    paddingBottom: theme.spaceXXSmall,
+    flexDirection: 'row'
   },
   bundleName: {
+    flexGrow: 1
+  },
+  bundleNameText: {
     fontSize: theme.fontSizeSmall
   },
   values: {
-    flexDirection: 'row'
+    flexGrow: 0,
+    flexShrink: 0,
+    minWidth: '25%'
   },
   value: {
     flexGrow: 1,

@@ -4,8 +4,12 @@ import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import theme from './theme';
+import { bundlesBySize } from './stats';
+import { interpolateRainbow, scaleSequential } from 'd3-scale';
 
 const ViewAll = ({ match }) => (match ? <Link to="/">View All</Link> : null);
+
+const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 
 class App extends Component {
   constructor(props, context) {
@@ -21,7 +25,7 @@ class App extends Component {
           <View style={styles.nav}>
             <Text role="heading">Bundles</Text>
             <Route children={ViewAll} exact path="/bundles/:bundle" />
-            <Bundles commit={commit} />
+            <Bundles bundles={bundlesBySize} colorScale={colorScale} commit={commit} />
           </View>
           <View style={styles.main}>
             <Route exact path="/" render={this._renderHome} />
@@ -33,7 +37,7 @@ class App extends Component {
   }
 
   _renderHome = props => {
-    return <Home {...props} onPickCommit={this._handlePickCommit} />;
+    return <Home {...props} bundles={bundlesBySize} colorScale={colorScale} onPickCommit={this._handlePickCommit} />;
   };
 
   _handlePickCommit = commit => {

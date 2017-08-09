@@ -106,3 +106,6 @@ export const bundles = stats
     return memo.concat(bundles).filter((value, index, self) => self.indexOf(value) === index);
   }, [])
   .sort();
+
+const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
+export const bundlesBySize = bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a));

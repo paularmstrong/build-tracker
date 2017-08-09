@@ -7,6 +7,8 @@ import { bundles, stats, statsForBundle } from './stats';
 
 export default class Home extends Component {
   props: {
+    bundles: Array<string>,
+    colorScale: Function,
     match: Object,
     onPickCommit: Function
   };
@@ -24,6 +26,7 @@ export default class Home extends Component {
 
   render() {
     const { params: { bundleName } } = this.props.match || { params: {} };
+    const { bundles, colorScale } = this.props;
     const { commit, xScaleType, yScaleType } = this.state;
     const chartBundles = bundleName ? [bundleName] : bundles;
     const chartStats = bundleName ? statsForBundle(bundleName) : stats;
@@ -53,6 +56,7 @@ export default class Home extends Component {
         <View style={styles.chart}>
           <AreaChart
             bundles={chartBundles}
+            colorScale={colorScale}
             onHover={this._handleHover}
             xScaleType={xScaleType}
             yScaleType={yScaleType}

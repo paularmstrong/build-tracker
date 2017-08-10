@@ -4,6 +4,7 @@ import AreaChart from './charts/AreaChart';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { stats, statsForBundle } from './stats';
+import { ValueType, XScaleType, YScaleType } from './values';
 
 export default class Home extends Component {
   props: {
@@ -11,9 +12,9 @@ export default class Home extends Component {
     colorScale: Function,
     match: Object,
     onPickCommit: Function,
-    valueType: string,
-    xScaleType: string,
-    yScaleType: string
+    valueAccessor: Function,
+    yScaleType: $Values<typeof YScaleType>,
+    xScaleType: $Values<typeof XScaleType>
   };
 
   state: {

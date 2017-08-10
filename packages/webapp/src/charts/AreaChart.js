@@ -32,8 +32,8 @@ export default class AreaChart extends Component {
     colorScale: Function,
     onHover: Function,
     valueAccessor: Function,
-    yScaleType: 'linear' | 'pow',
-    xScaleType: 'time' | 'commit',
+    yScaleType: $Values<typeof YScaleType>,
+    xScaleType: $Values<typeof XScaleType>,
     stats: Array<{
       build: { timestamp: number, revision: string },
       stats: { [bundleName: string]: bundleStatType }

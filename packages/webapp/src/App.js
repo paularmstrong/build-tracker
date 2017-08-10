@@ -1,3 +1,4 @@
+// @flow
 import Bundles from './Bundles';
 import Home from './Home';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
@@ -14,16 +15,16 @@ const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.
 
 class App extends Component {
   state: {
+    commit?: Object,
     date?: Object,
     valueType: string,
     xScaleType: string,
     yScaleType: string
   };
 
-  constructor(props, context) {
+  constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
-      date: null,
       valueType: ValueType.GZIP,
       xScaleType: 'commit',
       yScaleType: 'linear'
@@ -77,7 +78,7 @@ class App extends Component {
     );
   }
 
-  _renderHome = props => {
+  _renderHome = (props: Object) => {
     const { valueType, xScaleType, yScaleType } = this.state;
     return (
       <Home
@@ -92,21 +93,21 @@ class App extends Component {
     );
   };
 
-  _handlePickCommit = commit => {
+  _handlePickCommit = (commit: Object): void => {
     this.setState({ commit });
   };
 
-  _handleYScaleChange = (event: { target: { value: string } }) => {
+  _handleYScaleChange = (event: { target: { value: string } }): void => {
     const { target: { value: yScaleType } } = event;
     this.setState({ yScaleType });
   };
 
-  _handleXScaleChange = (event: { target: { value: string } }) => {
+  _handleXScaleChange = (event: { target: { value: string } }): void => {
     const { target: { value: xScaleType } } = event;
     this.setState({ xScaleType });
   };
 
-  _handleValueTypeChange = (event: { target: { value: string } }) => {
+  _handleValueTypeChange = (event: { target: { value: string } }): void => {
     const { target: { value: valueType } } = event;
     this.setState({ valueType });
   };

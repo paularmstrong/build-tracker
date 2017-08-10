@@ -15,6 +15,7 @@ const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.
 
 class App extends Component {
   state: {
+    bundleName?: string,
     commit?: Object,
     date?: Object,
     valueType: string,
@@ -32,7 +33,7 @@ class App extends Component {
   }
 
   render() {
-    const { commit, valueType } = this.state;
+    const { bundleName, commit, valueType } = this.state;
     return (
       <Router>
         <View style={styles.root}>
@@ -43,6 +44,7 @@ class App extends Component {
               bundles={bundlesBySize}
               colorScale={colorScale}
               commit={commit}
+              highlightBundle={bundleName}
               valueAccessor={valueTypeAccessor[valueType]}
             />
           </View>
@@ -93,8 +95,8 @@ class App extends Component {
     );
   };
 
-  _handlePickCommit = (commit: Object): void => {
-    this.setState({ commit });
+  _handlePickCommit = (commit: Object, bundleName: string): void => {
+    this.setState({ bundleName, commit });
   };
 
   _handleYScaleChange = (event: { target: { value: string } }): void => {

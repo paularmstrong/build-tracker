@@ -9,14 +9,13 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import { bytesToKb } from '../formatting';
 import { XScaleType, YScaleType } from '../values';
+import { getInitialSize } from '../stats';
 import 'd3-transition';
 
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 const PERCENT_Y_HEADROOM = 1.05;
-
-const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
 
 type bundleStatType = {
   hash: string,
@@ -118,9 +117,10 @@ export default class AreaChart extends Component {
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
       .on('mousemove', (d, index, nodes) => {
-        const [xPos] = mouse(nodes[0]);
+        const [xPos, yPos] = mouse(nodes[0]);
 
         let xValue;
+        let xIndex;
         let hoveredStats;
         if (xScale.invert) {
           const xDate = xScale.invert(xPos);
@@ -129,20 +129,26 @@ export default class AreaChart extends Component {
             (prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev),
             0
           );
+          xIndex = validTimestamps.indexOf(xValue);
           hoveredStats = stats.find(commit => commit.build.timestamp === xValue);
         } else {
           const domain = xScale.domain();
           xValue = domain.reduce((prev, curr, i) => {
             return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
           }, domain[0]);
-          hoveredStats = stats.find(commit => commit.build.revision === xValue);
+          xIndex = stats.findIndex(commit => commit.build.revision === xValue);
+          hoveredStats = stats[xIndex];
         }
+
+        const yValue = yScale.invert(yPos);
+        const hoveredBundle = data.find(data => data[xIndex][0] < yValue && data[xIndex][1] > yValue);
+
         this._hoverLine
           .attr('x1', xScale(xValue))
           .attr('x2', xScale(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(hoveredStats);
+        this.props.onHover(hoveredStats, hoveredBundle && hoveredBundle.key);
       });
   }
 

@@ -100,9 +100,9 @@ export default class Home extends Component {
     );
   }
 
-  _handleHover = (commit: Object) => {
+  _handleHover = (commit: Object, bundleName: string) => {
     this.setState({ commit });
-    this.props.onPickCommit && this.props.onPickCommit(commit);
+    this.props.onPickCommit && this.props.onPickCommit(commit, bundleName);
   };
 }
 

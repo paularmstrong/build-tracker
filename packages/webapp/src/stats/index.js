@@ -107,5 +107,5 @@ export const bundles = stats
   }, [])
   .sort();
 
-const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
+export const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
 export const bundlesBySize = bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a));

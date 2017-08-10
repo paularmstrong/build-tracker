@@ -16,15 +16,16 @@ class Bundle extends Component {
     bundle: string,
     color: string,
     commit: Object,
+    highlight: boolean,
     valueAccessor: Function
   };
 
   render() {
-    const { bundle, color, commit, valueAccessor } = this.props;
+    const { bundle, color, commit, highlight, valueAccessor } = this.props;
     const stats = commit && commit.stats[bundle];
     return (
       <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
-        <View style={styles.bundle}>
+        <View style={highlight ? styles.bundleHighlight : styles.bundle}>
           <View style={{ ...colorStyles, backgroundColor: color }}>&nbsp;</View>
           <View style={styles.bundleName}>
             <Text style={styles.bundleNameText}>
@@ -45,18 +46,25 @@ export default class Bundles extends Component {
     bundles: Array<string>,
     colorScale: Function,
     commit: Object,
+    highlightBundle?: string,
     valueAccessor: Function
   };
 
   render() {
-    const { bundles, colorScale, commit, valueAccessor } = this.props;
+    const { bundles, colorScale, commit, highlightBundle, valueAccessor } = this.props;
+
     return (
       <View>
-        {bundles
-          .sort()
-          .map((bundle, i) =>
-            <Bundle bundle={bundle} color={colorScale(i)} commit={commit} key={bundle} valueAccessor={valueAccessor} />
-          )}
+        {bundles.map((bundle, i) =>
+          <Bundle
+            bundle={bundle}
+            color={colorScale(bundles.length - i)}
+            commit={commit}
+            highlight={bundle === highlightBundle}
+            key={bundle}
+            valueAccessor={valueAccessor}
+          />
+        )}
       </View>
     );
   }
@@ -70,15 +78,20 @@ const colorStyles = {
   marginRight: '0.5rem'
 };
 
+const bundleStyle = {
+  borderBottomWidth: '1px',
+  borderBottomColor: theme.colorGray,
+  paddingLeft: theme.spaceXSmall,
+  paddingRight: theme.spaceXSmall,
+  paddingTop: theme.spaceXXSmall,
+  paddingBottom: theme.spaceXXSmall,
+  flexDirection: 'row'
+};
 const styles = StyleSheet.create({
-  bundle: {
-    borderBottomWidth: '1px',
-    borderBottomColor: theme.colorGray,
-    paddingLeft: theme.spaceXSmall,
-    paddingRight: theme.spaceXSmall,
-    paddingTop: theme.spaceXXSmall,
-    paddingBottom: theme.spaceXXSmall,
-    flexDirection: 'row'
+  bundle: { ...bundleStyle },
+  bundleHighlight: {
+    ...bundleStyle,
+    backgroundColor: theme.colorGray
   },
   bundleName: {
     flexGrow: 1

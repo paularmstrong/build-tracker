@@ -72,8 +72,24 @@ export default class Bundles extends Component {
   render() {
     const { activeBundles, bundles, colorScale, commit, highlightBundle, valueAccessor } = this.props;
 
+    const viewingAll = activeBundles.length === bundles.length;
     return (
       <View>
+        <View style={styles.bundle}>
+          <View style={styles.switch}>
+            <Switch
+              disabled={viewingAll}
+              onValueChange={this._handleToggleAllBundles}
+              thumbColor={theme.colorBlue}
+              value={viewingAll}
+            />
+          </View>
+          <View style={styles.bundleName}>
+            <Text role="heading" style={styles.bundleNameText}>
+              All Bundles
+            </Text>
+          </View>
+        </View>
         {bundles.map((bundle, i) =>
           <Bundle
             active={activeBundles.indexOf(bundle) !== -1}
@@ -97,6 +113,11 @@ export default class Bundles extends Component {
     } else {
       onBundlesChange(activeBundles.filter(b => b !== bundleName));
     }
+  };
+
+  _handleToggleAllBundles = (value: boolean) => {
+    const { bundles, onBundlesChange } = this.props;
+    onBundlesChange(bundles);
   };
 }
 

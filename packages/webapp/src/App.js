@@ -41,8 +41,6 @@ class App extends Component {
     return (
       <View style={styles.root}>
         <View style={styles.nav}>
-          <Text role="heading">Bundles</Text>
-          {activeBundles.length < bundlesBySize.length ? <Link to="/">View All</Link> : null}
           <Bundles
             activeBundles={activeBundles}
             bundles={bundlesBySize}
@@ -122,7 +120,9 @@ class App extends Component {
   };
 
   _handleBundlesChange = (bundles: Array<string>) => {
-    this.props.history.push(bundles.length ? `/bundles/${bundles.join('+')}` : '/');
+    this.props.history.push(
+      bundles.length && bundles.length !== bundlesBySize.length ? `/bundles/${bundles.join('+')}` : '/'
+    );
   };
 }
 

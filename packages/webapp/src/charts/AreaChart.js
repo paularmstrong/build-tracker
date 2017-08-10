@@ -2,7 +2,7 @@
 import { area, stack } from 'd3-shape';
 import { extent, max } from 'd3-array';
 import { mouse, select } from 'd3-selection';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
@@ -24,7 +24,7 @@ type bundleStatType = {
   gzipSize: number
 };
 
-export default class AreaChart extends Component {
+export default class AreaChart extends PureComponent {
   props: {
     allBundles: Array<string>,
     bundles: Array<string>,

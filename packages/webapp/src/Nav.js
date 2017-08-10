@@ -1,6 +1,6 @@
 import Bundles from './Bundles';
-import { defaultStyles } from './theme';
-import { Link, Route } from 'react-router-dom';
+import Link from './Link';
+import { Route } from 'react-router-dom';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
@@ -9,7 +9,7 @@ export default class Nav extends Component {
     return (
       <View>
         <Route exact path="/bundles/:bundle">
-          <Link style={defaultStyles.link} to="/">
+          <Link to="/">
             View All
           </Link>
         </Route>

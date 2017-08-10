@@ -31,11 +31,4 @@ const theme = {
   spaceJumbo: `${spaceMedium * 3}rem`
 };
 
-export const defaultStyles = {
-  link: {
-    color: theme.colorBlue,
-    textDecoration: 'none'
-  }
-};
-
 export default theme;

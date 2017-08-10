@@ -6,28 +6,69 @@ import { StyleSheet, Text, View } from 'react-native';
 import theme from './theme';
 import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
+import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
 const ViewAll = ({ match }) => (match ? <Link to="/">View All</Link> : null);
 
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 
 class App extends Component {
+  state: {
+    date?: Object,
+    valueType: string,
+    xScaleType: string,
+    yScaleType: string
+  };
+
   constructor(props, context) {
     super(props, context);
-    this.state = { date: null };
+    this.state = {
+      date: null,
+      valueType: ValueType.GZIP,
+      xScaleType: 'commit',
+      yScaleType: 'linear'
+    };
   }
 
   render() {
-    const { commit } = this.state;
+    const { commit, valueType } = this.state;
     return (
       <Router>
         <View style={styles.root}>
           <View style={styles.nav}>
             <Text role="heading">Bundles</Text>
             <Route children={ViewAll} exact path="/bundles/:bundle" />
-            <Bundles bundles={bundlesBySize} colorScale={colorScale} commit={commit} />
+            <Bundles
+              bundles={bundlesBySize}
+              colorScale={colorScale}
+              commit={commit}
+              valueAccessor={valueTypeAccessor[valueType]}
+            />
           </View>
           <View style={styles.main}>
+            <View style={styles.scaleTypeButtons}>
+              {Object.values(ValueType).map(value =>
+                <View key={value} style={styles.scaleTypeButton}>
+                  <button value={value} onClick={this._handleValueTypeChange}>
+                    {value}
+                  </button>
+                </View>
+              )}
+              {Object.values(YScaleType).map(scale =>
+                <View key={scale} style={styles.scaleTypeButton}>
+                  <button value={scale} onClick={this._handleYScaleChange}>
+                    {scale}
+                  </button>
+                </View>
+              )}
+              {Object.values(XScaleType).map(scale =>
+                <View key={scale} style={styles.scaleTypeButton}>
+                  <button value={scale} onClick={this._handleXScaleChange}>
+                    {scale}
+                  </button>
+                </View>
+              )}
+            </View>
             <Route exact path="/" render={this._renderHome} />
             <Route path="/bundles/:bundleName" render={this._renderHome} />
           </View>
@@ -37,11 +78,37 @@ class App extends Component {
   }
 
   _renderHome = props => {
-    return <Home {...props} bundles={bundlesBySize} colorScale={colorScale} onPickCommit={this._handlePickCommit} />;
+    const { valueType, xScaleType, yScaleType } = this.state;
+    return (
+      <Home
+        {...props}
+        bundles={bundlesBySize}
+        colorScale={colorScale}
+        onPickCommit={this._handlePickCommit}
+        valueAccessor={valueTypeAccessor[valueType]}
+        xScaleType={xScaleType}
+        yScaleType={yScaleType}
+      />
+    );
   };
 
   _handlePickCommit = commit => {
     this.setState({ commit });
+  };
+
+  _handleYScaleChange = (event: { target: { value: string } }) => {
+    const { target: { value: yScaleType } } = event;
+    this.setState({ yScaleType });
+  };
+
+  _handleXScaleChange = (event: { target: { value: string } }) => {
+    const { target: { value: xScaleType } } = event;
+    this.setState({ xScaleType });
+  };
+
+  _handleValueTypeChange = (event: { target: { value: string } }) => {
+    const { target: { value: valueType } } = event;
+    this.setState({ valueType });
   };
 }
 
@@ -62,6 +129,12 @@ const styles = StyleSheet.create({
   main: {
     flexGrow: 1,
     height: '100vh'
+  },
+  scaleTypeButtons: {
+    flexDirection: 'row'
+  },
+  scaleTypeButton: {
+    flexGrow: 1
   }
 });
 

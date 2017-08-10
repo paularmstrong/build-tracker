@@ -4,10 +4,11 @@ import { extent, max } from 'd3-array';
 import { mouse, select } from 'd3-selection';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { interpolateRainbow, scaleSequential, scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
+import { scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import { bytesToKb } from '../formatting';
+import { XScaleType, YScaleType } from '../values';
 import 'd3-transition';
 
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
@@ -16,16 +17,6 @@ const formatTime = timeFormat('%Y-%m-%d %H:%M');
 const PERCENT_Y_HEADROOM = 1.05;
 
 const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
-
-export const YScaleType = {
-  LINEAR: 'linear',
-  POW: 'pow'
-};
-
-export const XScaleType = {
-  TIME: 'time',
-  COMMIT: 'commit'
-};
 
 type bundleStatType = {
   hash: string,
@@ -40,6 +31,7 @@ export default class AreaChart extends Component {
     bundles: Array<string>,
     colorScale: Function,
     onHover: Function,
+    valueAccessor: Function,
     yScaleType: 'linear' | 'pow',
     xScaleType: 'time' | 'commit',
     stats: Array<{
@@ -59,11 +51,6 @@ export default class AreaChart extends Component {
   _hoverLine: any;
   _yAxis: any;
   _xAxis: any;
-
-  static defaultProps = {
-    yScaleType: YScaleType.LINEAR,
-    xScaleType: XScaleType.COMMIT
-  };
 
   constructor(props: Object, context: Object) {
     super(props, context);
@@ -92,7 +79,7 @@ export default class AreaChart extends Component {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { allBundles, bundles, colorScale, stats, xScaleType } = this.props;
+    const { allBundles, bundles, colorScale, stats, valueAccessor, xScaleType } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
@@ -105,7 +92,7 @@ export default class AreaChart extends Component {
 
     const chartStack = stack();
     chartStack.keys(bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a)));
-    chartStack.value((d, key) => (d.stats[key] ? d.stats[key].gzipSize : 0));
+    chartStack.value((d, key) => (d.stats[key] ? valueAccessor(d.stats[key]) : 0));
 
     const data = chartStack(stats);
 
@@ -131,7 +118,7 @@ export default class AreaChart extends Component {
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
       .on('mousemove', (d, index, nodes) => {
-        const [xPos, yPos] = mouse(nodes[0]);
+        const [xPos] = mouse(nodes[0]);
 
         let xValue;
         let hoveredStats;
@@ -224,7 +211,7 @@ export default class AreaChart extends Component {
   }
 
   _getXAxis(scale: Object) {
-    const { stats, xScaleType } = this.props;
+    const { xScaleType } = this.props;
     const axis = axisBottom().scale(scale);
     switch (xScaleType) {
       case XScaleType.TIME:
@@ -239,14 +226,11 @@ export default class AreaChart extends Component {
   }
 
   _getYScale() {
-    const { stats, yScaleType } = this.props;
+    const { stats, valueAccessor, yScaleType } = this.props;
     const { height } = this.state;
 
     const maxDateVal = max(stats, commit => {
-      return Object.values(commit.stats).reduce(
-        (memo, bundle) => memo + (bundle && bundle.gzipSize ? parseInt(bundle.gzipSize, 10) : 0),
-        0
-      );
+      return Object.values(commit.stats).reduce((memo, bundle) => memo + (bundle ? valueAccessor(bundle) : 0), 0);
     });
 
     const range = [height - (margin.top + margin.bottom), 0];

@@ -1,33 +1,34 @@
 // @flow
 import { bytesToKb } from './formatting';
-import AreaChart, { XScaleType, YScaleType } from './charts/AreaChart';
+import AreaChart from './charts/AreaChart';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { bundles, stats, statsForBundle } from './stats';
+import { stats, statsForBundle } from './stats';
 
 export default class Home extends Component {
   props: {
     bundles: Array<string>,
     colorScale: Function,
     match: Object,
-    onPickCommit: Function
-  };
-
-  state: {
-    commit?: Object,
+    onPickCommit: Function,
+    valueType: string,
     xScaleType: string,
     yScaleType: string
   };
 
+  state: {
+    commit?: Object
+  };
+
   constructor(props: Object, context: Object) {
     super(props, context);
-    this.state = { xScaleType: 'commit', yScaleType: 'linear' };
+    this.state = {};
   }
 
   render() {
     const { params: { bundleName } } = this.props.match || { params: {} };
-    const { bundles, colorScale } = this.props;
-    const { commit, xScaleType, yScaleType } = this.state;
+    const { bundles, colorScale, valueAccessor, xScaleType, yScaleType } = this.props;
+    const { commit } = this.state;
     const chartBundles = bundleName ? [bundleName] : bundles;
     const chartStats = bundleName ? statsForBundle(bundleName) : stats;
     return (
@@ -36,22 +37,6 @@ export default class Home extends Component {
           <View style={styles.title}>
             {bundleName || 'All'}
           </View>
-          <View style={styles.scaleTypeButtons}>
-            {Object.values(YScaleType).map(scale =>
-              <View key={scale} style={styles.scaleTypeButton}>
-                <button value={scale} onClick={this._handleYScaleChange}>
-                  {scale}
-                </button>
-              </View>
-            )}
-            {Object.values(XScaleType).map(scale =>
-              <View key={scale} style={styles.scaleTypeButton}>
-                <button value={scale} onClick={this._handleXScaleChange}>
-                  {scale}
-                </button>
-              </View>
-            )}
-          </View>
         </View>
         <View style={styles.chart}>
           <AreaChart
@@ -59,6 +44,7 @@ export default class Home extends Component {
             bundles={chartBundles}
             colorScale={colorScale}
             onHover={this._handleHover}
+            valueAccessor={valueAccessor}
             xScaleType={xScaleType}
             yScaleType={yScaleType}
             stats={chartStats}
@@ -116,16 +102,6 @@ export default class Home extends Component {
   _handleHover = (commit: Object) => {
     this.setState({ commit });
     this.props.onPickCommit && this.props.onPickCommit(commit);
-  };
-
-  _handleYScaleChange = (event: { target: { value: string } }) => {
-    const { target: { value: yScaleType } } = event;
-    this.setState({ yScaleType });
-  };
-
-  _handleXScaleChange = (event: { target: { value: string } }) => {
-    const { target: { value: xScaleType } } = event;
-    this.setState({ xScaleType });
   };
 }
 

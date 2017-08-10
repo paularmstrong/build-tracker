@@ -15,11 +15,12 @@ class Bundle extends Component {
   props: {
     bundle: string,
     color: string,
-    commit: Object
+    commit: Object,
+    valueAccessor: Function
   };
 
   render() {
-    const { bundle, color, commit } = this.props;
+    const { bundle, color, commit, valueAccessor } = this.props;
     const stats = commit && commit.stats[bundle];
     return (
       <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
@@ -31,8 +32,7 @@ class Bundle extends Component {
             </Text>
           </View>
           <View style={styles.values}>
-            {<SizeValue bytes={stats && stats.size} label="stat" />}
-            {<SizeValue bytes={stats && stats.gzipSize} label="gzip" />}
+            {stats ? <SizeValue bytes={valueAccessor(stats)} label="size" /> : null}
           </View>
         </View>
       </Link>
@@ -44,16 +44,19 @@ export default class Bundles extends Component {
   props: {
     bundles: Array<string>,
     colorScale: Function,
-    commit: Object
+    commit: Object,
+    valueAccessor: Function
   };
 
   render() {
-    const { bundles, colorScale, commit } = this.props;
+    const { bundles, colorScale, commit, valueAccessor } = this.props;
     return (
       <View>
         {bundles
           .sort()
-          .map((bundle, i) => <Bundle bundle={bundle} color={colorScale(i)} commit={commit} key={bundle} />)}
+          .map((bundle, i) =>
+            <Bundle bundle={bundle} color={colorScale(i)} commit={commit} key={bundle} valueAccessor={valueAccessor} />
+          )}
       </View>
     );
   }

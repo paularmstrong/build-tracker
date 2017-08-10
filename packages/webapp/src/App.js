@@ -1,9 +1,8 @@
 // @flow
 import Bundles from './Bundles';
 import Home from './Home';
-import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import theme from './theme';
 import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';

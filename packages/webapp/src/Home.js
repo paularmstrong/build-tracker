@@ -3,14 +3,14 @@ import { bytesToKb } from './formatting';
 import AreaChart from './charts/AreaChart';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { stats, statsForBundle } from './stats';
+import { statsForBundles } from './stats';
 import { XScaleType, YScaleType } from './values';
 
 export default class Home extends Component {
   props: {
+    activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
-    match: Object,
     onPickCommit: Function,
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
@@ -27,28 +27,20 @@ export default class Home extends Component {
   }
 
   render() {
-    const { params: { bundleName } } = this.props.match || { params: {} };
-    const { bundles, colorScale, valueAccessor, xScaleType, yScaleType } = this.props;
+    const { activeBundles, bundles, colorScale, valueAccessor, xScaleType, yScaleType } = this.props;
     const { commit } = this.state;
-    const chartBundles = bundleName ? [bundleName] : bundles;
-    const chartStats = bundleName ? statsForBundle(bundleName) : stats;
     return (
       <View style={styles.root}>
-        <View style={styles.header}>
-          <View style={styles.title}>
-            {bundleName || 'All'}
-          </View>
-        </View>
         <View style={styles.chart}>
           <AreaChart
-            allBundles={bundles}
-            bundles={chartBundles}
+            activeBundles={activeBundles}
+            bundles={bundles}
             colorScale={colorScale}
             onHover={this._handleHover}
             valueAccessor={valueAccessor}
             xScaleType={xScaleType}
             yScaleType={yScaleType}
-            stats={chartStats}
+            stats={statsForBundles(bundles)}
           />
         </View>
         <View style={styles.meta}>
@@ -110,12 +102,6 @@ const styles = StyleSheet.create({
   root: {
     flexDirection: 'column',
     height: '100vh'
-  },
-  header: {
-    flexDirection: 'row'
-  },
-  title: {
-    flexGrow: 1
   },
   chart: {
     flexGrow: 1

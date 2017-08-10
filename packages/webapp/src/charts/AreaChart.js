@@ -26,7 +26,7 @@ type bundleStatType = {
 
 export default class AreaChart extends PureComponent {
   props: {
-    allBundles: Array<string>,
+    activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
     onHover: Function,
@@ -78,7 +78,7 @@ export default class AreaChart extends PureComponent {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { allBundles, bundles, colorScale, stats, valueAccessor, xScaleType } = this.props;
+    const { activeBundles, bundles, colorScale, stats, valueAccessor, xScaleType } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
@@ -90,12 +90,14 @@ export default class AreaChart extends PureComponent {
     const areaChart = area().x(d => xScale(d.data.build[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
 
     const chartStack = stack();
-    chartStack.keys(bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a)));
+    chartStack.keys(activeBundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a)));
     chartStack.value((d, key) => (d.stats[key] ? valueAccessor(d.stats[key]) : 0));
 
     const data = chartStack(stats);
 
-    const bundle = this._chartContents.selectAll('.bundle').data(data, d => (bundles.length > 1 ? d.key : 'constant'));
+    const bundle = this._chartContents
+      .selectAll('.bundle')
+      .data(data, d => (activeBundles.length > 1 ? d.key : 'constant'));
 
     // Remove old areas
     bundle.exit().remove();
@@ -104,11 +106,11 @@ export default class AreaChart extends PureComponent {
       .enter()
       .append('path')
       .attr('class', 'bundle')
+      .style('fill', (d, i) => colorScale(bundles.length - bundles.indexOf(d.key)))
       .merge(bundle)
       .transition()
       .duration(150)
-      .attr('d', areaChart)
-      .style('fill', (d, i) => colorScale(allBundles.indexOf(d.key)));
+      .attr('d', areaChart);
 
     this._drawXAxis(xScale);
     this._drawYAxis(yScale);
@@ -232,11 +234,18 @@ export default class AreaChart extends PureComponent {
   }
 
   _getYScale() {
-    const { stats, valueAccessor, yScaleType } = this.props;
+    const { activeBundles, stats, valueAccessor, yScaleType } = this.props;
     const { height } = this.state;
 
     const maxDateVal = max(stats, commit => {
-      return Object.values(commit.stats).reduce((memo, bundle) => memo + (bundle ? valueAccessor(bundle) : 0), 0);
+      return Object.values(commit.stats).reduce(
+        (memo: number, bundle) =>
+          memo +
+          (bundle && typeof bundle.name === 'string' && activeBundles.indexOf(bundle.name) > -1
+            ? valueAccessor(bundle)
+            : 0),
+        0
+      );
     });
 
     const range = [height - (margin.top + margin.bottom), 0];

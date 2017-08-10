@@ -1,7 +1,7 @@
 // @flow
 import Bundles from './Bundles';
 import Home from './Home';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import theme from './theme';
@@ -9,18 +9,21 @@ import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
-const ViewAll = ({ match }) => (match ? <Link to="/">View All</Link> : null);
-
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 
 class App extends Component {
   state: {
-    bundleName?: string,
+    highlightBundle?: string,
     commit?: Object,
     date?: Object,
     valueType: string,
     xScaleType: string,
     yScaleType: string
+  };
+
+  props: {
+    history: { push: Function },
+    match: Object
   };
 
   constructor(props: Object, context: Object) {
@@ -33,70 +36,74 @@ class App extends Component {
   }
 
   render() {
-    const { bundleName, commit, valueType } = this.state;
+    const { highlightBundle, commit, valueType, xScaleType, yScaleType } = this.state;
+    const activeBundles = this._getActiveBundles();
     return (
-      <Router>
-        <View style={styles.root}>
-          <View style={styles.nav}>
-            <Text role="heading">Bundles</Text>
-            <Route children={ViewAll} exact path="/bundles/:bundle" />
-            <Bundles
-              bundles={bundlesBySize}
-              colorScale={colorScale}
-              commit={commit}
-              highlightBundle={bundleName}
-              valueAccessor={valueTypeAccessor[valueType]}
-            />
-          </View>
-          <View style={styles.main}>
-            <View style={styles.scaleTypeButtons}>
-              {Object.values(ValueType).map(value =>
-                <View key={value} style={styles.scaleTypeButton}>
-                  <button value={value} onClick={this._handleValueTypeChange}>
-                    {value}
-                  </button>
-                </View>
-              )}
-              {Object.values(YScaleType).map(scale =>
-                <View key={scale} style={styles.scaleTypeButton}>
-                  <button value={scale} onClick={this._handleYScaleChange}>
-                    {scale}
-                  </button>
-                </View>
-              )}
-              {Object.values(XScaleType).map(scale =>
-                <View key={scale} style={styles.scaleTypeButton}>
-                  <button value={scale} onClick={this._handleXScaleChange}>
-                    {scale}
-                  </button>
-                </View>
-              )}
-            </View>
-            <Route exact path="/" render={this._renderHome} />
-            <Route path="/bundles/:bundleName" render={this._renderHome} />
-          </View>
+      <View style={styles.root}>
+        <View style={styles.nav}>
+          <Text role="heading">Bundles</Text>
+          {activeBundles.length < bundlesBySize.length ? <Link to="/">View All</Link> : null}
+          <Bundles
+            activeBundles={activeBundles}
+            bundles={bundlesBySize}
+            colorScale={colorScale}
+            commit={commit}
+            highlightBundle={highlightBundle}
+            onBundlesChange={this._handleBundlesChange}
+            valueAccessor={valueTypeAccessor[valueType]}
+          />
         </View>
-      </Router>
+        <View style={styles.main}>
+          <View style={styles.scaleTypeButtons}>
+            {Object.values(ValueType).map(value =>
+              <View key={value} style={styles.scaleTypeButton}>
+                <button value={value} onClick={this._handleValueTypeChange}>
+                  {value}
+                </button>
+              </View>
+            )}
+            {Object.values(YScaleType).map(scale =>
+              <View key={scale} style={styles.scaleTypeButton}>
+                <button value={scale} onClick={this._handleYScaleChange}>
+                  {scale}
+                </button>
+              </View>
+            )}
+            {Object.values(XScaleType).map(scale =>
+              <View key={scale} style={styles.scaleTypeButton}>
+                <button value={scale} onClick={this._handleXScaleChange}>
+                  {scale}
+                </button>
+              </View>
+            )}
+          </View>
+          <Home
+            activeBundles={activeBundles}
+            bundles={bundlesBySize}
+            colorScale={colorScale}
+            onPickCommit={this._handlePickCommit}
+            valueAccessor={valueTypeAccessor[valueType]}
+            xScaleType={xScaleType}
+            yScaleType={yScaleType}
+          />
+        </View>
+      </View>
     );
   }
 
-  _renderHome = (props: Object) => {
-    const { valueType, xScaleType, yScaleType } = this.state;
-    return (
-      <Home
-        {...props}
-        bundles={bundlesBySize}
-        colorScale={colorScale}
-        onPickCommit={this._handlePickCommit}
-        valueAccessor={valueTypeAccessor[valueType]}
-        xScaleType={xScaleType}
-        yScaleType={yScaleType}
-      />
-    );
-  };
+  _getActiveBundles(): Array<string> {
+    const { match: { params } } = this.props;
+    const { bundleNames } = params;
+    if (!bundleNames) {
+      return bundlesBySize;
+    } else {
+      const bundles = bundleNames.split('+');
+      return bundlesBySize.filter(b => bundles.indexOf(b) !== -1);
+    }
+  }
 
-  _handlePickCommit = (commit: Object, bundleName: string): void => {
-    this.setState({ bundleName, commit });
+  _handlePickCommit = (commit: Object, highlightBundle: string): void => {
+    this.setState({ highlightBundle, commit });
   };
 
   _handleYScaleChange = (event: { target: { value: string } }): void => {
@@ -112,6 +119,10 @@ class App extends Component {
   _handleValueTypeChange = (event: { target: { value: string } }): void => {
     const { target: { value: valueType } } = event;
     this.setState({ valueType });
+  };
+
+  _handleBundlesChange = (bundles: Array<string>) => {
+    this.props.history.push(bundles.length ? `/bundles/${bundles.join('+')}` : '/');
   };
 }
 

@@ -2,7 +2,7 @@
 import Bundles from './Bundles';
 import Home from './Home';
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Button, StyleSheet, View } from 'react-native';
 import theme from './theme';
 import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
@@ -52,27 +52,48 @@ class App extends Component {
         </View>
         <View style={styles.main}>
           <View style={styles.scaleTypeButtons}>
-            {Object.values(ValueType).map(value =>
-              <View key={value} style={styles.scaleTypeButton}>
-                <button value={value} onClick={this._handleValueTypeChange}>
-                  {value}
-                </button>
-              </View>
-            )}
-            {Object.values(YScaleType).map(scale =>
-              <View key={scale} style={styles.scaleTypeButton}>
-                <button value={scale} onClick={this._handleYScaleChange}>
-                  {scale}
-                </button>
-              </View>
-            )}
-            {Object.values(XScaleType).map(scale =>
-              <View key={scale} style={styles.scaleTypeButton}>
-                <button value={scale} onClick={this._handleXScaleChange}>
-                  {scale}
-                </button>
-              </View>
-            )}
+            <View style={styles.buttonGroup}>
+              {Object.values(ValueType).map(value =>
+                <Button
+                  color={theme.colorSalmon}
+                  disabled={valueType === value}
+                  key={value}
+                  onPress={this._handleValueTypeChange}
+                  size="small"
+                  style={styles.button}
+                  title={value}
+                  value={value}
+                />
+              )}
+            </View>
+            <View style={styles.buttonGroup}>
+              {Object.values(YScaleType).map(scale =>
+                <Button
+                  color={theme.colorOrange}
+                  disabled={yScaleType === scale}
+                  key={scale}
+                  onPress={this._handleYScaleChange}
+                  size="small"
+                  style={styles.button}
+                  title={scale}
+                  value={scale}
+                />
+              )}
+            </View>
+            <View style={styles.buttonGroup}>
+              {Object.values(XScaleType).map(scale =>
+                <Button
+                  color={theme.colorGreen}
+                  disabled={xScaleType === scale}
+                  key={scale}
+                  onPress={this._handleXScaleChange}
+                  size="small"
+                  style={styles.button}
+                  title={scale}
+                  value={scale}
+                />
+              )}
+            </View>
           </View>
           <View style={styles.innerMain}>
             <Home
@@ -105,18 +126,18 @@ class App extends Component {
     this.setState({ highlightBundle, commit });
   };
 
-  _handleYScaleChange = (event: { target: { value: string } }): void => {
-    const { target: { value: yScaleType } } = event;
+  _handleYScaleChange = (event: { target: { innerText: string } }): void => {
+    const { target: { innerText: yScaleType } } = event;
     this.setState({ yScaleType });
   };
 
-  _handleXScaleChange = (event: { target: { value: string } }): void => {
-    const { target: { value: xScaleType } } = event;
+  _handleXScaleChange = (event: { target: { innerText: string } }): void => {
+    const { target: { innerText: xScaleType } } = event;
     this.setState({ xScaleType });
   };
 
-  _handleValueTypeChange = (event: { target: { value: string } }): void => {
-    const { target: { value: valueType } } = event;
+  _handleValueTypeChange = (event: { target: { innerText: string } }): void => {
+    const { target: { innerText: valueType } } = event;
     this.setState({ valueType });
   };
 
@@ -150,10 +171,18 @@ const styles = StyleSheet.create({
   },
   scaleTypeButtons: {
     flex: 0,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: theme.spaceSmall,
+    marginRight: theme.spaceSmall,
+    marginBottom: theme.spaceSmall
   },
-  scaleTypeButton: {
-    flexGrow: 1
+  buttonGroup: {
+    flexDirection: 'row',
+    marginLeft: theme.spaceSmall
+  },
+  button: {
+    fontSize: '12px'
   }
 });
 

@@ -2,7 +2,7 @@
 import { bytesToKb } from './formatting';
 import { defaultStyles } from './theme';
 import { Link } from 'react-router-dom';
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from './theme';
 import { hsl } from 'd3-color';
@@ -12,20 +12,18 @@ const SizeValue = ({ bytes, label }) =>
     {label}: {isNaN(bytes) ? '' : bytesToKb(bytes)}
   </Text>;
 
-class Bundle extends Component {
+class Bundle extends PureComponent {
   props: {
     active: boolean,
     bundle: string,
     color: string,
-    commit: Object,
     highlight: boolean,
     onToggle: Function,
-    valueAccessor: Function
+    size?: string
   };
 
   render() {
-    const { active, bundle, color, commit, highlight, valueAccessor } = this.props;
-    const stats = commit && commit.stats[bundle];
+    const { active, bundle, color, highlight, size } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
@@ -47,7 +45,7 @@ class Bundle extends Component {
           </Link>
         </View>
         <View style={styles.values}>
-          {stats ? <SizeValue bytes={valueAccessor(stats)} label="size" /> : null}
+          {size ? <SizeValue bytes={size} label="size" /> : null}
         </View>
       </View>
     );
@@ -75,7 +73,7 @@ export default class Bundles extends Component {
     const viewingAll = activeBundles.length === bundles.length;
     return (
       <View>
-        <View style={styles.bundle}>
+        <View style={styles.header}>
           <View style={styles.switch}>
             <Switch
               disabled={viewingAll}
@@ -99,7 +97,7 @@ export default class Bundles extends Component {
             highlight={bundle === highlightBundle}
             key={bundle}
             onToggle={this._handleToggleBundle}
-            valueAccessor={valueAccessor}
+            size={commit && commit.stats && commit.stats[bundle] && valueAccessor(commit.stats[bundle])}
           />
         )}
       </View>
@@ -141,6 +139,13 @@ const styles = StyleSheet.create({
   },
   bundleNameText: {
     fontSize: theme.fontSizeSmall
+  },
+  header: {
+    ...bundleStyle,
+    position: 'sticky',
+    top: 0,
+    backgroundColor: theme.colorWhite,
+    zIndex: 1
   },
   values: {
     flexGrow: 0,

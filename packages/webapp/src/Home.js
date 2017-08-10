@@ -116,12 +116,6 @@ const styles = StyleSheet.create({
   title: {
     flexGrow: 1
   },
-  scaleTypeButtons: {
-    flexDirection: 'row'
-  },
-  scaleTypeButton: {
-    flexGrow: 1
-  },
   chart: {
     flexGrow: 1
   },

@@ -100,11 +100,14 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: 'column',
-    height: '100vh'
+    position: 'absolute',
+    top: 0,
+    height: '100%',
+    width: '100%',
+    left: 0
   },
   chart: {
-    flexGrow: 1
+    flex: 2
   },
   meta: {
     minHeight: '20vh'

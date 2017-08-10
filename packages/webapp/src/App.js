@@ -29,8 +29,8 @@ class App extends Component {
     super(props, context);
     this.state = {
       valueType: ValueType.GZIP,
-      xScaleType: 'commit',
-      yScaleType: 'linear'
+      xScaleType: XScaleType.COMMIT,
+      yScaleType: YScaleType.LINEAR
     };
   }
 
@@ -74,15 +74,17 @@ class App extends Component {
               </View>
             )}
           </View>
-          <Home
-            activeBundles={activeBundles}
-            bundles={bundlesBySize}
-            colorScale={colorScale}
-            onPickCommit={this._handlePickCommit}
-            valueAccessor={valueTypeAccessor[valueType]}
-            xScaleType={xScaleType}
-            yScaleType={yScaleType}
-          />
+          <View style={styles.innerMain}>
+            <Home
+              activeBundles={activeBundles}
+              bundles={bundlesBySize}
+              colorScale={colorScale}
+              onPickCommit={this._handlePickCommit}
+              valueAccessor={valueTypeAccessor[valueType]}
+              xScaleType={xScaleType}
+              yScaleType={yScaleType}
+            />
+          </View>
         </View>
       </View>
     );
@@ -140,10 +142,14 @@ const styles = StyleSheet.create({
     overflowY: 'scroll'
   },
   main: {
-    flexGrow: 1,
-    height: '100vh'
+    height: '100vh',
+    flexGrow: 1
+  },
+  innerMain: {
+    flexGrow: 1
   },
   scaleTypeButtons: {
+    flex: 0,
     flexDirection: 'row'
   },
   scaleTypeButton: {

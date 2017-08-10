@@ -39,6 +39,8 @@ import statsf915ee2df9a9d3db4a8fb1a8b8c0e82f30338e13 from './stats-f915ee2df9a9d
 import statsfa752a9ce64a440f16e2c3670aa97a28be25c71f from './stats-fa752a9ce64a440f16e2c3670aa97a28be25c71f.json';
 import statsfc55ce1d311aa85bd0499c51e230255bbde19ef3 from './stats-fc55ce1d311aa85bd0499c51e230255bbde19ef3.json';
 
+import { mean } from 'd3-array';
+
 export const stats = [
   stats01141f29743fb2bdd7e176cf919fc964025cea5a,
   stats1327ec715a0a2dd204eb7bede5f86bcf9c78f324,
@@ -110,5 +112,6 @@ export const bundles = stats
   }, [])
   .sort();
 
-export const getInitialSize = (stats, bundle) => (stats[0].stats[bundle] ? stats[0].stats[bundle].gzipSize : 0);
-export const bundlesBySize = bundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a));
+export const getAverageSize = (stats, bundle) =>
+  mean(stats, commit => (commit.stats[bundle] ? commit.stats[bundle].gzipSize : 0));
+export const bundlesBySize = bundles.sort((a, b) => getAverageSize(stats, b) - getAverageSize(stats, a));

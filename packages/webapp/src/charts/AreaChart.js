@@ -9,7 +9,7 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import { bytesToKb } from '../formatting';
 import { XScaleType, YScaleType } from '../values';
-import { getInitialSize } from '../stats';
+import { getAverageSize } from '../stats';
 import 'd3-transition';
 
 const margin = { top: 20, right: 20, bottom: 100, left: 60 };
@@ -90,7 +90,7 @@ export default class AreaChart extends PureComponent {
     const areaChart = area().x(d => xScale(d.data.build[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
 
     const chartStack = stack();
-    chartStack.keys(activeBundles.sort((a, b) => getInitialSize(stats, b) - getInitialSize(stats, a)));
+    chartStack.keys(activeBundles.sort((a, b) => getAverageSize(stats, b) - getAverageSize(stats, a)));
     chartStack.value((d, key) => (d.stats[key] ? valueAccessor(d.stats[key]) : 0));
 
     const data = chartStack(stats);

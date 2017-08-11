@@ -6,7 +6,6 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
-import { timeFormat } from 'd3-time-format';
 import { bytesToKb, formatTime, formatSha } from '../formatting';
 import { XScaleType, YScaleType } from '../values';
 import { getAverageSize } from '../stats';

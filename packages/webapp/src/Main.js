@@ -65,7 +65,7 @@ export default class Main extends Component {
             previewBuild={hoveredBuild}
             valueAccessor={valueAccessor}
           />*/}
-          <Comparisons builds={sortedBuilds} valueAccessor={valueAccessor} />
+          <Comparisons builds={sortedBuilds} onClickRemove={this._handleRemoveRevision} valueAccessor={valueAccessor} />
         </View>
       </View>
     );
@@ -86,6 +86,10 @@ export default class Main extends Component {
 
   _handleRemoveBuild = (build: Object) => {
     this.setState(() => this.state.builds.filter(thisBuild => thisBuild.build.revision !== build.build.revision));
+  };
+
+  _handleRemoveRevision = (revision: string) => {
+    this.setState(() => ({ builds: this.state.builds.filter(build => build.build.revision !== revision) }));
   };
 }
 

@@ -73,30 +73,6 @@ const createTableData = (bundles: Array<string>, builds: Array<Object>, valueAcc
   };
 };
 
-class BuildHeader extends PureComponent {
-  props: {
-    build: {
-      revision: string,
-      timestamp: number
-    },
-    hasDiff: boolean
-  };
-
-  render() {
-    const { build: { revision, timestamp }, hasDiff } = this.props;
-    return (
-      <div>
-        <th>
-          {formatSha(revision)}
-          <br />
-          {formatTime(timestamp)}
-        </th>
-        {hasDiff ? <th>𝚫</th> : null}
-      </div>
-    );
-  }
-}
-
 export default class Comparisons extends PureComponent {
   props: {
     builds: Array<Object>,

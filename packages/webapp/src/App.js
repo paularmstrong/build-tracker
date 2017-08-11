@@ -170,6 +170,8 @@ const styles = StyleSheet.create({
   },
   main: {
     height: '100vh',
+    maxHeight: '100vh',
+    overflowY: 'auto',
     flexGrow: 1
   },
   innerMain: {

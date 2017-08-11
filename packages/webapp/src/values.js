@@ -15,6 +15,6 @@ export const ValueType = {
 };
 
 export const valueTypeAccessor = {
-  [ValueType.STAT]: (d: { size: number }): number => d.size || 0,
-  [ValueType.GZIP]: (d: { gzipSize: number }): number => d.gzipSize || 0
+  [ValueType.STAT]: (d: { size: number }): number => (d && d.size) || 0,
+  [ValueType.GZIP]: (d: { gzipSize: number }): number => (d && d.gzipSize) || 0
 };

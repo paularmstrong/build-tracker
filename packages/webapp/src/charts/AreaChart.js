@@ -29,7 +29,9 @@ export default class AreaChart extends PureComponent {
     activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
+    onClick: Function,
     onHover: Function,
+    onHoverOut: Function,
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
     xScaleType: $Values<typeof XScaleType>,
@@ -115,35 +117,50 @@ export default class AreaChart extends PureComponent {
     this._drawXAxis(xScale);
     this._drawYAxis(yScale);
 
+    const getMouseInformation = nodes => {
+      const [xPos, yPos] = mouse(nodes[0]);
+
+      let xValue;
+      let xIndex;
+      let hoveredStats;
+      if (xScale.invert) {
+        const xDate = xScale.invert(xPos);
+        const validTimestamps = stats.map(d => d.build.timestamp);
+        xValue = validTimestamps.reduce(
+          (prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev),
+          0
+        );
+        xIndex = validTimestamps.indexOf(xValue);
+        hoveredStats = stats.find(commit => commit.build.timestamp === xValue);
+      } else {
+        const domain = xScale.domain();
+        xValue = domain.reduce((prev, curr, i) => {
+          return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
+        }, domain[0]);
+        xIndex = stats.findIndex(commit => commit.build.revision === xValue);
+        hoveredStats = stats[xIndex];
+      }
+
+      const yValue = yScale.invert(yPos);
+      const hoveredBundle = data.find(data => data[xIndex][0] < yValue && data[xIndex][1] > yValue);
+      return {
+        xValue,
+        yValue,
+        hoveredStats,
+        hoveredBundle
+      };
+    };
+
     this._overlay
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
+      .on('click', (d, index, nodes) => {
+        const { hoveredStats } = getMouseInformation(nodes);
+        this.props.onClick(hoveredStats);
+      })
+      .on('mouseout', this.props.onHoverOut)
       .on('mousemove', (d, index, nodes) => {
-        const [xPos, yPos] = mouse(nodes[0]);
-
-        let xValue;
-        let xIndex;
-        let hoveredStats;
-        if (xScale.invert) {
-          const xDate = xScale.invert(xPos);
-          const validTimestamps = stats.map(d => d.build.timestamp);
-          xValue = validTimestamps.reduce(
-            (prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev),
-            0
-          );
-          xIndex = validTimestamps.indexOf(xValue);
-          hoveredStats = stats.find(commit => commit.build.timestamp === xValue);
-        } else {
-          const domain = xScale.domain();
-          xValue = domain.reduce((prev, curr, i) => {
-            return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
-          }, domain[0]);
-          xIndex = stats.findIndex(commit => commit.build.revision === xValue);
-          hoveredStats = stats[xIndex];
-        }
-
-        const yValue = yScale.invert(yPos);
-        const hoveredBundle = data.find(data => data[xIndex][0] < yValue && data[xIndex][1] > yValue);
+        const { xValue, hoveredStats, hoveredBundle } = getMouseInformation(nodes);
 
         this._hoverLine
           .attr('x1', xScale(xValue))
@@ -151,6 +168,7 @@ export default class AreaChart extends PureComponent {
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
         this.props.onHover(hoveredStats, hoveredBundle && hoveredBundle.key);
+        // TODO: add a tooltip
       });
   }
 

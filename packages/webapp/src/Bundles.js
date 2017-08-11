@@ -1,5 +1,4 @@
 // @flow
-import { bytesToKb } from './formatting';
 import { defaultStyles } from './theme';
 import { Link } from 'react-router-dom';
 import React, { Component, PureComponent } from 'react';
@@ -7,23 +6,17 @@ import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from './theme';
 import { hsl } from 'd3-color';
 
-const SizeValue = ({ bytes, label }) =>
-  <Text style={styles.value}>
-    {label}: {isNaN(bytes) ? '' : bytesToKb(bytes)}
-  </Text>;
-
 class Bundle extends PureComponent {
   props: {
     active: boolean,
     bundle: string,
     color: string,
     highlight: boolean,
-    onToggle: Function,
-    size?: string
+    onToggle: Function
   };
 
   render() {
-    const { active, bundle, color, highlight, size } = this.props;
+    const { active, bundle, color, highlight } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
@@ -39,13 +32,10 @@ class Bundle extends PureComponent {
         </View>
         <View style={styles.bundleName}>
           <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
-            <Text style={styles.bundleNameText}>
+            <Text numberOfLines={1} style={styles.bundleNameText}>
               {bundle}
             </Text>
           </Link>
-        </View>
-        <View style={styles.values}>
-          {size ? <SizeValue bytes={size} label="size" /> : null}
         </View>
       </View>
     );
@@ -97,7 +87,6 @@ export default class Bundles extends Component {
             highlight={bundle === highlightBundle}
             key={bundle}
             onToggle={this._handleToggleBundle}
-            size={commit && commit.stats && commit.stats[bundle] && valueAccessor(commit.stats[bundle])}
           />
         )}
       </View>
@@ -126,8 +115,10 @@ const bundleStyle = {
   paddingRight: theme.spaceXSmall,
   paddingTop: theme.spaceXXSmall,
   paddingBottom: theme.spaceXXSmall,
-  flexDirection: 'row'
+  flexDirection: 'row',
+  overflow: 'hidden'
 };
+
 const styles = StyleSheet.create({
   bundle: { ...bundleStyle },
   bundleHighlight: {
@@ -135,6 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colorGray
   },
   bundleName: {
+    flexShrink: 1,
     flexGrow: 1
   },
   bundleNameText: {
@@ -146,16 +138,6 @@ const styles = StyleSheet.create({
     top: 0,
     backgroundColor: theme.colorWhite,
     zIndex: 1
-  },
-  values: {
-    flexGrow: 0,
-    flexShrink: 0,
-    minWidth: '25%'
-  },
-  value: {
-    flexGrow: 1,
-    fontSize: '0.7em',
-    color: theme.colorBlack
   },
   switch: {
     paddingRight: theme.spaceXXSmall

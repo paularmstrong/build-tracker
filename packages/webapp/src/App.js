@@ -1,6 +1,6 @@
 // @flow
 import Bundles from './Bundles';
-import Home from './Home';
+import Main from './Main';
 import React, { Component } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import theme from './theme';
@@ -96,7 +96,7 @@ class App extends Component {
             </View>
           </View>
           <View style={styles.innerMain}>
-            <Home
+            <Main
               activeBundles={activeBundles}
               bundles={bundlesBySize}
               colorScale={colorScale}
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   nav: {
     flexGrow: 0,
-    flexBasis: `${3 * (100 / theme.columns)}%`,
+    flexBasis: `${2 * (100 / theme.columns)}%`,
     overflowY: 'scroll'
   },
   main: {

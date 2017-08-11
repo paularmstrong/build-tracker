@@ -1,6 +1,5 @@
 // @flow
-import { defaultStyles } from './theme';
-import { Link } from 'react-router-dom';
+import Link from './Link';
 import React, { Component, PureComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from './theme';
@@ -21,7 +20,14 @@ class Bundle extends PureComponent {
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
     return (
-      <View style={highlight ? styles.bundleHighlight : styles.bundle}>
+      <View style={[styles.bundle, highlight && styles.bundleHighlight]}>
+        <View style={styles.bundleName}>
+          <Link style={[styles.bundleLink]} to={`/bundles/${bundle}`}>
+            <Text numberOfLines={1} style={styles.bundleNameText}>
+              {bundle}
+            </Text>
+          </Link>
+        </View>
         <View style={styles.switch}>
           <Switch
             activeThumbColor={color}
@@ -29,13 +35,6 @@ class Bundle extends PureComponent {
             onValueChange={this._handleValueChange}
             value={active}
           />
-        </View>
-        <View style={styles.bundleName}>
-          <Link style={defaultStyles.link} to={`/bundles/${bundle}`}>
-            <Text numberOfLines={1} style={styles.bundleNameText}>
-              {bundle}
-            </Text>
-          </Link>
         </View>
       </View>
     );
@@ -53,17 +52,21 @@ export default class Bundles extends Component {
     colorScale: Function,
     commit: Object,
     highlightBundle?: string,
-    onBundlesChange: Function,
-    valueAccessor: Function
+    onBundlesChange: Function
   };
 
   render() {
-    const { activeBundles, bundles, colorScale, commit, highlightBundle, valueAccessor } = this.props;
+    const { activeBundles, bundles, colorScale, commit, highlightBundle } = this.props;
 
     const viewingAll = activeBundles.length === bundles.length;
     return (
       <View>
-        <View style={styles.header}>
+        <View style={[styles.bundle, styles.header]}>
+          <View style={styles.bundleName}>
+            <Text role="heading" style={styles.bundleNameText}>
+              All Bundles
+            </Text>
+          </View>
           <View style={styles.switch}>
             <Switch
               disabled={viewingAll}
@@ -71,11 +74,6 @@ export default class Bundles extends Component {
               thumbColor={theme.colorBlue}
               value={viewingAll}
             />
-          </View>
-          <View style={styles.bundleName}>
-            <Text role="heading" style={styles.bundleNameText}>
-              All Bundles
-            </Text>
           </View>
         </View>
         {bundles.map((bundle, i) =>
@@ -108,38 +106,43 @@ export default class Bundles extends Component {
   };
 }
 
-const bundleStyle = {
-  borderBottomWidth: '1px',
-  borderBottomColor: theme.colorGray,
-  paddingLeft: theme.spaceXSmall,
-  paddingRight: theme.spaceXSmall,
-  paddingTop: theme.spaceXXSmall,
-  paddingBottom: theme.spaceXXSmall,
-  flexDirection: 'row',
-  overflow: 'hidden'
-};
-
 const styles = StyleSheet.create({
-  bundle: { ...bundleStyle },
+  bundle: {
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colorGray,
+    paddingLeft: theme.spaceXSmall,
+    paddingRight: theme.spaceXSmall,
+    paddingTop: theme.spaceXXSmall,
+    paddingBottom: theme.spaceXXSmall,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   bundleHighlight: {
-    ...bundleStyle,
     backgroundColor: theme.colorGray
   },
   bundleName: {
     flexShrink: 1,
-    flexGrow: 1
+    justifyContent: 'center',
+    paddingRight: theme.spaceXSmall
+  },
+  bundleLink: {
+    display: 'inline-flex'
   },
   bundleNameText: {
     fontSize: theme.fontSizeSmall
   },
+  bundleDetails: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
   header: {
-    ...bundleStyle,
     position: 'sticky',
     top: 0,
     backgroundColor: theme.colorWhite,
     zIndex: 1
   },
   switch: {
-    paddingRight: theme.spaceXXSmall
+    paddingLeft: theme.spaceXSmall
   }
 });

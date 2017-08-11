@@ -1,6 +1,6 @@
 import { bytesToKb } from './formatting';
 import { timeFormat } from 'd3-time-format';
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const formatTime = timeFormat('%Y-%m-%d %H:%M');

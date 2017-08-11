@@ -33,6 +33,7 @@ export default class Main extends Component {
   render() {
     const { activeBundles, bundles, colorScale, valueAccessor, xScaleType, yScaleType } = this.props;
     const { builds, hoveredBuild } = this.state;
+    const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
     return (
       <View style={styles.root}>
         <View style={styles.chart}>
@@ -50,13 +51,13 @@ export default class Main extends Component {
           />
         </View>
         <View style={styles.meta}>
-          <Builds
+          {/*<Builds
             builds={builds}
             onRemoveBuild={this._handleRemoveBuild}
             previewBuild={hoveredBuild}
             valueAccessor={valueAccessor}
-          />
-          <Comparisons builds={builds} valueAccessor={valueAccessor} />
+          />*/}
+          <Comparisons builds={sortedBuilds} valueAccessor={valueAccessor} />
         </View>
       </View>
     );

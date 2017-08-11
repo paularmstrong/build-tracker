@@ -17,11 +17,15 @@ const getTableHeaders = builds =>
     if (i > 0) {
       headers.push('𝚫');
     }
+    if (i > 1) {
+      headers.push('𝚫𝚫');
+    }
     return headers;
   });
 
-const getTableBody = (bundles: Array<string>, builds: Array<Object>, valueAccessor: Function) =>
-  bundles.map((bundle, i) => {
+const getTableBody = (bundles: Array<string>, builds: Array<Object>, valueAccessor: Function) => {
+  const bundleMap = bundles.map((bundle, i) => {
+    const originalValue = valueAccessor(builds[0].stats[bundle]);
     return [
       bundle,
       ...builds.map((build, i) => {
@@ -31,10 +35,36 @@ const getTableBody = (bundles: Array<string>, builds: Array<Object>, valueAccess
         }
         const oldValue = valueAccessor(builds[i - 1].stats[bundle]);
         const delta = oldValue - value;
-        return [value, delta];
+        const values = [value, delta];
+        if (i > 1) {
+          values.push(originalValue - value);
+        }
+        return values;
       })
     ];
   });
+
+  return [getTotals(builds, valueAccessor), ...bundleMap];
+};
+
+const getTotals = (builds: Array<Object>, valueAccessor: Function) => {
+  const totals = builds.map(build =>
+    Object.values(build.stats).reduce((memo, bundle) => memo + valueAccessor(bundle), 0)
+  );
+
+  const totalsWithDelta = totals.map((total, i) => {
+    if (i === 0) {
+      return total;
+    }
+    const values = [total, totals[0] - total];
+    if (i > 1) {
+      values.push(totals[i - 1] - total);
+    }
+    return values;
+  });
+
+  return ['Total', ...totalsWithDelta];
+};
 
 const createTableData = (bundles: Array<string>, builds: Array<Object>, valueAccessor: Function) => {
   return {
@@ -99,39 +129,41 @@ export default class Comparisons extends PureComponent {
           </tr>
         </thead>
         <tbody>
-          {data.body.map(row => {
-            const deltas = row.filter(value => Array.isArray(value) && Math.abs(value[1]) > 100);
-            if (row.length > 2 && deltas.length === 0) {
-              return null;
-            }
-            return (
-              <tr>
-                {row.map((col, i) => {
-                  if (i === 0) {
-                    return (
-                      <th>
-                        {col}
-                      </th>
-                    );
-                  }
-                  const colSpan = data.head[i].length;
-                  if (Array.isArray(col)) {
-                    const innerColSpan = col.length === colSpan ? 1 : colSpan;
-                    return col.map(v =>
-                      <td colSpan={innerColSpan}>
-                        {bytesToKb(v)}
-                      </td>
-                    );
-                  }
-                  return (
-                    <td colSpan={colSpan}>
-                      {bytesToKb(col)}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {builds.length
+            ? data.body.map((row, i) => {
+                const deltas = row.filter(value => Array.isArray(value) && Math.abs(value[1]) > 100);
+                if (i !== 0 && row.length > 2 && deltas.length === 0) {
+                  return null;
+                }
+                return (
+                  <tr>
+                    {row.map((col, i) => {
+                      if (i === 0) {
+                        return (
+                          <th>
+                            {col}
+                          </th>
+                        );
+                      }
+                      const colSpan = data.head[i].length;
+                      if (Array.isArray(col)) {
+                        const innerColSpan = col.length === colSpan ? 1 : colSpan;
+                        return col.map(v =>
+                          <td colSpan={innerColSpan}>
+                            {bytesToKb(v)}
+                          </td>
+                        );
+                      }
+                      return (
+                        <td colSpan={colSpan}>
+                          {bytesToKb(col)}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })
+            : null}
         </tbody>
       </table>
     );

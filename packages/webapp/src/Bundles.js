@@ -60,7 +60,7 @@ export default class Bundles extends Component {
 
     const viewingAll = activeBundles.length === bundles.length;
     return (
-      <View style={styles.root}>
+      <View>
         <View style={[styles.bundle, styles.header]}>
           <View style={styles.bundleName}>
             <Text role="heading" style={styles.bundleNameText}>
@@ -144,10 +144,5 @@ const styles = StyleSheet.create({
   },
   switch: {
     paddingLeft: theme.spaceXSmall
-  },
-  root: {
-    position: 'fixed',
-    height: '100%',
-    overflowY: 'auto'
   }
 });

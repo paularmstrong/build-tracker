@@ -10,9 +10,10 @@ import { timeFormat } from 'd3-time-format';
 import { bytesToKb } from '../formatting';
 import { XScaleType, YScaleType } from '../values';
 import { getAverageSize } from '../stats';
+import theme from '../theme';
 import 'd3-transition';
 
-const margin = { top: 20, right: 20, bottom: 100, left: 60 };
+const margin = { top: 0, right: 20, bottom: 50, left: 60 };
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 const PERCENT_Y_HEADROOM = 1.05;
@@ -74,6 +75,7 @@ export default class AreaChart extends PureComponent {
     return (
       <View onLayout={this._handleLayout} style={styles.root}>
         <svg ref={this._setSvgRef} height={height} width={width} />
+        <View ref={this._setTooltipRef} />
       </View>
     );
   }
@@ -158,9 +160,16 @@ export default class AreaChart extends PureComponent {
         const { hoveredStats } = getMouseInformation(nodes);
         this.props.onClick(hoveredStats);
       })
-      .on('mouseout', this.props.onHoverOut)
+      .on('mouseover', () => {
+        this._hoverLine.style('opacity', 1);
+      })
+      .on('mouseout', () => {
+        this._hoverLine.style('opacity', 0);
+        this.props.onHoverOut();
+      })
       .on('mousemove', (d, index, nodes) => {
         const { xValue, hoveredStats, hoveredBundle } = getMouseInformation(nodes);
+        const [xPos, yPos] = mouse(nodes[0]);
 
         this._hoverLine
           .attr('x1', xScale(xValue))
@@ -180,10 +189,11 @@ export default class AreaChart extends PureComponent {
       this._overlay = svg.append('rect').style('fill', 'none').style('pointer-events', 'all');
       this._hoverLine = svg
         .append('line')
-        .style('stroke', 'black')
+        .style('stroke', theme.colorBlack)
         .style('fill', 'none')
-        .style('stroke-width', '1.5px')
-        .style('stroke-dasharray', '3 3');
+        .style('stroke-width', '1px')
+        .style('stroke-dasharray', '3 3')
+        .style('opacity', 0);
       this._xAxis = svg.append('g').attr('class', 'x axis');
       this._yAxis = svg.append('g').attr('class', 'y axis');
     }

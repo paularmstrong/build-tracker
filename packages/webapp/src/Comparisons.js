@@ -106,7 +106,7 @@ class Heading extends PureComponent {
   render() {
     const { onClick, text } = this.props;
     return (
-      <Th>
+      <Th style={styles.header}>
         {text && onClick
           ? <button onClick={this._handleClick}>
               {formatSha(text)}
@@ -136,8 +136,8 @@ class Value extends PureComponent {
   render() {
     const { bytes, color, colSpan } = this.props;
     return (
-      <Td colSpan={colSpan} style={color ? { backgroundColor: color } : emptyObject}>
-        {bytesToKb(bytes)}
+      <Td colSpan={colSpan} style={[styles.cell, color ? { backgroundColor: color } : emptyObject]}>
+        {bytes ? bytesToKb(bytes) : '-'}
       </Td>
     );
   }
@@ -181,7 +181,7 @@ export default class Comparisons extends PureComponent {
                     {row.map((col, i) => {
                       if (i === 0) {
                         return (
-                          <Th key={i} style={styles.bundleName}>
+                          <Th key={i} style={[styles.cell, styles.rowHeader]}>
                             {col}
                           </Th>
                         );
@@ -205,9 +205,21 @@ export default class Comparisons extends PureComponent {
 
 const styles = StyleSheet.create({
   dataTable: {
-    fontSize: theme.fontSizeSmall
+    fontSize: theme.fontSizeSmall,
+    borderSpacing: 0,
+    borderCollapse: 'collapse'
   },
-  bundleName: {
+  rowHeader: {
+    textAlign: 'right',
+    paddingRight: theme.spaceXXSmall
+  },
+  cell: {
+    margin: 0,
+    paddingTop: theme.spaceXXSmall,
+    paddingBottom: theme.spaceXXSmall,
+    paddingLeft: theme.spaceXSmall,
+    paddingRight: theme.spaceXSmall,
     textAlign: 'right'
-  }
+  },
+  header: {}
 });

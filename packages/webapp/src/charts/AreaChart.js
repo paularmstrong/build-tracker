@@ -7,14 +7,13 @@ import { StyleSheet, View } from 'react-native';
 import { scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
-import { bytesToKb } from '../formatting';
+import { bytesToKb, formatTime, formatSha } from '../formatting';
 import { XScaleType, YScaleType } from '../values';
 import { getAverageSize } from '../stats';
 import theme from '../theme';
 import 'd3-transition';
 
 const margin = { top: 0, right: 20, bottom: 50, left: 60 };
-const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 const PERCENT_Y_HEADROOM = 1.05;
 
@@ -255,7 +254,7 @@ export default class AreaChart extends PureComponent {
         break;
 
       default:
-        axis.tickFormat(d => d && d.slice(0, 7));
+        axis.tickFormat(d => d && formatSha(d));
         break;
     }
     return axis;

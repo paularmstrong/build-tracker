@@ -1,6 +1,7 @@
 // @flow
 import AreaChart from './charts/AreaChart';
 import Builds from './Builds';
+import Comparisons from './Comparisons';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { statsForBundles } from './stats';
@@ -55,6 +56,7 @@ export default class Main extends Component {
             previewBuild={hoveredBuild}
             valueAccessor={valueAccessor}
           />
+          <Comparisons builds={builds} valueAccessor={valueAccessor} />
         </View>
       </View>
     );
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
   root: {
     position: 'absolute',
     top: 0,
-    height: '100%',
+    minHeight: '100%',
     width: '100%',
     left: 0
   },

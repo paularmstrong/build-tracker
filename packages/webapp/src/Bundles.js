@@ -50,13 +50,12 @@ export default class Bundles extends Component {
     activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
-    commit: Object,
     highlightBundle?: string,
     onBundlesChange: Function
   };
 
   render() {
-    const { activeBundles, bundles, colorScale, commit, highlightBundle } = this.props;
+    const { activeBundles, bundles, colorScale, highlightBundle } = this.props;
 
     const viewingAll = activeBundles.length === bundles.length;
     return (
@@ -81,7 +80,6 @@ export default class Bundles extends Component {
             active={activeBundles.indexOf(bundle) !== -1}
             bundle={bundle}
             color={colorScale(bundles.length - i)}
-            commit={commit}
             highlight={bundle === highlightBundle}
             key={bundle}
             onToggle={this._handleToggleBundle}

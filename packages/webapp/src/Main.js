@@ -2,6 +2,7 @@
 import AreaChart from './charts/AreaChart';
 import Builds from './Builds';
 import Comparisons from './Comparisons';
+import deepEqual from 'deep-equal';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { statsForBundles } from './stats';
@@ -28,6 +29,13 @@ export default class Main extends Component {
     this.state = {
       builds: []
     };
+    this._stats = statsForBundles(props.bundles);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!deepEqual(this.props, nextProps)) {
+      this._stats = statsForBundles(nextProps.bundles);
+    }
   }
 
   render() {
@@ -47,7 +55,7 @@ export default class Main extends Component {
             valueAccessor={valueAccessor}
             xScaleType={xScaleType}
             yScaleType={yScaleType}
-            stats={statsForBundles(bundles)}
+            stats={this._stats}
           />
         </View>
         <View style={styles.meta}>

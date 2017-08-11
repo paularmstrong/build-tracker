@@ -1,5 +1,6 @@
 // @flow
 import Bundles from './Bundles';
+import deepEqual from 'deep-equal';
 import Main from './Main';
 import React, { Component } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
@@ -9,6 +10,17 @@ import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
+
+const _getActiveBundles = (props: Object): Array<string> => {
+  const { match: { params } } = props;
+  const { bundleNames } = params;
+  if (!bundleNames) {
+    return bundlesBySize;
+  } else {
+    const bundles = bundleNames.split('+');
+    return bundlesBySize.filter(b => bundles.indexOf(b) !== -1);
+  }
+};
 
 class App extends Component {
   state: {
@@ -32,19 +44,24 @@ class App extends Component {
       xScaleType: XScaleType.COMMIT,
       yScaleType: YScaleType.LINEAR
     };
+    this._activeBundles = _getActiveBundles(props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!deepEqual(this.props, nextProps)) {
+      this._activeBundles = _getActiveBundles(nextProps);
+    }
   }
 
   render() {
-    const { highlightBundle, commit, valueType, xScaleType, yScaleType } = this.state;
-    const activeBundles = this._getActiveBundles();
+    const { highlightBundle, valueType, xScaleType, yScaleType } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.nav}>
           <Bundles
-            activeBundles={activeBundles}
+            activeBundles={this._activeBundles}
             bundles={bundlesBySize}
             colorScale={colorScale}
-            commit={commit}
             highlightBundle={highlightBundle}
             onBundlesChange={this._handleBundlesChange}
             valueAccessor={valueTypeAccessor[valueType]}
@@ -97,7 +114,7 @@ class App extends Component {
           </View>
           <View style={styles.innerMain}>
             <Main
-              activeBundles={activeBundles}
+              activeBundles={this._activeBundles}
               bundles={bundlesBySize}
               colorScale={colorScale}
               onPickCommit={this._handlePickCommit}
@@ -109,17 +126,6 @@ class App extends Component {
         </View>
       </View>
     );
-  }
-
-  _getActiveBundles(): Array<string> {
-    const { match: { params } } = this.props;
-    const { bundleNames } = params;
-    if (!bundleNames) {
-      return bundlesBySize;
-    } else {
-      const bundles = bundleNames.split('+');
-      return bundlesBySize.filter(b => bundles.indexOf(b) !== -1);
-    }
   }
 
   _handlePickCommit = (commit: Object, highlightBundle: string): void => {

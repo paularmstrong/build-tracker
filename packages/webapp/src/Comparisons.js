@@ -1,3 +1,4 @@
+import Link from './Link';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
@@ -122,7 +123,7 @@ class Heading extends PureComponent {
   };
 }
 
-class Value extends PureComponent {
+class ValueCell extends PureComponent {
   props: {
     bytes: number,
     color?: string,
@@ -143,16 +144,40 @@ class Value extends PureComponent {
   }
 }
 
+class BundleCell extends PureComponent {
+  props: {
+    bundle: string,
+    color: string
+  };
+
+  render() {
+    const { bundle, color } = this.props;
+    return (
+      <Th style={[styles.cell, styles.rowHeader]}>
+        <Link style={[styles.bundleLink]} to={`/bundles/${bundle}`}>
+          {bundle}
+        </Link>
+        <View style={[styles.rowColor, { backgroundColor: color }]} />
+      </Th>
+    );
+  }
+}
+
 export default class Comparisons extends PureComponent {
   props: {
     builds: Array<Object>,
+    bundles: Array<string>,
+    colorScale: Function,
     onClickRemove?: Function,
     valueAccessor: Function
   };
 
   render() {
-    const { builds, onClickRemove, valueAccessor } = this.props;
-    const bundles = getBundles(builds);
+    const { builds, bundles, colorScale, onClickRemove, valueAccessor } = this.props;
+    if (!builds.length) {
+      return null;
+    }
+    const bundlesWithData = getBundles(builds);
     const data = createTableData(bundles, builds, valueAccessor);
     return (
       <Table style={styles.dataTable}>
@@ -180,18 +205,14 @@ export default class Comparisons extends PureComponent {
                   <Tr key={i}>
                     {row.map((col, i) => {
                       if (i === 0) {
-                        return (
-                          <Th key={i} style={[styles.cell, styles.rowHeader]}>
-                            {col}
-                          </Th>
-                        );
+                        return <BundleCell bundle={col} color={colorScale(1 - bundles.indexOf(col))} key={i} />;
                       }
                       const colSpan = data.head[i].length;
                       if (Array.isArray(col)) {
                         const innerColSpan = col.length === colSpan ? 1 : colSpan;
-                        return col.map((v, j) => <Value {...v} colSpan={innerColSpan} key={`${i}-${j}`} />);
+                        return col.map((v, j) => <ValueCell {...v} colSpan={innerColSpan} key={`${i}-${j}`} />);
                       }
-                      return <Value {...col} colSpan={colSpan} key={i} />;
+                      return <ValueCell {...col} colSpan={colSpan} key={i} />;
                     })}
                   </Tr>
                 );
@@ -207,11 +228,25 @@ const styles = StyleSheet.create({
   dataTable: {
     fontSize: theme.fontSizeSmall,
     borderSpacing: 0,
-    borderCollapse: 'collapse'
+    borderCollapse: 'collapse',
+    marginLeft: theme.spaceMedium,
+    marginRight: theme.spaceMedium,
+    marginBottom: theme.spaceMedium
   },
   rowHeader: {
     textAlign: 'right',
     paddingRight: theme.spaceXXSmall
+  },
+  rowColor: {
+    display: 'inline-flex',
+    width: '1em',
+    height: '1em',
+    borderRadius: '50%',
+    marginLeft: theme.spaceXSmall
+  },
+  bundleLink: {
+    display: 'inline-flex',
+    fontWeight: 'normal'
   },
   cell: {
     margin: 0,
@@ -219,7 +254,10 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spaceXXSmall,
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
-    textAlign: 'right'
+    textAlign: 'right',
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.colorGray
   },
   header: {}
 });

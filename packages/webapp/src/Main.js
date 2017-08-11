@@ -65,7 +65,13 @@ export default class Main extends Component {
             previewBuild={hoveredBuild}
             valueAccessor={valueAccessor}
           />*/}
-          <Comparisons builds={sortedBuilds} onClickRemove={this._handleRemoveRevision} valueAccessor={valueAccessor} />
+          <Comparisons
+            builds={sortedBuilds}
+            bundles={bundles}
+            colorScale={colorScale}
+            onClickRemove={this._handleRemoveRevision}
+            valueAccessor={valueAccessor}
+          />
         </View>
       </View>
     );

@@ -13,7 +13,7 @@ export default class Main extends Component {
     activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
-    onHoverBundle: Function,
+    onHoverBundle?: Function,
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
     xScaleType: $Values<typeof XScaleType>
@@ -72,8 +72,9 @@ export default class Main extends Component {
     );
   }
 
-  _handleHover = (bundle: Object) => {
-    this.props.onHoverBundle(bundle.key);
+  _handleHover = (bundle?: Object) => {
+    const { onHoverBundle } = this.props;
+    onHoverBundle && onHoverBundle(bundle && bundle.key);
   };
 
   _handleSelectBuild = (build: Build, bundleName: string) => {

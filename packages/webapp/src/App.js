@@ -132,7 +132,7 @@ class App extends Component {
     );
   }
 
-  _handleHoverBundle = (highlightBundle: string): void => {
+  _handleHoverBundle = (highlightBundle?: string = ''): void => {
     this.setState({ highlightBundle });
   };
 

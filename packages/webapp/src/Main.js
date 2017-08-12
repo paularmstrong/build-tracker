@@ -6,21 +6,24 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { statsForBundles } from './stats';
 import { XScaleType, YScaleType } from './values';
+import type { BuildMeta, BundleStat, Build } from './types.js';
 
 export default class Main extends Component {
   props: {
     activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
-    onPickCommit: Function,
+    onHoverBundle: Function,
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
     xScaleType: $Values<typeof XScaleType>
   };
 
   state: {
-    builds: Array<Object>
+    builds: Array<Build>
   };
+
+  _stats: Array<Build>;
 
   constructor(props: Object, context: Object) {
     super(props, context);
@@ -30,7 +33,7 @@ export default class Main extends Component {
     this._stats = statsForBundles(props.bundles);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     if (!deepEqual(this.props, nextProps)) {
       this._stats = statsForBundles(nextProps.bundles);
     }
@@ -47,6 +50,7 @@ export default class Main extends Component {
             activeBundles={activeBundles}
             bundles={bundles}
             colorScale={colorScale}
+            onHover={this._handleHover}
             onSelectBuild={this._handleSelectBuild}
             selectedBuilds={builds.map(b => b.build.revision)}
             valueAccessor={valueAccessor}
@@ -68,11 +72,15 @@ export default class Main extends Component {
     );
   }
 
-  _handleSelectBuild = (build: Object, bundleName: string) => {
+  _handleHover = (bundle: Object) => {
+    this.props.onHoverBundle(bundle.key);
+  };
+
+  _handleSelectBuild = (build: Build, bundleName: string) => {
     this.setState({ builds: [...this.state.builds, build] });
   };
 
-  _handleRemoveBuild = (build: Object) => {
+  _handleRemoveBuild = (build: Build) => {
     this.setState(() => this.state.builds.filter(thisBuild => thisBuild.build.revision !== build.build.revision));
   };
 

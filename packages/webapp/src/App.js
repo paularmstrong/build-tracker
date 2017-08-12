@@ -37,6 +37,8 @@ class App extends Component {
     match: Object
   };
 
+  _activeBundles: Array<string>;
+
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
@@ -47,7 +49,7 @@ class App extends Component {
     this._activeBundles = _getActiveBundles(props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     if (!deepEqual(this.props, nextProps)) {
       this._activeBundles = _getActiveBundles(nextProps);
     }
@@ -117,7 +119,7 @@ class App extends Component {
               activeBundles={this._activeBundles}
               bundles={bundlesBySize}
               colorScale={colorScale}
-              onPickCommit={this._handlePickCommit}
+              onHoverBundle={this._handleHoverBundle}
               valueAccessor={valueTypeAccessor[valueType]}
               xScaleType={xScaleType}
               yScaleType={yScaleType}
@@ -128,8 +130,8 @@ class App extends Component {
     );
   }
 
-  _handlePickCommit = (commit: Object, highlightBundle: string): void => {
-    this.setState({ highlightBundle, commit });
+  _handleHoverBundle = (highlightBundle: string): void => {
+    this.setState({ highlightBundle });
   };
 
   _handleYScaleChange = (event: { target: { innerText: string } }): void => {

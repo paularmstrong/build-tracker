@@ -28,6 +28,7 @@ export default class AreaChart extends PureComponent {
     activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
+    onHover: Function,
     onSelectBuild: Function,
     selectedBuilds: Array<string>,
     valueAccessor: Function,
@@ -52,6 +53,7 @@ export default class AreaChart extends PureComponent {
   _chartContents: any;
   _overlay: any;
   _hoverLine: any;
+  _staticLines: any;
   _yAxis: any;
   _xAxis: any;
 
@@ -76,7 +78,6 @@ export default class AreaChart extends PureComponent {
     return (
       <View onLayout={this._handleLayout} style={styles.root}>
         <svg ref={this._setSvgRef} height={height} width={width} />
-        <View ref={this._setTooltipRef} />
       </View>
     );
   }
@@ -178,6 +179,7 @@ export default class AreaChart extends PureComponent {
           .attr('x2', xScale(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
+        this.props.onHover(hoveredBundle, hoveredStats);
         // TODO: add a tooltip
       });
   }
@@ -201,7 +203,7 @@ export default class AreaChart extends PureComponent {
     }
   };
 
-  _drawLines(xScale) {
+  _drawLines(xScale: Object) {
     const { height } = this.state;
     const { selectedBuilds } = this.props;
     const lines = this._staticLines.selectAll('line').data(selectedBuilds);

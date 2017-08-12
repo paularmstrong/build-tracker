@@ -160,7 +160,7 @@ export default class AreaChart extends PureComponent {
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
       .on('click', (d, index, nodes) => {
-        const { hoveredStats, xValue } = getMouseInformation(nodes);
+        const { hoveredStats } = getMouseInformation(nodes);
         this.props.onSelectBuild(hoveredStats);
       })
       .on('mouseover', () => {

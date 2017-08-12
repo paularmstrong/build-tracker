@@ -21,14 +21,6 @@ const getDeltaColor = (originalValue, newValue) => {
   return percentDiff >= 1 ? redScale(1 - percentDiff) : greenScale(1 - percentDiff);
 };
 
-const getBundles = builds =>
-  builds
-    .reduce((memo, commit) => {
-      const bundles = Object.keys(commit.stats);
-      return memo.concat(bundles).filter((value, index, self) => self.indexOf(value) === index);
-    }, [])
-    .sort();
-
 const getTableHeaders = builds =>
   builds.map((build, i) => {
     const { revision } = build.build;
@@ -177,7 +169,6 @@ export default class Comparisons extends PureComponent {
     if (!builds.length) {
       return null;
     }
-    const bundlesWithData = getBundles(builds);
     const data = createTableData(bundles, builds, valueAccessor);
     return (
       <Table style={styles.dataTable}>

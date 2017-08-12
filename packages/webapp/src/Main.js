@@ -1,6 +1,5 @@
 // @flow
 import AreaChart from './charts/AreaChart';
-import Builds from './Builds';
 import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
 import React, { Component } from 'react';
@@ -20,8 +19,7 @@ export default class Main extends Component {
   };
 
   state: {
-    builds: Array<Object>,
-    hoveredBuild?: Object
+    builds: Array<Object>
   };
 
   constructor(props: Object, context: Object) {
@@ -40,7 +38,7 @@ export default class Main extends Component {
 
   render() {
     const { activeBundles, bundles, colorScale, valueAccessor, xScaleType, yScaleType } = this.props;
-    const { builds, hoveredBuild } = this.state;
+    const { builds } = this.state;
     const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
     return (
       <View style={styles.root}>
@@ -58,12 +56,6 @@ export default class Main extends Component {
           />
         </View>
         <View style={styles.meta}>
-          {/*<Builds
-            builds={builds}
-            onRemoveBuild={this._handleRemoveBuild}
-            previewBuild={hoveredBuild}
-            valueAccessor={valueAccessor}
-          />*/}
           <Comparisons
             builds={sortedBuilds}
             bundles={bundles}

@@ -12,6 +12,8 @@ import type { Build } from './types';
 
 const emptyObject = {};
 
+const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
+
 const greenScale = scaleLinear().domain([0, 1]).interpolate(interpolateHcl).range([rgb('#97ff7c'), rgb('#166b00')]);
 const redScale = scaleLinear().domain([0, 1]).interpolate(interpolateHcl).range([rgb('#ff8787'), rgb('#7c0014')]);
 
@@ -141,7 +143,7 @@ class ValueCell extends PureComponent {
 class BundleCell extends PureComponent {
   props: {
     bundle: string,
-    color: string
+    color?: string
   };
 
   render() {
@@ -197,13 +199,11 @@ export default class Comparisons extends PureComponent {
                 }
                 return (
                   <Tr key={i}>
-                    {row.map((column, i) => {
+                    {flatten(row).map((column, i) => {
                       if (i === 0) {
                         return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
                       }
-                      const colSpan = data.head[i].length;
-                      const innerColSpan = column.length === colSpan ? 1 : colSpan;
-                      return column.map((v, j) => <ValueCell {...v} colSpan={innerColSpan} key={`${i}-${j}`} />);
+                      return <ValueCell {...column} key={i} />;
                     })}
                   </Tr>
                 );

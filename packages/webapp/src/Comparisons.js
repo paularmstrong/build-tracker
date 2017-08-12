@@ -44,7 +44,7 @@ const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccesso
       ...builds.map((build, i) => {
         const value = valueAccessor(build.stats[bundle]);
         if (i === 0) {
-          return { bytes: value };
+          return [{ bytes: value }];
         }
         const oldValue = valueAccessor(builds[i - 1].stats[bundle]);
         const delta = value - oldValue;
@@ -67,7 +67,7 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
 
   const totalsWithDelta = totals.map((total, i) => {
     if (i === 0) {
-      return { bytes: total };
+      return [{ bytes: total }];
     }
     const bytes = total - totals[i - 1];
     const values = [{ bytes: total }, { bytes, color: getDeltaColor(totals[i - 1], total) }];
@@ -83,7 +83,7 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
 
 const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
   return {
-    head: [null, ...getTableHeaders(builds)],
+    head: [[null], ...getTableHeaders(builds)],
     body: getTableBody(bundles, builds, valueAccessor)
   };
 };
@@ -182,34 +182,28 @@ export default class Comparisons extends PureComponent {
         <Thead>
           <Tr>
             {data.head.map((value, i) => {
-              if (Array.isArray(value)) {
-                return value.map((col, j) =>
-                  <Heading key={`${i}-${j}`} onClick={j === 0 ? onClickRemove : undefined} text={col} />
-                );
-              }
-              return <Heading key={i} onClick={onClickRemove} text={value} />;
+              return value.map((column, j) =>
+                <Heading key={`${i}-${j}`} onClick={j === 0 ? onClickRemove : undefined} text={column} />
+              );
             })}
           </Tr>
         </Thead>
         <Tbody>
           {builds.length
             ? data.body.map((row, i) => {
-                const deltas = row.filter(value => Array.isArray(value) && Math.abs(value[1].bytes) > 100);
+                const deltas = row.filter(columns => columns.length > 1 && Math.abs(columns[1].bytes) > 100);
                 if (i !== 0 && row.length > 2 && deltas.length === 0) {
                   return null;
                 }
                 return (
                   <Tr key={i}>
-                    {row.map((col, i) => {
+                    {row.map((column, i) => {
                       if (i === 0) {
-                        return <BundleCell bundle={col} color={colorScale(1 - bundles.indexOf(col))} key={i} />;
+                        return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
                       }
                       const colSpan = data.head[i].length;
-                      if (Array.isArray(col)) {
-                        const innerColSpan = col.length === colSpan ? 1 : colSpan;
-                        return col.map((v, j) => <ValueCell {...v} colSpan={innerColSpan} key={`${i}-${j}`} />);
-                      }
-                      return <ValueCell {...col} colSpan={colSpan} key={i} />;
+                      const innerColSpan = column.length === colSpan ? 1 : colSpan;
+                      return column.map((v, j) => <ValueCell {...v} colSpan={innerColSpan} key={`${i}-${j}`} />);
                     })}
                   </Tr>
                 );

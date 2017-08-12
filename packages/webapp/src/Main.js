@@ -49,9 +49,8 @@ export default class Main extends Component {
             activeBundles={activeBundles}
             bundles={bundles}
             colorScale={colorScale}
-            onClick={this._handleClick}
-            onHover={this._handleHover}
-            onHoverOut={this._handleHoverOut}
+            onSelectBuild={this._handleSelectBuild}
+            selectedBuilds={builds.map(b => b.build.revision)}
             valueAccessor={valueAccessor}
             xScaleType={xScaleType}
             yScaleType={yScaleType}
@@ -77,16 +76,7 @@ export default class Main extends Component {
     );
   }
 
-  _handleHover = (build: Object, bundleName: string) => {
-    this.setState({ hoveredBuild: build });
-    this.props.onPickCommit && this.props.onPickCommit(build, bundleName);
-  };
-
-  _handleHoverOut = () => {
-    this.setState({ hoveredBuild: undefined });
-  };
-
-  _handleClick = (build: Object, bundleName: string) => {
+  _handleSelectBuild = (build: Object, bundleName: string) => {
     this.setState({ builds: [...this.state.builds, build] });
   };
 

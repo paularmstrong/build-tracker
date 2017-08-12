@@ -28,9 +28,8 @@ export default class AreaChart extends PureComponent {
     activeBundles: Array<string>,
     bundles: Array<string>,
     colorScale: Function,
-    onClick: Function,
-    onHover: Function,
-    onHoverOut: Function,
+    onSelectBuild: Function,
+    selectedBuilds: Array<string>,
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
     xScaleType: $Values<typeof XScaleType>,
@@ -38,6 +37,10 @@ export default class AreaChart extends PureComponent {
       build: { timestamp: number, revision: string },
       stats: { [bundleName: string]: bundleStatType }
     }>
+  };
+
+  static defaultProps = {
+    selectedBuilds: []
   };
 
   state: {
@@ -151,19 +154,20 @@ export default class AreaChart extends PureComponent {
       };
     };
 
+    this._drawLines(xScale);
+
     this._overlay
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
       .on('click', (d, index, nodes) => {
-        const { hoveredStats } = getMouseInformation(nodes);
-        this.props.onClick(hoveredStats);
+        const { hoveredStats, xValue } = getMouseInformation(nodes);
+        this.props.onSelectBuild(hoveredStats);
       })
       .on('mouseover', () => {
         this._hoverLine.style('opacity', 1);
       })
       .on('mouseout', () => {
         this._hoverLine.style('opacity', 0);
-        this.props.onHoverOut();
       })
       .on('mousemove', (d, index, nodes) => {
         const { xValue, hoveredStats, hoveredBundle } = getMouseInformation(nodes);
@@ -174,7 +178,6 @@ export default class AreaChart extends PureComponent {
           .attr('x2', xScale(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(hoveredStats, hoveredBundle && hoveredBundle.key);
         // TODO: add a tooltip
       });
   }
@@ -185,6 +188,7 @@ export default class AreaChart extends PureComponent {
       const svg = select(node).append('g').attr('transform', `translate(${margin.left},${margin.top})`);
       this._chartContents = svg.append('g');
       this._overlay = svg.append('rect').style('fill', 'none').style('pointer-events', 'all');
+      this._staticLines = svg.append('g');
       this._hoverLine = svg
         .append('line')
         .style('stroke', theme.colorBlack)
@@ -196,6 +200,25 @@ export default class AreaChart extends PureComponent {
       this._yAxis = svg.append('g').attr('class', 'y axis');
     }
   };
+
+  _drawLines(xScale) {
+    const { height } = this.state;
+    const { selectedBuilds } = this.props;
+    const lines = this._staticLines.selectAll('line').data(selectedBuilds);
+    lines.exit().remove();
+    lines
+      .enter()
+      .append('line')
+      .style('stroke', theme.colorBlack)
+      .style('fill', 'none')
+      .style('stroke-width', '1px')
+      .style('stroke-dasharray', '1 1')
+      .merge(lines)
+      .attr('x1', xScale)
+      .attr('x2', xScale)
+      .attr('y1', 0)
+      .attr('y2', height - margin.top - margin.bottom);
+  }
 
   _drawXAxis(xScale: Object) {
     const { height } = this.state;

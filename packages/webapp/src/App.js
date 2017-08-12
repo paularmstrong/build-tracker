@@ -52,7 +52,7 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps: Object) {
-    if (!deepEqual(this.props, nextProps)) {
+    if (!deepEqual(this.props.match.params, nextProps.match.params)) {
       this._activeBundles = _getActiveBundles(nextProps);
     }
   }
@@ -152,9 +152,7 @@ class App extends Component {
   };
 
   _handleBundlesChange = (bundles: Array<string>) => {
-    this.props.history.push(
-      bundles.length && bundles.length !== bundlesBySize.length ? `/bundles/${bundles.join('+')}` : '/'
-    );
+    this.props.history.push(bundles.length && bundles.length !== bundlesBySize.length ? `/${bundles.join('+')}` : '/');
   };
 }
 

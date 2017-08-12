@@ -22,7 +22,7 @@ class Bundle extends PureComponent {
     return (
       <View style={[styles.bundle, highlight && styles.bundleHighlight]}>
         <View style={styles.bundleName}>
-          <Link style={[styles.bundleLink]} to={`/bundles/${bundle}`}>
+          <Link style={[styles.bundleLink]} to={`/${bundle}`}>
             <Text numberOfLines={1} style={styles.bundleNameText}>
               {bundle}
             </Text>

@@ -101,9 +101,7 @@ export default class AreaChart extends PureComponent {
 
     const data = chartStack(stats);
 
-    const bundle = this._chartContents
-      .selectAll('.bundle')
-      .data(data, d => (activeBundles.length > 1 ? d.key : 'constant'));
+    const bundle = this._chartContents.selectAll('.bundle').data(data, (d: { key: string }) => d.key);
 
     // Remove old areas
     bundle.exit().remove();

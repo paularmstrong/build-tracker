@@ -148,7 +148,7 @@ class BundleCell extends PureComponent {
     const { bundle, color } = this.props;
     return (
       <Th style={[styles.cell, styles.rowHeader]}>
-        <Link style={[styles.bundleLink]} to={`/bundles/${bundle}`}>
+        <Link style={[styles.bundleLink]} to={`/${bundle}`}>
           {bundle}
         </Link>
         <View style={[styles.rowColor, { backgroundColor: color }]} />

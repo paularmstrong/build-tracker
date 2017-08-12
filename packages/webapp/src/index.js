@@ -8,8 +8,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 ReactDOM.render(
   <Router>
     <div>
-      <Route exact path="/" component={App} />
-      <Route path="/bundles/:bundleNames" component={App} />
+      <Route path="/:bundleNames*" component={App} />
     </div>
   </Router>,
   document.getElementById('root')

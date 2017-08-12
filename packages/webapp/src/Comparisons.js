@@ -2,8 +2,8 @@ import Link from './Link';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Table, Thead, Tbody, Tr, Th, Td } from './Table';
+import { StyleSheet, Text, View } from 'react-native';
+import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
 import { rgb } from 'd3-color';
@@ -28,12 +28,12 @@ const getDeltaColor = (originalValue, newValue) => {
 const getTableHeaders = builds =>
   builds.map((build, i) => {
     const { revision } = build.build;
-    const headers = [revision];
+    const headers = [{ text: revision, removable: true }];
     if (i > 0) {
-      headers.push('𝚫');
+      headers.push({ text: '𝚫', title: 'Change from previous selected build' });
     }
     if (i > 1) {
-      headers.push('𝚫0');
+      headers.push({ text: '𝚫0', title: 'Change from first selected build' });
     }
     return headers;
   });
@@ -85,7 +85,7 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
 
 const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
   return {
-    head: [[null], ...getTableHeaders(builds)],
+    head: [[{}], ...getTableHeaders(builds)],
     body: getTableBody(bundles, builds, valueAccessor)
   };
 };
@@ -93,7 +93,9 @@ const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAcce
 class Heading extends PureComponent {
   props: {
     onClick?: Function,
-    text: string
+    removable?: boolean,
+    text: string,
+    title?: string
   };
 
   static defaultProps = {
@@ -101,10 +103,10 @@ class Heading extends PureComponent {
   };
 
   render() {
-    const { onClick, text } = this.props;
+    const { onClick, removable, text, title } = this.props;
     return (
-      <Th style={styles.header}>
-        {text && onClick
+      <Th style={styles.header} title={title}>
+        {removable && onClick
           ? <button onClick={this._handleClick}>
               {formatSha(text)}
             </button>
@@ -173,46 +175,84 @@ export default class Comparisons extends PureComponent {
     valueAccessor: Function
   };
 
+  state: {
+    hideBelowThreshold: boolean
+  };
+
+  constructor(props: Object, context: Object) {
+    super(props, context);
+    this.state = {
+      hideBelowThreshold: true
+    };
+  }
+
   render() {
     const { builds, bundles, colorScale, onClickRemove, valueAccessor } = this.props;
+    const { hideBelowThreshold } = this.state;
+
     if (!builds.length) {
       return null;
     }
+
     const data = createTableData(bundles, builds, valueAccessor);
+    const body = hideBelowThreshold
+      ? data.body.filter((row, i) => {
+          const deltas = row.filter(columns => columns.length > 1 && Math.abs(columns[1].bytes) > 100);
+          if (i !== 0 && row.length > 2 && deltas.length === 0) {
+            return false;
+          }
+          return true;
+        })
+      : data.body;
+    const hiddenRowCount = data.body.length - body.length;
+    const headers = flatten(data.head);
+
     return (
       <Table style={styles.dataTable}>
         <Thead>
           <Tr>
-            {data.head.map((value, i) => {
-              return value.map((column, j) =>
-                <Heading key={`${i}-${j}`} onClick={j === 0 ? onClickRemove : undefined} text={column} />
-              );
-            })}
+            {headers.map((column, i) => <Heading {...column} key={i} onClick={i !== 0 ? onClickRemove : undefined} />)}
           </Tr>
         </Thead>
         <Tbody>
           {builds.length
-            ? data.body.map((row, i) => {
-                const deltas = row.filter(columns => columns.length > 1 && Math.abs(columns[1].bytes) > 100);
-                if (i !== 0 && row.length > 2 && deltas.length === 0) {
-                  return null;
-                }
-                return (
-                  <Tr key={i}>
-                    {flatten(row).map((column, i) => {
-                      if (i === 0) {
-                        return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
-                      }
-                      return <ValueCell {...column} key={i} />;
-                    })}
-                  </Tr>
-                );
-              })
+            ? body.map((row, i) =>
+                <Tr key={i}>
+                  {flatten(row).map((column, i) => {
+                    if (i === 0) {
+                      return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
+                    }
+                    return <ValueCell {...column} key={i} />;
+                  })}
+                </Tr>
+              )
             : null}
         </Tbody>
+        {builds.length > 1
+          ? <Tfoot>
+              <Tr>
+                <Td colSpan={headers.length} style={styles.footer}>
+                  {hiddenRowCount
+                    ? <Text style={styles.footerText}>
+                        {hiddenRowCount} rows hidden{' '}
+                        <View onClick={this._toggleHidden} style={[styles.footerText, styles.toggle]}>
+                          Click to show
+                        </View>
+                      </Text>
+                    : <Text onClick={this._toggleHidden} style={styles.toggle}>
+                        Click to hide rows below change threshold
+                      </Text>}
+                </Td>
+              </Tr>
+            </Tfoot>
+          : null}
       </Table>
     );
   }
+
+  _toggleHidden = () => {
+    this.setState(() => ({ hideBelowThreshold: !this.state.hideBelowThreshold }));
+  };
 }
 
 const styles = StyleSheet.create({
@@ -250,5 +290,14 @@ const styles = StyleSheet.create({
     borderBottomStyle: 'solid',
     borderBottomColor: theme.colorGray
   },
-  header: {}
+  toggle: {
+    color: theme.colorBlue,
+    cursor: 'pointer'
+  },
+  footer: {
+    textAlign: 'center'
+  },
+  footerText: {
+    display: 'inline'
+  }
 });

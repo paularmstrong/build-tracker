@@ -146,14 +146,19 @@ class BundleCell extends PureComponent {
 
   render() {
     const { bundle, color } = this.props;
+    const isAll = this._isAll();
     return (
       <Th style={[styles.cell, styles.rowHeader]}>
-        <Link style={[styles.bundleLink]} to={`/${bundle}`}>
+        <Link style={[styles.bundleLink]} to={`/${isAll ? '' : bundle}`}>
           {bundle}
         </Link>
-        <View style={[styles.rowColor, { backgroundColor: color }]} />
+        <View style={[styles.rowColor, { backgroundColor: !isAll && color }]} />
       </Th>
     );
+  }
+
+  _isAll() {
+    return this.props.bundle === 'Total';
   }
 }
 
@@ -181,9 +186,8 @@ export default class Comparisons extends PureComponent {
                 return value.map((col, j) =>
                   <Heading key={`${i}-${j}`} onClick={j === 0 ? onClickRemove : undefined} text={col} />
                 );
-              } else {
-                return <Heading key={i} onClick={onClickRemove} text={value} />;
               }
+              return <Heading key={i} onClick={onClickRemove} text={value} />;
             })}
           </Tr>
         </Thead>

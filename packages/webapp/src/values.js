@@ -1,4 +1,6 @@
 // @flow
+import type { BundleStat } from './types';
+
 export const YScaleType = {
   LINEAR: 'linear',
   POW: 'pow'
@@ -15,6 +17,6 @@ export const ValueType = {
 };
 
 export const valueTypeAccessor = {
-  [ValueType.STAT]: (d: { size: number }): number => (d && d.size) || 0,
-  [ValueType.GZIP]: (d: { gzipSize: number }): number => (d && d.gzipSize) || 0
+  [ValueType.STAT]: (d: BundleStat): number => (d && d.size) || 0,
+  [ValueType.GZIP]: (d: BundleStat): number => (d && d.gzipSize) || 0
 };

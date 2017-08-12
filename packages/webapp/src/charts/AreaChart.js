@@ -239,7 +239,7 @@ export default class AreaChart extends PureComponent {
   }
 
   _drawYAxis(yScale: Object) {
-    const yAxis = axisLeft().scale(yScale).tickFormat(v => bytesToKb(v, false));
+    const yAxis = axisLeft().scale(yScale).tickFormat(v => bytesToKb(v, ''));
     this._yAxis.transition().duration(150).call(yAxis);
   }
 

@@ -1,4 +1,5 @@
-const spaceMedium = '1.3125';
+// @flow
+const spaceMedium = 1.3125;
 
 const theme = {
   columns: 12,

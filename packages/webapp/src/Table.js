@@ -1,8 +1,9 @@
-import { createDOMElement } from 'react-native-web';
+// @flow
+import { createDOMElement } from 'react-native';
 
-export const Table = props => createDOMElement('table', props);
-export const Thead = props => createDOMElement('thead', props);
-export const Tbody = props => createDOMElement('tbody', props);
-export const Tr = props => createDOMElement('tr', props);
-export const Th = props => createDOMElement('th', props);
-export const Td = props => createDOMElement('td', props);
+export const Table = (props: Object) => createDOMElement('table', props);
+export const Thead = (props: Object) => createDOMElement('thead', props);
+export const Tbody = (props: Object) => createDOMElement('tbody', props);
+export const Tr = (props: Object) => createDOMElement('tr', props);
+export const Th = (props: Object) => createDOMElement('th', props);
+export const Td = (props: Object) => createDOMElement('td', props);

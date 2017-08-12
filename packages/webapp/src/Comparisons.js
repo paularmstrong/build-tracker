@@ -8,6 +8,8 @@ import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
 import { rgb } from 'd3-color';
 
+import type { Build } from './types';
+
 const emptyObject = {};
 
 const greenScale = scaleLinear().domain([0, 1]).interpolate(interpolateHcl).range([rgb('#97ff7c'), rgb('#166b00')]);
@@ -34,7 +36,7 @@ const getTableHeaders = builds =>
     return headers;
   });
 
-const getTableBody = (bundles: Array<string>, builds: Array<Object>, valueAccessor: Function) => {
+const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
   const bundleMap = bundles.map((bundle, i) => {
     const originalValue = valueAccessor(builds[0].stats[bundle]);
     return [
@@ -58,7 +60,7 @@ const getTableBody = (bundles: Array<string>, builds: Array<Object>, valueAccess
   return [getTotals(builds, valueAccessor), ...bundleMap];
 };
 
-const getTotals = (builds: Array<Object>, valueAccessor: Function) => {
+const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
   const totals = builds.map(build =>
     Object.values(build.stats).reduce((memo, bundle) => memo + valueAccessor(bundle), 0)
   );
@@ -79,7 +81,7 @@ const getTotals = (builds: Array<Object>, valueAccessor: Function) => {
   return ['Total', ...totalsWithDelta];
 };
 
-const createTableData = (bundles: Array<string>, builds: Array<Object>, valueAccessor: Function) => {
+const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
   return {
     head: [null, ...getTableHeaders(builds)],
     body: getTableBody(bundles, builds, valueAccessor)
@@ -157,7 +159,7 @@ class BundleCell extends PureComponent {
 
 export default class Comparisons extends PureComponent {
   props: {
-    builds: Array<Object>,
+    builds: Array<Build>,
     bundles: Array<string>,
     colorScale: Function,
     onClickRemove?: Function,

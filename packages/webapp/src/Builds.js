@@ -3,11 +3,13 @@ import { timeFormat } from 'd3-time-format';
 import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import type { Build } from './types';
+
 const formatTime = timeFormat('%Y-%m-%d %H:%M');
 
 class Build extends PureComponent {
   props: {
-    build: Object,
+    build: Build,
     onRemove?: Function,
     valueAccessor: Function
   };
@@ -47,7 +49,7 @@ export default class Builds extends PureComponent {
   props: {
     builds: Array<Object>,
     onRemoveBuild?: Function,
-    previewBuild?: Object,
+    previewBuild?: Build,
     valueAccessor: Function
   };
 

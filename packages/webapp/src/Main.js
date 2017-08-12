@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { statsForBundles } from './stats';
 import { XScaleType, YScaleType } from './values';
-import type { BuildMeta, BundleStat, Build } from './types.js';
+import type { Build } from './types.js';
 
 export default class Main extends Component {
   props: {

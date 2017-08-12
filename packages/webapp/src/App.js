@@ -9,6 +9,8 @@ import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
+import type { Match, RouterHistory } from 'react-router-dom';
+
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 
 const _getActiveBundles = (props: Object): Array<string> => {
@@ -33,8 +35,8 @@ class App extends Component {
   };
 
   props: {
-    history: { push: Function },
-    match: Object
+    history: RouterHistory,
+    match: Match
   };
 
   _activeBundles: Array<string>;

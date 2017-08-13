@@ -1,16 +1,17 @@
 // @flow
+import 'd3-transition';
+import deepEqual from 'deep-equal';
+import { getAverageSize } from '../stats';
+import theme from '../theme';
 import { area, stack } from 'd3-shape';
 import { extent, max } from 'd3-array';
 import { mouse, select } from 'd3-selection';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { bytesToKb, formatTime, formatSha } from '../formatting';
 import { XScaleType, YScaleType } from '../values';
-import { getAverageSize } from '../stats';
-import theme from '../theme';
-import 'd3-transition';
 
 const margin = { top: 0, right: 20, bottom: 50, left: 60 };
 
@@ -23,7 +24,7 @@ type bundleStatType = {
   gzipSize: number
 };
 
-export default class AreaChart extends PureComponent {
+export default class AreaChart extends Component {
   props: {
     activeBundles: Array<string>,
     bundles: Array<string>,
@@ -71,6 +72,10 @@ export default class AreaChart extends PureComponent {
 
   componentDidUpdate() {
     this._renderChart();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
   render() {

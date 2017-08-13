@@ -5,7 +5,7 @@ import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from './theme';
 import { hsl } from 'd3-color';
 
-class Bundle extends PureComponent {
+export class Bundle extends PureComponent {
   props: {
     active: boolean,
     bundle: string,
@@ -106,12 +106,12 @@ export default class Bundles extends Component {
 
 const styles = StyleSheet.create({
   bundle: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colorGray,
-    paddingLeft: theme.spaceXSmall,
-    paddingRight: theme.spaceXSmall,
-    paddingTop: theme.spaceXXSmall,
-    paddingBottom: theme.spaceXXSmall,
+    // borderBottomWidth: 1,
+    // borderBottomColor: theme.colorGray,
+    // paddingLeft: theme.spaceXSmall,
+    // paddingRight: theme.spaceXSmall,
+    // paddingTop: theme.spaceXXSmall,
+    // paddingBottom: theme.spaceXXSmall,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },

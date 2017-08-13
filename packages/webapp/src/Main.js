@@ -11,25 +11,20 @@ import type { Build } from './types.js';
 export default class Main extends Component {
   props: {
     activeBundles: Array<string>,
+    builds: Array<Build>,
     bundles: Array<string>,
     colorScale: Function,
     onHoverBundle?: Function,
+    onSelectBuild: Function,
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
     xScaleType: $Values<typeof XScaleType>
-  };
-
-  state: {
-    builds: Array<Build>
   };
 
   _stats: Array<Build>;
 
   constructor(props: Object, context: Object) {
     super(props, context);
-    this.state = {
-      builds: []
-    };
     this._stats = statsForBundles(props.bundles);
   }
 
@@ -40,9 +35,16 @@ export default class Main extends Component {
   }
 
   render() {
-    const { activeBundles, bundles, colorScale, valueAccessor, xScaleType, yScaleType } = this.props;
-    const { builds } = this.state;
-    const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
+    const {
+      activeBundles,
+      builds,
+      bundles,
+      colorScale,
+      onSelectBuild,
+      valueAccessor,
+      xScaleType,
+      yScaleType
+    } = this.props;
     return (
       <View style={styles.root}>
         <View style={styles.chart}>
@@ -51,7 +53,7 @@ export default class Main extends Component {
             bundles={bundles}
             colorScale={colorScale}
             onHover={this._handleHover}
-            onSelectBuild={this._handleSelectBuild}
+            onSelectBuild={onSelectBuild}
             selectedBuilds={builds.map(b => b.build.revision)}
             valueAccessor={valueAccessor}
             xScaleType={xScaleType}
@@ -59,7 +61,7 @@ export default class Main extends Component {
             stats={this._stats}
           />
         </View>
-        <View style={styles.meta}>
+        {/*<View style={styles.meta}>
           <Comparisons
             builds={sortedBuilds}
             bundles={bundles}
@@ -67,7 +69,7 @@ export default class Main extends Component {
             onClickRemove={this._handleRemoveRevision}
             valueAccessor={valueAccessor}
           />
-        </View>
+        </View>*/}
       </View>
     );
   }
@@ -75,18 +77,6 @@ export default class Main extends Component {
   _handleHover = (bundle?: Object) => {
     const { onHoverBundle } = this.props;
     onHoverBundle && onHoverBundle(bundle && bundle.key);
-  };
-
-  _handleSelectBuild = (build: Build, bundleName: string) => {
-    this.setState({ builds: [...this.state.builds, build] });
-  };
-
-  _handleRemoveBuild = (build: Build) => {
-    this.setState(() => this.state.builds.filter(thisBuild => thisBuild.build.revision !== build.build.revision));
-  };
-
-  _handleRemoveRevision = (revision: string) => {
-    this.setState(() => ({ builds: this.state.builds.filter(build => build.build.revision !== revision) }));
   };
 }
 

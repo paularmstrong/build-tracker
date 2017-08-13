@@ -1,5 +1,5 @@
 // @flow
-import Bundles from './Bundles';
+import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
 import Main from './Main';
 import React, { Component } from 'react';
@@ -10,7 +10,7 @@ import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { Types, TypesEnum, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
-import type { Match, RouterHistory } from 'react-router-dom';
+import type { Build, Match, RouterHistory } from 'react-router-dom';
 
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 
@@ -27,6 +27,7 @@ const _getActiveBundles = (props: Object): Array<string> => {
 
 class App extends Component {
   state: {
+    builds: Array<Build>,
     highlightBundle?: string,
     values: $Values<typeof ValueType>,
     xscale: $Values<typeof XScaleType>,
@@ -43,6 +44,7 @@ class App extends Component {
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
+      builds: [],
       values: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
@@ -57,16 +59,19 @@ class App extends Component {
   }
 
   render() {
-    const { highlightBundle, values, xscale, yscale } = this.state;
+    const { builds, highlightBundle, values, xscale, yscale } = this.state;
+    const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
     return (
       <View style={styles.root}>
         <View style={styles.nav}>
-          <Bundles
+          <Comparisons
             activeBundles={this._activeBundles}
+            builds={sortedBuilds}
             bundles={bundlesBySize}
             colorScale={colorScale}
             highlightBundle={highlightBundle}
             onBundlesChange={this._handleBundlesChange}
+            onRemoveBuild={this._handleRemoveBuild}
             valueAccessor={valueTypeAccessor[values]}
           />
         </View>
@@ -82,9 +87,11 @@ class App extends Component {
           <View style={styles.innerMain}>
             <Main
               activeBundles={this._activeBundles}
+              builds={sortedBuilds}
               bundles={bundlesBySize}
               colorScale={colorScale}
               onHoverBundle={this._handleHoverBundle}
+              onSelectBuild={this._handleSelectBuild}
               valueAccessor={valueTypeAccessor[values]}
               xScaleType={xscale}
               yScaleType={yscale}
@@ -106,6 +113,18 @@ class App extends Component {
   _handleBundlesChange = (bundles: Array<string>) => {
     this.props.history.push(bundles.length && bundles.length !== bundlesBySize.length ? `/${bundles.join('+')}` : '/');
   };
+
+  _handleSelectBuild = (build: Build, bundleName: string) => {
+    this.setState({ builds: [...this.state.builds, build] });
+  };
+
+  _handleRemoveBuild = (build: Build) => {
+    this.setState(() => this.state.builds.filter(thisBuild => thisBuild.build.revision !== build.build.revision));
+  };
+
+  _handleRemoveRevision = (revision: string) => {
+    this.setState(() => ({ builds: this.state.builds.filter(build => build.build.revision !== revision) }));
+  };
 }
 
 const styles = StyleSheet.create({
@@ -119,7 +138,8 @@ const styles = StyleSheet.create({
   },
   nav: {
     flexGrow: 0,
-    flexBasis: `${2 * (100 / theme.columns)}%`,
+    minWidth: `${2 * (100 / theme.columns)}%`,
+    maxWidth: `${6 * (100 / theme.columns)}%`,
     overflowY: 'scroll'
   },
   main: {

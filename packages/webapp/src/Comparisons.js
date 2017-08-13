@@ -1,3 +1,4 @@
+import { Bundle } from './Bundles';
 import Link from './Link';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
@@ -40,7 +41,7 @@ const getTableHeaders = builds =>
 
 const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
   const bundleMap = bundles.map((bundle, i) => {
-    const originalValue = valueAccessor(builds[0].stats[bundle]);
+    const originalValue = builds.length ? valueAccessor(builds[0].stats[bundle]) : 0;
     return [
       bundle,
       ...builds.map((build, i) => {
@@ -153,10 +154,7 @@ class BundleCell extends PureComponent {
     const isAll = this._isAll();
     return (
       <Th style={[styles.cell, styles.rowHeader]}>
-        <Link style={[styles.bundleLink]} to={`/${isAll ? '' : bundle}`}>
-          {bundle}
-        </Link>
-        <View style={[styles.rowColor, { backgroundColor: !isAll && color }]} />
+        <Bundle active bundle={bundle} color={color} />
       </Th>
     );
   }
@@ -171,7 +169,7 @@ export default class Comparisons extends PureComponent {
     builds: Array<Build>,
     bundles: Array<string>,
     colorScale: Function,
-    onClickRemove?: Function,
+    onRemoveBuild?: Function,
     valueAccessor: Function
   };
 
@@ -187,12 +185,8 @@ export default class Comparisons extends PureComponent {
   }
 
   render() {
-    const { builds, bundles, colorScale, onClickRemove, valueAccessor } = this.props;
+    const { builds, bundles, colorScale, onRemoveBuild, valueAccessor } = this.props;
     const { hideBelowThreshold } = this.state;
-
-    if (!builds.length) {
-      return null;
-    }
 
     const data = createTableData(bundles, builds, valueAccessor);
     const body = hideBelowThreshold
@@ -211,11 +205,11 @@ export default class Comparisons extends PureComponent {
       <Table style={styles.dataTable}>
         <Thead>
           <Tr>
-            {headers.map((column, i) => <Heading {...column} key={i} onClick={i !== 0 ? onClickRemove : undefined} />)}
+            {headers.map((column, i) => <Heading {...column} key={i} onClick={onRemoveBuild} />)}
           </Tr>
         </Thead>
         <Tbody>
-          {builds.length
+          {body.length
             ? body.map((row, i) =>
                 <Tr key={i}>
                   {flatten(row).map((column, i) => {
@@ -259,10 +253,7 @@ const styles = StyleSheet.create({
   dataTable: {
     fontSize: theme.fontSizeSmall,
     borderSpacing: 0,
-    borderCollapse: 'collapse',
-    marginLeft: theme.spaceMedium,
-    marginRight: theme.spaceMedium,
-    marginBottom: theme.spaceMedium
+    borderCollapse: 'collapse'
   },
   rowHeader: {
     textAlign: 'right',

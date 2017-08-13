@@ -3,11 +3,12 @@ import Bundles from './Bundles';
 import deepEqual from 'deep-equal';
 import Main from './Main';
 import React, { Component } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import theme from './theme';
+import Toggles from './Toggles';
 import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
-import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
+import { Types, TypesEnum, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
 import type { Match, RouterHistory } from 'react-router-dom';
 
@@ -27,11 +28,9 @@ const _getActiveBundles = (props: Object): Array<string> => {
 class App extends Component {
   state: {
     highlightBundle?: string,
-    commit?: Object,
-    date?: Object,
-    valueType: string,
-    xScaleType: string,
-    yScaleType: string
+    values: $Values<typeof ValueType>,
+    xscale: $Values<typeof XScaleType>,
+    yscale: $Values<typeof YScaleType>
   };
 
   props: {
@@ -44,9 +43,9 @@ class App extends Component {
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
-      valueType: ValueType.GZIP,
-      xScaleType: XScaleType.COMMIT,
-      yScaleType: YScaleType.LINEAR
+      values: ValueType.GZIP,
+      xscale: XScaleType.COMMIT,
+      yscale: YScaleType.LINEAR
     };
     this._activeBundles = _getActiveBundles(props);
   }
@@ -58,7 +57,7 @@ class App extends Component {
   }
 
   render() {
-    const { highlightBundle, valueType, xScaleType, yScaleType } = this.state;
+    const { highlightBundle, values, xscale, yscale } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.nav}>
@@ -68,53 +67,17 @@ class App extends Component {
             colorScale={colorScale}
             highlightBundle={highlightBundle}
             onBundlesChange={this._handleBundlesChange}
-            valueAccessor={valueTypeAccessor[valueType]}
+            valueAccessor={valueTypeAccessor[values]}
           />
         </View>
         <View style={styles.main}>
           <View style={styles.scaleTypeButtons}>
-            <View style={styles.buttonGroup}>
-              {Object.values(ValueType).map(value =>
-                <Button
-                  color={theme.colorSalmon}
-                  disabled={valueType === value}
-                  key={value}
-                  onPress={this._handleValueTypeChange}
-                  size="small"
-                  style={styles.button}
-                  title={value}
-                  value={value}
-                />
-              )}
-            </View>
-            <View style={styles.buttonGroup}>
-              {Object.values(YScaleType).map(scale =>
-                <Button
-                  color={theme.colorOrange}
-                  disabled={yScaleType === scale}
-                  key={scale}
-                  onPress={this._handleYScaleChange}
-                  size="small"
-                  style={styles.button}
-                  title={scale}
-                  value={scale}
-                />
-              )}
-            </View>
-            <View style={styles.buttonGroup}>
-              {Object.values(XScaleType).map(scale =>
-                <Button
-                  color={theme.colorGreen}
-                  disabled={xScaleType === scale}
-                  key={scale}
-                  onPress={this._handleXScaleChange}
-                  size="small"
-                  style={styles.button}
-                  title={scale}
-                  value={scale}
-                />
-              )}
-            </View>
+            <Toggles
+              onToggle={this._handleToggleValueTypes}
+              valueType={values}
+              xScaleType={xscale}
+              yScaleType={yscale}
+            />
           </View>
           <View style={styles.innerMain}>
             <Main
@@ -122,9 +85,9 @@ class App extends Component {
               bundles={bundlesBySize}
               colorScale={colorScale}
               onHoverBundle={this._handleHoverBundle}
-              valueAccessor={valueTypeAccessor[valueType]}
-              xScaleType={xScaleType}
-              yScaleType={yScaleType}
+              valueAccessor={valueTypeAccessor[values]}
+              xScaleType={xscale}
+              yScaleType={yscale}
             />
           </View>
         </View>
@@ -132,23 +95,12 @@ class App extends Component {
     );
   }
 
+  _handleToggleValueTypes = (toggleType: string, value: string) => {
+    this.setState({ [toggleType]: value });
+  };
+
   _handleHoverBundle = (highlightBundle?: string = ''): void => {
     this.setState({ highlightBundle });
-  };
-
-  _handleYScaleChange = (event: { target: { innerText: string } }): void => {
-    const { target: { innerText: yScaleType } } = event;
-    this.setState({ yScaleType });
-  };
-
-  _handleXScaleChange = (event: { target: { innerText: string } }): void => {
-    const { target: { innerText: xScaleType } } = event;
-    this.setState({ xScaleType });
-  };
-
-  _handleValueTypeChange = (event: { target: { innerText: string } }): void => {
-    const { target: { innerText: valueType } } = event;
-    this.setState({ valueType });
   };
 
   _handleBundlesChange = (bundles: Array<string>) => {
@@ -181,18 +133,9 @@ const styles = StyleSheet.create({
   },
   scaleTypeButtons: {
     flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
     marginTop: theme.spaceSmall,
     marginRight: theme.spaceSmall,
     marginBottom: theme.spaceSmall
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    marginLeft: theme.spaceSmall
-  },
-  button: {
-    fontSize: '12px'
   }
 });
 

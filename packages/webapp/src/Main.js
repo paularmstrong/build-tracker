@@ -34,7 +34,7 @@ export default class Main extends Component {
   }
 
   componentWillReceiveProps(nextProps: Object) {
-    if (!deepEqual(this.props, nextProps)) {
+    if (!deepEqual(this.props.bundles, nextProps.bundles)) {
       this._stats = statsForBundles(nextProps.bundles);
     }
   }

@@ -1,6 +1,12 @@
 // @flow
 import type { BundleStat } from './types';
 
+export const Types = {
+  VALUES: 'values',
+  XSCALE: 'xscale',
+  YSCALE: 'yscale'
+};
+
 export const YScaleType = {
   LINEAR: 'linear',
   POW: 'pow'
@@ -14,6 +20,12 @@ export const XScaleType = {
 export const ValueType = {
   STAT: 'stat',
   GZIP: 'gzip'
+};
+
+export const TypesEnum = {
+  [Types.VALUES]: ValueType,
+  [Types.XSCALE]: XScaleType,
+  [Types.YSCALE]: YScaleType
 };
 
 export const valueTypeAccessor = {

@@ -5,7 +5,7 @@ import IconX from './icons/IconX';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
@@ -108,20 +108,16 @@ class Heading extends PureComponent {
   render() {
     const { onClickRemove, text, title } = this.props;
     return (
-      <Th style={[styles.cell, styles.header, styles.stickyColumn]} title={title}>
+      <Th style={[styles.cell, styles.header]} title={title}>
         {onClickRemove
           ? <View>
               {formatSha(text)}
-              <TouchableHighlight onPress={this._handleClickRemove}>
-                <View>
-                  <IconX />
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight onPress={this._handleClickInfo}>
-                <View>
-                  <IconInfo />
-                </View>
-              </TouchableHighlight>
+              <View onClick={this._handleClickRemove}>
+                <IconX />
+              </View>
+              <View onClick={this._handleClickInfo}>
+                <IconInfo />
+              </View>
             </View>
           : text}
       </Th>
@@ -137,6 +133,25 @@ class Heading extends PureComponent {
     const { onClickInfo, text } = this.props;
     onClickInfo && onClickInfo(text);
   };
+}
+
+class BundleCell extends PureComponent {
+  props: {
+    active: boolean,
+    bundleName: string,
+    color?: string,
+    link: string,
+    onToggle?: Function
+  };
+
+  render() {
+    const { active, bundleName, color, link, onToggle } = this.props;
+    return (
+      <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
+        <BundleSwitch active={active} bundleName={bundleName} color={color} link={link} onToggle={onToggle} />
+      </Th>
+    );
+  }
 }
 
 class ValueCell extends PureComponent {
@@ -160,25 +175,6 @@ class ValueCell extends PureComponent {
   }
 }
 
-class BundleCell extends PureComponent {
-  props: {
-    active: boolean,
-    bundleName: string,
-    color?: string,
-    link: string,
-    onToggle?: Function
-  };
-
-  render() {
-    const { active, bundleName, color, link, onToggle } = this.props;
-    return (
-      <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
-        <BundleSwitch active={active} bundleName={bundleName} color={color} link={link} onToggle={onToggle} />
-      </Th>
-    );
-  }
-}
-
 export default class Comparisons extends PureComponent {
   props: {
     activeBundles: Array<string>,
@@ -187,6 +183,7 @@ export default class Comparisons extends PureComponent {
     colorScale: Function,
     onBundlesChange?: Function,
     onRemoveBuild?: Function,
+    onShowBuildInfo?: Function,
     valueAccessor: Function
   };
 
@@ -202,7 +199,8 @@ export default class Comparisons extends PureComponent {
   }
 
   render() {
-    const { activeBundles, builds, bundles, colorScale, onRemoveBuild, valueAccessor } = this.props;
+    const { activeBundles, builds, bundles, colorScale, onRemoveBuild, onShowBuildInfo, valueAccessor } = this.props;
+
     const { hideBelowThreshold } = this.state;
 
     const data = createTableData(bundles, builds, valueAccessor);
@@ -224,7 +222,12 @@ export default class Comparisons extends PureComponent {
           <Thead>
             <Tr>
               {headers.map((column, i) =>
-                <Heading {...column} key={i} onClickRemove={column.removable && onRemoveBuild} />
+                <Heading
+                  {...column}
+                  key={i}
+                  onClickRemove={column.removable && onRemoveBuild}
+                  onClickInfo={column.removable && onShowBuildInfo}
+                />
               )}
             </Tr>
           </Thead>

@@ -1,4 +1,5 @@
 // @flow
+import BuildInfo from './BuildInfo';
 import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
 import Main from './Main';
@@ -30,6 +31,7 @@ class App extends Component {
   state: {
     builds: Array<Build>,
     highlightBundle?: string,
+    selectedBuild?: Build,
     values: $Values<typeof ValueType>,
     xscale: $Values<typeof XScaleType>,
     yscale: $Values<typeof YScaleType>
@@ -60,7 +62,7 @@ class App extends Component {
   }
 
   render() {
-    const { builds, highlightBundle, values, xscale, yscale } = this.state;
+    const { builds, highlightBundle, selectedBuild, values, xscale, yscale } = this.state;
     const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
     return (
       <View style={styles.root}>
@@ -87,17 +89,23 @@ class App extends Component {
             />
           </View>
         </View>
-        <View style={styles.nav}>
-          <Comparisons
-            activeBundles={this._activeBundles}
-            builds={sortedBuilds}
-            bundles={bundlesBySize}
-            colorScale={colorScale}
-            highlightBundle={highlightBundle}
-            onBundlesChange={this._handleBundlesChange}
-            onRemoveBuild={this._handleRemoveRevision}
-            valueAccessor={valueTypeAccessor[values]}
-          />
+        <View style={styles.data}>
+          <View style={styles.table}>
+            <Comparisons
+              activeBundles={this._activeBundles}
+              builds={sortedBuilds}
+              bundles={bundlesBySize}
+              colorScale={colorScale}
+              highlightBundle={highlightBundle}
+              onBundlesChange={this._handleBundlesChange}
+              onRemoveBuild={this._handleRemoveRevision}
+              onShowBuildInfo={this._handleShowBuildInfo}
+              valueAccessor={valueTypeAccessor[values]}
+            />
+          </View>
+          <View style={styles.info}>
+            {selectedBuild ? <BuildInfo build={selectedBuild} /> : null}
+          </View>
         </View>
       </View>
     );
@@ -120,7 +128,14 @@ class App extends Component {
   };
 
   _handleRemoveRevision = (revision: string) => {
-    this.setState(() => ({ builds: this.state.builds.filter(build => build.build.revision !== revision) }));
+    this.setState(() => ({
+      builds: this.state.builds.filter(build => build.build.revision !== revision),
+      selectedBuild: this.state.builds.find(build => build.build.revision === revision)
+    }));
+  };
+
+  _handleShowBuildInfo = (revision: string) => {
+    this.setState(() => ({ selectedBuild: this.state.builds.find(build => build.build.revision === revision) }));
   };
 }
 
@@ -133,12 +148,16 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0
   },
-  nav: {
+  data: {
     flexGrow: 0,
     minWidth: `${2 * (100 / theme.columns)}%`,
-    maxWidth: `${6 * (100 / theme.columns)}%`,
-    overflowY: 'scroll'
+    maxWidth: `${6 * (100 / theme.columns)}%`
   },
+  table: {
+    overflowY: 'scroll',
+    height: '80vh'
+  },
+  info: {},
   main: {
     height: '100vh',
     maxHeight: '100vh',

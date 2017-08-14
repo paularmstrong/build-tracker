@@ -17,15 +17,24 @@ const emptyObject = {};
 
 const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 
-const greenScale = scaleLinear().domain([0, 1]).interpolate(interpolateHcl).range([rgb('#97ff7c'), rgb('#166b00')]);
-const redScale = scaleLinear().domain([0, 1]).interpolate(interpolateHcl).range([rgb('#ff8787'), rgb('#7c0014')]);
+const greenScale = scaleLinear().domain([1, 0]).interpolate(interpolateHcl).range([rgb('#d0f8d7'), rgb('#55e86e')]);
+const redScale = scaleLinear().domain([1, 2]).interpolate(interpolateHcl).range([rgb('#fde2e1'), rgb('#f7635b')]);
 
 const getDeltaColor = (originalValue, newValue) => {
-  if (!originalValue || originalValue === newValue) {
+  if (originalValue === newValue) {
     return 'transparent';
   }
+  if (!originalValue) {
+    return redScale(2);
+  }
+  if (!newValue) {
+    return greenScale(1);
+  }
+
   const percentDiff = Math.abs(newValue / originalValue);
-  return percentDiff >= 1 ? redScale(1 - percentDiff) : greenScale(1 - percentDiff);
+  return percentDiff > 1
+    ? redScale(Math.max(Math.min(percentDiff, 2), 1))
+    : greenScale(Math.max(Math.min(percentDiff, 1), 0));
 };
 
 const getTableHeaders = (builds: Array<Build>) =>

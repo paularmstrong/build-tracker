@@ -81,7 +81,7 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
     return values;
   });
 
-  return ['Total', ...totalsWithDelta];
+  return ['All', ...totalsWithDelta];
 };
 
 const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
@@ -145,30 +145,34 @@ class ValueCell extends PureComponent {
 
 class BundleCell extends PureComponent {
   props: {
+    active: boolean,
     bundle: string,
-    color?: string
+    color?: string,
+    onToggle?: Function
   };
 
   render() {
-    const { bundle, color } = this.props;
+    const { active, bundle, color, onToggle } = this.props;
     const isAll = this._isAll();
     return (
       <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
-        <Bundle active bundle={bundle} color={color} />
+        <Bundle active={active} bundle={bundle} color={color} onToggle={onToggle} />
       </Th>
     );
   }
 
   _isAll() {
-    return this.props.bundle === 'Total';
+    return this.props.bundle === 'All';
   }
 }
 
 export default class Comparisons extends PureComponent {
   props: {
+    activeBundles: Array<string>,
     builds: Array<Build>,
     bundles: Array<string>,
     colorScale: Function,
+    onBundlesChange?: Function,
     onRemoveBuild?: Function,
     valueAccessor: Function
   };
@@ -185,7 +189,7 @@ export default class Comparisons extends PureComponent {
   }
 
   render() {
-    const { builds, bundles, colorScale, onRemoveBuild, valueAccessor } = this.props;
+    const { activeBundles, builds, bundles, colorScale, onRemoveBuild, valueAccessor } = this.props;
     const { hideBelowThreshold } = this.state;
 
     const data = createTableData(bundles, builds, valueAccessor);
@@ -215,7 +219,19 @@ export default class Comparisons extends PureComponent {
                   <Tr key={i}>
                     {flatten(row).map((column, i) => {
                       if (i === 0) {
-                        return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
+                        return (
+                          <BundleCell
+                            active={
+                              column === 'All'
+                                ? activeBundles.length === bundles.length
+                                : activeBundles.indexOf(column) !== -1
+                            }
+                            bundle={column}
+                            color={colorScale(1 - bundles.indexOf(column))}
+                            key={i}
+                            onToggle={column === 'All' ? this._handleToggleAllBundles : this._handleToggleBundle}
+                          />
+                        );
                       }
                       return <ValueCell {...column} key={i} />;
                     })}
@@ -248,6 +264,20 @@ export default class Comparisons extends PureComponent {
 
   _toggleHidden = () => {
     this.setState(() => ({ hideBelowThreshold: !this.state.hideBelowThreshold }));
+  };
+
+  _handleToggleBundle = (bundleName: string, value: boolean) => {
+    const { activeBundles, onBundlesChange } = this.props;
+    if (value) {
+      onBundlesChange([...activeBundles, bundleName]);
+    } else {
+      onBundlesChange(activeBundles.filter(b => b !== bundleName));
+    }
+  };
+
+  _handleToggleAllBundles = (value: boolean) => {
+    const { bundles, onBundlesChange } = this.props;
+    onBundlesChange(bundles);
   };
 }
 

@@ -94,7 +94,7 @@ class App extends Component {
             colorScale={colorScale}
             highlightBundle={highlightBundle}
             onBundlesChange={this._handleBundlesChange}
-            onRemoveBuild={this._handleRemoveBuild}
+            onRemoveBuild={this._handleRemoveRevision}
             valueAccessor={valueTypeAccessor[values]}
           />
         </View>
@@ -116,10 +116,6 @@ class App extends Component {
 
   _handleSelectBuild = (build: Build, bundleName: string) => {
     this.setState({ builds: [...this.state.builds, build] });
-  };
-
-  _handleRemoveBuild = (build: Build) => {
-    this.setState(() => this.state.builds.filter(thisBuild => thisBuild.build.revision !== build.build.revision));
   };
 
   _handleRemoveRevision = (revision: string) => {

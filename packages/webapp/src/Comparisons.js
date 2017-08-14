@@ -1,9 +1,11 @@
 // @flow
 import BundleSwitch from './BundleSwitch';
+import IconInfo from './icons/IconInfo';
+import IconX from './icons/IconX';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
@@ -43,7 +45,7 @@ const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccesso
   const bundleMap = bundles.map((bundle, i) => {
     const originalValue = builds.length ? valueAccessor(builds[0].stats[bundle]) : 0;
     return [
-      bundle,
+      { link: `/${bundle}`, text: bundle },
       ...builds.map((build, i) => {
         const value = valueAccessor(build.stats[bundle]);
         if (i === 0) {
@@ -81,7 +83,7 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
     return values;
   });
 
-  return ['All', ...totalsWithDelta];
+  return [{ link: '/', text: 'All' }, ...totalsWithDelta];
 };
 
 const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
@@ -93,8 +95,8 @@ const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAcce
 
 class Heading extends PureComponent {
   props: {
-    onClick?: Function,
-    removable?: boolean,
+    onClickInfo?: Function,
+    onClickRemove?: Function,
     text: string,
     title?: string
   };
@@ -104,21 +106,36 @@ class Heading extends PureComponent {
   };
 
   render() {
-    const { onClick, removable, text, title } = this.props;
+    const { onClickRemove, text, title } = this.props;
     return (
-      <Th style={[styles.cell, styles.header]} title={title}>
-        {removable && onClick
-          ? <button onClick={this._handleClick}>
+      <Th style={[styles.cell, styles.header, styles.stickyColumn]} title={title}>
+        {onClickRemove
+          ? <View>
               {formatSha(text)}
-            </button>
+              <TouchableHighlight onPress={this._handleClickRemove}>
+                <View>
+                  <IconX />
+                </View>
+              </TouchableHighlight>
+              <TouchableHighlight onPress={this._handleClickInfo}>
+                <View>
+                  <IconInfo />
+                </View>
+              </TouchableHighlight>
+            </View>
           : text}
       </Th>
     );
   }
 
-  _handleClick = event => {
-    const { onClick, text } = this.props;
-    onClick && onClick(text);
+  _handleClickRemove = () => {
+    const { onClickRemove, text } = this.props;
+    onClickRemove && onClickRemove(text);
+  };
+
+  _handleClickInfo = () => {
+    const { onClickInfo, text } = this.props;
+    onClickInfo && onClickInfo(text);
   };
 }
 
@@ -146,16 +163,17 @@ class ValueCell extends PureComponent {
 class BundleCell extends PureComponent {
   props: {
     active: boolean,
-    bundle: string,
+    bundleName: string,
     color?: string,
+    link: string,
     onToggle?: Function
   };
 
   render() {
-    const { active, bundle, color, onToggle } = this.props;
+    const { active, bundleName, color, link, onToggle } = this.props;
     return (
       <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
-        <BundleSwitch active={active} bundle={bundle} color={color} onToggle={onToggle} />
+        <BundleSwitch active={active} bundleName={bundleName} color={color} link={link} onToggle={onToggle} />
       </Th>
     );
   }
@@ -205,7 +223,9 @@ export default class Comparisons extends PureComponent {
         <Table style={styles.dataTable}>
           <Thead>
             <Tr>
-              {headers.map((column, i) => <Heading {...column} key={i} onClick={onRemoveBuild} />)}
+              {headers.map((column, i) =>
+                <Heading {...column} key={i} onClickRemove={column.removable && onRemoveBuild} />
+              )}
             </Tr>
           </Thead>
           <Tbody>
@@ -214,17 +234,19 @@ export default class Comparisons extends PureComponent {
                   <Tr key={i}>
                     {flatten(row).map((column, i) => {
                       if (i === 0) {
+                        const { link, text } = column;
                         return (
                           <BundleCell
                             active={
-                              column === 'All'
+                              text === 'All'
                                 ? activeBundles.length === bundles.length
-                                : activeBundles.indexOf(column) !== -1
+                                : activeBundles.indexOf(text) !== -1
                             }
-                            bundle={column}
-                            color={colorScale(1 - bundles.indexOf(column))}
+                            color={colorScale(1 - bundles.indexOf(text))}
                             key={i}
-                            onToggle={column === 'All' ? this._handleToggleAllBundles : this._handleToggleBundle}
+                            onToggle={text === 'All' ? this._handleToggleAllBundles : this._handleToggleBundle}
+                            bundleName={text}
+                            link={link}
                           />
                         );
                       }

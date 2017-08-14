@@ -8,14 +8,15 @@ import { hsl } from 'd3-color';
 export default class BundleSwitch extends PureComponent {
   props: {
     active: boolean,
-    bundle: string,
+    bundleName: string,
     color: string,
     highlight?: boolean,
+    link: string,
     onToggle: Function
   };
 
   render() {
-    const { active, bundle, color, highlight } = this.props;
+    const { active, bundleName, color, highlight, link } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
@@ -23,9 +24,9 @@ export default class BundleSwitch extends PureComponent {
     return (
       <View style={[styles.bundle, highlight && styles.bundleHighlight]}>
         <View style={styles.bundleName}>
-          <Link style={[styles.bundleLink]} to={`/${bundle}`}>
+          <Link style={[styles.bundleLink]} to={link}>
             <Text numberOfLines={1} style={styles.bundleNameText}>
-              {bundle}
+              {bundleName}
             </Text>
           </Link>
         </View>
@@ -42,7 +43,7 @@ export default class BundleSwitch extends PureComponent {
   }
 
   _handleValueChange = (toggled: boolean) => {
-    this.props.onToggle(this.props.bundle, toggled);
+    this.props.onToggle(this.props.bundleName, toggled);
   };
 }
 

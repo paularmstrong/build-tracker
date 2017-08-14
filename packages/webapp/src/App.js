@@ -124,13 +124,16 @@ class App extends Component {
   };
 
   _handleSelectBuild = (build: Build, bundleName: string) => {
-    this.setState({ builds: [...this.state.builds, build] });
+    this.setState({
+      builds: [...this.state.builds, build],
+      selectedBuild: build
+    });
   };
 
   _handleRemoveRevision = (revision: string) => {
     this.setState(() => ({
       builds: this.state.builds.filter(build => build.build.revision !== revision),
-      selectedBuild: this.state.builds.find(build => build.build.revision === revision)
+      selectedBuild: this.state.builds.length && this.state.builds[0]
     }));
   };
 

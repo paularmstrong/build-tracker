@@ -1,5 +1,5 @@
-import { Bundle } from './Bundles';
-import Link from './Link';
+// @flow
+import BundleSwitch from './BundleSwitch';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
@@ -26,7 +26,7 @@ const getDeltaColor = (originalValue, newValue) => {
   return percentDiff >= 1 ? redScale(1 - percentDiff) : greenScale(1 - percentDiff);
 };
 
-const getTableHeaders = builds =>
+const getTableHeaders = (builds: Array<Build>) =>
   builds.map((build, i) => {
     const { revision } = build.build;
     const headers = [{ text: revision, removable: true }];
@@ -118,7 +118,7 @@ class Heading extends PureComponent {
 
   _handleClick = event => {
     const { onClick, text } = this.props;
-    onClick(text);
+    onClick && onClick(text);
   };
 }
 
@@ -153,16 +153,11 @@ class BundleCell extends PureComponent {
 
   render() {
     const { active, bundle, color, onToggle } = this.props;
-    const isAll = this._isAll();
     return (
       <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
-        <Bundle active={active} bundle={bundle} color={color} onToggle={onToggle} />
+        <BundleSwitch active={active} bundle={bundle} color={color} onToggle={onToggle} />
       </Th>
     );
-  }
-
-  _isAll() {
-    return this.props.bundle === 'All';
   }
 }
 
@@ -268,16 +263,18 @@ export default class Comparisons extends PureComponent {
 
   _handleToggleBundle = (bundleName: string, value: boolean) => {
     const { activeBundles, onBundlesChange } = this.props;
-    if (value) {
-      onBundlesChange([...activeBundles, bundleName]);
-    } else {
-      onBundlesChange(activeBundles.filter(b => b !== bundleName));
+    if (onBundlesChange) {
+      if (value) {
+        onBundlesChange([...activeBundles, bundleName]);
+      } else {
+        onBundlesChange(activeBundles.filter(b => b !== bundleName));
+      }
     }
   };
 
   _handleToggleAllBundles = (value: boolean) => {
     const { bundles, onBundlesChange } = this.props;
-    onBundlesChange(bundles);
+    onBundlesChange && onBundlesChange(bundles);
   };
 }
 

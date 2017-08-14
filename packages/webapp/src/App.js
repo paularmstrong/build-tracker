@@ -8,9 +8,10 @@ import theme from './theme';
 import Toggles from './Toggles';
 import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
-import { Types, TypesEnum, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
+import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
-import type { Build, Match, RouterHistory } from 'react-router-dom';
+import type { Match, RouterHistory } from 'react-router-dom';
+import type { Build } from './types';
 
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 

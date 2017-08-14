@@ -1,6 +1,5 @@
 // @flow
 import AreaChart from './charts/AreaChart';
-import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -61,15 +60,6 @@ export default class Main extends Component {
             stats={this._stats}
           />
         </View>
-        {/*<View style={styles.meta}>
-          <Comparisons
-            builds={sortedBuilds}
-            bundles={bundles}
-            colorScale={colorScale}
-            onClickRemove={this._handleRemoveRevision}
-            valueAccessor={valueAccessor}
-          />
-        </View>*/}
       </View>
     );
   }

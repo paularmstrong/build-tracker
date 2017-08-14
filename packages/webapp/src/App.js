@@ -63,18 +63,6 @@ class App extends Component {
     const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
     return (
       <View style={styles.root}>
-        <View style={styles.nav}>
-          <Comparisons
-            activeBundles={this._activeBundles}
-            builds={sortedBuilds}
-            bundles={bundlesBySize}
-            colorScale={colorScale}
-            highlightBundle={highlightBundle}
-            onBundlesChange={this._handleBundlesChange}
-            onRemoveBuild={this._handleRemoveBuild}
-            valueAccessor={valueTypeAccessor[values]}
-          />
-        </View>
         <View style={styles.main}>
           <View style={styles.scaleTypeButtons}>
             <Toggles
@@ -97,6 +85,18 @@ class App extends Component {
               yScaleType={yscale}
             />
           </View>
+        </View>
+        <View style={styles.nav}>
+          <Comparisons
+            activeBundles={this._activeBundles}
+            builds={sortedBuilds}
+            bundles={bundlesBySize}
+            colorScale={colorScale}
+            highlightBundle={highlightBundle}
+            onBundlesChange={this._handleBundlesChange}
+            onRemoveBuild={this._handleRemoveBuild}
+            valueAccessor={valueTypeAccessor[values]}
+          />
         </View>
       </View>
     );

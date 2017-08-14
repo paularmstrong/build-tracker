@@ -106,7 +106,7 @@ class Heading extends PureComponent {
   render() {
     const { onClick, removable, text, title } = this.props;
     return (
-      <Th style={styles.header} title={title}>
+      <Th style={[styles.cell, styles.header]} title={title}>
         {removable && onClick
           ? <button onClick={this._handleClick}>
               {formatSha(text)}
@@ -153,7 +153,7 @@ class BundleCell extends PureComponent {
     const { bundle, color } = this.props;
     const isAll = this._isAll();
     return (
-      <Th style={[styles.cell, styles.rowHeader]}>
+      <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
         <Bundle active bundle={bundle} color={color} />
       </Th>
     );
@@ -202,45 +202,47 @@ export default class Comparisons extends PureComponent {
     const headers = flatten(data.head);
 
     return (
-      <Table style={styles.dataTable}>
-        <Thead>
-          <Tr>
-            {headers.map((column, i) => <Heading {...column} key={i} onClick={onRemoveBuild} />)}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {body.length
-            ? body.map((row, i) =>
-                <Tr key={i}>
-                  {flatten(row).map((column, i) => {
-                    if (i === 0) {
-                      return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
-                    }
-                    return <ValueCell {...column} key={i} />;
-                  })}
+      <View style={styles.root}>
+        <Table style={styles.dataTable}>
+          <Thead>
+            <Tr>
+              {headers.map((column, i) => <Heading {...column} key={i} onClick={onRemoveBuild} />)}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {body.length
+              ? body.map((row, i) =>
+                  <Tr key={i}>
+                    {flatten(row).map((column, i) => {
+                      if (i === 0) {
+                        return <BundleCell bundle={column} color={colorScale(1 - bundles.indexOf(column))} key={i} />;
+                      }
+                      return <ValueCell {...column} key={i} />;
+                    })}
+                  </Tr>
+                )
+              : null}
+          </Tbody>
+          {builds.length > 1
+            ? <Tfoot>
+                <Tr>
+                  <Td colSpan={headers.length} style={styles.footer}>
+                    {hiddenRowCount
+                      ? <Text style={styles.footerText}>
+                          {hiddenRowCount} rows hidden{' '}
+                          <View onClick={this._toggleHidden} style={[styles.footerText, styles.toggle]}>
+                            Click to show
+                          </View>
+                        </Text>
+                      : <Text onClick={this._toggleHidden} style={styles.toggle}>
+                          Click to hide rows below change threshold
+                        </Text>}
+                  </Td>
                 </Tr>
-              )
+              </Tfoot>
             : null}
-        </Tbody>
-        {builds.length > 1
-          ? <Tfoot>
-              <Tr>
-                <Td colSpan={headers.length} style={styles.footer}>
-                  {hiddenRowCount
-                    ? <Text style={styles.footerText}>
-                        {hiddenRowCount} rows hidden{' '}
-                        <View onClick={this._toggleHidden} style={[styles.footerText, styles.toggle]}>
-                          Click to show
-                        </View>
-                      </Text>
-                    : <Text onClick={this._toggleHidden} style={styles.toggle}>
-                        Click to hide rows below change threshold
-                      </Text>}
-                </Td>
-              </Tr>
-            </Tfoot>
-          : null}
-      </Table>
+        </Table>
+      </View>
     );
   }
 
@@ -250,13 +252,22 @@ export default class Comparisons extends PureComponent {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    position: 'relative'
+  },
   dataTable: {
     fontSize: theme.fontSizeSmall,
     borderSpacing: 0,
-    borderCollapse: 'collapse'
+    borderCollapse: 'separate'
+  },
+  header: {
+    position: 'sticky',
+    top: 0,
+    left: 'auto',
+    zIndex: 2
   },
   rowHeader: {
-    textAlign: 'right',
+    textAlign: 'left',
     paddingRight: theme.spaceXXSmall
   },
   rowColor: {
@@ -271,15 +282,17 @@ const styles = StyleSheet.create({
     fontWeight: 'normal'
   },
   cell: {
+    backgroundColor: theme.colorWhite,
     margin: 0,
-    paddingTop: theme.spaceXXSmall,
-    paddingBottom: theme.spaceXXSmall,
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
+    verticalAlign: 'middle',
+    height: theme.spaceLarge,
     textAlign: 'right',
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
-    borderBottomColor: theme.colorGray
+    borderBottomColor: theme.colorGray,
+    whiteSpace: 'nowrap'
   },
   toggle: {
     color: theme.colorBlue,
@@ -290,5 +303,14 @@ const styles = StyleSheet.create({
   },
   footerText: {
     display: 'inline'
+  },
+  stickyColumn: {
+    left: 0,
+    position: 'sticky',
+    top: 'auto',
+    maxWidth: '13rem',
+    borderRightWidth: '1px',
+    borderRightStyle: 'solid',
+    borderRightColor: theme.colorGray
   }
 });

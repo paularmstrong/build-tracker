@@ -110,13 +110,12 @@ class Heading extends PureComponent {
     return (
       <Th style={[styles.cell, styles.header]} title={title}>
         {onClickRemove
-          ? <View>
-              {formatSha(text)}
-              <View onClick={this._handleClickRemove}>
+          ? <View style={styles.headerContent}>
+              <Text onClick={this._handleClickInfo} style={styles.headerSha}>
+                {formatSha(text)}
+              </Text>
+              <View onClick={this._handleClickRemove} style={[styles.headerButton, styles.removeBuild]}>
                 <IconX />
-              </View>
-              <View onClick={this._handleClickInfo}>
-                <IconInfo />
               </View>
             </View>
           : text}
@@ -364,5 +363,19 @@ const styles = StyleSheet.create({
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
     borderRightColor: theme.colorGray
+  },
+  headerContent: {
+    flexDirection: 'row'
+  },
+  headerSha: {
+    cursor: 'pointer'
+  },
+  headerButton: {
+    marginLeft: theme.spaceXSmall,
+    cursor: 'pointer',
+    fontSize: '0.5rem'
+  },
+  removeBuild: {
+    color: theme.colorRed
   }
 });

@@ -16,6 +16,7 @@ import { XScaleType, YScaleType } from '../values';
 const margin = { top: 0, right: 20, bottom: 50, left: 60 };
 
 const PERCENT_Y_HEADROOM = 1.05;
+const MAX_HEIGHT = 800;
 
 type bundleStatType = {
   hash: string,
@@ -249,7 +250,7 @@ export default class AreaChart extends Component {
   _handleLayout = (event: Object) => {
     const { nativeEvent: { layout: { width, height } } } = event;
     if (width !== this.state.width) {
-      this.setState({ height, width });
+      this.setState({ height: Math.min(height, MAX_HEIGHT), width });
     }
   };
 

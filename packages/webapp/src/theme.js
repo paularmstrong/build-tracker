@@ -8,6 +8,7 @@ const theme = {
   colorSalmon: '#F48766',
   colorOrange: '#FFC94C',
   colorGreen: '#8EB737',
+  colorRed: '#E0245E',
   colorMidnight: '#233754',
   colorBlack: '#000000',
   colorWhite: '#FFFFFF',

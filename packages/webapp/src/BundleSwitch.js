@@ -11,7 +11,7 @@ export default class BundleSwitch extends PureComponent {
     bundleName: string,
     color: string,
     highlight?: boolean,
-    link: string,
+    link?: string,
     onToggle: Function
   };
 
@@ -21,14 +21,22 @@ export default class BundleSwitch extends PureComponent {
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
 
+    const text = (
+      <Text numberOfLines={1} style={styles.bundleNameText}>
+        {bundleName}
+      </Text>
+    );
+
     return (
       <View style={[styles.bundle, highlight && styles.bundleHighlight]}>
         <View style={styles.bundleName}>
-          <Link style={[styles.bundleLink]} to={link}>
-            <Text numberOfLines={1} style={styles.bundleNameText}>
-              {bundleName}
-            </Text>
-          </Link>
+          {link
+            ? <Link style={[styles.bundleLink]} to={link}>
+                {text}
+              </Link>
+            : <View style={[styles.bundleLink]}>
+                {text}
+              </View>}
         </View>
         <View style={styles.switch}>
           <Switch

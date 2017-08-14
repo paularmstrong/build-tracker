@@ -1,11 +1,11 @@
 // @flow
 import BundleSwitch from './BundleSwitch';
-import IconInfo from './icons/IconInfo';
+import deepEqual from 'deep-equal';
 import IconX from './icons/IconX';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
@@ -196,33 +196,29 @@ export default class Comparisons extends PureComponent {
   };
 
   state: {
-    hideBelowThreshold: boolean
+    showDeselectedBundles: boolean
   };
 
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
-      hideBelowThreshold: true
+      showDeselectedBundles: true
     };
+    this._data = createTableData(props.bundles, props.builds, props.valueAccessor);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this._data = createTableData(nextProps.bundles, nextProps.builds, nextProps.valueAccessor);
   }
 
   render() {
-    const { activeBundles, builds, bundles, colorScale, onRemoveBuild, onShowBuildInfo, valueAccessor } = this.props;
+    const { activeBundles, builds, bundles, colorScale, onRemoveBuild, onShowBuildInfo } = this.props;
 
-    const { hideBelowThreshold } = this.state;
+    const { showDeselectedBundles } = this.state;
 
-    const data = createTableData(bundles, builds, valueAccessor);
-    const body = hideBelowThreshold
-      ? data.body.filter((row, i) => {
-          const deltas = row.filter(columns => columns.length > 1 && Math.abs(columns[1].bytes) > 100);
-          if (i !== 0 && row.length > 2 && deltas.length === 0) {
-            return false;
-          }
-          return true;
-        })
-      : data.body;
-    const hiddenRowCount = data.body.length - body.length;
-    const headers = flatten(data.head);
+    const body = showDeselectedBundles ? this._data.body : this._getActiveData();
+    const hiddenRowCount = this._data.body.length - body.length;
+    const headers = flatten(this._data.head);
 
     return (
       <View style={styles.root}>
@@ -246,16 +242,15 @@ export default class Comparisons extends PureComponent {
                     {flatten(row).map((column, i) => {
                       if (i === 0) {
                         const { link, text } = column;
+                        const isAll = text === 'All';
                         return (
                           <BundleCell
                             active={
-                              text === 'All'
-                                ? activeBundles.length === bundles.length
-                                : activeBundles.indexOf(text) !== -1
+                              isAll ? activeBundles.length === bundles.length : activeBundles.indexOf(text) !== -1
                             }
-                            color={colorScale(1 - bundles.indexOf(text))}
+                            color={isAll ? theme.colorMidnight : colorScale(1 - bundles.indexOf(text))}
                             key={i}
-                            onToggle={text === 'All' ? this._handleToggleAllBundles : this._handleToggleBundle}
+                            onToggle={isAll ? this._handleToggleAllBundles : this._handleToggleBundle}
                             bundleName={text}
                             link={link}
                           />
@@ -270,18 +265,22 @@ export default class Comparisons extends PureComponent {
           {builds.length > 1
             ? <Tfoot>
                 <Tr>
-                  <Td colSpan={headers.length} style={styles.footer}>
-                    {hiddenRowCount
-                      ? <Text style={styles.footerText}>
-                          {hiddenRowCount} rows hidden{' '}
-                          <View onClick={this._toggleHidden} style={[styles.footerText, styles.toggle]}>
-                            Click to show
-                          </View>
-                        </Text>
-                      : <Text onClick={this._toggleHidden} style={styles.toggle}>
-                          Click to hide rows below change threshold
-                        </Text>}
-                  </Td>
+                  <BundleCell
+                    active={deepEqual(this._getFilteredData().map(row => row[0].text).slice(1), activeBundles)}
+                    bundleName="Above threshold only"
+                    color={theme.colorMidnight}
+                    onToggle={this._handleRemoveBelowThreshold}
+                  />
+                  <Td colSpan={headers.length - 1} style={styles.footer} />
+                </Tr>
+                <Tr>
+                  <BundleCell
+                    active={!hiddenRowCount}
+                    bundleName="Show deselected"
+                    color={theme.colorMidnight}
+                    onToggle={this._handleHideBelowThreshold}
+                  />
+                  <Td colSpan={headers.length - 1} style={styles.footer} />
                 </Tr>
               </Tfoot>
             : null}
@@ -290,8 +289,35 @@ export default class Comparisons extends PureComponent {
     );
   }
 
-  _toggleHidden = () => {
-    this.setState(() => ({ hideBelowThreshold: !this.state.hideBelowThreshold }));
+  _getActiveData() {
+    const { activeBundles } = this.props;
+    return this._data.body.filter((row, i) => {
+      return i === 0 || activeBundles.indexOf(row[0].text) !== -1;
+    });
+  }
+
+  _getFilteredData() {
+    return this._data.body.filter((row, i) => {
+      const deltas = row.filter(columns => columns.length > 1 && Math.abs(columns[1].bytes) > 100);
+      if (i !== 0 && row.length > 2 && deltas.length === 0) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  _handleHideBelowThreshold = (name: string, toggled: boolean) => {
+    this.setState({ showDeselectedBundles: toggled });
+  };
+
+  _handleRemoveBelowThreshold = (name: string, toggled: boolean) => {
+    const { bundles, onBundlesChange } = this.props;
+    if (toggled) {
+      const data = this._getFilteredData();
+      onBundlesChange(data.map(row => row[0].text));
+    } else {
+      onBundlesChange(bundles);
+    }
   };
 
   _handleToggleBundle = (bundleName: string, value: boolean) => {

@@ -154,13 +154,25 @@ const styles = StyleSheet.create({
   data: {
     flexGrow: 0,
     minWidth: `${2 * (100 / theme.columns)}%`,
-    maxWidth: `${6 * (100 / theme.columns)}%`
+    maxWidth: `${6 * (100 / theme.columns)}%`,
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+    borderLeftColor: theme.colorGray
   },
   table: {
     overflowY: 'scroll',
-    height: '80vh'
+    minHeight: '50vh',
+    maxHeight: '80vh',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderBottomColor: theme.colorGray
   },
-  info: {},
+  info: {
+    flexGrow: 1,
+    minHeight: '20vh',
+    maxHeight: '50vh',
+    margin: theme.spaceSmall
+  },
   main: {
     height: '100vh',
     maxHeight: '100vh',

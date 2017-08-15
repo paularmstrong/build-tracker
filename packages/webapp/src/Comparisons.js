@@ -55,19 +55,21 @@ const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccesso
     const originalValue = builds.length ? valueAccessor(builds[0].stats[bundle]) : 0;
     return [
       { link: `/${bundle}`, text: bundle },
-      ...builds.map((build, i) => {
-        const value = valueAccessor(build.stats[bundle]);
-        if (i === 0) {
-          return [{ bytes: value }];
-        }
-        const oldValue = valueAccessor(builds[i - 1].stats[bundle]);
-        const delta = value - oldValue;
-        const values = [{ bytes: value }, { bytes: delta, color: getDeltaColor(oldValue, value) }];
-        if (i > 1) {
-          values.push({ bytes: value - originalValue, color: getDeltaColor(originalValue, value) });
-        }
-        return values;
-      })
+      ...flatten(
+        builds.map((build, i) => {
+          const value = valueAccessor(build.stats[bundle]);
+          if (i === 0) {
+            return [{ bytes: value }];
+          }
+          const oldValue = valueAccessor(builds[i - 1].stats[bundle]);
+          const delta = value - oldValue;
+          const values = [{ bytes: value }, { bytes: delta, color: getDeltaColor(oldValue, value) }];
+          if (i > 1) {
+            values.push({ bytes: value - originalValue, color: getDeltaColor(originalValue, value) });
+          }
+          return values;
+        })
+      )
     ];
   });
 
@@ -79,18 +81,20 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
     Object.values(build.stats).reduce((memo, bundle) => memo + valueAccessor(bundle), 0)
   );
 
-  const totalsWithDelta = totals.map((total, i) => {
-    if (i === 0) {
-      return [{ bytes: total }];
-    }
-    const bytes = total - totals[i - 1];
-    const values = [{ bytes: total }, { bytes, color: getDeltaColor(totals[i - 1], total) }];
-    if (i > 1) {
-      const bytes = total - totals[0];
-      values.push({ bytes, color: getDeltaColor(totals[0], total) });
-    }
-    return values;
-  });
+  const totalsWithDelta = flatten(
+    totals.map((total, i) => {
+      if (i === 0) {
+        return [{ bytes: total }];
+      }
+      const bytes = total - totals[i - 1];
+      const values = [{ bytes: total }, { bytes, color: getDeltaColor(totals[i - 1], total) }];
+      if (i > 1) {
+        const bytes = total - totals[0];
+        values.push({ bytes, color: getDeltaColor(totals[0], total) });
+      }
+      return values;
+    })
+  );
 
   return [{ link: '/', text: 'All' }, ...totalsWithDelta];
 };
@@ -169,6 +173,9 @@ class ValueCell extends PureComponent {
   }
 }
 
+type HeaderCell = { link?: string, text?: string };
+type BodyCell = { link?: string, text?: string, bytes?: number, color?: string };
+
 export default class Comparisons extends PureComponent {
   props: {
     activeBundles: Array<string>,
@@ -185,6 +192,11 @@ export default class Comparisons extends PureComponent {
     showDeselectedBundles: boolean
   };
 
+  _data: {
+    head: Array<Array<HeaderCell>>,
+    body: Array<Array<BodyCell>>
+  };
+
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
@@ -193,7 +205,7 @@ export default class Comparisons extends PureComponent {
     this._data = createTableData(props.bundles, props.builds, props.valueAccessor);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: Object, nextState: Object) {
     this._data = createTableData(nextProps.bundles, nextProps.builds, nextProps.valueAccessor);
   }
 
@@ -225,16 +237,18 @@ export default class Comparisons extends PureComponent {
             {body.length
               ? body.map((row, i) =>
                   <Tr key={i}>
-                    {flatten(row).map((column, i) => {
+                    {row.map((column, i) => {
                       if (i === 0) {
                         const { link, text } = column;
                         const isAll = text === 'All';
                         return (
                           <BundleCell
                             active={
-                              isAll ? activeBundles.length === bundles.length : activeBundles.indexOf(text) !== -1
+                              isAll || !text
+                                ? activeBundles.length === bundles.length
+                                : activeBundles.indexOf(text) !== -1
                             }
-                            color={isAll ? theme.colorMidnight : colorScale(1 - bundles.indexOf(text))}
+                            color={isAll || !text ? theme.colorMidnight : colorScale(1 - bundles.indexOf(text))}
                             disabled={isAll && activeBundles.length === bundles.length}
                             key={i}
                             onToggle={isAll ? this._handleToggleAllBundles : this._handleToggleBundle}
@@ -279,13 +293,13 @@ export default class Comparisons extends PureComponent {
   _getActiveData() {
     const { activeBundles } = this.props;
     return this._data.body.filter((row, i) => {
-      return i === 0 || activeBundles.indexOf(row[0].text) !== -1;
+      return i === 0 || (row[0].text && activeBundles.indexOf(row[0].text) !== -1);
     });
   }
 
   _getFilteredData() {
     return this._data.body.filter((row, i) => {
-      const deltas = row.filter(columns => columns.length > 1 && Math.abs(columns[1].bytes) > 100);
+      const deltas = row.filter(column => column.color && column.bytes && Math.abs(column.bytes) > 100);
       if (i !== 0 && row.length > 2 && deltas.length === 0) {
         return false;
       }
@@ -299,11 +313,13 @@ export default class Comparisons extends PureComponent {
 
   _handleRemoveBelowThreshold = (name: string, toggled: boolean) => {
     const { bundles, onBundlesChange } = this.props;
-    if (toggled) {
-      const data = this._getFilteredData();
-      onBundlesChange(data.map(row => row[0].text));
-    } else {
-      onBundlesChange(bundles);
+    if (onBundlesChange) {
+      if (toggled) {
+        const data = this._getFilteredData();
+        onBundlesChange(data.map(row => row[0].text));
+      } else {
+        onBundlesChange(bundles);
+      }
     }
   };
 

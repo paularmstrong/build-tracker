@@ -13,7 +13,9 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { bytesToKb, formatTime, formatSha } from '../formatting';
 import { ChartType, XScaleType, YScaleType } from '../values';
 
-import type { Build, BundleStat } from '../types';
+import type { Build } from '../types';
+
+type StackedData = Array<Array<Array<number>>>;
 
 const margin = { top: 0, right: 20, bottom: 50, left: 60 };
 
@@ -21,10 +23,10 @@ const PERCENT_Y_HEADROOM = 1.05;
 const MAX_HEIGHT = 800;
 
 const getMouseInformation = (
-  nodes: Array,
+  nodes: Array<Object>,
   xScale: Function,
   yScale: Function,
-  data: Array<Array<number>>,
+  data: StackedData,
   stats: Array<Build>
 ) => {
   const [xPos, yPos] = mouse(nodes[0]);
@@ -109,7 +111,7 @@ export default class AreaChart extends Component {
     this._renderChart();
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
@@ -124,7 +126,7 @@ export default class AreaChart extends Component {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { activeBundles, bundles, chartType, colorScale, stats, valueAccessor, xScaleType } = this.props;
+    const { activeBundles, chartType, stats, valueAccessor } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
@@ -147,7 +149,6 @@ export default class AreaChart extends Component {
         break;
       default:
         throw new Error(`Chart type ${chartType} is unknown`);
-        break;
     }
 
     this._drawXAxis(xScale);
@@ -182,7 +183,7 @@ export default class AreaChart extends Component {
       });
   }
 
-  _drawArea(data, xScale, yScale) {
+  _drawArea(data: Array<Array<number>>, xScale: Function, yScale: Function) {
     const { bundles, colorScale, xScaleType } = this.props;
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
 
@@ -206,7 +207,7 @@ export default class AreaChart extends Component {
       .attr('d', areaChart);
   }
 
-  _drawBars(data, xScale, yScale) {
+  _drawBars(data: Array<Array<number>>, xScale: Function, yScale: Function) {
     const { bundles, colorScale, xScaleType } = this.props;
     const { height } = this.state;
 
@@ -265,7 +266,7 @@ export default class AreaChart extends Component {
     }
   };
 
-  _drawLines(xScale: Object) {
+  _drawLines(xScale: Function) {
     const { height } = this.state;
     const { selectedBuilds } = this.props;
     const lines = this._staticLines.selectAll('line').data(selectedBuilds);

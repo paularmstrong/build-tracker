@@ -2,7 +2,7 @@
 import { formatSha, formatTime } from './formatting';
 import theme from './theme';
 import React, { PureComponent } from 'react';
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
+import { Table, Tbody, Tr, Th, Td } from './Table';
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { Build } from './types';
@@ -16,7 +16,7 @@ export default class BuildInfo extends PureComponent {
     const { build: { build } } = this.props;
     return (
       <View>
-        <Text aria-role="heading" style={styles.heading}>
+        <Text style={styles.heading}>
           Build {formatSha(build.revision)}
         </Text>
         <Table>
@@ -36,10 +36,8 @@ export default class BuildInfo extends PureComponent {
           </Tbody>
         </Table>
         {build.meta
-          ? <View aria-role="section">
-              <Text aria-role="sectionheading" style={styles.sectionHeading}>
-                Build Meta
-              </Text>
+          ? <View>
+              <Text style={styles.sectionHeading}>Build Meta</Text>
               {/* TODO: format for build meta? */}
             </View>
           : null}

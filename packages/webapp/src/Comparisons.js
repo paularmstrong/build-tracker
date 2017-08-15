@@ -143,24 +143,10 @@ class Heading extends PureComponent {
   };
 }
 
-class BundleCell extends PureComponent {
-  props: {
-    active: boolean,
-    bundleName: string,
-    color?: string,
-    link: string,
-    onToggle?: Function
-  };
-
-  render() {
-    const { active, bundleName, color, link, onToggle } = this.props;
-    return (
-      <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
-        <BundleSwitch active={active} bundleName={bundleName} color={color} link={link} onToggle={onToggle} />
-      </Th>
-    );
-  }
-}
+const BundleCell = props =>
+  <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
+    <BundleSwitch {...props} />
+  </Th>;
 
 class ValueCell extends PureComponent {
   props: {
@@ -249,6 +235,7 @@ export default class Comparisons extends PureComponent {
                               isAll ? activeBundles.length === bundles.length : activeBundles.indexOf(text) !== -1
                             }
                             color={isAll ? theme.colorMidnight : colorScale(1 - bundles.indexOf(text))}
+                            disabled={isAll && activeBundles.length === bundles.length}
                             key={i}
                             onToggle={isAll ? this._handleToggleAllBundles : this._handleToggleBundle}
                             bundleName={text}

@@ -10,13 +10,14 @@ export default class BundleSwitch extends PureComponent {
     active: boolean,
     bundleName: string,
     color: string,
+    disabled?: boolean,
     highlight?: boolean,
     link?: string,
     onToggle: Function
   };
 
   render() {
-    const { active, bundleName, color, highlight, link } = this.props;
+    const { active, bundleName, color, disabled, highlight, link } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
@@ -42,6 +43,7 @@ export default class BundleSwitch extends PureComponent {
           <Switch
             activeThumbColor={color}
             activeTrackColor={brighterColor.toString()}
+            disabled={disabled}
             onValueChange={this._handleValueChange}
             value={active}
           />

@@ -258,7 +258,7 @@ export default class AreaChart extends Component {
         .append('line')
         .style('stroke', theme.colorWhite)
         .style('fill', 'none')
-        .style('stroke-width', '1px')
+        .style('stroke-width', '2px')
         .style('stroke-dasharray', '3 3')
         .style('opacity', 0);
       this._xAxis = svg.append('g').attr('class', 'x axis');
@@ -282,8 +282,8 @@ export default class AreaChart extends Component {
       .append('line')
       .style('stroke', theme.colorWhite)
       .style('fill', 'none')
-      .style('stroke-width', '1px')
-      .style('stroke-dasharray', '1 1')
+      .style('stroke-width', '2px')
+      .style('stroke-dasharray', '3 3')
       .merge(lines)
       .attr('x1', xSetter)
       .attr('x2', xSetter)

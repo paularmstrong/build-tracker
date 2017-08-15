@@ -189,7 +189,7 @@ export default class AreaChart extends Component {
     const areaChart = area().x(d => xScale(d.data.build[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
 
     const bundle = this._chartContents.selectAll('.bundle').data(data, (d: { key: string }) => d.key);
-    const builds = this._chartContents.selectAll('.build').data([]);
+    const builds = this._chartContents.selectAll('g.build').data([]);
     builds.exit().remove();
 
     // Remove old areas
@@ -208,36 +208,42 @@ export default class AreaChart extends Component {
 
   _drawBars(data, xScale, yScale) {
     const { bundles, colorScale, xScaleType } = this.props;
+    const { height } = this.state;
+
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
-    const builds = this._chartContents.selectAll('g.build').data(data, (d: { key: string }) => d.key);
-    const bundle = this._chartContents.selectAll('.bundle').data([]);
+    const bundleGroups = this._chartContents.selectAll('g.bundleGroup').data(data, (d: { key: string }) => d.key);
+    const bundle = this._chartContents.selectAll('path.bundle').data([]);
     bundle.exit().remove();
 
-    // Remove old areas
-    builds.exit().remove();
+    // Remove old bundles
+    bundleGroups.exit().remove();
 
-    const bundleRects = builds
+    const bundleRects = bundleGroups
       .enter()
       .append('g')
-      .attr('class', 'build')
+      .attr('class', 'bundleGroup')
       .style('fill', (d, i) => colorScale(bundles.length - bundles.indexOf(d.key)))
-      .merge(builds)
+      .merge(bundleGroups)
       .selectAll('rect.bundle')
       .data(d => d);
+
+    bundleRects.exit().remove();
 
     bundleRects
       .enter()
       .append('rect')
       .attr('class', 'bundle')
+      .attr('x', d => xScale(d.data.build[xAccessor]))
+      .attr('y', d => height - margin.top - margin.bottom)
+      .attr('width', xScale.bandwidth())
+      .attr('height', 0)
       .merge(bundleRects)
       .transition()
       .duration(150)
-      .attr('x', (d, i) => xScale(d.data.build[xAccessor]))
-      .attr('y', (d, i) => yScale(d[1]))
-      .attr('height', (d, i) => yScale(d[0]) - yScale(d[1]))
+      .attr('x', d => xScale(d.data.build[xAccessor]))
+      .attr('y', d => yScale(d[1]))
+      .attr('height', d => yScale(d[0]) - yScale(d[1]))
       .attr('width', xScale.bandwidth());
-
-    bundleRects.exit().remove();
   }
 
   _setSvgRef = (node: Object) => {

@@ -49,7 +49,7 @@ class App extends Component {
     super(props, context);
     this.state = {
       builds: [],
-      chart: ChartType.BAR,
+      chart: ChartType.AREA,
       values: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR

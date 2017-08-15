@@ -2,7 +2,7 @@
 import theme from './theme';
 import React, { PureComponent } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
-import { Types, TypesEnum, ValueType, XScaleType, YScaleType } from './values';
+import { ChartType, Types, TypesEnum, ValueType, XScaleType, YScaleType } from './values';
 
 class ToggleGroup extends PureComponent {
   props: {
@@ -41,28 +41,31 @@ class ToggleGroup extends PureComponent {
 
 const groups = [
   {
+    objectType: Types.CHART,
+    color: theme.colorBlue,
+    getValue: props => props.chartType
+  },
+  {
     objectType: Types.VALUES,
     color: theme.colorSalmon,
-    getValue: props => props.valueType,
-    getChangeHandler: props => props.onChangeValueType
+    getValue: props => props.valueType
   },
   {
     objectType: Types.YSCALE,
     color: theme.colorOrange,
-    getValue: props => props.yScaleType,
-    getChangeHandler: props => props.onChangeYScaleType
+    getValue: props => props.yScaleType
   },
   {
     objectType: Types.XSCALE,
     color: theme.colorGreen,
-    getValue: props => props.xScaleType,
-    getChangeHandler: props => props.onChangeXScaleType
+    getValue: props => props.xScaleType
   }
 ];
 
 export default class Toggles extends PureComponent {
   props: {
     onToggle: Function,
+    chartType: $Values<typeof ChartType>,
     valueType: $Values<typeof ValueType>,
     xScaleType: $Values<typeof XScaleType>,
     yScaleType: $Values<typeof YScaleType>

@@ -9,7 +9,7 @@ import theme from './theme';
 import Toggles from './Toggles';
 import { bundlesBySize } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
-import { ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
+import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
 import type { Match, RouterHistory } from 'react-router-dom';
 import type { Build } from './types';
@@ -30,6 +30,7 @@ const _getActiveBundles = (props: Object): Array<string> => {
 class App extends Component {
   state: {
     builds: Array<Build>,
+    chart: $Values<typeof ChartType>,
     highlightBundle?: string,
     selectedBuild?: Build,
     values: $Values<typeof ValueType>,
@@ -48,6 +49,7 @@ class App extends Component {
     super(props, context);
     this.state = {
       builds: [],
+      chart: ChartType.BAR,
       values: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
@@ -62,13 +64,14 @@ class App extends Component {
   }
 
   render() {
-    const { builds, highlightBundle, selectedBuild, values, xscale, yscale } = this.state;
+    const { builds, chart, highlightBundle, selectedBuild, values, xscale, yscale } = this.state;
     const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
     return (
       <View style={styles.root}>
         <View style={styles.main}>
           <View style={styles.scaleTypeButtons}>
             <Toggles
+              chartType={chart}
               onToggle={this._handleToggleValueTypes}
               valueType={values}
               xScaleType={xscale}
@@ -80,6 +83,7 @@ class App extends Component {
               activeBundles={this._activeBundles}
               builds={sortedBuilds}
               bundles={bundlesBySize}
+              chart={chart}
               colorScale={colorScale}
               onHoverBundle={this._handleHoverBundle}
               onSelectBuild={this._handleSelectBuild}

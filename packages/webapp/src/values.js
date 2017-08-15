@@ -2,9 +2,15 @@
 import type { BundleStat } from './types';
 
 export const Types = {
+  CHART: 'chart',
   VALUES: 'values',
   XSCALE: 'xscale',
   YSCALE: 'yscale'
+};
+
+export const ChartType = {
+  AREA: 'area',
+  BAR: 'bar'
 };
 
 export const YScaleType = {
@@ -23,6 +29,7 @@ export const ValueType = {
 };
 
 export const TypesEnum = {
+  [Types.CHART]: ChartType,
   [Types.VALUES]: ValueType,
   [Types.XSCALE]: XScaleType,
   [Types.YSCALE]: YScaleType

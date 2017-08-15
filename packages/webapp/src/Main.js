@@ -1,17 +1,24 @@
 // @flow
 import AreaChart from './charts/AreaChart';
+import StackedBarChart from './charts/StackedBarChart';
 import deepEqual from 'deep-equal';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { statsForBundles } from './stats';
-import { XScaleType, YScaleType } from './values';
+import { ChartType, XScaleType, YScaleType } from './values';
 import type { Build } from './types.js';
+
+const ChartTypeToComponent = {
+  [ChartType.AREA]: AreaChart,
+  [ChartType.BAR]: StackedBarChart
+};
 
 export default class Main extends Component {
   props: {
     activeBundles: Array<string>,
     builds: Array<Build>,
     bundles: Array<string>,
+    chart: $Values<typeof ChartType>,
     colorScale: Function,
     onHoverBundle?: Function,
     onSelectBuild: Function,
@@ -38,16 +45,18 @@ export default class Main extends Component {
       activeBundles,
       builds,
       bundles,
+      chart,
       colorScale,
       onSelectBuild,
       valueAccessor,
       xScaleType,
       yScaleType
     } = this.props;
+    const Chart = ChartTypeToComponent[chart];
     return (
       <View style={styles.root}>
         <View style={styles.chart}>
-          <AreaChart
+          <Chart
             activeBundles={activeBundles}
             bundles={bundles}
             colorScale={colorScale}

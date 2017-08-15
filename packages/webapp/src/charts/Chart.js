@@ -268,8 +268,12 @@ export default class AreaChart extends Component {
 
   _drawLines(xScale: Function) {
     const { height } = this.state;
-    const { selectedBuilds } = this.props;
-    const lines = this._staticLines.selectAll('line').data(selectedBuilds);
+    const { selectedBuilds, stats, xScaleType } = this.props;
+    const data =
+      xScaleType === XScaleType.TIME
+        ? stats.filter(d => selectedBuilds.indexOf(d.build.revision) !== -1).map(d => d.build.timestamp)
+        : selectedBuilds;
+    const lines = this._staticLines.selectAll('line').data(data);
     lines.exit().remove();
 
     const xSetter = v => (xScale.bandwidth ? xScale(v) + xScale.bandwidth() / 2 : xScale(v));

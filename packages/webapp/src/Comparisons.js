@@ -1,11 +1,12 @@
 // @flow
+import AsciiTable from 'ascii-table';
 import BundleSwitch from './BundleSwitch';
 import deepEqual from 'deep-equal';
 import IconX from './icons/IconX';
 import theme from './theme';
 import { bytesToKb, formatSha } from './formatting';
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, Clipboard, StyleSheet, Text, View } from 'react-native';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
@@ -14,6 +15,7 @@ import { rgb } from 'd3-color';
 import type { Build } from './types';
 
 const emptyObject = {};
+const identity = d => d;
 
 const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 
@@ -213,7 +215,6 @@ export default class Comparisons extends PureComponent {
     const { activeBundles, builds, bundles, colorScale, onRemoveBuild, onShowBuildInfo } = this.props;
 
     const { showDeselectedBundles } = this.state;
-
     const body = showDeselectedBundles ? this._data.body : this._getActiveData();
     const hiddenRowCount = this._data.body.length - body.length;
     const headers = flatten(this._data.head);
@@ -272,7 +273,16 @@ export default class Comparisons extends PureComponent {
                     color={theme.colorMidnight}
                     onToggle={this._handleRemoveBelowThreshold}
                   />
-                  <Td colSpan={headers.length - 1} style={styles.footer} />
+                  <Td colSpan={headers.length - 1} rowSpan={2} style={styles.footer}>
+                    <View style={styles.footerContent}>
+                      <View style={styles.copyButton}>
+                        <Button onPress={this._handleCopyToAscii} style={styles.copyButton} title="Copy to ASCII" />
+                      </View>
+                      <View style={styles.copyButton}>
+                        <Button onPress={this._handleCopyToCSV} style={styles.copyButton} title={'Copy to CSV'} />
+                      </View>
+                    </View>
+                  </Td>
                 </Tr>
                 <Tr>
                   <BundleCell
@@ -281,7 +291,6 @@ export default class Comparisons extends PureComponent {
                     color={theme.colorMidnight}
                     onToggle={this._handleHideBelowThreshold}
                   />
-                  <Td colSpan={headers.length - 1} style={styles.footer} />
                 </Tr>
               </Tfoot>
             : null}
@@ -338,6 +347,36 @@ export default class Comparisons extends PureComponent {
     const { bundles, onBundlesChange } = this.props;
     onBundlesChange && onBundlesChange(bundles);
   };
+
+  _getTableAsMatrix = (formatHeader: Function = identity, formatBytes: Function = identity) => {
+    const { showDeselectedBundles } = this.state;
+    const { body, head } = this._data;
+    const visibleBody = showDeselectedBundles ? body : this._getActiveData();
+    const header = flatten(head).map(cell => (cell.removable ? formatHeader(cell.text) : cell.text));
+    const rows = visibleBody.map(row =>
+      row.map(cell => (cell.bytes ? formatBytes(cell.bytes) : cell.text || cell.bytes))
+    );
+    return [header, ...rows];
+  };
+
+  _handleCopyToAscii = () => {
+    const [header, ...rows] = this._getTableAsMatrix(formatSha, bytesToKb);
+    const table = new AsciiTable('');
+    table.setBorder('|', '-', '', '').setHeading(...header).addRowMatrix(rows);
+
+    header.forEach((h, i) => {
+      table.setAlignRight(i);
+    });
+
+    // Clipboard requires using template strings and special encoding for newlines and spaces
+    Clipboard.setString(`${table.toString().replace(/\r?\n/g, `\r\n`).replace(/ /g, `\u00A0`)}`);
+  };
+
+  _handleCopyToCSV = () => {
+    const matrix = this._getTableAsMatrix();
+    // Clipboard requires using template strings and special encoding for newlines and spaces
+    Clipboard.setString(`${matrix.map(row => `${row.join(',')}`).join(`\r\n`)}`);
+  };
 }
 
 const styles = StyleSheet.create({
@@ -388,7 +427,8 @@ const styles = StyleSheet.create({
     cursor: 'pointer'
   },
   footer: {
-    textAlign: 'center'
+    textAlign: 'center',
+    flexDirection: 'row'
   },
   footerText: {
     display: 'inline'
@@ -415,5 +455,13 @@ const styles = StyleSheet.create({
   },
   removeBuild: {
     color: theme.colorRed
+  },
+  copyButton: {
+    marginLeft: theme.spaceSmall
+  },
+  footerContent: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingLeft: theme.spaceMedium
   }
 });

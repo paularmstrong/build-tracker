@@ -9,8 +9,9 @@ const querystring = require('querystring');
 const url = require('url');
 
 class AnalyzerStatsPlugin {
-  constructor({ buildRevision, buildBranch, outputPath, outputUrl }, options) {
+  constructor({ buildRevision, buildBranch, meta, outputPath, outputUrl }, options) {
     this._revision = buildRevision;
+    this._meta = meta || {};
     this._branch = buildBranch;
     this._outputPath = outputPath;
     this._outputUrl = outputUrl;
@@ -53,7 +54,8 @@ class AnalyzerStatsPlugin {
       .filter(Boolean);
 
     const output = {
-      build: {
+      meta: {
+        ...meta,
         revision: this._revision,
         branch: this._branch,
         timestamp: Date.now()
@@ -72,9 +74,7 @@ class AnalyzerStatsPlugin {
 
   _write(output) {
     mkdirp.sync(this._outputPath);
-    const fileTitle = ['stats', this._branch, this._revision]
-      .filter(Boolean)
-      .join('-');
+    const fileTitle = ['stats', this._branch, this._revision].filter(Boolean).join('-');
     const outputFilePath = path.join(this._outputPath, `${fileTitle}.json`);
     fs.writeFileSync(outputFilePath, JSON.stringify(output));
   }
@@ -99,9 +99,7 @@ class AnalyzerStatsPlugin {
 
     const request = httpModule.request(requestOptions, response => {
       if (response.statusCode < 200 || response.statusCode >= 400) {
-        throw new Error(
-          `Failed to post stats to URL: ${response.statusCode} - ${response.statusMessage}`
-        );
+        throw new Error(`Failed to post stats to URL: ${response.statusCode} - ${response.statusMessage}`);
         process.exit(1);
       }
     });

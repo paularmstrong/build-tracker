@@ -36,17 +36,17 @@ const getMouseInformation = (
   let hoveredBuild;
   if (xScale.invert) {
     const xDate = xScale.invert(xPos);
-    const validTimestamps = stats.map(d => d.build.timestamp);
+    const validTimestamps = stats.map(d => d.meta.timestamp);
     xValue = validTimestamps.reduce((prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev), 0);
     xIndex = validTimestamps.indexOf(xValue);
-    hoveredBuild = stats.find(commit => commit.build.timestamp === xValue);
+    hoveredBuild = stats.find(commit => commit.meta.timestamp === xValue);
   } else {
     const domain = xScale.domain();
     xValue = domain.reduce((prev, curr, i) => {
       return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
     }, domain[0]);
     xIndex = stats.findIndex(
-      commit => (typeof xValue === 'string' ? commit.build.revision === xValue : commit.build.timestamp === xValue)
+      commit => (typeof xValue === 'string' ? commit.meta.revision === xValue : commit.meta.timestamp === xValue)
     );
     hoveredBuild = stats[xIndex];
   }
@@ -187,7 +187,7 @@ export default class AreaChart extends Component {
     const { bundles, colorScale, xScaleType } = this.props;
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
 
-    const areaChart = area().x(d => xScale(d.data.build[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
+    const areaChart = area().x(d => xScale(d.data.meta[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
 
     const bundle = this._chartContents.selectAll('.bundle').data(data, (d: { key: string }) => d.key);
     const builds = this._chartContents.selectAll('g.build').data([]);
@@ -234,14 +234,14 @@ export default class AreaChart extends Component {
       .enter()
       .append('rect')
       .attr('class', 'bundle')
-      .attr('x', d => xScale(d.data.build[xAccessor]))
+      .attr('x', d => xScale(d.data.meta[xAccessor]))
       .attr('y', d => height - margin.top - margin.bottom)
       .attr('width', xScale.bandwidth())
       .attr('height', 0)
       .merge(bundleRects)
       .transition()
       .duration(150)
-      .attr('x', d => xScale(d.data.build[xAccessor]))
+      .attr('x', d => xScale(d.data.meta[xAccessor]))
       .attr('y', d => yScale(d[1]))
       .attr('height', d => yScale(d[0]) - yScale(d[1]))
       .attr('width', xScale.bandwidth());
@@ -271,7 +271,7 @@ export default class AreaChart extends Component {
     const { selectedBuilds, stats, xScaleType } = this.props;
     const data =
       xScaleType === XScaleType.TIME
-        ? stats.filter(d => selectedBuilds.indexOf(d.build.revision) !== -1).map(d => d.build.timestamp)
+        ? stats.filter(d => selectedBuilds.indexOf(d.meta.revision) !== -1).map(d => d.meta.timestamp)
         : selectedBuilds;
     const lines = this._staticLines.selectAll('line').data(data);
     lines.exit().remove();
@@ -324,18 +324,18 @@ export default class AreaChart extends Component {
     const { width } = this.state;
 
     const range = [0, width - (margin.left + margin.right)];
-    const domain = stats.sort((a, b) => new Date(a.build.timestamp) - new Date(b.build.timestamp));
+    const domain = stats.sort((a, b) => new Date(a.meta.timestamp) - new Date(b.meta.timestamp));
 
     switch (xScaleType) {
       case XScaleType.TIME:
         if (chartType === ChartType.BAR) {
-          return scaleBand().rangeRound(range).padding(0.25).domain(domain.map(d => d.build.timestamp));
+          return scaleBand().rangeRound(range).padding(0.25).domain(domain.map(d => d.meta.timestamp));
         }
-        return scaleTime().range(range).domain(extent(stats, d => d.build.timestamp));
+        return scaleTime().range(range).domain(extent(stats, d => d.meta.timestamp));
 
       case XScaleType.COMMIT:
       default: {
-        const commitDomain = domain.map(d => d.build.revision);
+        const commitDomain = domain.map(d => d.meta.revision);
         return chartType === ChartType.BAR
           ? scaleBand().rangeRound(range).padding(0.25).domain(commitDomain)
           : scalePoint().range(range).round(true).domain(commitDomain);

@@ -39,7 +39,7 @@ const getDeltaColor = (originalValue, newValue) => {
 
 const getTableHeaders = (builds: Array<Build>) =>
   builds.map((build, i) => {
-    const { revision } = build.build;
+    const { revision } = build.meta;
     const headers = [{ text: revision, removable: true }];
     if (i > 0) {
       headers.push({ text: '𝚫', title: 'Change from previous selected build' });

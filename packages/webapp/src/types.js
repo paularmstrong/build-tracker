@@ -11,6 +11,6 @@ export type BundleStat = {
 };
 
 export type Build = {
-  build: BuildMeta,
+  meta: BuildMeta,
   stats: { [name: string]: BundleStat }
 };

@@ -65,7 +65,7 @@ class App extends Component {
 
   render() {
     const { builds, chart, highlightBundle, selectedBuild, values, xscale, yscale } = this.state;
-    const sortedBuilds = builds.sort((a, b) => a.build.timestamp - b.build.timestamp);
+    const sortedBuilds = builds.sort((a, b) => a.meta.timestamp - b.meta.timestamp);
     return (
       <View style={styles.root}>
         <View style={styles.main}>
@@ -136,13 +136,13 @@ class App extends Component {
 
   _handleRemoveRevision = (revision: string) => {
     this.setState(() => ({
-      builds: this.state.builds.filter(build => build.build.revision !== revision),
+      builds: this.state.builds.filter(build => build.meta.revision !== revision),
       selectedBuild: this.state.builds.length && this.state.builds[0]
     }));
   };
 
   _handleShowBuildInfo = (revision: string) => {
-    this.setState(() => ({ selectedBuild: this.state.builds.find(build => build.build.revision === revision) }));
+    this.setState(() => ({ selectedBuild: this.state.builds.find(build => build.meta.revision === revision) }));
   };
 }
 

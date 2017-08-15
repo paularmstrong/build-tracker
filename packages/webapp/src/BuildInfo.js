@@ -13,29 +13,29 @@ export default class BuildInfo extends PureComponent {
   };
 
   render() {
-    const { build: { build } } = this.props;
+    const { build: { meta: { revision, timestamp, ...otherMeta } } } = this.props;
     return (
       <View>
         <Text style={styles.heading}>
-          Build {formatSha(build.revision)}
+          Build {formatSha(revision)}
         </Text>
         <Table>
           <Tbody>
             <Tr>
               <Th>Revision</Th>
               <Td>
-                {build.revision}
+                {revision}
               </Td>
             </Tr>
             <Tr>
               <Th>Build Time</Th>
               <Td>
-                {formatTime(build.timestamp)}
+                {formatTime(timestamp)}
               </Td>
             </Tr>
           </Tbody>
         </Table>
-        {build.meta
+        {Object.keys(otherMeta).length > 0
           ? <View>
               <Text style={styles.sectionHeading}>Build Meta</Text>
               {/* TODO: format for build meta? */}

@@ -56,7 +56,7 @@ export default class Main extends Component {
             colorScale={colorScale}
             onHover={this._handleHover}
             onSelectBuild={onSelectBuild}
-            selectedBuilds={builds.map(b => b.build.revision)}
+            selectedBuilds={builds.map(b => b.meta.revision)}
             valueAccessor={valueAccessor}
             xScaleType={xScaleType}
             yScaleType={yScaleType}

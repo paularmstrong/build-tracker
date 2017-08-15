@@ -90,7 +90,7 @@ export const stats = [
       stats
     };
   })
-  .sort((a, b) => new Date(b.build.timestamp) - new Date(a.build.timestamp));
+  .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp));
 
 export const statsForBundles = (bundles: Array<string>): Array<Object> =>
   stats.map(commit => {

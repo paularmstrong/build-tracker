@@ -434,9 +434,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flexDirection: 'row'
   },
-  footerText: {
-    display: 'inline'
-  },
   stickyColumn: {
     left: 0,
     position: 'sticky',

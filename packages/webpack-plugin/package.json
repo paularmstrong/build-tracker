@@ -1,5 +1,5 @@
 {
-  "name": "bundle-tracker-webpack-plugin",
+  "name": "bundle-sleuth-webpack-plugin",
   "version": "0.0.0",
   "description": "A webpack plugin that builds and exports stats for consumption in the bundle tracker application",
   "main": "index.js",

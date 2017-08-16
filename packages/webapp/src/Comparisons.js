@@ -10,7 +10,7 @@ import { Button, Clipboard, StyleSheet, Text, View } from 'react-native';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
 import { scaleLinear } from 'd3-scale';
 import { interpolateHcl } from 'd3-interpolate';
-import { rgb } from 'd3-color';
+import { hsl, rgb } from 'd3-color';
 
 import type { Build } from './types';
 
@@ -149,16 +149,35 @@ class Heading extends PureComponent {
   };
 }
 
-const BundleCell = props =>
-  <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
-    <BundleSwitch {...props} />
-  </Th>;
+class BundleCell extends PureComponent {
+  props: {
+    hoverColor?: string,
+    isHovered: boolean
+  };
+
+  render() {
+    const { hoverColor, isHovered, ...props } = this.props;
+    return (
+      <Th
+        style={[
+          styles.cell,
+          styles.rowHeader,
+          styles.stickyColumn,
+          isHovered ? { backgroundColor: hoverColor } : emptyObject
+        ]}
+      >
+        <BundleSwitch {...props} />
+      </Th>
+    );
+  }
+}
 
 class ValueCell extends PureComponent {
   props: {
     bytes: number,
     color?: string,
-    colSpan?: number
+    colSpan?: number,
+    hoverColor?: string
   };
 
   static defaultProps = {
@@ -166,9 +185,16 @@ class ValueCell extends PureComponent {
   };
 
   render() {
-    const { bytes, color, colSpan } = this.props;
+    const { bytes, color, colSpan, hoverColor, isHovered } = this.props;
     return (
-      <Td colSpan={colSpan} style={[styles.cell, color ? { backgroundColor: color } : emptyObject]}>
+      <Td
+        colSpan={colSpan}
+        style={[
+          styles.cell,
+          isHovered ? { backgroundColor: hoverColor } : emptyObject,
+          color ? { backgroundColor: color } : emptyObject
+        ]}
+      >
         {bytes ? bytesToKb(bytes) : '-'}
       </Td>
     );
@@ -184,6 +210,7 @@ export default class Comparisons extends PureComponent {
     builds: Array<Build>,
     bundles: Array<string>,
     colorScale: Function,
+    hoveredBundle?: string,
     onBundlesChange?: Function,
     onRemoveBuild?: Function,
     onShowBuildInfo?: Function,
@@ -212,7 +239,7 @@ export default class Comparisons extends PureComponent {
   }
 
   render() {
-    const { activeBundles, builds, bundles, colorScale, onRemoveBuild, onShowBuildInfo } = this.props;
+    const { activeBundles, builds, bundles, colorScale, hoveredBundle, onRemoveBuild, onShowBuildInfo } = this.props;
 
     const { showDeselectedBundles } = this.state;
     const body = showDeselectedBundles ? this._data.body : this._getActiveData();
@@ -236,32 +263,44 @@ export default class Comparisons extends PureComponent {
           </Thead>
           <Tbody>
             {body.length
-              ? body.map((row, i) =>
-                  <Tr key={i}>
-                    {row.map((column, i) => {
-                      if (i === 0) {
-                        const { link, text } = column;
-                        const isAll = text === 'All';
+              ? body.map((row, i) => {
+                  const bundle = row[0].text;
+                  const isAll = bundle === 'All';
+                  const isHovered = hoveredBundle === bundle;
+                  const color = isAll || !bundle ? theme.colorMidnight : colorScale(1 - bundles.indexOf(bundle));
+                  const hoverColor = hsl(color);
+                  hoverColor.s = 0.7;
+                  hoverColor.l = 0.95;
+                  return (
+                    <Tr key={i}>
+                      {row.map((column, i) => {
+                        if (i === 0) {
+                          const { link, text } = column;
+                          return (
+                            <BundleCell
+                              active={
+                                isAll || !text
+                                  ? activeBundles.length === bundles.length
+                                  : activeBundles.indexOf(text) !== -1
+                              }
+                              color={color}
+                              disabled={isAll && activeBundles.length === bundles.length}
+                              hoverColor={hoverColor.toString()}
+                              isHovered={isHovered}
+                              key={i}
+                              onToggle={isAll ? this._handleToggleAllBundles : this._handleToggleBundle}
+                              bundleName={text}
+                              link={link}
+                            />
+                          );
+                        }
                         return (
-                          <BundleCell
-                            active={
-                              isAll || !text
-                                ? activeBundles.length === bundles.length
-                                : activeBundles.indexOf(text) !== -1
-                            }
-                            color={isAll || !text ? theme.colorMidnight : colorScale(1 - bundles.indexOf(text))}
-                            disabled={isAll && activeBundles.length === bundles.length}
-                            key={i}
-                            onToggle={isAll ? this._handleToggleAllBundles : this._handleToggleBundle}
-                            bundleName={text}
-                            link={link}
-                          />
+                          <ValueCell {...column} hoverColor={hoverColor.toString()} isHovered={isHovered} key={i} />
                         );
-                      }
-                      return <ValueCell {...column} key={i} />;
-                    })}
-                  </Tr>
-                )
+                      })}
+                    </Tr>
+                  );
+                })
               : null}
           </Tbody>
           {builds.length > 1

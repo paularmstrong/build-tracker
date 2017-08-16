@@ -31,7 +31,7 @@ class App extends Component {
   state: {
     builds: Array<Build>,
     chart: $Values<typeof ChartType>,
-    highlightBundle?: string,
+    hoveredBundle?: string,
     selectedBuild?: Build,
     values: $Values<typeof ValueType>,
     xscale: $Values<typeof XScaleType>,
@@ -64,7 +64,7 @@ class App extends Component {
   }
 
   render() {
-    const { builds, chart, highlightBundle, selectedBuild, values, xscale, yscale } = this.state;
+    const { builds, chart, hoveredBundle, selectedBuild, values, xscale, yscale } = this.state;
     const sortedBuilds = builds.sort((a, b) => a.meta.timestamp - b.meta.timestamp);
     return (
       <View style={styles.root}>
@@ -100,7 +100,7 @@ class App extends Component {
               builds={sortedBuilds}
               bundles={bundlesBySize}
               colorScale={colorScale}
-              highlightBundle={highlightBundle}
+              hoveredBundle={hoveredBundle}
               onBundlesChange={this._handleBundlesChange}
               onRemoveBuild={this._handleRemoveRevision}
               onShowBuildInfo={this._handleShowBuildInfo}
@@ -119,8 +119,8 @@ class App extends Component {
     this.setState({ [toggleType]: value });
   };
 
-  _handleHoverBundle = (highlightBundle?: string = ''): void => {
-    this.setState({ highlightBundle });
+  _handleHoverBundle = (hoveredBundle?: string = ''): void => {
+    this.setState({ hoveredBundle });
   };
 
   _handleBundlesChange = (bundles: Array<string>) => {

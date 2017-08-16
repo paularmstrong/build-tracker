@@ -11,13 +11,12 @@ export default class BundleSwitch extends PureComponent {
     bundleName: string,
     color: string,
     disabled?: boolean,
-    highlight?: boolean,
     link?: string,
     onToggle: Function
   };
 
   render() {
-    const { active, bundleName, color, disabled, highlight, link } = this.props;
+    const { active, bundleName, color, disabled, link } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
@@ -29,7 +28,7 @@ export default class BundleSwitch extends PureComponent {
     );
 
     return (
-      <View style={[styles.bundle, highlight && styles.bundleHighlight]}>
+      <View style={[styles.bundle]}>
         <View style={styles.bundleName}>
           {link
             ? <Link style={[styles.bundleLink]} to={link}>
@@ -61,9 +60,6 @@ const styles = StyleSheet.create({
   bundle: {
     flexDirection: 'row',
     justifyContent: 'space-between'
-  },
-  bundleHighlight: {
-    backgroundColor: theme.colorGray
   },
   bundleName: {
     flexShrink: 1,

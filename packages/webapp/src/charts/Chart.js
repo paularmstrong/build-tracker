@@ -167,6 +167,7 @@ export default class AreaChart extends Component {
       })
       .on('mouseout', () => {
         this._hoverLine.style('opacity', 0);
+        this.props.onHover('', '');
       })
       .on('mousemove', (d, index, nodes) => {
         const { xValue, hoveredBuild, hoveredBundle } = getMouseInformation(nodes, xScale, yScale, data, stats);

@@ -51,7 +51,8 @@ class AnalyzerStatsPlugin {
           return;
         }
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .reduce((memo, bundle) => ({ ...memo, [bundle.name]: bundle }), {});
 
     const output = {
       meta: {

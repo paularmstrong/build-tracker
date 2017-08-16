@@ -82,15 +82,7 @@ export const stats = [
   statsf915ee2df9a9d3db4a8fb1a8b8c0e82f30338e13,
   statsfa752a9ce64a440f16e2c3670aa97a28be25c71f,
   statsfc55ce1d311aa85bd0499c51e230255bbde19ef3
-]
-  .map(commit => {
-    const stats = commit.stats.reduce((memo, bundle) => ({ ...memo, [bundle.name]: bundle }), {});
-    return {
-      ...commit,
-      stats
-    };
-  })
-  .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp));
+].sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp));
 
 export const statsForBundles = (bundles: Array<string>): Array<Object> =>
   stats.map(commit => {

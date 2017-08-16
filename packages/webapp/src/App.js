@@ -2,17 +2,17 @@
 import BuildInfo from './BuildInfo';
 import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
-import Main from './Main';
+import Chart from './charts/Chart';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import theme from './theme';
 import Toggles from './Toggles';
-import { bundlesBySize } from './stats';
+import { bundlesBySize, statsForBundles } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
 import type { Match, RouterHistory } from 'react-router-dom';
-import type { Build } from './types';
+import type { Build, Bundle } from './types';
 
 const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
 
@@ -44,6 +44,7 @@ class App extends Component {
   };
 
   _activeBundles: Array<string>;
+  _stats: Array<Build>;
 
   constructor(props: Object, context: Object) {
     super(props, context);
@@ -55,11 +56,15 @@ class App extends Component {
       yscale: YScaleType.LINEAR
     };
     this._activeBundles = _getActiveBundles(props);
+    this._stats = statsForBundles(bundlesBySize);
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillUpdate(nextProps: Object, nextState: Object) {
     if (!deepEqual(this.props.match.params, nextProps.match.params)) {
       this._activeBundles = _getActiveBundles(nextProps);
+    }
+    if (!deepEqual(this.state.bundles, nextState.bundles)) {
+      this._stats = statsForBundles(nextState.bundles);
     }
   }
 
@@ -79,18 +84,23 @@ class App extends Component {
             />
           </View>
           <View style={styles.innerMain}>
-            <Main
-              activeBundles={this._activeBundles}
-              builds={sortedBuilds}
-              bundles={bundlesBySize}
-              chart={chart}
-              colorScale={colorScale}
-              onHoverBundle={this._handleHoverBundle}
-              onSelectBuild={this._handleSelectBuild}
-              valueAccessor={valueTypeAccessor[values]}
-              xScaleType={xscale}
-              yScaleType={yscale}
-            />
+            <View style={styles.chartRoot}>
+              <View style={styles.chart}>
+                <Chart
+                  activeBundles={this._activeBundles}
+                  bundles={bundlesBySize}
+                  chartType={chart}
+                  colorScale={colorScale}
+                  onHover={this._handleHover}
+                  onSelectBuild={this._handleSelectBuild}
+                  selectedBuilds={builds.map(b => b.meta.revision)}
+                  valueAccessor={valueTypeAccessor[values]}
+                  xScaleType={xscale}
+                  yScaleType={yscale}
+                  stats={this._stats}
+                />
+              </View>
+            </View>
           </View>
         </View>
         <View style={styles.data}>
@@ -119,8 +129,10 @@ class App extends Component {
     this.setState({ [toggleType]: value });
   };
 
-  _handleHoverBundle = (hoveredBundle?: string = ''): void => {
-    this.setState({ hoveredBundle });
+  _handleHover = (bundle?: Bundle) => {
+    if (bundle) {
+      this.setState({ hoveredBundle: bundle.key });
+    }
   };
 
   _handleBundlesChange = (bundles: Array<string>) => {
@@ -184,6 +196,16 @@ const styles = StyleSheet.create({
     flexGrow: 1
   },
   innerMain: {
+    flexGrow: 1
+  },
+  chartRoot: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    minHeight: '100%',
+    width: '100%'
+  },
+  chart: {
     flexGrow: 1
   },
   scaleTypeButtons: {

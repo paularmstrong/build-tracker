@@ -363,6 +363,10 @@ export default class Comparisons extends PureComponent {
     const [header, ...rows] = this._getTableAsMatrix(formatSha, bytesToKb);
     const table = new AsciiTable('');
     table.setBorder('|', '-', '', '').setHeading(...header).addRowMatrix(rows);
+    const hiddenRowCount = this._data.body.length - rows.length;
+    if (hiddenRowCount) {
+      table.addRow(`${hiddenRowCount} bundles hidden`);
+    }
 
     header.forEach((h, i) => {
       table.setAlignRight(i);

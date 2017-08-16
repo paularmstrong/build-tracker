@@ -24,7 +24,7 @@ const redScale = scaleLinear().domain([1, 2]).interpolate(interpolateHcl).range(
 
 const getDeltaColor = (originalValue, newValue) => {
   if (originalValue === newValue) {
-    return 'transparent';
+    return '';
   }
   if (!originalValue) {
     return redScale(2);

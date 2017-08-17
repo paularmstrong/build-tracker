@@ -29,11 +29,11 @@
     "eject": "react-scripts eject",
     "prepublish": "npm run build"
   },
-  "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "devDependencies": {
     "flow-bin": "^0.52.0",
     "flow-typed": "^2.1.5"
-  }
+  },
+  "proxy": "http://localhost:8888/"
 }

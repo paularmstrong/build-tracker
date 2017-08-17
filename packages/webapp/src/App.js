@@ -3,36 +3,37 @@ import BuildInfo from './BuildInfo';
 import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
 import Chart from './charts/Chart';
+import { getBuilds } from './api';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import theme from './theme';
 import Toggles from './Toggles';
-import { bundlesBySize, statsForBundles } from './stats';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
 import type { Match, RouterHistory } from 'react-router-dom';
 import type { Build, Bundle } from './types';
 
-const colorScale = scaleSequential(interpolateRainbow).domain([0, bundlesBySize.length]);
-
-const _getActiveBundles = (props: Object): Array<string> => {
+const _getActiveBundles = (props: Object, bundles): Array<string> => {
   const { match: { params } } = props;
   const { bundleNames } = params;
   if (!bundleNames) {
-    return bundlesBySize;
+    return bundles;
   } else {
     const bundles = bundleNames.split('+');
-    return bundlesBySize.filter(b => bundles.indexOf(b) !== -1);
+    return bundles.filter(b => bundles.indexOf(b) !== -1);
   }
 };
 
 class App extends Component {
   state: {
+    activeBundles: Array<string>,
     builds: Array<Build>,
+    bundles: Array<string>,
     chart: $Values<typeof ChartType>,
     hoveredBundle?: string,
     selectedBuild?: Build,
+    compareBuilds: Array<Build>,
     values: $Values<typeof ValueType>,
     xscale: $Values<typeof XScaleType>,
     yscale: $Values<typeof YScaleType>
@@ -43,34 +44,44 @@ class App extends Component {
     match: Match
   };
 
-  _activeBundles: Array<string>;
-  _stats: Array<Build>;
-
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
+      activeBundles: [],
       builds: [],
+      bundles: [],
       chart: ChartType.AREA,
       values: ValueType.GZIP,
+      compareBuilds: [],
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
     };
-    this._activeBundles = _getActiveBundles(props);
-    this._stats = statsForBundles(bundlesBySize);
   }
 
-  componentWillUpdate(nextProps: Object, nextState: Object) {
+  componentDidMount() {
+    this._fetchData();
+  }
+
+  componentWillReceiveProps(nextProps: Object) {
     if (!deepEqual(this.props.match.params, nextProps.match.params)) {
-      this._activeBundles = _getActiveBundles(nextProps);
-    }
-    if (!deepEqual(this.state.bundles, nextState.bundles)) {
-      this._stats = statsForBundles(nextState.bundles);
+      this.setState(() => ({ activeBundles: _getActiveBundles(nextProps, this.state.bundles) }));
     }
   }
 
   render() {
-    const { builds, chart, hoveredBundle, selectedBuild, values, xscale, yscale } = this.state;
-    const sortedBuilds = builds.sort((a, b) => a.meta.timestamp - b.meta.timestamp);
+    const {
+      activeBundles,
+      builds,
+      bundles,
+      chart,
+      hoveredBundle,
+      selectedBuild,
+      compareBuilds,
+      values,
+      xscale,
+      yscale
+    } = this.state;
+
     return (
       <View style={styles.root}>
         <View style={styles.main}>
@@ -87,17 +98,17 @@ class App extends Component {
             <View style={styles.chartRoot}>
               <View style={styles.chart}>
                 <Chart
-                  activeBundles={this._activeBundles}
-                  bundles={bundlesBySize}
+                  activeBundles={activeBundles}
+                  bundles={bundles}
                   chartType={chart}
-                  colorScale={colorScale}
+                  colorScale={this._colorScale}
                   onHover={this._handleHover}
                   onSelectBuild={this._handleSelectBuild}
-                  selectedBuilds={builds.map(b => b.meta.revision)}
+                  selectedBuilds={compareBuilds.map(b => b.meta.revision)}
                   valueAccessor={valueTypeAccessor[values]}
                   xScaleType={xscale}
                   yScaleType={yscale}
-                  stats={this._stats}
+                  stats={builds}
                 />
               </View>
             </View>
@@ -106,10 +117,10 @@ class App extends Component {
         <View style={styles.data}>
           <View style={styles.table}>
             <Comparisons
-              activeBundles={this._activeBundles}
-              builds={sortedBuilds}
-              bundles={bundlesBySize}
-              colorScale={colorScale}
+              activeBundles={activeBundles}
+              builds={compareBuilds}
+              bundles={bundles}
+              colorScale={this._colorScale}
               hoveredBundle={hoveredBundle}
               onBundlesChange={this._handleBundlesChange}
               onRemoveBuild={this._handleRemoveRevision}
@@ -125,6 +136,17 @@ class App extends Component {
     );
   }
 
+  _fetchData() {
+    getBuilds({}).then(({ builds, bundles }) => {
+      this._colorScale = scaleSequential(interpolateRainbow).domain([0, bundles.length]);
+      this.setState(() => ({
+        activeBundles: _getActiveBundles(this.props, bundles),
+        builds,
+        bundles
+      }));
+    });
+  }
+
   _handleToggleValueTypes = (toggleType: string, value: string) => {
     this.setState({ [toggleType]: value });
   };
@@ -135,28 +157,33 @@ class App extends Component {
     }
   };
 
-  _handleBundlesChange = (bundles: Array<string>) => {
+  _handleBundlesChange = (newBundles: Array<string>) => {
+    const { bundles } = this.state;
     this.props.history.push(
-      bundles.length && bundles.length !== bundlesBySize.length ? `/${bundles.filter(b => b !== 'All').join('+')}` : '/'
+      newBundles.length && newBundles.length !== bundles.length
+        ? `/${newBundles.filter(b => b !== 'All').join('+')}`
+        : '/'
     );
   };
 
   _handleSelectBuild = (build: Build, bundleName: string) => {
     this.setState({
-      builds: [...this.state.builds, build],
+      compareBuilds: [...this.state.compareBuilds, build],
       selectedBuild: build
     });
   };
 
   _handleRemoveRevision = (revision: string) => {
     this.setState(() => ({
-      builds: this.state.builds.filter(build => build.meta.revision !== revision),
-      selectedBuild: this.state.builds.length && this.state.builds[0]
+      compareBuilds: this.state.compareBuilds.filter(build => build.meta.revision !== revision),
+      selectedBuild: this.state.compareBuilds.length && this.state.compareBuilds[0]
     }));
   };
 
   _handleShowBuildInfo = (revision: string) => {
-    this.setState(() => ({ selectedBuild: this.state.builds.find(build => build.meta.revision === revision) }));
+    this.setState(() => ({
+      selectedBuild: this.state.compareBuilds.find(build => build.meta.revision === revision)
+    }));
   };
 }
 

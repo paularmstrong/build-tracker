@@ -1,5 +1,6 @@
 const express = require('express');
 const glob = require('glob');
+const morgan = require('morgan');
 const path = require('path');
 
 const app = express();
@@ -8,16 +9,21 @@ const server = props => {
   const port = props.port || 3000;
   const get = props.get;
 
-  app.use(express.static(path.join(__dirname, 'build')));
+  app.use(
+    morgan(
+      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'
+    )
+  );
+  app.use(express.static(path.join(__dirname, '/../webapp/build')));
 
-  app.get('/_api_/get.json', (req, res) => {
+  app.get('/api/get.json', (req, res) => {
     const data = get(req.query);
     res.write(JSON.stringify(data));
     res.end();
   });
 
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build/index.html'));
+    res.sendFile(path.join(__dirname, '/../webapp/build/index.html'));
   });
 
   app.listen(port);

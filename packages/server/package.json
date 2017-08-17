@@ -1,0 +1,15 @@
+{
+  "name": "bundle-sleuth-server",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.4",
+    "glob": "^7.1.2",
+    "morgan": "^1.8.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

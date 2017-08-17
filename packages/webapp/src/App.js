@@ -53,7 +53,7 @@ class App extends Component {
 
   props: {
     history: RouterHistory,
-    location: Loaction,
+    location: Location,
     match: Match
   };
 

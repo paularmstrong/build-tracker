@@ -151,12 +151,18 @@ class Heading extends PureComponent {
 
 class BundleCell extends PureComponent {
   props: {
+    active: boolean,
+    bundleName: string,
+    color: string,
+    disabled?: boolean,
     hoverColor?: string,
-    isHovered: boolean
+    isHovered?: boolean,
+    link?: string,
+    onToggle: Function
   };
 
   render() {
-    const { hoverColor, isHovered, ...props } = this.props;
+    const { hoverColor, isHovered, ...otherProps } = this.props;
     return (
       <Th
         style={[
@@ -166,7 +172,7 @@ class BundleCell extends PureComponent {
           isHovered ? { backgroundColor: hoverColor } : emptyObject
         ]}
       >
-        <BundleSwitch {...props} />
+        <BundleSwitch {...otherProps} />
       </Th>
     );
   }
@@ -177,7 +183,8 @@ class ValueCell extends PureComponent {
     bytes: number,
     color?: string,
     colSpan?: number,
-    hoverColor?: string
+    hoverColor?: string,
+    isHovered: boolean
   };
 
   static defaultProps = {

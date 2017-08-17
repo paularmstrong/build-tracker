@@ -44,6 +44,8 @@ class App extends Component {
     match: Match
   };
 
+  _colorScale: Function;
+
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {

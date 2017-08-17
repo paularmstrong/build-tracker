@@ -1,9 +1,7 @@
-const server = require('./');
+const path = require('path');
+const { staticFileServer } = require('./');
 
-server({
-  get: params => {
-    console.log(params);
-    return params;
-  },
+staticFileServer({
+  statsLocation: path.join(__dirname, 'src/stats'),
   port: 8888
 });

@@ -1,4 +1,5 @@
 const express = require('express');
+const glob = require('glob');
 const path = require('path');
 
 const app = express();
@@ -9,13 +10,13 @@ const server = props => {
 
   app.use(express.static(path.join(__dirname, 'build')));
 
-  app.get('/_api_/get', (req, res) => {
+  app.get('/_api_/get.json', (req, res) => {
     const data = get(req.query);
     res.write(JSON.stringify(data));
     res.end();
   });
 
-  app.get(`*`, (req, res) => {
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build/index.html'));
   });
 
@@ -24,12 +25,14 @@ const server = props => {
 };
 
 server.staticFileServer = props => {
-  const stats = glob(`${props.statsLocation}/*.json`, (err, matches) => {
-    // TODO: read files and join as big stats object
+  glob(`${props.statsLocation}/*.json`, (err, matches) => {
+    const stats = matches
+      .map(match => require(match))
+      .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp));
     return server(
       Object.assign({}, props, {
         get: query => {
-          return {};
+          return stats;
         }
       })
     );

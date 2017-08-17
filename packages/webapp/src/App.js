@@ -136,7 +136,9 @@ class App extends Component {
   };
 
   _handleBundlesChange = (bundles: Array<string>) => {
-    this.props.history.push(bundles.length && bundles.length !== bundlesBySize.length ? `/${bundles.join('+')}` : '/');
+    this.props.history.push(
+      bundles.length && bundles.length !== bundlesBySize.length ? `/${bundles.filter(b => b !== 'All').join('+')}` : '/'
+    );
   };
 
   _handleSelectBuild = (build: Build, bundleName: string) => {

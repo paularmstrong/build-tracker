@@ -1,7 +1,6 @@
 // @flow
 import 'd3-transition';
 import deepEqual from 'deep-equal';
-import { getAverageSize } from '../stats';
 import theme from '../theme';
 import { area, stack } from 'd3-shape';
 import { extent, max } from 'd3-array';
@@ -135,7 +134,7 @@ export default class AreaChart extends Component {
     const xScale = this._getXScale();
 
     const chartStack = stack();
-    chartStack.keys(activeBundles.sort((a, b) => getAverageSize(stats, b) - getAverageSize(stats, a)));
+    chartStack.keys(activeBundles);
     chartStack.value((d, key) => (d.stats[key] ? valueAccessor(d.stats[key]) : 0));
 
     const data = chartStack(stats);

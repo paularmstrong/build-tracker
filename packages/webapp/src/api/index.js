@@ -1,4 +1,4 @@
-import { getBundles } from '../stats';
+import { getBundlesByAvgSize, sortBuilds } from './normalization';
 
 const API_BASE = '/api';
 
@@ -20,7 +20,7 @@ export const getBuilds = (opts: FetchOptions) => {
     metod: 'GET'
   });
   return fetch(req).then(res => res.json()).then(builds => ({
-    bundles: getBundles(builds),
-    builds: builds.sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp))
+    bundles: getBundlesByAvgSize(builds),
+    builds: sortBuilds(builds)
   }));
 };

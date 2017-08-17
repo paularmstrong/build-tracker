@@ -324,21 +324,23 @@ export default class AreaChart extends Component {
     const { width } = this.state;
 
     const range = [0, width - (margin.left + margin.right)];
+    const timeRange = [range[0] + 10, range[1] - 10];
     const domain = stats.sort((a, b) => new Date(a.meta.timestamp) - new Date(b.meta.timestamp));
+    const padding = 0.25;
 
     switch (xScaleType) {
       case XScaleType.TIME:
         if (chartType === ChartType.BAR) {
-          return scaleBand().rangeRound(range).padding(0.25).domain(domain.map(d => d.meta.timestamp));
+          return scaleBand().rangeRound(range).padding(padding).domain(domain.map(d => d.meta.timestamp));
         }
-        return scaleTime().range(range).domain(extent(stats, d => d.meta.timestamp));
+        return scaleTime().range(timeRange).domain(extent(stats, d => d.meta.timestamp));
 
       case XScaleType.COMMIT:
       default: {
         const commitDomain = domain.map(d => d.meta.revision);
         return chartType === ChartType.BAR
-          ? scaleBand().rangeRound(range).padding(0.25).domain(commitDomain)
-          : scalePoint().range(range).round(true).domain(commitDomain);
+          ? scaleBand().rangeRound(range).padding(padding).domain(commitDomain)
+          : scalePoint().range(range).padding(padding).round(true).domain(commitDomain);
       }
     }
   }

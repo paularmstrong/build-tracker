@@ -12,7 +12,7 @@ import Toggles from './Toggles';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
 
-import type { Match, RouterHistory } from 'react-router-dom';
+import type { Location, Match, RouterHistory } from 'react-router-dom';
 import type { Build, Bundle } from './types';
 
 const emptyArray = [];
@@ -53,6 +53,7 @@ class App extends Component {
 
   props: {
     history: RouterHistory,
+    location: Loaction,
     match: Match
   };
 
@@ -206,13 +207,17 @@ class App extends Component {
   };
 
   _updateUrl = () => {
+    const { location: { pathname } } = this.props;
     const { activeBundles, bundles, compareBuilds } = this.state;
     const urlBundles =
-      activeBundles.length && activeBundles.length !== bundles.length
+      activeBundles.length > 1 && activeBundles.length !== bundles.length
         ? activeBundles.filter(b => b !== 'All')
         : ['All'];
-    const urlRevisions = compareBuilds.map((b: Build) => formatSha(b.meta.revision));
-    this.props.history.push(`/${urlBundles.join('+')}/${urlRevisions.join('+')}`);
+    const urlRevisions = compareBuilds.map((b: Build) => formatSha(b.meta.revision)).sort();
+    const newPath = `/${urlBundles.join('+')}/${urlRevisions.join('+')}`;
+    if (newPath !== pathname) {
+      this.props.history.push(newPath);
+    }
   };
 }
 

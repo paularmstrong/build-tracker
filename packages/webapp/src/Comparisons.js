@@ -315,6 +315,7 @@ export default class Comparisons extends PureComponent {
                 <Tr>
                   <BundleCell
                     active={deepEqual(this._getFilteredData().map(row => row[0].text).slice(1), activeBundles)}
+                    disabled={this._getFilteredData().map(row => row[0].text).slice(1).length === 0}
                     bundleName="Above threshold only"
                     color={theme.colorMidnight}
                     onToggle={this._handleRemoveBelowThreshold}

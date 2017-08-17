@@ -463,6 +463,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
     borderBottomColor: theme.colorGray,
+    borderRightWidth: '1px',
+    borderRightStyle: 'dotted',
+    borderRightColor: theme.colorGray,
     whiteSpace: 'nowrap'
   },
   toggle: {
@@ -480,7 +483,8 @@ const styles = StyleSheet.create({
     maxWidth: '13rem',
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
-    borderRightColor: theme.colorGray
+    borderRightColor: theme.colorGray,
+    zIndex: 1
   },
   headerContent: {
     flexDirection: 'row'

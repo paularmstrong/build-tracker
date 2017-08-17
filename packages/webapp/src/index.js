@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 ReactDOM.render(
   <Router>
     <div>
-      <Route path="/:bundleNames*" component={App} />
+      <Route path="/:bundleNames?/:compareRevisions?" component={App} />
     </div>
   </Router>,
   document.getElementById('root')

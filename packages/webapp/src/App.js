@@ -3,6 +3,7 @@ import BuildInfo from './BuildInfo';
 import Comparisons from './Comparisons';
 import deepEqual from 'deep-equal';
 import Chart from './charts/Chart';
+import { formatSha } from './formatting';
 import { getBuilds } from './api';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -14,15 +15,26 @@ import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from 
 import type { Match, RouterHistory } from 'react-router-dom';
 import type { Build, Bundle } from './types';
 
-const _getActiveBundles = (props: Object, bundles): Array<string> => {
+const emptyArray = [];
+
+const _getActiveBundles = (props: { match: Match }, bundles): Array<string> => {
   const { match: { params } } = props;
   const { bundleNames } = params;
   if (!bundleNames) {
     return bundles;
-  } else {
-    const bundles = bundleNames.split('+');
-    return bundles.filter(b => bundles.indexOf(b) !== -1);
   }
+  const activeBundles = bundleNames.replace(/All\+?/, '').split('+').filter(Boolean);
+  return activeBundles.length ? bundles.filter((b: Bundle) => activeBundles.indexOf(b) !== -1) : bundles;
+};
+
+const _getCompareBuilds = (props: { match: Match }, builds): Array<Build> => {
+  const { match: { params } } = props;
+  const { compareRevisions } = params;
+  if (!compareRevisions) {
+    return emptyArray;
+  }
+  const buildRevisions = compareRevisions.split('+');
+  return builds.filter((b: Build) => buildRevisions.indexOf(formatSha(b.meta.revision)) !== -1);
 };
 
 class App extends Component {
@@ -31,9 +43,9 @@ class App extends Component {
     builds: Array<Build>,
     bundles: Array<string>,
     chart: $Values<typeof ChartType>,
+    compareBuilds: Array<Build>,
     hoveredBundle?: string,
     selectedBuild?: Build,
-    compareBuilds: Array<Build>,
     values: $Values<typeof ValueType>,
     xscale: $Values<typeof XScaleType>,
     yscale: $Values<typeof YScaleType>
@@ -53,8 +65,8 @@ class App extends Component {
       builds: [],
       bundles: [],
       chart: ChartType.AREA,
-      values: ValueType.GZIP,
       compareBuilds: [],
+      values: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
     };
@@ -66,7 +78,10 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps: Object) {
     if (!deepEqual(this.props.match.params, nextProps.match.params)) {
-      this.setState(() => ({ activeBundles: _getActiveBundles(nextProps, this.state.bundles) }));
+      this.setState(state => ({
+        activeBundles: _getActiveBundles(nextProps, state.bundles),
+        compareBuilds: _getCompareBuilds(nextProps, state.builds)
+      }));
     }
   }
 
@@ -76,9 +91,9 @@ class App extends Component {
       builds,
       bundles,
       chart,
+      compareBuilds,
       hoveredBundle,
       selectedBuild,
-      compareBuilds,
       values,
       xscale,
       yscale
@@ -144,7 +159,8 @@ class App extends Component {
       this.setState(() => ({
         activeBundles: _getActiveBundles(this.props, bundles),
         builds,
-        bundles
+        bundles,
+        compareBuilds: _getCompareBuilds(this.props, builds)
       }));
     });
   }
@@ -160,32 +176,43 @@ class App extends Component {
   };
 
   _handleBundlesChange = (newBundles: Array<string>) => {
-    const { bundles } = this.state;
-    this.props.history.push(
-      newBundles.length && newBundles.length !== bundles.length
-        ? `/${newBundles.filter(b => b !== 'All').join('+')}`
-        : '/'
-    );
+    this.setState({ activeBundles: newBundles }, this._updateUrl);
   };
 
   _handleSelectBuild = (build: Build, bundleName: string) => {
-    this.setState({
-      compareBuilds: [...this.state.compareBuilds, build],
-      selectedBuild: build
-    });
+    this.setState(
+      state => ({
+        compareBuilds: [...state.compareBuilds, build],
+        selectedBuild: build
+      }),
+      this._updateUrl
+    );
   };
 
   _handleRemoveRevision = (revision: string) => {
-    this.setState(() => ({
-      compareBuilds: this.state.compareBuilds.filter(build => build.meta.revision !== revision),
-      selectedBuild: this.state.compareBuilds.length && this.state.compareBuilds[0]
-    }));
+    this.setState(
+      state => ({
+        compareBuilds: state.compareBuilds.filter(build => build.meta.revision !== revision),
+        selectedBuild: state.compareBuilds.length && state.compareBuilds[0]
+      }),
+      this._updateUrl
+    );
   };
 
   _handleShowBuildInfo = (revision: string) => {
-    this.setState(() => ({
-      selectedBuild: this.state.compareBuilds.find(build => build.meta.revision === revision)
+    this.setState(state => ({
+      selectedBuild: state.compareBuilds.find(build => build.meta.revision === revision)
     }));
+  };
+
+  _updateUrl = () => {
+    const { activeBundles, bundles, compareBuilds } = this.state;
+    const urlBundles =
+      activeBundles.length && activeBundles.length !== bundles.length
+        ? activeBundles.filter(b => b !== 'All')
+        : ['All'];
+    const urlRevisions = compareBuilds.map((b: Build) => formatSha(b.meta.revision));
+    this.props.history.push(`/${urlBundles.join('+')}/${urlRevisions.join('+')}`);
   };
 }
 

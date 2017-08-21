@@ -5,15 +5,14 @@ const path = require('path');
 
 const app = express();
 
+const logFormat =
+  ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms';
+
 const server = props => {
   const port = props.port || 3000;
   const get = props.get;
 
-  app.use(
-    morgan(
-      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'
-    )
-  );
+  app.use(morgan(logFormat));
   app.use(express.static(path.join(__dirname, '/../webapp/build')));
 
   app.get('/api/get.json', (req, res) => {

@@ -35,5 +35,9 @@
     "flow-bin": "^0.52.0",
     "flow-typed": "^2.1.5"
   },
-  "proxy": "http://localhost:8888/"
+  "proxy": "http://localhost:8888/",
+  "files": [
+    "build/",
+    "README.md"
+  ]
 }

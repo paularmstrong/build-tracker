@@ -8,5 +8,9 @@
   "dependencies": {
     "gzip-size": "^3.0.0",
     "mkdirp": "^0.5.1"
-  }
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ]
 }

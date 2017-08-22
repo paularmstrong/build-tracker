@@ -11,5 +11,9 @@
   },
   "scripts": {
     "start": "node index.js"
-  }
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ]
 }

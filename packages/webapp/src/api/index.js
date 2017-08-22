@@ -10,7 +10,15 @@ type FetchOptions = {
   beforeRevision: string
 };
 
+const normalizeData = builds => ({
+  bundles: getBundlesByAvgSize(builds),
+  builds: sortBuilds(builds)
+});
+
 export const getBuilds = (opts: FetchOptions) => {
+  if (window.DATA) {
+    return Promise.resolve(normalizeData(window.DATA));
+  }
   const data = new FormData();
   Object.entries(opts).forEach(([k, v]) => {
     data.append(k, v);
@@ -19,8 +27,5 @@ export const getBuilds = (opts: FetchOptions) => {
     // body: data,
     metod: 'GET'
   });
-  return fetch(req).then(res => res.json()).then(builds => ({
-    bundles: getBundlesByAvgSize(builds),
-    builds: sortBuilds(builds)
-  }));
+  return fetch(req).then(res => res.json()).then(normalizeData);
 };

@@ -27,14 +27,19 @@ const _getActiveBundles = (props: { match: Match }, bundles): Array<string> => {
   return activeBundles.length ? bundles.filter((b: Bundle) => activeBundles.indexOf(b) !== -1) : bundles;
 };
 
-const _getCompareBuilds = (props: { match: Match }, builds): Array<Build> => {
+const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array<Build> => {
   const { match: { params } } = props;
-  const { compareRevisions } = params;
-  if (!compareRevisions) {
+  const { compareRevisions = '' } = params;
+
+  let buildRevisions =
+    !compareRevisions && builds.length === 2
+      ? builds.map(b => formatSha(b.meta.revision))
+      : compareRevisions.split('+');
+  if (!buildRevisions.length) {
     return emptyArray;
   }
-  const buildRevisions = compareRevisions.split('+');
-  return builds.filter((b: Build) => buildRevisions.indexOf(formatSha(b.meta.revision)) !== -1);
+
+  return builds.filter(b => buildRevisions.indexOf(formatSha(b.meta.revision)) !== -1);
 };
 
 class App extends Component {
@@ -161,6 +166,7 @@ class App extends Component {
         activeBundles: _getActiveBundles(this.props, bundles),
         builds,
         bundles,
+        chart: builds.length <= 4 ? ChartType.BAR : ChartType.AREA,
         compareBuilds: _getCompareBuilds(this.props, builds)
       }));
     });

@@ -3,7 +3,7 @@
     "husky": "^0.14.3",
     "lerna": "^2.0.0",
     "lint-staged": "^4.0.2",
-    "prettier": "^1.5.3"
+    "prettier": "^1.7.4"
   },
   "name": "bundle-sleuth",
   "version": "0.0.0",
@@ -13,9 +13,6 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --write --single-quote --print-width=120",
-      "git add"
-    ]
+    "*.{js,json,css}": ["prettier --write", "git add"]
   }
 }

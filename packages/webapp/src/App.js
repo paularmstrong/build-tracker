@@ -1,16 +1,16 @@
 // @flow
-import BuildInfo from './BuildInfo';
-import Comparisons from './Comparisons';
+import BuildInfo from './components/BuildInfo';
+import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
-import Chart from './charts/Chart';
-import { formatSha } from './formatting';
+import Chart from './components/Chart';
+import { formatSha } from './modules/formatting';
 import { getBuilds } from './api';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import theme from './theme';
-import Toggles from './Toggles';
+import Toggles from './components/Toggles';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
-import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './values';
+import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
 import type { Build, Bundle } from './types';
@@ -144,7 +144,7 @@ class App extends Component {
         </View>
         <View style={styles.data}>
           <View style={styles.table}>
-            <Comparisons
+            <ComparisonTable
               activeBundles={activeBundles}
               builds={compareBuilds}
               bundles={bundles}

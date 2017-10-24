@@ -1,5 +1,5 @@
 // @flow
-import type { BundleStat } from './types';
+import type { BundleStat } from '../types';
 
 export const Types = {
   CHART: 'chart',

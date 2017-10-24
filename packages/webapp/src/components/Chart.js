@@ -9,8 +9,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { scaleBand, scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
-import { bytesToKb, formatTime, formatSha } from '../formatting';
-import { ChartType, XScaleType, YScaleType } from '../values';
+import { bytesToKb, formatTime, formatSha } from '../modules/formatting';
+import { ChartType, XScaleType, YScaleType } from '../modules/values';
 
 import type { Build } from '../types';
 
@@ -187,7 +187,10 @@ export default class AreaChart extends Component {
     const { bundles, colorScale, xScaleType } = this.props;
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
 
-    const areaChart = area().x(d => xScale(d.data.meta[xAccessor])).y0(d => yScale(d[0])).y1(d => yScale(d[1]));
+    const areaChart = area()
+      .x(d => xScale(d.data.meta[xAccessor]))
+      .y0(d => yScale(d[0]))
+      .y1(d => yScale(d[1]));
 
     const bundle = this._chartContents.selectAll('.bundle').data(data, (d: { key: string }) => d.key);
     const builds = this._chartContents.selectAll('g.build').data([]);
@@ -250,9 +253,14 @@ export default class AreaChart extends Component {
   _setSvgRef = (node: Object) => {
     if (node !== this._svgNode) {
       this._svgNode = node;
-      const svg = select(node).append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+      const svg = select(node)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
       this._chartContents = svg.append('g');
-      this._overlay = svg.append('rect').style('fill', 'none').style('pointer-events', 'all');
+      this._overlay = svg
+        .append('rect')
+        .style('fill', 'none')
+        .style('pointer-events', 'all');
       this._staticLines = svg.append('g');
       this._hoverLine = svg
         .append('line')
@@ -308,8 +316,13 @@ export default class AreaChart extends Component {
   }
 
   _drawYAxis(yScale: Object) {
-    const yAxis = axisLeft().scale(yScale).tickFormat(v => bytesToKb(v, ''));
-    this._yAxis.transition().duration(150).call(yAxis);
+    const yAxis = axisLeft()
+      .scale(yScale)
+      .tickFormat(v => bytesToKb(v, ''));
+    this._yAxis
+      .transition()
+      .duration(150)
+      .call(yAxis);
   }
 
   _handleLayout = (event: Object) => {
@@ -331,16 +344,28 @@ export default class AreaChart extends Component {
     switch (xScaleType) {
       case XScaleType.TIME:
         if (chartType === ChartType.BAR) {
-          return scaleBand().rangeRound(range).padding(padding).domain(domain.map(d => d.meta.timestamp));
+          return scaleBand()
+            .rangeRound(range)
+            .padding(padding)
+            .domain(domain.map(d => d.meta.timestamp));
         }
-        return scaleTime().range(timeRange).domain(extent(stats, d => d.meta.timestamp));
+        return scaleTime()
+          .range(timeRange)
+          .domain(extent(stats, d => d.meta.timestamp));
 
       case XScaleType.COMMIT:
       default: {
         const commitDomain = domain.map(d => d.meta.revision);
         return chartType === ChartType.BAR
-          ? scaleBand().rangeRound(range).padding(padding).domain(commitDomain)
-          : scalePoint().range(range).padding(padding).round(true).domain(commitDomain);
+          ? scaleBand()
+              .rangeRound(range)
+              .padding(padding)
+              .domain(commitDomain)
+          : scalePoint()
+              .range(range)
+              .padding(padding)
+              .round(true)
+              .domain(commitDomain);
       }
     }
   }
@@ -381,10 +406,15 @@ export default class AreaChart extends Component {
 
     switch (yScaleType) {
       case YScaleType.POW:
-        return scalePow().exponent(4).range(range).domain(domain);
+        return scalePow()
+          .exponent(4)
+          .range(range)
+          .domain(domain);
       case YScaleType.LINEAR:
       default:
-        return scaleLinear().range(range).domain(domain);
+        return scaleLinear()
+          .range(range)
+          .domain(domain);
     }
   }
 }

@@ -1,26 +1,33 @@
 // @flow
 import AsciiTable from 'ascii-table';
-import BundleSwitch from './BundleSwitch';
+import BundleCell from './BundleCell';
 import deepEqual from 'deep-equal';
-import IconX from './icons/IconX';
-import theme from './theme';
-import { bytesToKb, formatSha } from './formatting';
-import React, { PureComponent } from 'react';
-import { Button, Clipboard, StyleSheet, Text, View } from 'react-native';
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from './Table';
-import { scaleLinear } from 'd3-scale';
+import IconX from '../icons/IconX';
 import { interpolateHcl } from 'd3-interpolate';
+import { scaleLinear } from 'd3-scale';
+import styles from './styles';
+import theme from '../../theme';
+import ValueCell from './ValueCell';
+import { bytesToKb, formatSha } from '../../modules/formatting';
+import React, { PureComponent } from 'react';
+import { Button, Clipboard, Text, View } from 'react-native';
+import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
 import { hsl, rgb } from 'd3-color';
 
-import type { Build } from './types';
+import type { Build } from '../../types';
 
-const emptyObject = {};
 const identity = d => d;
 
 const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 
-const greenScale = scaleLinear().domain([1, 0]).interpolate(interpolateHcl).range([rgb('#d0f8d7'), rgb('#55e86e')]);
-const redScale = scaleLinear().domain([1, 2]).interpolate(interpolateHcl).range([rgb('#fde2e1'), rgb('#f7635b')]);
+const greenScale = scaleLinear()
+  .domain([1, 0])
+  .interpolate(interpolateHcl)
+  .range([rgb('#d0f8d7'), rgb('#55e86e')]);
+const redScale = scaleLinear()
+  .domain([1, 2])
+  .interpolate(interpolateHcl)
+  .range([rgb('#fde2e1'), rgb('#f7635b')]);
 
 const getDeltaColor = (originalValue, newValue) => {
   if (originalValue === newValue) {
@@ -124,16 +131,18 @@ class Heading extends PureComponent {
     const { onClickRemove, text, title } = this.props;
     return (
       <Th style={[styles.cell, styles.header]} title={title}>
-        {onClickRemove
-          ? <View style={styles.headerContent}>
-              <Text onClick={this._handleClickInfo} style={styles.headerSha}>
-                {formatSha(text)}
-              </Text>
-              <View onClick={this._handleClickRemove} style={[styles.headerButton, styles.removeBuild]}>
-                <IconX />
-              </View>
+        {onClickRemove ? (
+          <View style={styles.headerContent}>
+            <Text onClick={this._handleClickInfo} style={styles.headerSha}>
+              {formatSha(text)}
+            </Text>
+            <View onClick={this._handleClickRemove} style={[styles.headerButton, styles.removeBuild]}>
+              <IconX />
             </View>
-          : text}
+          </View>
+        ) : (
+          text
+        )}
       </Th>
     );
   }
@@ -147,65 +156,6 @@ class Heading extends PureComponent {
     const { onClickInfo, text } = this.props;
     onClickInfo && onClickInfo(text);
   };
-}
-
-class BundleCell extends PureComponent {
-  props: {
-    active: boolean,
-    bundleName: string,
-    color: string,
-    disabled?: boolean,
-    hoverColor?: string,
-    isHovered?: boolean,
-    link?: string,
-    onToggle: Function
-  };
-
-  render() {
-    const { hoverColor, isHovered, ...otherProps } = this.props;
-    return (
-      <Th
-        style={[
-          styles.cell,
-          styles.rowHeader,
-          styles.stickyColumn,
-          isHovered ? { backgroundColor: hoverColor } : emptyObject
-        ]}
-      >
-        <BundleSwitch {...otherProps} />
-      </Th>
-    );
-  }
-}
-
-class ValueCell extends PureComponent {
-  props: {
-    bytes: number,
-    color?: string,
-    colSpan?: number,
-    hoverColor?: string,
-    isHovered: boolean
-  };
-
-  static defaultProps = {
-    colSpan: 1
-  };
-
-  render() {
-    const { bytes, color, colSpan, hoverColor, isHovered } = this.props;
-    return (
-      <Td
-        colSpan={colSpan}
-        style={[
-          styles.cell,
-          isHovered ? { backgroundColor: hoverColor } : emptyObject,
-          color ? { backgroundColor: color } : emptyObject
-        ]}
-      >
-        {bytes ? bytesToKb(bytes) : '-'}
-      </Td>
-    );
-  }
 }
 
 type HeaderCell = { link?: string, text?: string };
@@ -258,14 +208,14 @@ export default class Comparisons extends PureComponent {
         <Table style={styles.dataTable}>
           <Thead>
             <Tr>
-              {headers.map((column, i) =>
+              {headers.map((column, i) => (
                 <Heading
                   {...column}
                   key={i}
                   onClickRemove={column.removable && onRemoveBuild}
                   onClickInfo={column.removable && onShowBuildInfo}
                 />
-              )}
+              ))}
             </Tr>
           </Thead>
           <Tbody>
@@ -310,37 +260,46 @@ export default class Comparisons extends PureComponent {
                 })
               : null}
           </Tbody>
-          {builds.length > 1
-            ? <Tfoot>
-                <Tr>
-                  <BundleCell
-                    active={deepEqual(this._getFilteredData().map(row => row[0].text).slice(1), activeBundles)}
-                    disabled={this._getFilteredData().map(row => row[0].text).slice(1).length === 0}
-                    bundleName="Above threshold only"
-                    color={theme.colorMidnight}
-                    onToggle={this._handleRemoveBelowThreshold}
-                  />
-                  <Td colSpan={headers.length - 1} rowSpan={2} style={styles.footer}>
-                    <View style={styles.footerContent}>
-                      <View style={styles.copyButton}>
-                        <Button onPress={this._handleCopyToAscii} style={styles.copyButton} title="Copy to ASCII" />
-                      </View>
-                      <View style={styles.copyButton}>
-                        <Button onPress={this._handleCopyToCSV} style={styles.copyButton} title={'Copy to CSV'} />
-                      </View>
+          {builds.length > 1 ? (
+            <Tfoot>
+              <Tr>
+                <BundleCell
+                  active={deepEqual(
+                    this._getFilteredData()
+                      .map(row => row[0].text)
+                      .slice(1),
+                    activeBundles
+                  )}
+                  disabled={
+                    this._getFilteredData()
+                      .map(row => row[0].text)
+                      .slice(1).length === 0
+                  }
+                  bundleName="Above threshold only"
+                  color={theme.colorMidnight}
+                  onToggle={this._handleRemoveBelowThreshold}
+                />
+                <Td colSpan={headers.length - 1} rowSpan={2} style={styles.footer}>
+                  <View style={styles.footerContent}>
+                    <View style={styles.copyButton}>
+                      <Button onPress={this._handleCopyToAscii} style={styles.copyButton} title="Copy to ASCII" />
                     </View>
-                  </Td>
-                </Tr>
-                <Tr>
-                  <BundleCell
-                    active={!hiddenRowCount}
-                    bundleName="Show deselected"
-                    color={theme.colorMidnight}
-                    onToggle={this._handleHideBelowThreshold}
-                  />
-                </Tr>
-              </Tfoot>
-            : null}
+                    <View style={styles.copyButton}>
+                      <Button onPress={this._handleCopyToCSV} style={styles.copyButton} title={'Copy to CSV'} />
+                    </View>
+                  </View>
+                </Td>
+              </Tr>
+              <Tr>
+                <BundleCell
+                  active={!hiddenRowCount}
+                  bundleName="Show deselected"
+                  color={theme.colorMidnight}
+                  onToggle={this._handleHideBelowThreshold}
+                />
+              </Tr>
+            </Tfoot>
+          ) : null}
         </Table>
       </View>
     );
@@ -409,7 +368,10 @@ export default class Comparisons extends PureComponent {
   _handleCopyToAscii = () => {
     const [header, ...rows] = this._getTableAsMatrix(formatSha, bytesToKb);
     const table = new AsciiTable('');
-    table.setBorder('|', '-', '', '').setHeading(...header).addRowMatrix(rows);
+    table
+      .setBorder('|', '-', '', '')
+      .setHeading(...header)
+      .addRowMatrix(rows);
     const hiddenRowCount = this._data.body.length - rows.length;
     if (hiddenRowCount) {
       table.addRow(`${hiddenRowCount} bundles hidden`);
@@ -420,7 +382,12 @@ export default class Comparisons extends PureComponent {
     });
 
     // Clipboard requires using template strings and special encoding for newlines and spaces
-    Clipboard.setString(`${table.toString().replace(/\r?\n/g, `\r\n`).replace(/ /g, `\u00A0`)}`);
+    Clipboard.setString(
+      `${table
+        .toString()
+        .replace(/\r?\n/g, `\r\n`)
+        .replace(/ /g, `\u00A0`)}`
+    );
   };
 
   _handleCopyToCSV = () => {
@@ -429,91 +396,3 @@ export default class Comparisons extends PureComponent {
     Clipboard.setString(`${matrix.map(row => `${row.join(',')}`).join(`\r\n`)}`);
   };
 }
-
-const styles = StyleSheet.create({
-  root: {
-    position: 'relative'
-  },
-  dataTable: {
-    fontSize: theme.fontSizeSmall,
-    borderSpacing: 0,
-    borderCollapse: 'separate'
-  },
-  header: {
-    position: 'sticky',
-    top: 0,
-    left: 'auto',
-    zIndex: 2
-  },
-  rowHeader: {
-    textAlign: 'left',
-    paddingRight: theme.spaceXXSmall
-  },
-  rowColor: {
-    display: 'inline-flex',
-    width: '1em',
-    height: '1em',
-    borderRadius: '50%',
-    marginLeft: theme.spaceXSmall
-  },
-  bundleLink: {
-    display: 'inline-flex',
-    fontWeight: 'normal'
-  },
-  cell: {
-    backgroundColor: theme.colorWhite,
-    margin: 0,
-    paddingLeft: theme.spaceXSmall,
-    paddingRight: theme.spaceXSmall,
-    verticalAlign: 'middle',
-    height: theme.spaceLarge,
-    textAlign: 'right',
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: theme.colorGray,
-    borderRightWidth: '1px',
-    borderRightStyle: 'dotted',
-    borderRightColor: theme.colorGray,
-    whiteSpace: 'nowrap'
-  },
-  toggle: {
-    color: theme.colorBlue,
-    cursor: 'pointer'
-  },
-  footer: {
-    textAlign: 'center',
-    flexDirection: 'row'
-  },
-  stickyColumn: {
-    left: 0,
-    position: 'sticky',
-    top: 'auto',
-    maxWidth: '13rem',
-    borderRightWidth: '1px',
-    borderRightStyle: 'solid',
-    borderRightColor: theme.colorGray,
-    zIndex: 1
-  },
-  headerContent: {
-    flexDirection: 'row'
-  },
-  headerSha: {
-    cursor: 'pointer'
-  },
-  headerButton: {
-    marginLeft: theme.spaceXSmall,
-    cursor: 'pointer',
-    fontSize: '0.5rem'
-  },
-  removeBuild: {
-    color: theme.colorRed
-  },
-  copyButton: {
-    marginLeft: theme.spaceSmall
-  },
-  footerContent: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    paddingLeft: theme.spaceMedium
-  }
-});

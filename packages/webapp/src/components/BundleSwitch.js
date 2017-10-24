@@ -2,7 +2,7 @@
 import Link from './Link';
 import React, { PureComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
-import theme from './theme';
+import theme from '../theme';
 import { hsl } from 'd3-color';
 
 export default class BundleSwitch extends PureComponent {
@@ -30,13 +30,13 @@ export default class BundleSwitch extends PureComponent {
     return (
       <View style={[styles.bundle]}>
         <View style={styles.bundleName}>
-          {link
-            ? <Link style={[styles.bundleLink]} to={link}>
-                {text}
-              </Link>
-            : <View style={[styles.bundleLink]}>
-                {text}
-              </View>}
+          {link ? (
+            <Link style={[styles.bundleLink]} to={link}>
+              {text}
+            </Link>
+          ) : (
+            <View style={[styles.bundleLink]}>{text}</View>
+          )}
         </View>
         <View style={styles.switch}>
           <Switch

@@ -1,12 +1,12 @@
 // @flow
 import { Component } from 'react';
-import { createDOMElement, StyleSheet } from 'react-native';
+import { createElement, StyleSheet } from 'react-native';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import theme from './theme';
 
 export default class Link extends Component {
   render() {
-    return createDOMElement(ReactRouterLink, {
+    return createElement(ReactRouterLink, {
       ...this.props,
       style: [styles.link, this.props.style]
     });

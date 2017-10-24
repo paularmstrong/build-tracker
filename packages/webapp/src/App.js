@@ -23,7 +23,10 @@ const _getActiveBundles = (props: { match: Match }, bundles): Array<string> => {
   if (!bundleNames) {
     return bundles;
   }
-  const activeBundles = bundleNames.replace(/All\+?/, '').split('+').filter(Boolean);
+  const activeBundles = bundleNames
+    .replace(/All\+?/, '')
+    .split('+')
+    .filter(Boolean);
   return activeBundles.length ? bundles.filter((b: Bundle) => activeBundles.indexOf(b) !== -1) : bundles;
 };
 
@@ -34,7 +37,7 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
   let buildRevisions =
     !compareRevisions && builds.length === 2
       ? builds.map(b => formatSha(b.meta.revision))
-      : compareRevisions.split('+');
+      : compareRevisions ? compareRevisions.split('+') : emptyArray;
   if (!buildRevisions.length) {
     return emptyArray;
   }
@@ -105,6 +108,8 @@ class App extends Component {
       yscale
     } = this.state;
 
+    console.log(valueTypeAccessor[values]);
+
     return (
       <View style={styles.root}>
         <View style={styles.main}>
@@ -151,9 +156,7 @@ class App extends Component {
               valueAccessor={valueTypeAccessor[values]}
             />
           </View>
-          <View style={styles.info}>
-            {selectedBuild ? <BuildInfo build={selectedBuild} /> : null}
-          </View>
+          <View style={styles.info}>{selectedBuild ? <BuildInfo build={selectedBuild} /> : null}</View>
         </View>
       </View>
     );

@@ -17,7 +17,7 @@ class ToggleGroup extends PureComponent {
 
     return (
       <View style={styles.toggleGroup}>
-        {Object.values(TypesEnum[objectType]).map(groupValue =>
+        {Object.values(TypesEnum[objectType]).map(groupValue => (
           <Button
             color={color}
             disabled={currentValue === groupValue}
@@ -28,14 +28,14 @@ class ToggleGroup extends PureComponent {
             title={groupValue}
             value={groupValue}
           />
-        )}
+        ))}
       </View>
     );
   }
 
   _handlePress = event => {
     const { objectType, onChange } = this.props;
-    onChange(objectType, event.target.innerText);
+    onChange(objectType, event.target.innerText.toLowerCase());
   };
 }
 
@@ -75,9 +75,9 @@ export default class Toggles extends PureComponent {
     const { onToggle } = this.props;
     return (
       <View style={styles.scaleTypeButtons}>
-        {groups.map((group: Object, i) =>
+        {groups.map((group: Object, i) => (
           <ToggleGroup {...group} currentValue={group.getValue(this.props)} key={i} onChange={onToggle} />
-        )}
+        ))}
       </View>
     );
   }

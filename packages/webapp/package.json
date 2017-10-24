@@ -16,11 +16,11 @@
     "deep-equal": "^1.0.1",
     "express": "^4.15.3",
     "glob": "^7.1.2",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-native-web": "^0.0.119",
-    "react-router-dom": "^4.1.2",
-    "react-scripts": "1.0.11"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-native-web": "^0.1.12",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "^1.0.14"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -36,8 +36,5 @@
     "flow-typed": "^2.1.5"
   },
   "proxy": "http://localhost:8888/",
-  "files": [
-    "build/",
-    "README.md"
-  ]
+  "files": ["build/", "README.md"]
 }

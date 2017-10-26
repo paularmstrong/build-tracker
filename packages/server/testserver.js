@@ -1,7 +1,7 @@
 const path = require('path');
-const { staticFileServer } = require('./');
+const { staticServer } = require('./src');
 
-staticFileServer({
-  statsLocation: path.join(__dirname, 'fixtures/stats'),
-  port: 8888
+staticServer({
+  port: 8888,
+  statsRoot: path.join(__dirname, 'fixtures/stats')
 });

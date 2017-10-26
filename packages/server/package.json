@@ -11,7 +11,18 @@
     "morgan": "^1.8.2"
   },
   "scripts": {
-    "start": "node index.js"
+    "build": "babel src -d dist",
+    "start": "babel-watch src/",
+    "start:dev": "babel-watch testserver.js"
   },
-  "files": ["index.js", "README.md"]
+  "files": ["index.js", "README.md"],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-watch": "^2.0.7",
+    "flow-bin": "^0.57.3"
+  }
 }

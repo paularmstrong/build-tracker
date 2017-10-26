@@ -23,9 +23,11 @@ export const getBuilds = (opts: FetchOptions) => {
   Object.entries(opts).forEach(([k, v]) => {
     data.append(k, v);
   });
-  const req = new Request(`${API_BASE}/get.json`, {
+  const req = new Request(`${API_BASE}/builds`, {
     // body: data,
     metod: 'GET'
   });
-  return fetch(req).then(res => res.json()).then(normalizeData);
+  return fetch(req)
+    .then(res => res.json())
+    .then(normalizeData);
 };

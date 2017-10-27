@@ -4,6 +4,7 @@
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
+  "main": "dist/index.js",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.15.4",

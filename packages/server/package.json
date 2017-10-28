@@ -7,6 +7,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "bundle-sleuth-app": "*",
     "express": "^4.15.4",
     "glob": "^7.1.2",
     "morgan": "^1.8.2"

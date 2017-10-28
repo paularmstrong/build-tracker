@@ -6,7 +6,7 @@
     "prettier": "^1.7.4"
   },
   "name": "bundle-sleuth",
-  "version": "0.0.0",
+  "private": true,
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "scripts": {

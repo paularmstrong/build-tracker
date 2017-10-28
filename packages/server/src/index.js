@@ -8,7 +8,7 @@ import path from 'path';
 
 import type { $Application, $Request, $Response } from 'express';
 
-const APP_HTML_PATH = require.resolve('bundle-sleuth-app');
+const APP_HTML_PATH = require.resolve('build-tracker-app');
 
 const app = express();
 app.use(bodyParser.json());

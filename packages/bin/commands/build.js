@@ -18,7 +18,7 @@ exports.builder = yargs =>
     type: 'array'
   });
 
-const htmlPath = require.resolve('bundle-sleuth-app/build/index.html');
+const htmlPath = require.resolve('build-tracker-app/build/index.html');
 
 exports.handler = argv => {
   const data = argv.data.map(dataFile => {

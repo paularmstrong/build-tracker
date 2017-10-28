@@ -1,5 +1,5 @@
 {
-  "name": "bundle-sleuth-bin",
+  "name": "build-tracker-bin",
   "version": "0.0.0",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
@@ -7,11 +7,7 @@
   "dependencies": {
     "glob": "^7.1.2",
     "yargs": "^8.0.2",
-    "bundle-sleuth-app": "0.0.0"
+    "build-tracker-app": "*"
   },
-  "files": [
-    "commands/",
-    "index.js",
-    "README.md"
-  ]
+  "files": ["commands/", "index.js", "README.md"]
 }

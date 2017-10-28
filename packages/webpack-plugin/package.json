@@ -1,7 +1,7 @@
 {
-  "name": "bundle-sleuth-webpack-plugin",
+  "name": "build-tracker-webpack-plugin",
   "version": "0.0.0",
-  "description": "A webpack plugin that builds and exports stats for consumption in the bundle tracker application",
+  "description": "A webpack plugin that builds and exports stats for consumption in the build tracker application",
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -9,8 +9,5 @@
     "gzip-size": "^3.0.0",
     "mkdirp": "^0.5.1"
   },
-  "files": [
-    "index.js",
-    "README.md"
-  ]
+  "files": ["index.js", "README.md"]
 }

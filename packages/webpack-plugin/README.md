@@ -1,1 +1,1 @@
-# Bundle Sleuth Webpack Plugin
+# Build Tracker Webpack Plugin

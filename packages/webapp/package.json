@@ -1,5 +1,5 @@
 {
-  "name": "bundle-sleuth-app",
+  "name": "build-tracker-app",
   "version": "0.0.0",
   "private": true,
   "main": "build/index.html",

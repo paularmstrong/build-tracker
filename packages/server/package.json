@@ -1,5 +1,5 @@
 {
-  "name": "bundle-sleuth-server",
+  "name": "build-tracker-server",
   "version": "0.0.0",
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
@@ -7,7 +7,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "bundle-sleuth-app": "*",
+    "build-tracker-app": "*",
     "express": "^4.15.4",
     "glob": "^7.1.2",
     "morgan": "^1.8.2"

@@ -23,15 +23,15 @@ class AnalyzerStatsPlugin {
     compiler.plugin('done', this._handleDone);
   }
 
-  _handleDone(stats) {
-    const compilation = stats.compilation;
+  _handleDone(artifacts) {
+    const compilation = artifacts.compilation;
     const fileNameFormat = compilation.outputOptions.chunkFilename;
     let hashLength = fileNameFormat.match(/\[chunkhash\:(\d+)\]/);
     if (hashLength && hashLength.length) {
       hashLength = parseInt(hashLength[1], 10);
     }
 
-    const outputStats = compilation.chunks
+    const outputArtifacts = compilation.chunks
       .map(chunk => {
         const fileName = fileNameFormat
           .replace('[name]', chunk.name)
@@ -61,7 +61,7 @@ class AnalyzerStatsPlugin {
         branch: this._branch,
         timestamp: Date.now()
       },
-      stats: outputStats
+      artifacts: outputArtifacts
     };
 
     if (this._outputPath) {
@@ -75,7 +75,7 @@ class AnalyzerStatsPlugin {
 
   _write(output) {
     mkdirp.sync(this._outputPath);
-    const fileTitle = ['stats', this._branch, this._revision].filter(Boolean).join('-');
+    const fileTitle = ['build', this._branch, this._revision].filter(Boolean).join('-');
     const outputFilePath = path.join(this._outputPath, `${fileTitle}.json`);
     fs.writeFileSync(outputFilePath, JSON.stringify(output));
   }
@@ -100,7 +100,7 @@ class AnalyzerStatsPlugin {
 
     const request = httpModule.request(requestOptions, response => {
       if (response.statusCode < 200 || response.statusCode >= 400) {
-        throw new Error(`Failed to post stats to URL: ${response.statusCode} - ${response.statusMessage}`);
+        throw new Error(`Failed to post build status to URL: ${response.statusCode} - ${response.statusMessage}`);
         process.exit(1);
       }
     });

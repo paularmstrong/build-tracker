@@ -54,9 +54,9 @@ const isValidBuild = data => {
   assert(data.meta && typeof data.meta === 'object', 'Metadata is provided');
   assert(data.meta.revision && typeof data.meta.revision === 'string', 'Build revision is provided');
   assert(data.meta.timestamp && typeof data.meta.timestamp === 'number', 'Build timestamp is provided');
-  assert(data.stats && typeof data.stats === 'object', 'Build stats are provided');
-  Object.keys(data.stats).forEach(key => {
-    const artifact = data.stats[key];
+  assert(data.artifact && typeof data.artifact === 'object', 'Build artifact are provided');
+  Object.keys(data.artifact).forEach(key => {
+    const artifact = data.artifact[key];
     assert(artifact.name, `Name is provided for artifact ${key}`);
     assert(artifact.size, `Size is provided for artifact ${key}`);
   });

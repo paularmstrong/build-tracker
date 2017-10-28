@@ -52,7 +52,7 @@ class AnalyzerStatsPlugin {
         }
       })
       .filter(Boolean)
-      .reduce((memo, bundle) => ({ ...memo, [bundle.name]: bundle }), {});
+      .reduce((memo, artifact) => ({ ...memo, [artifact.name]: artifact }), {});
 
     const output = {
       meta: {

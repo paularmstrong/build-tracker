@@ -3,7 +3,7 @@ export type BuildMeta = {
   timestamp: number
 };
 
-export type BundleStat = {
+export type Artifact = {
   hash: string,
   name: string,
   size: number,
@@ -12,5 +12,5 @@ export type BundleStat = {
 
 export type Build = {
   meta: BuildMeta,
-  stats: { [name: string]: BundleStat }
+  stats: { [name: string]: Artifact }
 };

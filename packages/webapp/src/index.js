@@ -9,7 +9,7 @@ const Router = window.location.pathname.endsWith('.html') ? HashRouter : Browser
 ReactDOM.render(
   <Router>
     <div>
-      <Route path="/:bundleNames?/:compareRevisions?" component={App} />
+      <Route path="/:artifactNames?/:compareRevisions?" component={App} />
     </div>
   </Router>,
   document.getElementById('root')

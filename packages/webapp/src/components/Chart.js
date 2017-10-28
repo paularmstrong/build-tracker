@@ -26,7 +26,7 @@ const getMouseInformation = (
   xScale: Function,
   yScale: Function,
   data: StackedData,
-  stats: Array<Build>
+  builds: Array<Build>
 ) => {
   const [xPos, yPos] = mouse(nodes[0]);
 
@@ -35,36 +35,36 @@ const getMouseInformation = (
   let hoveredBuild;
   if (xScale.invert) {
     const xDate = xScale.invert(xPos);
-    const validTimestamps = stats.map(d => d.meta.timestamp);
+    const validTimestamps = builds.map(d => d.meta.timestamp);
     xValue = validTimestamps.reduce((prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev), 0);
     xIndex = validTimestamps.indexOf(xValue);
-    hoveredBuild = stats.find(commit => commit.meta.timestamp === xValue);
+    hoveredBuild = builds.find(commit => commit.meta.timestamp === xValue);
   } else {
     const domain = xScale.domain();
     xValue = domain.reduce((prev, curr, i) => {
       return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
     }, domain[0]);
-    xIndex = stats.findIndex(
+    xIndex = builds.findIndex(
       commit => (typeof xValue === 'string' ? commit.meta.revision === xValue : commit.meta.timestamp === xValue)
     );
-    hoveredBuild = stats[xIndex];
+    hoveredBuild = builds[xIndex];
   }
 
   const yValue = yScale.invert(yPos);
-  const hoveredBundle = data.find(data => data[xIndex][0] < yValue && data[xIndex][1] > yValue);
+  const hoveredArtifact = data.find(data => data[xIndex][0] < yValue && data[xIndex][1] > yValue);
 
   return {
     xValue,
     yValue,
     hoveredBuild,
-    hoveredBundle
+    hoveredArtifact
   };
 };
 
 export default class AreaChart extends Component {
   props: {
-    activeBundles: Array<string>,
-    bundles: Array<string>,
+    activeArtifactNames: Array<string>,
+    artifacts: Array<string>,
     chartType: $Values<typeof ChartType>,
     colorScale: Function,
     onHover: Function,
@@ -73,7 +73,7 @@ export default class AreaChart extends Component {
     valueAccessor: Function,
     yScaleType: $Values<typeof YScaleType>,
     xScaleType: $Values<typeof XScaleType>,
-    stats: Array<Build>
+    builds: Array<Build>
   };
 
   static defaultProps = {
@@ -125,7 +125,7 @@ export default class AreaChart extends Component {
 
   _renderChart() {
     const { height, width } = this.state;
-    const { activeBundles, chartType, stats, valueAccessor } = this.props;
+    const { activeArtifactNames, chartType, builds, valueAccessor } = this.props;
     if (height === 0 || width === 0) {
       return;
     }
@@ -134,10 +134,10 @@ export default class AreaChart extends Component {
     const xScale = this._getXScale();
 
     const chartStack = stack();
-    chartStack.keys(activeBundles);
-    chartStack.value((d, key) => (d.stats[key] ? valueAccessor(d.stats[key]) : 0));
+    chartStack.keys(activeArtifactNames);
+    chartStack.value((d, key) => (d.artifacts[key] ? valueAccessor(d.artifacts[key]) : 0));
 
-    const data = chartStack(stats);
+    const data = chartStack(builds);
 
     switch (chartType) {
       case ChartType.BAR:
@@ -158,7 +158,7 @@ export default class AreaChart extends Component {
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom)
       .on('click', (d, index, nodes) => {
-        const { hoveredBuild } = getMouseInformation(nodes, xScale, yScale, data, stats);
+        const { hoveredBuild } = getMouseInformation(nodes, xScale, yScale, data, builds);
         this.props.onSelectBuild(hoveredBuild);
       })
       .on('mouseover', () => {
@@ -169,7 +169,7 @@ export default class AreaChart extends Component {
         this.props.onHover('', '');
       })
       .on('mousemove', (d, index, nodes) => {
-        const { xValue, hoveredBuild, hoveredBundle } = getMouseInformation(nodes, xScale, yScale, data, stats);
+        const { xValue, hoveredBuild, hoveredArtifact } = getMouseInformation(nodes, xScale, yScale, data, builds);
         const [xPos, yPos] = mouse(nodes[0]);
 
         const xSetter = v => (xScale.bandwidth ? xScale(v) + xScale.bandwidth() / 2 : xScale(v));
@@ -178,13 +178,13 @@ export default class AreaChart extends Component {
           .attr('x2', xSetter(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(hoveredBundle, hoveredBuild);
+        this.props.onHover(hoveredArtifact, hoveredBuild);
         // TODO: add a tooltip
       });
   }
 
   _drawArea(data: Array<Array<number>>, xScale: Function, yScale: Function) {
-    const { bundles, colorScale, xScaleType } = this.props;
+    const { artifacts, colorScale, xScaleType } = this.props;
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
 
     const areaChart = area()
@@ -192,56 +192,56 @@ export default class AreaChart extends Component {
       .y0(d => yScale(d[0]))
       .y1(d => yScale(d[1]));
 
-    const bundle = this._chartContents.selectAll('.bundle').data(data, (d: { key: string }) => d.key);
+    const artifact = this._chartContents.selectAll('.artifact').data(data, (d: { key: string }) => d.key);
     const builds = this._chartContents.selectAll('g.build').data([]);
     builds.exit().remove();
 
     // Remove old areas
-    bundle.exit().remove();
+    artifact.exit().remove();
 
-    bundle
+    artifact
       .enter()
       .append('path')
-      .attr('class', 'bundle')
-      .style('fill', (d, i) => colorScale(bundles.length - bundles.indexOf(d.key)))
-      .merge(bundle)
+      .attr('class', 'artifact')
+      .style('fill', (d, i) => colorScale(artifacts.length - artifacts.indexOf(d.key)))
+      .merge(artifact)
       .transition()
       .duration(150)
       .attr('d', areaChart);
   }
 
   _drawBars(data: Array<Array<number>>, xScale: Function, yScale: Function) {
-    const { bundles, colorScale, xScaleType } = this.props;
+    const { artifacts, colorScale, xScaleType } = this.props;
     const { height } = this.state;
 
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
-    const bundleGroups = this._chartContents.selectAll('g.bundleGroup').data(data, (d: { key: string }) => d.key);
-    const bundle = this._chartContents.selectAll('path.bundle').data([]);
-    bundle.exit().remove();
+    const artifactGroups = this._chartContents.selectAll('g.artifactGroup').data(data, (d: { key: string }) => d.key);
+    const artifact = this._chartContents.selectAll('path.artifact').data([]);
+    artifact.exit().remove();
 
-    // Remove old bundles
-    bundleGroups.exit().remove();
+    // Remove old artifacts
+    artifactGroups.exit().remove();
 
-    const bundleRects = bundleGroups
+    const artifactRects = artifactGroups
       .enter()
       .append('g')
-      .attr('class', 'bundleGroup')
-      .style('fill', (d, i) => colorScale(bundles.length - bundles.indexOf(d.key)))
-      .merge(bundleGroups)
-      .selectAll('rect.bundle')
+      .attr('class', 'artifactGroup')
+      .style('fill', (d, i) => colorScale(artifacts.length - artifacts.indexOf(d.key)))
+      .merge(artifactGroups)
+      .selectAll('rect.artifact')
       .data(d => d);
 
-    bundleRects.exit().remove();
+    artifactRects.exit().remove();
 
-    bundleRects
+    artifactRects
       .enter()
       .append('rect')
-      .attr('class', 'bundle')
+      .attr('class', 'artifact')
       .attr('x', d => xScale(d.data.meta[xAccessor]))
       .attr('y', d => height - margin.top - margin.bottom)
       .attr('width', xScale.bandwidth())
       .attr('height', 0)
-      .merge(bundleRects)
+      .merge(artifactRects)
       .transition()
       .duration(150)
       .attr('x', d => xScale(d.data.meta[xAccessor]))
@@ -276,10 +276,10 @@ export default class AreaChart extends Component {
 
   _drawLines(xScale: Function) {
     const { height } = this.state;
-    const { selectedBuilds, stats, xScaleType } = this.props;
+    const { selectedBuilds, builds, xScaleType } = this.props;
     const data =
       xScaleType === XScaleType.TIME
-        ? stats.filter(d => selectedBuilds.indexOf(d.meta.revision) !== -1).map(d => d.meta.timestamp)
+        ? builds.filter(d => selectedBuilds.indexOf(d.meta.revision) !== -1).map(d => d.meta.timestamp)
         : selectedBuilds;
     const lines = this._staticLines.selectAll('line').data(data);
     lines.exit().remove();
@@ -333,12 +333,12 @@ export default class AreaChart extends Component {
   };
 
   _getXScale() {
-    const { chartType, stats, xScaleType } = this.props;
+    const { chartType, builds, xScaleType } = this.props;
     const { width } = this.state;
 
     const range = [0, width - (margin.left + margin.right)];
     const timeRange = [range[0] + 10, range[1] - 10];
-    const domain = stats.sort((a, b) => new Date(a.meta.timestamp) - new Date(b.meta.timestamp));
+    const domain = builds.sort((a, b) => new Date(a.meta.timestamp) - new Date(b.meta.timestamp));
     const padding = 0.25;
 
     switch (xScaleType) {
@@ -351,7 +351,7 @@ export default class AreaChart extends Component {
         }
         return scaleTime()
           .range(timeRange)
-          .domain(extent(stats, d => d.meta.timestamp));
+          .domain(extent(builds, d => d.meta.timestamp));
 
       case XScaleType.COMMIT:
       default: {
@@ -387,15 +387,15 @@ export default class AreaChart extends Component {
   }
 
   _getYScale() {
-    const { activeBundles, stats, valueAccessor, yScaleType } = this.props;
+    const { activeArtifactNames, builds, valueAccessor, yScaleType } = this.props;
     const { height } = this.state;
 
-    const maxDateVal = max(stats, commit => {
-      return Object.values(commit.stats).reduce(
-        (memo: number, bundle) =>
+    const maxDateVal = max(builds, build => {
+      return Object.values(build.artifacts).reduce(
+        (memo: number, artifact) =>
           memo +
-          (bundle && typeof bundle.name === 'string' && activeBundles.indexOf(bundle.name) > -1
-            ? valueAccessor(bundle)
+          (artifact && typeof artifact.name === 'string' && activeArtifactNames.indexOf(artifact.name) > -1
+            ? valueAccessor(artifact)
             : 0),
         0
       );

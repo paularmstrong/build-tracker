@@ -1,6 +1,6 @@
 // @flow
+import ArtifactCell from './ArtifactCell';
 import AsciiTable from 'ascii-table';
-import BundleCell from './BundleCell';
 import deepEqual from 'deep-equal';
 import IconX from '../icons/IconX';
 import { interpolateHcl } from 'd3-interpolate';
@@ -59,18 +59,18 @@ const getTableHeaders = (builds: Array<Build>) =>
     return headers;
   });
 
-const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
-  const bundleMap = bundles.map((bundle, i) => {
-    const originalValue = builds.length ? valueAccessor(builds[0].stats[bundle]) : 0;
+const getTableBody = (artifactNames: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
+  const artifactMap = artifactNames.map((artifactName, i) => {
+    const originalValue = builds.length ? valueAccessor(builds[0].artifacts[artifactName]) : 0;
     return [
-      { link: `/${bundle}`, text: bundle },
+      { link: `/${artifactName}`, text: artifactName },
       ...flatten(
         builds.map((build, i) => {
-          const value = valueAccessor(build.stats[bundle]);
+          const value = valueAccessor(build.artifacts[artifactName]);
           if (i === 0) {
             return [{ bytes: value }];
           }
-          const oldValue = valueAccessor(builds[i - 1].stats[bundle]);
+          const oldValue = valueAccessor(builds[i - 1].artifacts[artifactName]);
           const delta = value - oldValue;
           const values = [{ bytes: value }, { bytes: delta, color: getDeltaColor(oldValue, value) }];
           if (i > 1) {
@@ -82,12 +82,12 @@ const getTableBody = (bundles: Array<string>, builds: Array<Build>, valueAccesso
     ];
   });
 
-  return [getTotals(builds, valueAccessor), ...bundleMap];
+  return [getTotals(builds, valueAccessor), ...artifactMap];
 };
 
 const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
   const totals = builds.map(build =>
-    Object.values(build.stats).reduce((memo, bundle) => memo + valueAccessor(bundle), 0)
+    Object.values(build.artifacts).reduce((memo, artifact) => memo + valueAccessor(artifact), 0)
   );
 
   const totalsWithDelta = flatten(
@@ -108,10 +108,10 @@ const getTotals = (builds: Array<Build>, valueAccessor: Function) => {
   return [{ link: '/', text: 'All' }, ...totalsWithDelta];
 };
 
-const createTableData = (bundles: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
+const createTableData = (artifactNames: Array<string>, builds: Array<Build>, valueAccessor: Function) => {
   return {
     head: [[{}], ...getTableHeaders(builds)],
-    body: getTableBody(bundles, builds, valueAccessor)
+    body: getTableBody(artifactNames, builds, valueAccessor)
   };
 };
 
@@ -163,19 +163,19 @@ type BodyCell = { link?: string, text?: string, bytes?: number, color?: string }
 
 export default class Comparisons extends PureComponent {
   props: {
-    activeBundles: Array<string>,
+    activeArtifactNames: Array<string>,
     builds: Array<Build>,
-    bundles: Array<string>,
+    artifactNames: Array<string>,
     colorScale: Function,
-    hoveredBundle?: string,
-    onBundlesChange?: Function,
+    hoveredArtifact?: string,
+    onArtifactsChange?: Function,
     onRemoveBuild?: Function,
     onShowBuildInfo?: Function,
     valueAccessor: Function
   };
 
   state: {
-    showDeselectedBundles: boolean
+    showDeselectedArtifacts: boolean
   };
 
   _data: {
@@ -186,20 +186,28 @@ export default class Comparisons extends PureComponent {
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
-      showDeselectedBundles: true
+      showDeselectedArtifacts: true
     };
-    this._data = createTableData(props.bundles, props.builds, props.valueAccessor);
+    this._data = createTableData(props.artifactNames, props.builds, props.valueAccessor);
   }
 
   componentWillUpdate(nextProps: Object, nextState: Object) {
-    this._data = createTableData(nextProps.bundles, nextProps.builds, nextProps.valueAccessor);
+    this._data = createTableData(nextProps.artifactNames, nextProps.builds, nextProps.valueAccessor);
   }
 
   render() {
-    const { activeBundles, builds, bundles, colorScale, hoveredBundle, onRemoveBuild, onShowBuildInfo } = this.props;
+    const {
+      activeArtifactNames,
+      builds,
+      artifactNames,
+      colorScale,
+      hoveredArtifact,
+      onRemoveBuild,
+      onShowBuildInfo
+    } = this.props;
 
-    const { showDeselectedBundles } = this.state;
-    const body = showDeselectedBundles ? this._data.body : this._getActiveData();
+    const { showDeselectedArtifacts } = this.state;
+    const body = showDeselectedArtifacts ? this._data.body : this._getActiveData();
     const hiddenRowCount = this._data.body.length - body.length;
     const headers = flatten(this._data.head);
 
@@ -221,10 +229,11 @@ export default class Comparisons extends PureComponent {
           <Tbody>
             {body.length
               ? body.map((row, i) => {
-                  const bundle = row[0].text;
-                  const isAll = bundle === 'All';
-                  const isHovered = hoveredBundle === bundle;
-                  const color = isAll || !bundle ? theme.colorMidnight : colorScale(1 - bundles.indexOf(bundle));
+                  const artifact = row[0].text;
+                  const isAll = artifact === 'All';
+                  const isHovered = hoveredArtifact === artifact;
+                  const color =
+                    isAll || !artifact ? theme.colorMidnight : colorScale(1 - artifactNames.indexOf(artifact));
                   const hoverColor = hsl(color);
                   hoverColor.s = 0.7;
                   hoverColor.l = 0.95;
@@ -234,19 +243,19 @@ export default class Comparisons extends PureComponent {
                         if (i === 0) {
                           const { link, text } = column;
                           return (
-                            <BundleCell
+                            <ArtifactCell
                               active={
                                 isAll || !text
-                                  ? activeBundles.length === bundles.length
-                                  : activeBundles.indexOf(text) !== -1
+                                  ? activeArtifactNames.length === artifactNames.length
+                                  : activeArtifactNames.indexOf(text) !== -1
                               }
+                              artifactName={text}
                               color={color}
-                              disabled={isAll && activeBundles.length === bundles.length}
+                              disabled={isAll && activeArtifactNames.length === artifactNames.length}
                               hoverColor={hoverColor.toString()}
                               isHovered={isHovered}
                               key={i}
-                              onToggle={isAll ? this._handleToggleAllBundles : this._handleToggleBundle}
-                              bundleName={text}
+                              onToggle={isAll ? this._handleToggleAllArtifacts : this._handleToggleArtifact}
                               link={link}
                             />
                           );
@@ -263,19 +272,19 @@ export default class Comparisons extends PureComponent {
           {builds.length > 1 ? (
             <Tfoot>
               <Tr>
-                <BundleCell
+                <ArtifactCell
                   active={deepEqual(
                     this._getFilteredData()
                       .map(row => row[0].text)
                       .slice(1),
-                    activeBundles
+                    activeArtifactNames
                   )}
+                  artifactName="Above threshold only"
                   disabled={
                     this._getFilteredData()
                       .map(row => row[0].text)
                       .slice(1).length === 0
                   }
-                  bundleName="Above threshold only"
                   color={theme.colorMidnight}
                   onToggle={this._handleRemoveBelowThreshold}
                 />
@@ -291,9 +300,9 @@ export default class Comparisons extends PureComponent {
                 </Td>
               </Tr>
               <Tr>
-                <BundleCell
+                <ArtifactCell
                   active={!hiddenRowCount}
-                  bundleName="Show deselected"
+                  artifactName="Show deselected"
                   color={theme.colorMidnight}
                   onToggle={this._handleHideBelowThreshold}
                 />
@@ -306,9 +315,9 @@ export default class Comparisons extends PureComponent {
   }
 
   _getActiveData() {
-    const { activeBundles } = this.props;
+    const { activeArtifactNames } = this.props;
     return this._data.body.filter((row, i) => {
-      return i === 0 || (row[0].text && activeBundles.indexOf(row[0].text) !== -1);
+      return i === 0 || (row[0].text && activeArtifactNames.indexOf(row[0].text) !== -1);
     });
   }
 
@@ -323,41 +332,41 @@ export default class Comparisons extends PureComponent {
   }
 
   _handleHideBelowThreshold = (name: string, toggled: boolean) => {
-    this.setState({ showDeselectedBundles: toggled });
+    this.setState({ showDeselectedArtifacts: toggled });
   };
 
   _handleRemoveBelowThreshold = (name: string, toggled: boolean) => {
-    const { bundles, onBundlesChange } = this.props;
-    if (onBundlesChange) {
+    const { artifactNames, onArtifactsChange } = this.props;
+    if (onArtifactsChange) {
       if (toggled) {
         const data = this._getFilteredData();
-        onBundlesChange(data.map(row => row[0].text));
+        onArtifactsChange(data.map(row => row[0].text));
       } else {
-        onBundlesChange(bundles);
+        onArtifactsChange(artifactNames);
       }
     }
   };
 
-  _handleToggleBundle = (bundleName: string, value: boolean) => {
-    const { activeBundles, onBundlesChange } = this.props;
-    if (onBundlesChange) {
+  _handleToggleArtifact = (artifactName: string, value: boolean) => {
+    const { activeArtifactNames, onArtifactsChange } = this.props;
+    if (onArtifactsChange) {
       if (value) {
-        onBundlesChange([...activeBundles, bundleName]);
+        onArtifactsChange([...activeArtifactNames, artifactName]);
       } else {
-        onBundlesChange(activeBundles.filter(b => b !== bundleName));
+        onArtifactsChange(activeArtifactNames.filter(b => b !== artifactName));
       }
     }
   };
 
-  _handleToggleAllBundles = (value: boolean) => {
-    const { bundles, onBundlesChange } = this.props;
-    onBundlesChange && onBundlesChange(bundles);
+  _handleToggleAllArtifacts = (value: boolean) => {
+    const { artifactNames, onArtifactsChange } = this.props;
+    onArtifactsChange && onArtifactsChange(artifactNames);
   };
 
   _getTableAsMatrix = (formatHeader: Function = identity, formatBytes: Function = identity) => {
-    const { showDeselectedBundles } = this.state;
+    const { showDeselectedArtifacts } = this.state;
     const { body, head } = this._data;
-    const visibleBody = showDeselectedBundles ? body : this._getActiveData();
+    const visibleBody = showDeselectedArtifacts ? body : this._getActiveData();
     const header = flatten(head).map(cell => (cell.removable ? formatHeader(cell.text) : cell.text));
     const rows = visibleBody.map(row =>
       row.map(cell => (cell.bytes ? formatBytes(cell.bytes) : cell.text || cell.bytes))
@@ -374,7 +383,7 @@ export default class Comparisons extends PureComponent {
       .addRowMatrix(rows);
     const hiddenRowCount = this._data.body.length - rows.length;
     if (hiddenRowCount) {
-      table.addRow(`${hiddenRowCount} bundles hidden`);
+      table.addRow(`${hiddenRowCount} artifacts hidden`);
     }
 
     header.forEach((h, i) => {

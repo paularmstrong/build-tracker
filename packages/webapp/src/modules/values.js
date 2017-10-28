@@ -1,5 +1,5 @@
 // @flow
-import type { BundleStat } from '../types';
+import type { Artifact } from '../types';
 
 export const Types = {
   CHART: 'chart',
@@ -36,6 +36,6 @@ export const TypesEnum = {
 };
 
 export const valueTypeAccessor = {
-  [ValueType.STAT]: (d: BundleStat): number => (d && d.size) || 0,
-  [ValueType.GZIP]: (d: BundleStat): number => (d && d.gzipSize) || 0
+  [ValueType.STAT]: (d: Artifact): number => (d && d.size) || 0,
+  [ValueType.GZIP]: (d: Artifact): number => (d && d.gzipSize) || 0
 };

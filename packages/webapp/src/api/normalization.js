@@ -1,16 +1,16 @@
 // @flow
 import { mean } from 'd3-array';
 
-import type { Build, Bundle } from '../types';
+import type { Build, Artifact } from '../types';
 
-const getAverageSize = (builds: Array<Build>, bundle: Bundle): number =>
-  mean(builds, commit => (commit.stats[bundle] ? commit.stats[bundle].gzipSize : 0));
+const getAverageSize = (builds: Array<Build>, artifact: Artifact): number =>
+  mean(builds, commit => (commit.artifacts[artifact] ? commit.artifacts[artifact].gzipSize : 0));
 
-export const getBundlesByAvgSize = (builds: Array<Build>): Array<string> =>
+export const getArtifactsByAvgSize = (builds: Array<Build>): Array<string> =>
   builds
     .reduce((memo, commit) => {
-      const bundles = Object.keys(commit.stats);
-      return memo.concat(bundles).filter((value, index, self) => self.indexOf(value) === index);
+      const artifacts = Object.keys(commit.artifacts);
+      return memo.concat(artifacts).filter((value, index, self) => self.indexOf(value) === index);
     }, [])
     .sort((a, b) => getAverageSize(builds, b) - getAverageSize(builds, a));
 

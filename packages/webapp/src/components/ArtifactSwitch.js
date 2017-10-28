@@ -5,10 +5,10 @@ import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from '../theme';
 import { hsl } from 'd3-color';
 
-export default class BundleSwitch extends PureComponent {
+export default class ArtifactSwitch extends PureComponent {
   props: {
     active: boolean,
-    bundleName: string,
+    artifactName: string,
     color: string,
     disabled?: boolean,
     link?: string,
@@ -16,26 +16,26 @@ export default class BundleSwitch extends PureComponent {
   };
 
   render() {
-    const { active, bundleName, color, disabled, link } = this.props;
+    const { active, artifactName, color, disabled, link } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
 
     const text = (
-      <Text numberOfLines={1} style={styles.bundleNameText}>
-        {bundleName}
+      <Text numberOfLines={1} style={styles.artifactNameText}>
+        {artifactName}
       </Text>
     );
 
     return (
-      <View style={[styles.bundle]}>
-        <View style={styles.bundleName}>
+      <View style={[styles.artifact]}>
+        <View style={styles.artifactName}>
           {link ? (
-            <Link style={[styles.bundleLink]} to={link}>
+            <Link style={[styles.artifactLink]} to={link}>
               {text}
             </Link>
           ) : (
-            <View style={[styles.bundleLink]}>{text}</View>
+            <View style={[styles.artifactLink]}>{text}</View>
           )}
         </View>
         <View style={styles.switch}>
@@ -52,24 +52,24 @@ export default class BundleSwitch extends PureComponent {
   }
 
   _handleValueChange = (toggled: boolean) => {
-    this.props.onToggle(this.props.bundleName, toggled);
+    this.props.onToggle(this.props.artifactName, toggled);
   };
 }
 
 const styles = StyleSheet.create({
-  bundle: {
+  artifact: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  bundleName: {
+  artifactName: {
     flexShrink: 1,
     justifyContent: 'center',
     paddingRight: theme.spaceXSmall
   },
-  bundleLink: {
+  artifactLink: {
     display: 'inline-flex'
   },
-  bundleNameText: {
+  artifactNameText: {
     fontSize: theme.fontSizeSmall
   },
   switch: {

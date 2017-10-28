@@ -13,21 +13,23 @@ import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
-import type { Build, Bundle } from './types';
+import type { Build, Artifact } from './types';
 
 const emptyArray = [];
 
-const _getActiveBundles = (props: { match: Match }, bundles): Array<string> => {
+const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames): Array<string> => {
   const { match: { params } } = props;
-  const { bundleNames } = params;
-  if (!bundleNames) {
-    return bundles;
+  const { artifactNames } = params;
+  if (!artifactNames) {
+    return allArtifactNames;
   }
-  const activeBundles = bundleNames
+  const activeArtifactNames = artifactNames
     .replace(/All\+?/, '')
     .split('+')
     .filter(Boolean);
-  return activeBundles.length ? bundles.filter((b: Bundle) => activeBundles.indexOf(b) !== -1) : bundles;
+  return activeArtifactNames.length
+    ? allArtifactNames.filter((b: Artifact) => activeArtifactNames.indexOf(b) !== -1)
+    : allArtifactNames;
 };
 
 const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array<Build> => {
@@ -47,12 +49,12 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
 
 class App extends Component {
   state: {
-    activeBundles: Array<string>,
+    activeArtifactNames: Array<string>,
     builds: Array<Build>,
-    bundles: Array<string>,
+    artifactNames: Array<string>,
     chart: $Values<typeof ChartType>,
     compareBuilds: Array<Build>,
-    hoveredBundle?: string,
+    hoveredArtifact?: string,
     selectedBuild?: Build,
     values: $Values<typeof ValueType>,
     xscale: $Values<typeof XScaleType>,
@@ -70,9 +72,9 @@ class App extends Component {
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
-      activeBundles: [],
+      activeArtifactNames: [],
       builds: [],
-      bundles: [],
+      artifactNames: [],
       chart: ChartType.AREA,
       compareBuilds: [],
       values: ValueType.GZIP,
@@ -88,7 +90,7 @@ class App extends Component {
   componentWillReceiveProps(nextProps: Object) {
     if (!deepEqual(this.props.match.params, nextProps.match.params)) {
       this.setState(state => ({
-        activeBundles: _getActiveBundles(nextProps, state.bundles),
+        activeArtifactNames: _getActiveArtifactNames(nextProps, state.artifactNames),
         compareBuilds: _getCompareBuilds(nextProps, state.builds)
       }));
     }
@@ -96,19 +98,17 @@ class App extends Component {
 
   render() {
     const {
-      activeBundles,
+      activeArtifactNames,
       builds,
-      bundles,
+      artifactNames,
       chart,
       compareBuilds,
-      hoveredBundle,
+      hoveredArtifact,
       selectedBuild,
       values,
       xscale,
       yscale
     } = this.state;
-
-    console.log(valueTypeAccessor[values]);
 
     return (
       <View style={styles.root}>
@@ -126,8 +126,9 @@ class App extends Component {
             <View style={styles.chartRoot}>
               <View style={styles.chart}>
                 <Chart
-                  activeBundles={activeBundles}
-                  bundles={bundles}
+                  activeArtifactNames={activeArtifactNames}
+                  artifacts={artifactNames}
+                  builds={builds}
                   chartType={chart}
                   colorScale={this._colorScale}
                   onHover={this._handleHover}
@@ -136,7 +137,6 @@ class App extends Component {
                   valueAccessor={valueTypeAccessor[values]}
                   xScaleType={xscale}
                   yScaleType={yscale}
-                  stats={builds}
                 />
               </View>
             </View>
@@ -145,12 +145,12 @@ class App extends Component {
         <View style={styles.data}>
           <View style={styles.table}>
             <ComparisonTable
-              activeBundles={activeBundles}
+              activeArtifactNames={activeArtifactNames}
               builds={compareBuilds}
-              bundles={bundles}
+              artifactNames={artifactNames}
               colorScale={this._colorScale}
-              hoveredBundle={hoveredBundle}
-              onBundlesChange={this._handleBundlesChange}
+              hoveredArtifact={hoveredArtifact}
+              onArtifactsChange={this._handleArtifactsChange}
               onRemoveBuild={this._handleRemoveRevision}
               onShowBuildInfo={this._handleShowBuildInfo}
               valueAccessor={valueTypeAccessor[values]}
@@ -163,12 +163,12 @@ class App extends Component {
   }
 
   _fetchData() {
-    getBuilds({}).then(({ builds, bundles }) => {
-      this._colorScale = scaleSequential(interpolateRainbow).domain([0, bundles.length]);
+    getBuilds({}).then(({ builds, artifacts }: { builds: Array<Build>, artifacts: Array<string> }) => {
+      this._colorScale = scaleSequential(interpolateRainbow).domain([0, artifacts.length]);
       this.setState(() => ({
-        activeBundles: _getActiveBundles(this.props, bundles),
+        activeArtifactNames: _getActiveArtifactNames(this.props, artifacts),
         builds,
-        bundles,
+        artifactNames: artifacts,
         chart: builds.length <= 4 ? ChartType.BAR : ChartType.AREA,
         compareBuilds: _getCompareBuilds(this.props, builds)
       }));
@@ -179,17 +179,17 @@ class App extends Component {
     this.setState({ [toggleType]: value });
   };
 
-  _handleHover = (bundle?: Bundle) => {
-    if (bundle) {
-      this.setState({ hoveredBundle: bundle.key });
+  _handleHover = (artifact?: Artifact) => {
+    if (artifact) {
+      this.setState({ hoveredArtifact: artifact.key });
     }
   };
 
-  _handleBundlesChange = (newBundles: Array<string>) => {
-    this.setState({ activeBundles: newBundles }, this._updateUrl);
+  _handleArtifactsChange = (activeArtifacts: Array<string>) => {
+    this.setState({ activeArtifactNames: activeArtifacts }, this._updateUrl);
   };
 
-  _handleSelectBuild = (build: Build, bundleName: string) => {
+  _handleSelectBuild = (build: Build) => {
     this.setState(
       state => ({
         compareBuilds: [...state.compareBuilds, build],
@@ -217,13 +217,13 @@ class App extends Component {
 
   _updateUrl = () => {
     const { location: { pathname } } = this.props;
-    const { activeBundles, bundles, compareBuilds } = this.state;
-    const urlBundles =
-      activeBundles.length > 1 && activeBundles.length !== bundles.length
-        ? activeBundles.filter(b => b !== 'All')
+    const { activeArtifactNames, artifactNames, compareBuilds } = this.state;
+    const urlArtifacts =
+      activeArtifactNames.length > 1 && activeArtifactNames.length !== artifactNames.length
+        ? activeArtifactNames.filter(b => b !== 'All')
         : ['All'];
     const urlRevisions = compareBuilds.map((b: Build) => formatSha(b.meta.revision)).sort();
-    const newPath = `/${urlBundles.join('+')}/${urlRevisions.join('+')}`;
+    const newPath = `/${urlArtifacts.join('+')}/${urlRevisions.join('+')}`;
     if (newPath !== pathname) {
       this.props.history.push(newPath);
     }

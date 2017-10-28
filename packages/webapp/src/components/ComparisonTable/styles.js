@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     marginLeft: theme.spaceXSmall
   },
-  bundleLink: {
+  artifactLink: {
     display: 'inline-flex',
     fontWeight: 'normal'
   },

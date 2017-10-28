@@ -1,4 +1,4 @@
-import { getBundlesByAvgSize, sortBuilds } from './normalization';
+import { getArtifactsByAvgSize, sortBuilds } from './normalization';
 
 const API_BASE = '/api';
 
@@ -11,7 +11,7 @@ type FetchOptions = {
 };
 
 const normalizeData = builds => ({
-  bundles: getBundlesByAvgSize(builds),
+  artifacts: getArtifactsByAvgSize(builds),
   builds: sortBuilds(builds)
 });
 

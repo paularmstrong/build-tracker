@@ -1,15 +1,15 @@
 // @flow
-import BundleSwitch from '../BundleSwitch';
+import ArtifactSwitch from '../ArtifactSwitch';
 import styles from './styles';
 import { Th } from '../Table';
 import React, { PureComponent } from 'react';
 
 const emptyObject = {};
 
-export default class BundleCell extends PureComponent {
+export default class ArtifactCell extends PureComponent {
   props: {
     active: boolean,
-    bundleName: string,
+    artifactName: string,
     color: string,
     disabled?: boolean,
     hoverColor?: string,
@@ -29,7 +29,7 @@ export default class BundleCell extends PureComponent {
           isHovered ? { backgroundColor: hoverColor } : emptyObject
         ]}
       >
-        <BundleSwitch {...otherProps} />
+        <ArtifactSwitch {...otherProps} />
       </Th>
     );
   }

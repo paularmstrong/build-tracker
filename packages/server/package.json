@@ -14,8 +14,7 @@
   },
   "scripts": {
     "build": "babel src -d dist",
-    "start": "babel-watch src/",
-    "start:dev": "babel-watch testserver.js"
+    "start:static": "babel-watch testserver.js"
   },
   "files": ["index.js", "README.md"],
   "devDependencies": {

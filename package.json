@@ -1,14 +1,15 @@
 {
+  "name": "build-tracker",
+  "private": true,
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "license": "MIT",
+  "workspaces": ["packages/*"],
   "devDependencies": {
     "husky": "^0.14.3",
     "lerna": "^2.0.0",
     "lint-staged": "^4.0.2",
     "prettier": "^1.7.4"
   },
-  "name": "build-tracker",
-  "private": true,
-  "author": "Paul Armstrong <paul@spaceyak.com>",
-  "license": "MIT",
   "scripts": {
     "precommit": "lint-staged"
   },

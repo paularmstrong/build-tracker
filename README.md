@@ -1,8 +1,10 @@
 # Build Tracker
 
+Work in progress.
+
 ## Development
 
 ```
-yarn install
-lerna boostrap --npm-client=yarn
+yarn
+yarn lerna boostrap
 ```

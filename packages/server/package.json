@@ -14,6 +14,7 @@
   },
   "scripts": {
     "build": "babel src -d dist",
+    "flow": "flow ./",
     "start:static": "babel-watch testserver.js"
   },
   "files": ["index.js", "README.md"],

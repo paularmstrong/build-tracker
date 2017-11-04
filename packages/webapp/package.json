@@ -24,6 +24,7 @@
     "react-scripts": "^1.0.14"
   },
   "scripts": {
+    "flow": "flow ./",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

@@ -1,0 +1,22 @@
+{
+  "name": "build-tracker-comparator",
+  "version": "0.0.0",
+  "bin": "index.js",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.57.3",
+    "jest": "^21.2.1"
+  },
+  "files": ["index.js", "README.md"]
+}

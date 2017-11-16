@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getBuildDeltas returns an array of BuildDeltas 1`] = `
+Array [
+  Object {
+    "artifactDeltas": Array [],
+    "deltas": Array [],
+    "meta": Object {
+      "foo": "yes",
+    },
+  },
+  Object {
+    "artifactDeltas": Array [
+      Object {
+        "burritos": Object {
+          "gzipSize": 93,
+          "gzipSizePercent": 0,
+          "hashChanged": true,
+          "size": 469,
+          "sizePercent": 0,
+        },
+        "churros": Object {
+          "gzipSize": -90,
+          "gzipSizePercent": 1,
+          "hashChanged": true,
+          "size": -456,
+          "sizePercent": 1,
+        },
+        "tacos": Object {
+          "gzipSize": 0,
+          "gzipSizePercent": 1,
+          "hashChanged": false,
+          "size": 0,
+          "sizePercent": 1,
+        },
+      },
+    ],
+    "deltas": Array [],
+    "meta": Object {
+      "foo": "yes",
+    },
+  },
+  Object {
+    "artifactDeltas": Array [
+      Object {
+        "burritos": Object {
+          "gzipSize": 85,
+          "gzipSizePercent": 0,
+          "hashChanged": true,
+          "size": 345,
+          "sizePercent": 0,
+        },
+        "churros": Object {
+          "gzipSize": -90,
+          "gzipSizePercent": 1,
+          "hashChanged": true,
+          "size": -456,
+          "sizePercent": 1,
+        },
+        "tacos": Object {
+          "gzipSize": 0,
+          "gzipSizePercent": 1,
+          "hashChanged": false,
+          "size": 0,
+          "sizePercent": 1,
+        },
+      },
+      Object {
+        "burritos": Object {
+          "gzipSize": -8,
+          "gzipSizePercent": 0.9139784946236559,
+          "hashChanged": true,
+          "size": -124,
+          "sizePercent": 0.7356076759061834,
+        },
+        "churros": Object {
+          "gzipSize": 0,
+          "gzipSizePercent": 0,
+          "hashChanged": true,
+          "size": 0,
+          "sizePercent": 0,
+        },
+        "tacos": Object {
+          "gzipSize": 0,
+          "gzipSizePercent": 1,
+          "hashChanged": false,
+          "size": 0,
+          "sizePercent": 1,
+        },
+      },
+    ],
+    "deltas": Array [],
+    "meta": Object {
+      "foo": "yes",
+    },
+  },
+]
+`;

@@ -17,11 +17,14 @@ export type Build = {
 
 export type ArtifactDelta = {
   size: number,
-  gzipSize: number
+  sizePercent: number,
+  gzipSize: number,
+  gzipSizePercent: number,
+  hashChanged: boolean
 };
 
 export type BuildDelta = {
-  ...Build,
+  meta: BuildMeta,
   artifactDeltas: Array<{ [name: string]: ArtifactDelta }>,
   deltas: Array<ArtifactDelta>
 };

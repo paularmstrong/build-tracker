@@ -17,60 +17,31 @@ describe('getAllArtifactNames', () => {
 });
 
 describe('getBuildDeltas', () => {
-  test('returns deltas', () => {
+  test('returns an array of BuildDeltas', () => {
     const build1 = {
       meta: { foo: 'yes' },
       artifacts: {
-        tacos: { size: 123, gzipSize: 45 },
-        churros: { size: 456, gzipSize: 90 }
+        tacos: { hash: 'abc', size: 123, gzipSize: 45 },
+        churros: { hash: 'abc', size: 456, gzipSize: 90 }
       }
     };
 
     const build2 = {
       meta: { foo: 'yes' },
       artifacts: {
-        tacos: { size: 123, gzipSize: 45 },
-        burritos: { size: 469, gzipSize: 93 }
+        tacos: { hash: 'abc', size: 123, gzipSize: 45 },
+        burritos: { hash: 'def', size: 469, gzipSize: 93 }
       }
     };
 
     const build3 = {
       meta: { foo: 'yes' },
       artifacts: {
-        tacos: { size: 123, gzipSize: 45 },
-        burritos: { size: 345, gzipSize: 85 }
+        tacos: { hash: 'abc', size: 123, gzipSize: 45 },
+        burritos: { hash: 'ghi', size: 345, gzipSize: 85 }
       }
     };
 
-    expect(Comparator.getBuildDeltas(build1, build2, build3)).toEqual([
-      { ...build1, artifactDeltas: [], deltas: [] },
-      {
-        ...build2,
-        artifactDeltas: [
-          expect.objectContaining({
-            tacos: { size: 0, gzipSize: 0 },
-            burritos: { size: 469, gzipSize: 93 },
-            churros: { size: -456, gzipSize: -90 }
-          })
-        ],
-        deltas: []
-      },
-      {
-        ...build3,
-        artifactDeltas: [
-          expect.objectContaining({
-            tacos: { size: 0, gzipSize: 0 },
-            burritos: { size: 345, gzipSize: 85 },
-            churros: { size: -456, gzipSize: -90 }
-          }),
-          expect.objectContaining({
-            tacos: { size: 0, gzipSize: 0 },
-            burritos: { size: -124, gzipSize: -8 },
-            churros: { size: 0, gzipSize: 0 }
-          })
-        ],
-        deltas: []
-      }
-    ]);
+    expect(Comparator.getBuildDeltas(build1, build2, build3)).toMatchSnapshot();
   });
 });

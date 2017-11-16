@@ -20,10 +20,23 @@ const getDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, changeArtifa
   return changeArtifact[key] - (baseArtifact ? baseArtifact[key] : 0);
 };
 
+const getPercentDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+  if (!changeArtifact) {
+    if (!baseArtifact) {
+      return 0;
+    }
+    return 1;
+  }
+
+  return !baseArtifact ? 0 : changeArtifact[key] / baseArtifact[key];
+};
+
 const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact): ArtifactDelta => {
   return {
     size: getDelta('size', baseArtifact, changeArtifact),
-    gzipSize: getDelta('gzipSize', baseArtifact, changeArtifact)
+    sizePercent: getPercentDelta('size', baseArtifact, changeArtifact),
+    gzipSize: getDelta('gzipSize', baseArtifact, changeArtifact),
+    gzipSizePercent: getPercentDelta('gzipSize', baseArtifact, changeArtifact)
   };
 };
 
@@ -42,14 +55,17 @@ export const getBuildDeltas = (...builds: Array<Build>): Array<BuildDelta> => {
           const compareArtifact = compareBuild.artifacts[name];
           return {
             ...deltas,
-            [name]: getSizeDeltas(compareArtifact, buildArtifact)
+            [name]: {
+              ...getSizeDeltas(compareArtifact, buildArtifact),
+              hashChanged: !compareArtifact || !buildArtifact || compareArtifact.hash !== buildArtifact.hash
+            }
           };
         }, {});
       })
       .filter(Boolean);
 
     return {
-      ...build,
+      meta: build.meta,
       artifactDeltas,
       deltas: []
     };

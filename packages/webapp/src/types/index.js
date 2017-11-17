@@ -12,5 +12,5 @@ export type Artifact = {
 
 export type Build = {
   meta: BuildMeta,
-  stats: { [name: string]: Artifact }
+  artifacts: { [name: string]: Artifact }
 };

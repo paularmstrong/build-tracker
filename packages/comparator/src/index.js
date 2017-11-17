@@ -3,7 +3,7 @@ import type { Artifact, ArtifactDelta, Build, BuildDelta, BuildMeta } from './ty
 
 const deltaIsBelowThreshold = (originalArtifact: Artifact, updatedArtifact: Artifact, thresholdBytes: number) => {};
 
-export const getAllArtifactNames = (...builds: Array<Build>): Array<string> => {
+export const getAllArtifactNames = (builds: Array<Build>): Array<string> => {
   return Array.prototype.concat
     .apply([], builds.map(({ artifacts }) => Object.keys(artifacts)))
     .filter((value, index, self) => self.indexOf(value) === index);
@@ -40,8 +40,8 @@ const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact): Artifa
   };
 };
 
-export const getBuildDeltas = (...builds: Array<Build>): Array<BuildDelta> => {
-  const artifactNames = getAllArtifactNames(...builds);
+export const getBuildDeltas = (builds: Array<Build>): Array<BuildDelta> => {
+  const artifactNames = getAllArtifactNames(builds);
 
   return builds.map((build, i) => {
     const artifactDeltas = builds
@@ -70,4 +70,43 @@ export const getBuildDeltas = (...builds: Array<Build>): Array<BuildDelta> => {
       deltas: []
     };
   });
+};
+
+type ValueAccessor = (artifact: Artifact) => 'size' | 'gzipSize';
+type ByteFormatter = (value: number) => string;
+type ShaFormatter = (sha: string) => string;
+
+const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
+
+export const getBuildComparisonMatrix = (
+  builds: Array<Build>,
+  valueAccessor: ValueAccessor,
+  byteFormatter: ByteFormatter,
+  shaFormatter: ShaFormatter
+) => {
+  const artifactNames = getAllArtifactNames(builds);
+  const buildDeltas = getBuildDeltas(builds);
+  const buildShas = builds.map(({ meta }) => meta.sha);
+
+  const header = [
+    '',
+    ...flatten(
+      buildDeltas.map(buildDelta => {
+        return [
+          buildDelta.meta.sha,
+          ...buildDelta.artifactDeltas.map((delta, i) => `𝚫 ${buildShas[buildDelta.artifactDeltas.length - 1 - i]}`)
+        ];
+      })
+    )
+  ];
+
+  const body = artifactNames.map(artifactName => {
+    const deltas = buildDeltas.map(({ artifactDeltas }, i) => [
+      builds[i].artifacts[artifactName],
+      ...artifactDeltas.map(delta => delta[artifactName])
+    ]);
+    return [artifactName, ...flatten(deltas)];
+  });
+
+  return [header, ...body];
 };

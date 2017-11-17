@@ -1,5 +1,5 @@
 // @flow
-import type { Artifact, ArtifactDelta, Build, BuildDelta, BuildMeta } from './types';
+import type { Artifact, ArtifactDelta, Build, BuildDelta, BuildMeta, ComparisonMatrix } from './types';
 
 const deltaIsBelowThreshold = (originalArtifact: Artifact, updatedArtifact: Artifact, thresholdBytes: number) => {};
 
@@ -72,18 +72,9 @@ export const getBuildDeltas = (builds: Array<Build>): Array<BuildDelta> => {
   });
 };
 
-type ValueAccessor = (artifact: Artifact) => 'size' | 'gzipSize';
-type ByteFormatter = (value: number) => string;
-type ShaFormatter = (sha: string) => string;
-
 const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 
-export const getBuildComparisonMatrix = (
-  builds: Array<Build>,
-  valueAccessor: ValueAccessor,
-  byteFormatter: ByteFormatter,
-  shaFormatter: ShaFormatter
-) => {
+export const getBuildComparisonMatrix = (builds: Array<Build>): ComparisonMatrix => {
   const artifactNames = getAllArtifactNames(builds);
   const buildDeltas = getBuildDeltas(builds);
   const buildShas = builds.map(({ meta }) => meta.sha);

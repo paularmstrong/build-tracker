@@ -28,3 +28,5 @@ export type BuildDelta = {
   artifactDeltas: Array<{ [name: string]: ArtifactDelta }>,
   deltas: Array<ArtifactDelta>
 };
+
+export type ComparisonMatrix = Array<Array<string | ArtifactDelta>>;

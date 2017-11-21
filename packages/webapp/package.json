@@ -25,7 +25,6 @@
     "react-scripts": "^1.0.14"
   },
   "scripts": {
-    "flow": "flow ./",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -34,10 +33,6 @@
   },
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
-  "devDependencies": {
-    "flow-bin": "^0.52.0",
-    "flow-typed": "^2.1.5"
-  },
   "proxy": "http://localhost:8888/",
   "files": ["build/", "README.md"]
 }

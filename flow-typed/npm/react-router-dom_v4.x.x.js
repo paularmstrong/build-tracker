@@ -9,7 +9,7 @@ declare module 'react-router-dom' {
       getUserConfirmation?: GetUserConfirmation,
       keyLength?: number,
       children?: React$Element<*>
-    }
+    };
   }
 
   declare export class HashRouter extends React$Component {
@@ -18,7 +18,7 @@ declare module 'react-router-dom' {
       getUserConfirmation?: GetUserConfirmation,
       hashType?: 'slash' | 'noslash' | 'hashbang',
       children?: React$Element<*>
-    }
+    };
   }
 
   declare export class Link extends React$Component {
@@ -26,7 +26,7 @@ declare module 'react-router-dom' {
       to: string | LocationShape,
       replace?: boolean,
       children?: React$Element<*>
-    }
+    };
   }
 
   declare export class NavLink extends React$Component {
@@ -40,7 +40,7 @@ declare module 'react-router-dom' {
       children?: React$Element<*>,
       exact?: boolean,
       strict?: boolean
-    }
+    };
   }
 
   // NOTE: Below are duplicated from react-router. If updating these, please
@@ -104,7 +104,7 @@ declare module 'react-router-dom' {
       location?: string | Location,
       context: StaticRouterContext,
       children?: React$Element<*>
-    }
+    };
   }
 
   declare export class MemoryRouter extends React$Component {
@@ -114,28 +114,28 @@ declare module 'react-router-dom' {
       getUserConfirmation?: GetUserConfirmation,
       keyLength?: number,
       children?: React$Element<*>
-    }
+    };
   }
 
   declare export class Router extends React$Component {
     props: {
       history: RouterHistory,
       children?: React$Element<*>
-    }
+    };
   }
 
   declare export class Prompt extends React$Component {
     props: {
       message: string | ((location: Location) => string | true),
       when?: boolean
-    }
+    };
   }
 
   declare export class Redirect extends React$Component {
     props: {
       to: string | LocationShape,
       push?: boolean
-    }
+    };
   }
 
   declare export class Route extends React$Component {
@@ -146,13 +146,13 @@ declare module 'react-router-dom' {
       path?: string,
       exact?: boolean,
       strict?: boolean
-    }
+    };
   }
 
   declare export class Switch extends React$Component {
     props: {
       children?: Array<React$Element<*>>
-    }
+    };
   }
 
   declare type FunctionComponent<P> = (props: P) => ?React$Element<any>;

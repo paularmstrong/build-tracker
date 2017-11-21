@@ -152,7 +152,7 @@ type ComparisonState = {
 export default class Comparisons extends PureComponent {
   props: ComparisonProps;
   state: ComparisonState;
-  _data: typeof BuildComparator;
+  _data: BuildComparator;
 
   constructor(props: ComparisonProps, context: Object) {
     super(props, context);
@@ -169,7 +169,7 @@ export default class Comparisons extends PureComponent {
 
   setData(props: ComparisonProps) {
     const matrixBodySorter = getBodySorter(props.artifactNames);
-    this._data = props.builds.length && new BuildComparator(props.builds.sort(sortBuilds), matrixBodySorter);
+    this._data = new BuildComparator(props.builds.sort(sortBuilds), matrixBodySorter);
   }
 
   render() {

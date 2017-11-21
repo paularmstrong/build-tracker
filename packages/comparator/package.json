@@ -22,7 +22,6 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "babel-watch": "^2.0.7",
-    "flow-bin": "^0.57.3",
     "flow-copy-source": "^1.2.1",
     "jest": "^21.2.1"
   },

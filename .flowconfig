@@ -2,7 +2,7 @@
 .*/node_modules/.*
 
 [include]
-src/*
+packages/.*
 
 [libs]
 flow-typed
@@ -11,3 +11,4 @@ flow-typed
 
 [options]
 unsafe.enable_getters_and_setters=true
+module.name_mapper='^build-tracker-\(.*\)$' -> '<PROJECT_ROOT>/packages/\1'

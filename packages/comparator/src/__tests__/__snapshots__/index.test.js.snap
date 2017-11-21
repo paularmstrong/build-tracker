@@ -14,10 +14,10 @@ Array [
       Object {
         "burritos": Object {
           "gzipSize": 93,
-          "gzipSizePercent": 0,
+          "gzipSizePercent": 1,
           "hashChanged": true,
           "size": 469,
-          "sizePercent": 0,
+          "sizePercent": 1,
           "type": "delta",
         },
         "churros": Object {
@@ -54,12 +54,29 @@ Array [
 ]
 `;
 
+exports[`BuildComparator getAscii gets an ASCII table 1`] = `
+".-----------------------------------------.
+|          | 1234567 | 8901234 |    Δ0    |
+|----------|---------|---------|----------|
+| burritos |         |      93 | 93 (1%)  |
+| churros  |      90 |         | -90 (1%) |
+| tacos    |      45 |      45 | 0 (1%)   |
+'-----------------------------------------'"
+`;
+
+exports[`BuildComparator getCsv gets a CSV formatted table 1`] = `
+",1234567,8901234,Δ0
+burritos,,93,93 (1%)
+churros,90,,-90 (1%)
+tacos,45,45,0 (1%)"
+`;
+
 exports[`BuildComparator matrix includes a body of all artifacts 1`] = `
 Array [
   Array [
     Object {
       "text": "burritos",
-      "type": "text",
+      "type": "artifact",
     },
     undefined,
     Object {
@@ -69,17 +86,17 @@ Array [
     },
     Object {
       "gzipSize": 93,
-      "gzipSizePercent": 0,
+      "gzipSizePercent": 1,
       "hashChanged": true,
       "size": 469,
-      "sizePercent": 0,
+      "sizePercent": 1,
       "type": "delta",
     },
   ],
   Array [
     Object {
       "text": "churros",
-      "type": "text",
+      "type": "artifact",
     },
     Object {
       "gzipSize": 90,
@@ -99,7 +116,7 @@ Array [
   Array [
     Object {
       "text": "tacos",
-      "type": "text",
+      "type": "artifact",
     },
     Object {
       "gzipSize": 45,
@@ -150,7 +167,7 @@ exports[`BuildComparator matrix includes a total 1`] = `
 Array [
   Object {
     "text": "All",
-    "type": "text",
+    "type": "artifact",
   },
   Object {
     "gzipSize": 135,

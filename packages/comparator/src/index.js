@@ -1,4 +1,5 @@
 // @flow
+import AsciiTable from 'ascii-table';
 import type {
   Artifact,
   Build,
@@ -16,6 +17,7 @@ import type {
 } from './types';
 
 export const CellType = {
+  ARTIFACT: 'artifact',
   DELTA: 'delta',
   REVISION_HEADER: 'revisionHeader',
   REVISION_DELTA_HEADER: 'revisionDeltaHeader',
@@ -43,7 +45,7 @@ const getPercentDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, chang
     return 1;
   }
 
-  return !baseArtifact ? 0 : changeArtifact[key] / baseArtifact[key];
+  return !baseArtifact ? 1 : changeArtifact[key] / baseArtifact[key];
 };
 
 const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact): DeltaCell => {
@@ -83,6 +85,18 @@ const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any)
 
 const defaultArtifactSorter = (rowA, rowB): number => {
   return rowA > rowB ? 1 : rowB > rowA ? -1 : 0;
+};
+
+const defaultFormatRevision = (cell: RevisionHeaderCell): string => cell.revision;
+const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
+const defaultFormatTotal = (cell: TotalCell): string => cell.gzipSize;
+const defaultFormatDelta = (cell: DeltaCell): string => `${cell.gzipSize} (${cell.gzipSizePercent}%)`;
+
+type FormattingOptions = {
+  formatRevision?: (cell: RevisionHeaderCell) => string,
+  formatRevisionDelta?: (cell: RevisionDeltaCell) => string,
+  formatTotal?: (cell: TotalCell) => string,
+  formatDelta?: (cell: DeltaCell) => string
 };
 
 export default class BuildComparator {
@@ -169,22 +183,76 @@ export default class BuildComparator {
 
   get matrixTotal(): Array<TextCell | TotalCell | TotalDeltaCell> {
     return [
-      { type: CellType.TEXT, text: 'All' },
+      { type: CellType.ARTIFACT, text: 'All' },
       ...flatten(this.buildDeltas.map(({ deltas }, i) => [getTotalArtifactSizes(this.builds[i]), ...deltas]))
     ];
   }
 
-  get matrixBody(): Array<MatrixCell> {
+  get matrixBody(): Array<Array<MatrixCell>> {
     return this.artifactNames.sort(this._artifactSorter).map(artifactName => {
       const deltas = this.buildDeltas.map(({ artifactDeltas }, i) => [
         this.builds[i].artifacts[artifactName],
         ...artifactDeltas.map(delta => delta[artifactName])
       ]);
-      return [{ type: 'text', text: artifactName }, ...flatten(deltas)];
+      return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(deltas)];
     });
   }
 
   get matrix(): ComparisonMatrix {
     return [this.matrixHeader, this.matrixTotal, ...this.matrixBody];
+  }
+
+  getStringFormattedHeader(
+    formatRevision: Function = defaultFormatRevision,
+    formatRevisionDelta: Function = defaultFormatRevisionDelta
+  ) {
+    return this.matrixHeader.map(cell => {
+      switch (cell.type) {
+        case CellType.REVISION_HEADER:
+          return formatRevision(cell);
+        case CellType.REVISION_DELTA_HEADER:
+          return formatRevisionDelta(cell);
+        // no default
+      }
+    });
+  }
+
+  getStringFormattedRows(formatTotal: Function = defaultFormatTotal, formatDelta: Function = defaultFormatDelta) {
+    return this.matrixBody.map(row => {
+      return row.map(cell => {
+        if (!cell) {
+          return '';
+        }
+        switch (cell.type) {
+          case CellType.ARTIFACT:
+            return cell.text;
+          case CellType.DELTA:
+            return formatDelta(cell);
+          case CellType.TOTAL:
+          default:
+            return cell ? formatTotal(cell) : '';
+        }
+      });
+    });
+  }
+
+  getAscii({ formatRevision, formatRevisionDelta, formatTotal, formatDelta }: FormattingOptions = {}): string {
+    const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta);
+
+    const table = new AsciiTable('');
+    table
+      .setBorder('|', '-', '', '')
+      .setHeading(...header)
+      .addRowMatrix(rows);
+
+    return table.toString();
+  }
+
+  getCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta }: FormattingOptions = {}): string {
+    const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta);
+
+    return [header, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }
 }

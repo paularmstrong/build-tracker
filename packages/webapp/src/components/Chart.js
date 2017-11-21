@@ -170,7 +170,7 @@ export default class AreaChart extends Component {
       })
       .on('mousemove', (d, index, nodes) => {
         const { xValue, hoveredBuild, hoveredArtifact } = getMouseInformation(nodes, xScale, yScale, data, builds);
-        const [xPos, yPos] = mouse(nodes[0]);
+        // const [xPos, yPos] = mouse(nodes[0]);
 
         const xSetter = v => (xScale.bandwidth ? xScale(v) + xScale.bandwidth() / 2 : xScale(v));
         this._hoverLine

@@ -5,10 +5,14 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "npm run build:module && npm run build:flow",
+    "build:flow": "flow-copy-source -i __tests__/*.js src dist",
+    "build:module": "babel src -d dist",
     "test": "jest"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ascii-table": "^0.0.9"
+  },
   "main": "dist/index.js",
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -19,6 +23,7 @@
     "babel-preset-flow": "^6.23.0",
     "babel-watch": "^2.0.7",
     "flow-bin": "^0.57.3",
+    "flow-copy-source": "^1.2.1",
     "jest": "^21.2.1"
   },
   "files": ["index.js", "README.md"]

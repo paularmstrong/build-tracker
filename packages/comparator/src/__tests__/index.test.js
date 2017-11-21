@@ -24,34 +24,6 @@ const build3 = {
   }
 };
 
-// describe('getAllArtifactNames', () => {
-//   test('returns an array of artifact names from builds', () => {
-//     expect(Comparator.getAllArtifactNames([{ artifacts: { foo: {}, bar: {} } }])).toEqual(['foo', 'bar']);
-//   });
-
-//   test('returns only unique artifact names', () => {
-//     expect(
-//       Comparator.getAllArtifactNames([
-//         { artifacts: { foo: {}, bar: {} } },
-//         { artifacts: { baz: {}, bar: {} } },
-//         { artifacts: { foo: {}, bop: {} } }
-//       ])
-//     ).toEqual(['foo', 'bar', 'baz', 'bop']);
-//   });
-// });
-
-// describe('getBuildDeltas', () => {
-//   test('returns an array of BuildDeltas', () => {
-//     expect(Comparator.getBuildDeltas([build1, build2, build3])).toMatchSnapshot();
-//   });
-// });
-
-// describe('getBuildComparisonMatrix', () => {
-//   test('gets a matrix', () => {
-//     expect(Comparator.getBuildComparisonMatrix([build1, build2, build3])).toMatchSnapshot();
-//   });
-// });
-
 describe('BuildComparator', () => {
   describe('artifactNames', () => {
     test('includes all artifact names', () => {
@@ -85,6 +57,20 @@ describe('BuildComparator', () => {
       const matrix = comparator.matrix;
       expect(matrix.slice(2)).toEqual(comparator.matrixBody);
       expect(matrix.slice(2)).toMatchSnapshot();
+    });
+  });
+
+  describe('getAscii', () => {
+    test('gets an ASCII table', () => {
+      const comparator = new BuildComparator([build1, build2]);
+      expect(comparator.getAscii()).toMatchSnapshot();
+    });
+  });
+
+  describe('getCsv', () => {
+    test('gets a CSV formatted table', () => {
+      const comparator = new BuildComparator([build1, build2]);
+      expect(comparator.getCsv()).toMatchSnapshot();
     });
   });
 });

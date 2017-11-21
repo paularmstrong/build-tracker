@@ -15,7 +15,26 @@ export type Build = {
   artifacts: { [name: string]: Artifact }
 };
 
-export type ArtifactDelta = {
+export type TotalDelta = {
+  size: number,
+  sizePercent: number,
+  gzipSize: number,
+  gzipSizePercent: number
+};
+
+export type BuildDelta = {
+  meta: BuildMeta,
+  artifactDeltas: Array<{ [name: string]: DeltaCell }>,
+  deltas: Array<TotalDeltaCell>
+};
+
+export type TextCell = {
+  type: string,
+  text: string
+};
+
+export type DeltaCell = {
+  type: text,
   size: number,
   sizePercent: number,
   gzipSize: number,
@@ -23,10 +42,28 @@ export type ArtifactDelta = {
   hashChanged: boolean
 };
 
-export type BuildDelta = {
-  meta: BuildMeta,
-  artifactDeltas: Array<{ [name: string]: ArtifactDelta }>,
-  deltas: Array<ArtifactDelta>
+export type TotalCell = {
+  type: text,
+  size: number,
+  gzipSize: number
 };
 
-export type ComparisonMatrix = Array<Array<string | ArtifactDelta>>;
+export type TotalDeltaCell = {
+  type: text,
+  ...TotalDelta
+};
+
+export type RevisionHeaderCell = {
+  type: text,
+  revision: string
+};
+
+export type RevisionDeltaCell = {
+  ...RevisionHeaderCell,
+  deltaIndex: number,
+  againstRevision: string
+};
+
+export type MatrixCell = TextCell | TotalCell | TotalDeltaCell | DeltaCell | RevisionDeltaCell | RevisionHeaderCell;
+
+export type ComparisonMatrix = Array<Array<MatrixCell>>;

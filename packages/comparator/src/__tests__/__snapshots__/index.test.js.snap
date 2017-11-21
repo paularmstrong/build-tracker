@@ -1,88 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getBuildComparisonMatrix gets a matrix 1`] = `
+exports[`BuildComparator buildDeltas returns an array of deltas 1`] = `
+Array [
+  Object {
+    "artifactDeltas": Array [],
+    "deltas": Array [],
+    "meta": Object {
+      "revision": "1234567",
+    },
+  },
+  Object {
+    "artifactDeltas": Array [
+      Object {
+        "burritos": Object {
+          "gzipSize": 93,
+          "gzipSizePercent": 0,
+          "hashChanged": true,
+          "size": 469,
+          "sizePercent": 0,
+          "type": "delta",
+        },
+        "churros": Object {
+          "gzipSize": -90,
+          "gzipSizePercent": 1,
+          "hashChanged": true,
+          "size": -456,
+          "sizePercent": 1,
+          "type": "delta",
+        },
+        "tacos": Object {
+          "gzipSize": 0,
+          "gzipSizePercent": 1,
+          "hashChanged": false,
+          "size": 0,
+          "sizePercent": 1,
+          "type": "delta",
+        },
+      },
+    ],
+    "deltas": Array [
+      Object {
+        "gzipSize": 3,
+        "gzipSizePercent": 1.0222222222222221,
+        "size": 13,
+        "sizePercent": 1.0224525043177892,
+        "type": "delta",
+      },
+    ],
+    "meta": Object {
+      "revision": "8901234",
+    },
+  },
+]
+`;
+
+exports[`BuildComparator matrix includes a body of all artifacts 1`] = `
 Array [
   Array [
-    "",
-    "1234567",
-    "8901234",
-    "𝚫 1234567",
-    "5678901",
-    "𝚫 8901234",
-    "𝚫 1234567",
-  ],
-  Array [
-    "churros",
     Object {
-      "gzipSize": 90,
-      "hash": "abc",
-      "size": 456,
+      "text": "burritos",
+      "type": "text",
     },
-    undefined,
-    Object {
-      "gzipSize": -90,
-      "gzipSizePercent": 1,
-      "hashChanged": true,
-      "size": -456,
-      "sizePercent": 1,
-    },
-    undefined,
-    Object {
-      "gzipSize": -90,
-      "gzipSizePercent": 1,
-      "hashChanged": true,
-      "size": -456,
-      "sizePercent": 1,
-    },
-    Object {
-      "gzipSize": 0,
-      "gzipSizePercent": 0,
-      "hashChanged": true,
-      "size": 0,
-      "sizePercent": 0,
-    },
-  ],
-  Array [
-    "tacos",
-    Object {
-      "gzipSize": 45,
-      "hash": "abc",
-      "size": 123,
-    },
-    Object {
-      "gzipSize": 45,
-      "hash": "abc",
-      "size": 123,
-    },
-    Object {
-      "gzipSize": 0,
-      "gzipSizePercent": 1,
-      "hashChanged": false,
-      "size": 0,
-      "sizePercent": 1,
-    },
-    Object {
-      "gzipSize": 45,
-      "hash": "abc",
-      "size": 123,
-    },
-    Object {
-      "gzipSize": 0,
-      "gzipSizePercent": 1,
-      "hashChanged": false,
-      "size": 0,
-      "sizePercent": 1,
-    },
-    Object {
-      "gzipSize": 0,
-      "gzipSizePercent": 1,
-      "hashChanged": false,
-      "size": 0,
-      "sizePercent": 1,
-    },
-  ],
-  Array [
-    "burritos",
     undefined,
     Object {
       "gzipSize": 93,
@@ -95,123 +73,101 @@ Array [
       "hashChanged": true,
       "size": 469,
       "sizePercent": 0,
+      "type": "delta",
+    },
+  ],
+  Array [
+    Object {
+      "text": "churros",
+      "type": "text",
     },
     Object {
-      "gzipSize": 85,
-      "hash": "ghi",
-      "size": 345,
+      "gzipSize": 90,
+      "hash": "abc",
+      "size": 456,
     },
+    undefined,
     Object {
-      "gzipSize": 85,
-      "gzipSizePercent": 0,
+      "gzipSize": -90,
+      "gzipSizePercent": 1,
       "hashChanged": true,
-      "size": 345,
-      "sizePercent": 0,
+      "size": -456,
+      "sizePercent": 1,
+      "type": "delta",
+    },
+  ],
+  Array [
+    Object {
+      "text": "tacos",
+      "type": "text",
     },
     Object {
-      "gzipSize": -8,
-      "gzipSizePercent": 0.9139784946236559,
-      "hashChanged": true,
-      "size": -124,
-      "sizePercent": 0.7356076759061834,
+      "gzipSize": 45,
+      "hash": "abc",
+      "size": 123,
+    },
+    Object {
+      "gzipSize": 45,
+      "hash": "abc",
+      "size": 123,
+    },
+    Object {
+      "gzipSize": 0,
+      "gzipSizePercent": 1,
+      "hashChanged": false,
+      "size": 0,
+      "sizePercent": 1,
+      "type": "delta",
     },
   ],
 ]
 `;
 
-exports[`getBuildDeltas returns an array of BuildDeltas 1`] = `
+exports[`BuildComparator matrix includes a header 1`] = `
 Array [
   Object {
-    "artifactDeltas": Array [],
-    "deltas": Array [],
-    "meta": Object {
-      "sha": "1234567",
-    },
+    "text": "",
+    "type": "text",
   },
   Object {
-    "artifactDeltas": Array [
-      Object {
-        "burritos": Object {
-          "gzipSize": 93,
-          "gzipSizePercent": 0,
-          "hashChanged": true,
-          "size": 469,
-          "sizePercent": 0,
-        },
-        "churros": Object {
-          "gzipSize": -90,
-          "gzipSizePercent": 1,
-          "hashChanged": true,
-          "size": -456,
-          "sizePercent": 1,
-        },
-        "tacos": Object {
-          "gzipSize": 0,
-          "gzipSizePercent": 1,
-          "hashChanged": false,
-          "size": 0,
-          "sizePercent": 1,
-        },
-      },
-    ],
-    "deltas": Array [],
-    "meta": Object {
-      "sha": "8901234",
-    },
+    "revision": "1234567",
+    "type": "revisionHeader",
   },
   Object {
-    "artifactDeltas": Array [
-      Object {
-        "burritos": Object {
-          "gzipSize": 85,
-          "gzipSizePercent": 0,
-          "hashChanged": true,
-          "size": 345,
-          "sizePercent": 0,
-        },
-        "churros": Object {
-          "gzipSize": -90,
-          "gzipSizePercent": 1,
-          "hashChanged": true,
-          "size": -456,
-          "sizePercent": 1,
-        },
-        "tacos": Object {
-          "gzipSize": 0,
-          "gzipSizePercent": 1,
-          "hashChanged": false,
-          "size": 0,
-          "sizePercent": 1,
-        },
-      },
-      Object {
-        "burritos": Object {
-          "gzipSize": -8,
-          "gzipSizePercent": 0.9139784946236559,
-          "hashChanged": true,
-          "size": -124,
-          "sizePercent": 0.7356076759061834,
-        },
-        "churros": Object {
-          "gzipSize": 0,
-          "gzipSizePercent": 0,
-          "hashChanged": true,
-          "size": 0,
-          "sizePercent": 0,
-        },
-        "tacos": Object {
-          "gzipSize": 0,
-          "gzipSizePercent": 1,
-          "hashChanged": false,
-          "size": 0,
-          "sizePercent": 1,
-        },
-      },
-    ],
-    "deltas": Array [],
-    "meta": Object {
-      "sha": "5678901",
-    },
+    "revision": "8901234",
+    "type": "revisionHeader",
+  },
+  Object {
+    "againstRevision": "1234567",
+    "deltaIndex": 0,
+    "revision": "8901234",
+    "type": "revisionDeltaHeader",
+  },
+]
+`;
+
+exports[`BuildComparator matrix includes a total 1`] = `
+Array [
+  Object {
+    "text": "All",
+    "type": "text",
+  },
+  Object {
+    "gzipSize": 135,
+    "size": 579,
+    "type": "total",
+  },
+  Object {
+    "gzipSize": 138,
+    "size": 592,
+    "type": "total",
+  },
+  Object {
+    "gzipSize": 3,
+    "gzipSizePercent": 1.0222222222222221,
+    "size": 13,
+    "sizePercent": 1.0224525043177892,
+    "type": "delta",
   },
 ]
 `;

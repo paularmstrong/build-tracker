@@ -1,12 +1,27 @@
 // @flow
-import type { Artifact, ArtifactDelta, Build, BuildDelta, BuildMeta, ComparisonMatrix } from './types';
+import type {
+  Artifact,
+  Build,
+  BuildDelta,
+  BuildMeta,
+  ComparisonMatrix,
+  MatrixCell,
+  TextCell,
+  TotalCell,
+  TotalDeltaCell,
+  RevisionHeaderCell,
+  RevisionDeltaCell,
+  DeltaCell,
+  TotalDelta
+} from './types';
 
-const deltaIsBelowThreshold = (originalArtifact: Artifact, updatedArtifact: Artifact, thresholdBytes: number) => {};
-
-export const getAllArtifactNames = (builds: Array<Build>): Array<string> => {
-  return Array.prototype.concat
-    .apply([], builds.map(({ artifacts }) => Object.keys(artifacts)))
-    .filter((value, index, self) => self.indexOf(value) === index);
+export const CellType = {
+  DELTA: 'delta',
+  REVISION_HEADER: 'revisionHeader',
+  REVISION_DELTA_HEADER: 'revisionDeltaHeader',
+  TEXT: 'text',
+  TOTAL: 'total',
+  TOTAL_DELTA: 'totalDelta'
 };
 
 const getDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, changeArtifact: Artifact): number => {
@@ -31,8 +46,9 @@ const getPercentDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, chang
   return !baseArtifact ? 0 : changeArtifact[key] / baseArtifact[key];
 };
 
-const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact): ArtifactDelta => {
+const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact): DeltaCell => {
   return {
+    type: CellType.DELTA,
     size: getDelta('size', baseArtifact, changeArtifact),
     sizePercent: getPercentDelta('size', baseArtifact, changeArtifact),
     gzipSize: getDelta('gzipSize', baseArtifact, changeArtifact),
@@ -40,64 +56,135 @@ const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact): Artifa
   };
 };
 
-export const getBuildDeltas = (builds: Array<Build>): Array<BuildDelta> => {
-  const artifactNames = getAllArtifactNames(builds);
+const getTotalArtifactSizes = (build: Build): TotalCell =>
+  Object.keys(build.artifacts).reduce(
+    (memo, artifactName) => ({
+      type: CellType.TOTAL,
+      size: memo.size + build.artifacts[artifactName].size,
+      gzipSize: memo.gzipSize + build.artifacts[artifactName].gzipSize
+    }),
+    { size: 0, gzipSize: 0 }
+  );
 
-  return builds.map((build, i) => {
-    const artifactDeltas = builds
-      .map((compareBuild, j) => {
-        if (j >= i) {
-          return null;
-        }
+const getTotalSizeDeltas = (baseBuild: Build, changeBuild: Build): TotalDelta => {
+  const baseSize = getTotalArtifactSizes(baseBuild);
+  const changeSize = getTotalArtifactSizes(changeBuild);
 
-        return artifactNames.reduce((deltas, name) => {
-          const buildArtifact = build.artifacts[name];
-          const compareArtifact = compareBuild.artifacts[name];
-          return {
-            ...deltas,
-            [name]: {
-              ...getSizeDeltas(compareArtifact, buildArtifact),
-              hashChanged: !compareArtifact || !buildArtifact || compareArtifact.hash !== buildArtifact.hash
-            }
-          };
-        }, {});
-      })
-      .filter(Boolean);
-
-    return {
-      meta: build.meta,
-      artifactDeltas,
-      deltas: []
-    };
-  });
+  return {
+    type: CellType.DELTA,
+    size: baseSize.size - changeSize.size,
+    sizePercent: baseSize.size / changeSize.size,
+    gzipSize: baseSize.gzipSize - changeSize.gzipSize,
+    gzipSizePercent: baseSize.gzipSize / changeSize.gzipSize
+  };
 };
 
 const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 
-export const getBuildComparisonMatrix = (builds: Array<Build>): ComparisonMatrix => {
-  const artifactNames = getAllArtifactNames(builds);
-  const buildDeltas = getBuildDeltas(builds);
-  const buildShas = builds.map(({ meta }) => meta.sha);
-
-  const header = [
-    '',
-    ...flatten(
-      buildDeltas.map(buildDelta => {
-        return [
-          buildDelta.meta.sha,
-          ...buildDelta.artifactDeltas.map((delta, i) => `𝚫 ${buildShas[buildDelta.artifactDeltas.length - 1 - i]}`)
-        ];
-      })
-    )
-  ];
-
-  const body = artifactNames.map(artifactName => {
-    const deltas = buildDeltas.map(({ artifactDeltas }, i) => [
-      builds[i].artifacts[artifactName],
-      ...artifactDeltas.map(delta => delta[artifactName])
-    ]);
-    return [artifactName, ...flatten(deltas)];
-  });
-
-  return [header, ...body];
+const defaultArtifactSorter = (rowA, rowB): number => {
+  return rowA > rowB ? 1 : rowB > rowA ? -1 : 0;
 };
+
+export default class BuildComparator {
+  builds: Array<Build>;
+
+  _artifactSorter: Function;
+  _artifactNames: Array<string>;
+  _buildDeltas: Array<BuildDelta>;
+
+  constructor(builds: Array<Build>, artifactSorter: Function = defaultArtifactSorter) {
+    this.builds = builds;
+    this._artifactSorter = artifactSorter;
+  }
+
+  get artifactNames(): Array<string> {
+    if (!this._artifactNames) {
+      this._artifactNames = Array.prototype.concat
+        .apply([], this.builds.map(({ artifacts }) => Object.keys(artifacts)))
+        .filter((value, index, self) => self.indexOf(value) === index);
+    }
+    return this._artifactNames;
+  }
+
+  get buildDeltas(): Array<BuildDelta> {
+    if (!this._buildDeltas) {
+      return this.builds.map((build, i) => {
+        const totalDeltas = [];
+        const artifactDeltas = this.builds
+          .map((compareBuild, j) => {
+            if (j >= i) {
+              return null;
+            }
+
+            totalDeltas[j] = getTotalSizeDeltas(build, compareBuild);
+
+            return this.artifactNames.reduce((memo, name) => {
+              const buildArtifact = build.artifacts[name];
+              const compareArtifact = compareBuild.artifacts[name];
+              const sizeDeltas = getSizeDeltas(compareArtifact, buildArtifact);
+              return {
+                ...memo,
+                [name]: {
+                  ...sizeDeltas,
+                  hashChanged: !compareArtifact || !buildArtifact || compareArtifact.hash !== buildArtifact.hash
+                }
+              };
+            }, {});
+          })
+          .filter(Boolean);
+
+        return {
+          meta: build.meta,
+          artifactDeltas,
+          deltas: totalDeltas
+        };
+      });
+    }
+    return this._buildDeltas;
+  }
+
+  get matrixHeader(): Array<TextCell | RevisionHeaderCell | RevisionDeltaCell> {
+    return [
+      { type: CellType.TEXT, text: '' },
+      ...flatten(
+        this.buildDeltas.map(buildDelta => {
+          const revision = buildDelta.meta.revision;
+          const revisionIndex = this.builds.findIndex(build => build.meta.revision === revision);
+          return [
+            { type: CellType.REVISION_HEADER, revision },
+            ...buildDelta.artifactDeltas.map((delta, i): RevisionDeltaCell => {
+              const deltaIndex = buildDelta.artifactDeltas.length - 1 - i;
+              return {
+                type: CellType.REVISION_DELTA_HEADER,
+                deltaIndex,
+                againstRevision: this.builds[revisionIndex - deltaIndex - 1].meta.revision,
+                revision
+              };
+            })
+          ];
+        })
+      )
+    ];
+  }
+
+  get matrixTotal(): Array<TextCell | TotalCell | TotalDeltaCell> {
+    return [
+      { type: CellType.TEXT, text: 'All' },
+      ...flatten(this.buildDeltas.map(({ deltas }, i) => [getTotalArtifactSizes(this.builds[i]), ...deltas]))
+    ];
+  }
+
+  get matrixBody(): Array<MatrixCell> {
+    return this.artifactNames.sort(this._artifactSorter).map(artifactName => {
+      const deltas = this.buildDeltas.map(({ artifactDeltas }, i) => [
+        this.builds[i].artifacts[artifactName],
+        ...artifactDeltas.map(delta => delta[artifactName])
+      ]);
+      return [{ type: 'text', text: artifactName }, ...flatten(deltas)];
+    });
+  }
+
+  get matrix(): ComparisonMatrix {
+    return [this.matrixHeader, this.matrixTotal, ...this.matrixBody];
+  }
+}

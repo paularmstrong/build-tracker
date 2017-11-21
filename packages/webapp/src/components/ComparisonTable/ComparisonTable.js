@@ -2,6 +2,7 @@
 import ArtifactCell from './ArtifactCell';
 import AsciiTable from 'ascii-table';
 import deepEqual from 'deep-equal';
+import BuildComparator from 'build-tracker-comparator';
 import IconX from '../icons/IconX';
 import { interpolateHcl } from 'd3-interpolate';
 import { scaleLinear } from 'd3-scale';
@@ -161,6 +162,10 @@ class Heading extends PureComponent {
 type HeaderCell = { link?: string, text?: string };
 type BodyCell = { link?: string, text?: string, bytes?: number, color?: string };
 
+const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): number => {
+  return artifactNames.indexOf(a) - artifactNames.indexOf(b);
+};
+
 export default class Comparisons extends PureComponent {
   props: {
     activeArtifactNames: Array<string>,
@@ -175,6 +180,7 @@ export default class Comparisons extends PureComponent {
   };
 
   state: {
+    showAboveThresholdOnly: boolean,
     showDeselectedArtifacts: boolean
   };
 
@@ -186,13 +192,16 @@ export default class Comparisons extends PureComponent {
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
+      showAboveThresholdOnly: false,
       showDeselectedArtifacts: true
     };
-    this._data = createTableData(props.artifactNames, props.builds, props.valueAccessor);
+    const matrixBodySorter = getBodySorter(props.artifactNames);
+    this._data = props.builds.length && new BuildComparator(props.builds, matrixBodySorter);
   }
 
   componentWillUpdate(nextProps: Object, nextState: Object) {
-    this._data = createTableData(nextProps.artifactNames, nextProps.builds, nextProps.valueAccessor);
+    const matrixBodySorter = getBodySorter(nextProps.artifactNames);
+    this._data = nextProps.builds.length && new BuildComparator(nextProps.builds, matrixBodySorter);
   }
 
   render() {
@@ -203,37 +212,68 @@ export default class Comparisons extends PureComponent {
       colorScale,
       hoveredArtifact,
       onRemoveBuild,
-      onShowBuildInfo
+      onShowBuildInfo,
+      valueAccessor
     } = this.props;
+    const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
-    const { showDeselectedArtifacts } = this.state;
-    const body = showDeselectedArtifacts ? this._data.body : this._getActiveData();
-    const hiddenRowCount = this._data.body.length - body.length;
-    const headers = flatten(this._data.head);
+    const headers = this._data.matrixHeader;
+    const totals = this._data.matrixTotal;
+    const body = this._data.matrixBody;
 
-    return (
+    return this._data ? (
       <View style={styles.root}>
         <Table style={styles.dataTable}>
           <Thead>
             <Tr>
-              {headers.map((column, i) => (
-                <Heading
-                  {...column}
-                  key={i}
-                  onClickRemove={column.removable && onRemoveBuild}
-                  onClickInfo={column.removable && onShowBuildInfo}
-                />
-              ))}
+              {headers
+                ? headers.map(({ revision, deltaIndex }, i) => {
+                    const removable = revision && typeof deltaIndex === 'undefined';
+                    return (
+                      <Heading
+                        key={i}
+                        onClickRemove={removable ? onRemoveBuild : undefined}
+                        onClickInfo={removable ? onShowBuildInfo : undefined}
+                        removable={removable}
+                        text={removable ? revision : typeof deltaIndex !== 'undefined' ? `𝚫 ${deltaIndex}` : ''}
+                      />
+                    );
+                  })
+                : null}
             </Tr>
           </Thead>
           <Tbody>
+            {totals.length ? (
+              <Tr>
+                {totals.map((column, i) => {
+                  if (i === 0) {
+                    return (
+                      <ArtifactCell
+                        active={activeArtifactNames.length === artifactNames.length}
+                        artifactName="All"
+                        color={theme.colorMidnight}
+                        disabled={activeArtifactNames.length === artifactNames.length}
+                        key={i}
+                        onToggle={this._handleToggleAllArtifacts}
+                        link="/"
+                      />
+                    );
+                  } else {
+                    return <ValueCell bytes={valueAccessor(column)} key={i} />;
+                  }
+                })}
+              </Tr>
+            ) : null}
             {body.length
               ? body.map((row, i) => {
-                  const artifact = row[0].text;
-                  const isAll = artifact === 'All';
-                  const isHovered = hoveredArtifact === artifact;
-                  const color =
-                    isAll || !artifact ? theme.colorMidnight : colorScale(1 - artifactNames.indexOf(artifact));
+                  const artifactName = row[0].text;
+                  if (!showDeselectedArtifacts) {
+                    if (activeArtifactNames.indexOf(artifactName) === -1) {
+                      return null;
+                    }
+                  }
+                  const isHovered = hoveredArtifact === artifactName;
+                  const color = colorScale(1 - artifactNames.indexOf(artifactName));
                   const hoverColor = hsl(color);
                   hoverColor.s = 0.7;
                   hoverColor.l = 0.95;
@@ -241,27 +281,26 @@ export default class Comparisons extends PureComponent {
                     <Tr key={i}>
                       {row.map((column, i) => {
                         if (i === 0) {
-                          const { link, text } = column;
                           return (
                             <ArtifactCell
-                              active={
-                                isAll || !text
-                                  ? activeArtifactNames.length === artifactNames.length
-                                  : activeArtifactNames.indexOf(text) !== -1
-                              }
-                              artifactName={text}
+                              active={activeArtifactNames.indexOf(artifactName) !== -1}
+                              artifactName={artifactName}
                               color={color}
-                              disabled={isAll && activeArtifactNames.length === artifactNames.length}
                               hoverColor={hoverColor.toString()}
                               isHovered={isHovered}
                               key={i}
-                              onToggle={isAll ? this._handleToggleAllArtifacts : this._handleToggleArtifact}
-                              link={link}
+                              onToggle={this._handleToggleArtifact}
+                              link={`/${artifactName}`}
                             />
                           );
                         }
                         return (
-                          <ValueCell {...column} hoverColor={hoverColor.toString()} isHovered={isHovered} key={i} />
+                          <ValueCell
+                            bytes={valueAccessor(column)}
+                            hoverColor={hoverColor.toString()}
+                            isHovered={isHovered}
+                            key={i}
+                          />
                         );
                       })}
                     </Tr>
@@ -273,18 +312,9 @@ export default class Comparisons extends PureComponent {
             <Tfoot>
               <Tr>
                 <ArtifactCell
-                  active={deepEqual(
-                    this._getFilteredData()
-                      .map(row => row[0].text)
-                      .slice(1),
-                    activeArtifactNames
-                  )}
+                  active={showAboveThresholdOnly}
                   artifactName="Above threshold only"
-                  disabled={
-                    this._getFilteredData()
-                      .map(row => row[0].text)
-                      .slice(1).length === 0
-                  }
+                  disabled={false}
                   color={theme.colorMidnight}
                   onToggle={this._handleRemoveBelowThreshold}
                 />
@@ -301,29 +331,31 @@ export default class Comparisons extends PureComponent {
               </Tr>
               <Tr>
                 <ArtifactCell
-                  active={!hiddenRowCount}
+                  active={showDeselectedArtifacts}
                   artifactName="Show deselected"
                   color={theme.colorMidnight}
-                  onToggle={this._handleHideBelowThreshold}
+                  onToggle={this._handleShowDeselected}
                 />
               </Tr>
             </Tfoot>
           ) : null}
         </Table>
       </View>
-    );
+    ) : null;
   }
 
   _getActiveData() {
     const { activeArtifactNames } = this.props;
-    return this._data.body.filter((row, i) => {
+    return this._data.matrixBody.filter((row, i) => {
       return i === 0 || (row[0].text && activeArtifactNames.indexOf(row[0].text) !== -1);
     });
   }
 
   _getFilteredData() {
-    return this._data.body.filter((row, i) => {
-      const deltas = row.filter(column => column.color && column.bytes && Math.abs(column.bytes) > 100);
+    const { valueAccessor } = this.props;
+    return this._data.matrixBody.filter((row, i) => {
+      // TODO: should this threshold on percent change?
+      const deltas = row.filter(column => column && !column.hash && valueAccessor(column) > 100);
       if (i !== 0 && row.length > 2 && deltas.length === 0) {
         return false;
       }
@@ -331,20 +363,22 @@ export default class Comparisons extends PureComponent {
     });
   }
 
-  _handleHideBelowThreshold = (name: string, toggled: boolean) => {
+  _handleShowDeselected = (name: string, toggled: boolean) => {
     this.setState({ showDeselectedArtifacts: toggled });
   };
 
   _handleRemoveBelowThreshold = (name: string, toggled: boolean) => {
     const { artifactNames, onArtifactsChange } = this.props;
-    if (onArtifactsChange) {
-      if (toggled) {
-        const data = this._getFilteredData();
-        onArtifactsChange(data.map(row => row[0].text));
-      } else {
-        onArtifactsChange(artifactNames);
+    this.setState({ showAboveThresholdOnly: toggled }, () => {
+      if (onArtifactsChange) {
+        if (toggled) {
+          const data = this._getFilteredData();
+          onArtifactsChange(data.map(row => row[0].text));
+        } else {
+          onArtifactsChange(artifactNames);
+        }
       }
-    }
+    });
   };
 
   _handleToggleArtifact = (artifactName: string, value: boolean) => {

@@ -13,7 +13,7 @@
   "dependencies": {
     "ascii-table": "^0.0.9"
   },
-  "main": "dist/index.js",
+  "main": "dist",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

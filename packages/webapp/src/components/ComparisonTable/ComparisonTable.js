@@ -13,10 +13,7 @@ import React, { Component, PureComponent } from 'react';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
 
 import type { Build } from '../../types';
-
-const identity = d => d;
-
-const flatten = (arrays: Array<any>) => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
+import type { BodyCellType, DeltaCellType, TotalCellType, HeaderCellType } from 'build-tracker-comparator';
 
 const greenScale = scaleLinear()
   .domain([1, 0])
@@ -176,21 +173,19 @@ export default class Comparisons extends PureComponent {
     const { activeArtifactNames, builds } = this.props;
     const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
-    const headers = this._data.matrixHeader;
-    const totals = this._data.matrixTotal;
-    const body = this._data.matrixBody;
+    const { header, total, body } = this._data.matrix;
 
     return this._data ? (
       <View style={styles.root}>
         <Table style={styles.dataTable}>
           <Thead>
-            <Tr>{headers ? headers.map(this._renderHeaderCell) : null}</Tr>
+            <Tr>{header ? header.map(this._renderHeaderCell) : null}</Tr>
           </Thead>
           <Tbody>
-            {totals.length ? <Tr>{totals.map(this._renderValueCell)}</Tr> : null}
+            {total.length ? <Tr>{total.map(this._renderTotalCell)}</Tr> : null}
             {body.length
               ? body.map((row, i) => {
-                  const artifactName = row[0].text;
+                  const artifactName = row[0].text ? row[0].text : '';
                   if (!showDeselectedArtifacts) {
                     if (activeArtifactNames.indexOf(artifactName) === -1) {
                       return null;
@@ -210,7 +205,7 @@ export default class Comparisons extends PureComponent {
                   color={theme.colorMidnight}
                   onToggle={this._handleRemoveBelowThreshold}
                 />
-                <Td colSpan={headers.length - 1} rowSpan={2} style={styles.footer}>
+                <Td colSpan={header.length - 1} rowSpan={2} style={styles.footer}>
                   <View style={styles.footerContent}>
                     <View style={styles.copyButton}>
                       <Button onPress={this._handleCopyToAscii} style={styles.copyButton} title="Copy to ASCII" />
@@ -236,7 +231,7 @@ export default class Comparisons extends PureComponent {
     ) : null;
   }
 
-  _renderHeaderCell = (cell, i: number) => {
+  _renderHeaderCell = (cell: HeaderCellType, i: number) => {
     const { onRemoveBuild, onShowBuildInfo } = this.props;
     switch (cell.type) {
       case CellType.REVISION_HEADER:
@@ -248,8 +243,8 @@ export default class Comparisons extends PureComponent {
     }
   };
 
-  _renderValueCell = (cell, i: number) => {
-    const { activeArtifactNames, artifactNames, valueAccessor } = this.props;
+  _renderTotalCell = (cell: BodyCellType, i: number) => {
+    const { activeArtifactNames, artifactNames } = this.props;
     switch (cell.type) {
       case CellType.ARTIFACT:
         return (
@@ -264,15 +259,15 @@ export default class Comparisons extends PureComponent {
           />
         );
       case CellType.DELTA:
-        return <DeltaCell {...cell} key={i} valueAccessor={valueAccessor} />;
+        return this._renderDeltaCell(cell, i);
       case CellType.TOTAL:
       default:
-        return <ValueCell {...cell} key={i} valueAccessor={valueAccessor} />;
+        return this._renderValueCell(cell, i);
     }
   };
 
-  _renderBodyCell = (cell, i: number, artifactName: string) => {
-    const { activeArtifactNames, artifactNames, colorScale, hoveredArtifact, valueAccessor } = this.props;
+  _renderBodyCell = (cell: BodyCellType, i: number, artifactName: string) => {
+    const { activeArtifactNames, artifactNames, colorScale, hoveredArtifact } = this.props;
     const isHovered = hoveredArtifact === artifactName;
     const color = colorScale(1 - artifactNames.indexOf(artifactName));
     const hoverColor = hsl(color);
@@ -294,12 +289,32 @@ export default class Comparisons extends PureComponent {
           />
         );
       case CellType.DELTA:
-        return <DeltaCell {...cell} key={i} valueAccessor={valueAccessor} />;
+        return this._renderDeltaCell(cell, i);
       case CellType.TOTAL:
       default:
-        return <ValueCell {...cell} key={i} valueAccessor={valueAccessor} />;
+        return this._renderValueCell(cell, i);
     }
   };
+
+  _renderDeltaCell(cell: DeltaCellType, key: string | number) {
+    const { valueAccessor } = this.props;
+    return (
+      <DeltaCell
+        gzipSize={cell.gzipSize}
+        gzipSizePercent={cell.gzipSizePercent}
+        hashChanged={cell.hashChanged}
+        key={key}
+        size={cell.size}
+        sizePercent={cell.sizePercent}
+        valueAccessor={valueAccessor}
+      />
+    );
+  }
+
+  _renderValueCell(cell: TotalCellType, key: string | number) {
+    const { valueAccessor } = this.props;
+    return <ValueCell gzipSize={cell.gzipSize} key={key} size={cell.size} valueAccessor={valueAccessor} />;
+  }
 
   _getActiveData() {
     const { activeArtifactNames } = this.props;
@@ -312,7 +327,7 @@ export default class Comparisons extends PureComponent {
     const { valueAccessor } = this.props;
     return this._data.matrixBody.filter((row, i) => {
       // TODO: should this threshold on percent change?
-      const deltas = row.filter(column => column && !column.hash && valueAccessor(column) > 100);
+      const deltas = row.filter(cell => (cell.type === CellType.DELTA ? valueAccessor(cell) : 0 > 100));
       if (i !== 0 && row.length > 2 && deltas.length === 0) {
         return false;
       }
@@ -330,7 +345,7 @@ export default class Comparisons extends PureComponent {
       if (onArtifactsChange) {
         if (toggled) {
           const data = this._getFilteredData();
-          onArtifactsChange(data.map(row => row[0].text));
+          onArtifactsChange(data.map(row => (row[0].text ? row[0].text : '')));
         } else {
           onArtifactsChange(artifactNames);
         }
@@ -369,8 +384,8 @@ export default class Comparisons extends PureComponent {
     // Clipboard requires using template strings and special encoding for newlines and spaces
     Clipboard.setString(
       `${table
-        .toString()
         .replace(/\r?\n/g, `\r\n`)
+        .replace(/^\s/gm, '')
         .replace(/ /g, `\u00A0`)}`
     );
   };

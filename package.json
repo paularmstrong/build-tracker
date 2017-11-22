@@ -13,6 +13,7 @@
     "prettier": "^1.7.4"
   },
   "scripts": {
+    "flow": "flow",
     "precommit": "lint-staged"
   },
   "lint-staged": {

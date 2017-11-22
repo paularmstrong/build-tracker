@@ -16,7 +16,7 @@
     "build": "babel src -d dist",
     "start:static": "babel-watch testserver.js"
   },
-  "files": ["index.js", "README.md"],
+  "files": ["dist/*", "README.md"],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

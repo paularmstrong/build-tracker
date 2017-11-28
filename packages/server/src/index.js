@@ -1,12 +1,32 @@
 // @flow
 import assert from 'assert';
 import bodyParser from 'body-parser';
+import BuildComparator from 'build-tracker-comparator';
 import express from 'express';
 import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
 
 import type { $Application, $Request, $Response } from 'express';
+
+export type BuildMeta = {
+  revision: string,
+  timestamp: number
+};
+
+export type Artifact = {|
+  hash: string,
+  name: string,
+  size: number,
+  gzipSize: number
+|};
+
+export type Build = {|
+  meta: BuildMeta,
+  artifacts: { [name: string]: Artifact }
+|};
+
+const noop = () => {};
 
 const APP_HTML_PATH = require.resolve('build-tracker-app');
 
@@ -20,8 +40,9 @@ app.use(morgan(logFormat));
 app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
-  getBuilds: ({}) => Promise<any>,
+  getBuilds: ({}) => Promise<Array<Build>>,
   insertBuild: ({}) => Promise<any>,
+  onBuildInserted?: (comparator: typeof BuildComparator) => void,
   port?: number
 };
 
@@ -54,15 +75,15 @@ const isValidBuild = data => {
   assert(data.meta && typeof data.meta === 'object', 'Metadata is provided');
   assert(data.meta.revision && typeof data.meta.revision === 'string', 'Build revision is provided');
   assert(data.meta.timestamp && typeof data.meta.timestamp === 'number', 'Build timestamp is provided');
-  assert(data.artifact && typeof data.artifact === 'object', 'Build artifact are provided');
-  Object.keys(data.artifact).forEach(key => {
-    const artifact = data.artifact[key];
+  assert(data.artifacts && typeof data.artifacts === 'object', 'Build artifacts are provided');
+  Object.keys(data.artifacts).forEach(key => {
+    const artifact = data.artifacts[key];
     assert(artifact.name, `Name is provided for artifact ${key}`);
     assert(artifact.size, `Size is provided for artifact ${key}`);
   });
 };
 
-export default function createServer({ getBuilds, insertBuild, port = 3000 }: ServerOptions) {
+export default function createServer({ getBuilds, insertBuild, onBuildInserted, port = 3000 }: ServerOptions) {
   app.get('/api/builds', (req: $Request, res: $Response) => {
     getBuilds(normalizeQuery(req.query)).then(data => {
       res.write(JSON.stringify(data));
@@ -84,6 +105,13 @@ export default function createServer({ getBuilds, insertBuild, port = 3000 }: Se
     insertBuild(build)
       .then(() => {
         res.write(JSON.stringify({ success: true }));
+      })
+      .then(() => getBuilds({ limit: 1, timeRange: { to: build.meta.timestamp - 1 } }))
+      .then((builds: Array<Build>) => {
+        const comparator = new BuildComparator([...builds, build]);
+        onBuildInserted && onBuildInserted(comparator);
+      })
+      .then(() => {
         res.end();
       })
       .catch(err => {

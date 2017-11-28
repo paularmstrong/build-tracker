@@ -8,6 +8,7 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "build-tracker-app": "*",
+    "build-tracker-comparator": "*",
     "express": "^4.15.4",
     "glob": "^7.1.2",
     "morgan": "^1.8.2"

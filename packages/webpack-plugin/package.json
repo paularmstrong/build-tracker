@@ -9,5 +9,8 @@
     "gzip-size": "^3.0.0",
     "mkdirp": "^0.5.1"
   },
-  "files": ["index.js", "README.md"]
+  "files": ["index.js", "README.md"],
+  "scripts": {
+    "test": "echo \"no tests\""
+  }
 }

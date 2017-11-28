@@ -44,7 +44,7 @@ Array [
         "gzipSizePercent": 1.0222222222222221,
         "size": 13,
         "sizePercent": 1.0224525043177892,
-        "type": "delta",
+        "type": "totalDelta",
       },
     ],
     "meta": Object {
@@ -58,16 +58,16 @@ exports[`BuildComparator getAscii gets an ASCII table 1`] = `
 ".-----------------------------------------.
 |          | 1234567 | 8901234 |    Δ0    |
 |----------|---------|---------|----------|
-| burritos |         |      93 | 93 (1%)  |
-| churros  |      90 |         | -90 (1%) |
-| tacos    |      45 |      45 | 0 (1%)   |
+| burritos | 0       | 93      | 93 (1%)  |
+| churros  | 90      | 0       | -90 (1%) |
+| tacos    | 45      | 45      | 0 (1%)   |
 '-----------------------------------------'"
 `;
 
 exports[`BuildComparator getCsv gets a CSV formatted table 1`] = `
 ",1234567,8901234,Δ0
-burritos,,93,93 (1%)
-churros,90,,-90 (1%)
+burritos,0,93,93 (1%)
+churros,90,0,-90 (1%)
 tacos,45,45,0 (1%)"
 `;
 
@@ -78,11 +78,15 @@ Array [
       "text": "burritos",
       "type": "artifact",
     },
-    undefined,
+    Object {
+      "gzipSize": 0,
+      "size": 0,
+      "type": "total",
+    },
     Object {
       "gzipSize": 93,
-      "hash": "def",
       "size": 469,
+      "type": "total",
     },
     Object {
       "gzipSize": 93,
@@ -100,10 +104,14 @@ Array [
     },
     Object {
       "gzipSize": 90,
-      "hash": "abc",
       "size": 456,
+      "type": "total",
     },
-    undefined,
+    Object {
+      "gzipSize": 0,
+      "size": 0,
+      "type": "total",
+    },
     Object {
       "gzipSize": -90,
       "gzipSizePercent": 1,
@@ -120,13 +128,13 @@ Array [
     },
     Object {
       "gzipSize": 45,
-      "hash": "abc",
       "size": 123,
+      "type": "total",
     },
     Object {
       "gzipSize": 45,
-      "hash": "abc",
       "size": 123,
+      "type": "total",
     },
     Object {
       "gzipSize": 0,
@@ -148,17 +156,17 @@ Array [
   },
   Object {
     "revision": "1234567",
-    "type": "revisionHeader",
+    "type": "revision",
   },
   Object {
     "revision": "8901234",
-    "type": "revisionHeader",
+    "type": "revision",
   },
   Object {
     "againstRevision": "1234567",
     "deltaIndex": 0,
     "revision": "8901234",
-    "type": "revisionDeltaHeader",
+    "type": "revisionDelta",
   },
 ]
 `;
@@ -184,7 +192,7 @@ Array [
     "gzipSizePercent": 1.0222222222222221,
     "size": 13,
     "sizePercent": 1.0224525043177892,
-    "type": "delta",
+    "type": "totalDelta",
   },
 ]
 `;

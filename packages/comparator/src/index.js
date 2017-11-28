@@ -256,20 +256,20 @@ export default class BuildComparator {
 
   get matrixBody(): Array<Array<BodyCellType>> {
     return this.artifactNames.sort(this._artifactSorter).map(artifactName => {
-      const deltas = this.buildDeltas.map(({ artifactDeltas }, i): Array<
+      const cells = this.buildDeltas.map(({ artifactDeltas }, i): Array<
         TextCellType | TotalCellType | DeltaCellType
       > => {
         const artifact = this.builds[i].artifacts[artifactName];
         return [
           {
             type: CellType.TOTAL,
-            size: artifact.size,
-            gzipSize: artifact.gzipSize
+            size: artifact ? artifact.size : 0,
+            gzipSize: artifact ? artifact.gzipSize : 0
           },
           ...artifactDeltas.map(delta => delta[artifactName])
         ];
       });
-      return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(deltas)];
+      return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
     });
   }
 

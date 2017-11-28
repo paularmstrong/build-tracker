@@ -42,21 +42,20 @@ describe('BuildComparator', () => {
   describe('matrix', () => {
     test('includes a header', () => {
       const comparator = new BuildComparator([build1, build2]);
-      expect(comparator.matrix[0]).toEqual(comparator.matrixHeader);
-      expect(comparator.matrix[0]).toMatchSnapshot();
+      expect(comparator.matrix.header).toEqual(comparator.matrixHeader);
+      expect(comparator.matrix.header).toMatchSnapshot();
     });
 
     test('includes a total', () => {
       const comparator = new BuildComparator([build1, build2]);
-      expect(comparator.matrix[1]).toEqual(comparator.matrixTotal);
-      expect(comparator.matrix[1]).toMatchSnapshot();
+      expect(comparator.matrix.total).toEqual(comparator.matrixTotal);
+      expect(comparator.matrix.total).toMatchSnapshot();
     });
 
     test('includes a body of all artifacts', () => {
       const comparator = new BuildComparator([build1, build2]);
-      const matrix = comparator.matrix;
-      expect(matrix.slice(2)).toEqual(comparator.matrixBody);
-      expect(matrix.slice(2)).toMatchSnapshot();
+      expect(comparator.matrix.body).toEqual(comparator.matrixBody);
+      expect(comparator.matrix.body).toMatchSnapshot();
     });
   });
 

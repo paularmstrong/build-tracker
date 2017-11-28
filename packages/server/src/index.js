@@ -40,7 +40,9 @@ app.use(morgan(logFormat));
 app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
-  getBuilds: ({}) => Promise<Array<Build>>,
+  getBuildsByTimeRange: (startTime: number, endTime?: number) => Promise<Array<Build>>,
+  getBuildsByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<Build>>,
+  getRecentBuilds: (limit?: number) => Promise<Array<Build>>,
   insertBuild: ({}) => Promise<any>,
   onBuildInserted?: (comparator: typeof BuildComparator) => void,
   port?: number
@@ -83,12 +85,31 @@ const isValidBuild = data => {
   });
 };
 
-export default function createServer({ getBuilds, insertBuild, onBuildInserted, port = 3000 }: ServerOptions) {
+const createResponseWithJSON = res => data => {
+  res.write(JSON.stringify(data));
+};
+
+export default function createServer({
+  getBuildsByRevisionRange,
+  getBuildsByTimeRange,
+  getRecentBuilds,
+  insertBuild,
+  onBuildInserted,
+  port = 3000
+}: ServerOptions) {
   app.get('/api/builds', (req: $Request, res: $Response) => {
-    getBuilds(normalizeQuery(req.query)).then(data => {
+    const query = normalizeQuery(req.query);
+    const respondWithJSON = data => {
       res.write(JSON.stringify(data));
       res.end();
-    });
+    };
+    if (query.startRevision) {
+      getBuildsByRevisionRange(query.startRevision, query.endRevision).then(respondWithJSON);
+    } else if (query.startTime) {
+      getBuildsByTimeRange(query.startTime, query.endTime).then(respondWithJSON);
+    } else {
+      getRecentBuilds(query.count).then(respondWithJSON);
+    }
   });
 
   app.post('/api/builds', (req: $Request, res: $Response) => {
@@ -106,9 +127,9 @@ export default function createServer({ getBuilds, insertBuild, onBuildInserted, 
       .then(() => {
         res.write(JSON.stringify({ success: true }));
       })
-      .then(() => getBuilds({ limit: 1, timeRange: { to: build.meta.timestamp - 1 } }))
+      .then(() => getRecentBuilds(2))
       .then((builds: Array<Build>) => {
-        const comparator = new BuildComparator([...builds, build]);
+        const comparator = new BuildComparator(builds);
         onBuildInserted && onBuildInserted(comparator);
       })
       .then(() => {
@@ -135,7 +156,7 @@ export type StaticServerOptions = {
 };
 
 export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
-  const getBuilds = args => {
+  const getRecentBuilds = count => {
     return new Promise((resolve, reject) => {
       glob(`${statsRoot}/*.json`, (err, matches) => {
         if (err) {
@@ -144,14 +165,15 @@ export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
 
         const stats = matches
           .map(match => require(match))
-          .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp));
+          .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp))
+          .slice(0, count);
         resolve(stats);
       });
     });
   };
 
   return createServer({
-    getBuilds,
+    getRecentBuilds,
     insertBuild: () => Promise.reject(new Error('Static server cannot save new builds')),
     port
   });

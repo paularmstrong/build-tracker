@@ -14,7 +14,9 @@
     "morgan": "^1.8.2"
   },
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "npm run build:module && npm run build:flow",
+    "build:flow": "flow-copy-source -i __tests__/*.js src dist",
+    "build:module": "babel src -d dist --ignore *.test.js",
     "start:static": "babel-watch testserver.js"
   },
   "files": ["dist/*", "README.md"],
@@ -24,6 +26,7 @@
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
-    "babel-watch": "^2.0.7"
+    "babel-watch": "^2.0.7",
+    "flow-copy-source": "^1.2.1"
   }
 }

@@ -198,7 +198,7 @@ class App extends Component {
   _handleSelectBuild = (build: Build) => {
     this.setState(
       state => ({
-        compareBuilds: [...state.compareBuilds, build],
+        compareBuilds: [...state.compareBuilds, build].filter((value, index, self) => self.indexOf(value) === index),
         selectedBuild: build
       }),
       this._updateUrl

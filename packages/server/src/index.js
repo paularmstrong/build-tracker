@@ -10,6 +10,7 @@ import path from 'path';
 import type { $Application, $Request, $Response } from 'express';
 
 export type BuildMeta = {
+  branch: string,
   revision: string,
   timestamp: number
 };
@@ -40,6 +41,7 @@ app.use(morgan(logFormat));
 app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
+  getBuildByRevision: (revision: string) => Promise<Build>,
   getBuildsByTimeRange: (startTime: number, endTime?: number) => Promise<Array<Build>>,
   getBuildsForRevisions: (revisions: Array<string>) => Promise<Array<Build>>,
   getBuildsByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<Build>>,
@@ -69,6 +71,7 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
         break;
       case 'startRevision':
       case 'endRevision':
+      case 'branch':
         memo[key] = `${value}`;
         break;
       default:
@@ -95,6 +98,7 @@ const createResponseWithJSON = res => data => {
 };
 
 export default function createServer({
+  getPreviousBuild,
   getBuildsForRevisions,
   getBuildsByRevisionRange,
   getBuildsByTimeRange,
@@ -116,7 +120,7 @@ export default function createServer({
     } else if (query.startTime) {
       getBuildsByTimeRange(query.startTime, query.endTime).then(respondWithJSON);
     } else {
-      getRecentBuilds(query.count).then(respondWithJSON);
+      getRecentBuilds(query.branch || 'master', query.count).then(respondWithJSON);
     }
   });
 
@@ -135,9 +139,9 @@ export default function createServer({
       .then(() => {
         res.write(JSON.stringify({ success: true }));
       })
-      .then(() => getRecentBuilds(2))
-      .then((builds: Array<Build>) => {
-        const comparator = new BuildComparator(builds);
+      .then(() => getPreviousBuild(build.meta.timestamp))
+      .then((parentBuild: Build) => {
+        const comparator = new BuildComparator([parentBuild, build].filter(Boolean));
         onBuildInserted && onBuildInserted(comparator);
       })
       .then(() => {

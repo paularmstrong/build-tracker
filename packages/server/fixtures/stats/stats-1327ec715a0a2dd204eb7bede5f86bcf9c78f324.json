@@ -1,5 +1,9 @@
 {
-  "meta": { "revision": "1327ec715a0a2dd204eb7bede5f86bcf9c78f324", "timestamp": 1501951671000 },
+  "meta": {
+    "branch": "master",
+    "revision": "1327ec715a0a2dd204eb7bede5f86bcf9c78f324",
+    "timestamp": 1501951671000
+  },
   "artifacts": {
     "bundle.AccessInterstitial": {
       "hash": "beb1c8c458ff8e00c31b31b9ba51edf2",

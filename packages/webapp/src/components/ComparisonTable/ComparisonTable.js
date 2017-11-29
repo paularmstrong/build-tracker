@@ -254,8 +254,8 @@ export default class Comparisons extends PureComponent {
             color={theme.colorMidnight}
             disabled={activeArtifactNames.length === artifactNames.length}
             key={i}
+            linked
             onToggle={this._handleToggleAllArtifacts}
-            link="/"
           />
         );
       case CellType.DELTA:
@@ -284,8 +284,8 @@ export default class Comparisons extends PureComponent {
             hoverColor={hoverColor.toString()}
             isHovered={isHovered}
             key={i}
+            linked
             onToggle={this._handleToggleArtifact}
-            link={`/${artifactName}`}
           />
         );
       case CellType.DELTA:

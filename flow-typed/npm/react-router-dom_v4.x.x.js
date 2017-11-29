@@ -157,9 +157,9 @@ declare module 'react-router-dom' {
 
   declare type FunctionComponent<P> = (props: P) => ?React$Element<any>;
   declare type ClassComponent<D, P, S> = Class<React$Component<D, P, S>>;
-  declare export function withRouter<P, S>(
-    Component: ClassComponent<void, P, S> | FunctionComponent<P>
-  ): ClassComponent<void, $Diff<P, ContextRouter>, S>;
+  declare export function withRouter<P>(
+    Component: React$ComponentType<{| ...ContextRouter, ...P |}>
+  ): React$ComponentType<$Diff<P, ContextRouter>>;
 
   declare type MatchPathOptions = {
     path: string,

@@ -1,22 +1,30 @@
 // @flow
+import { hsl } from 'd3-color';
 import Link from './Link';
 import React, { PureComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from '../theme';
-import { hsl } from 'd3-color';
+import { withRouter } from 'react-router-dom';
 
-export default class ArtifactSwitch extends PureComponent {
+import type { Match } from 'react-router-dom';
+
+class ArtifactSwitch extends PureComponent {
   props: {
     active: boolean,
     artifactName: string,
     color: string,
     disabled?: boolean,
-    link?: string,
+    linked: boolean,
+    match: Match,
     onToggle: Function
   };
 
+  static defaultProps = {
+    linked: false
+  };
+
   render() {
-    const { active, artifactName, color, disabled, link } = this.props;
+    const { active, artifactName, color, disabled, linked } = this.props;
     const brighterColor = hsl(color);
     brighterColor.s = 0.2;
     brighterColor.l = 0.8;
@@ -30,8 +38,8 @@ export default class ArtifactSwitch extends PureComponent {
     return (
       <View style={[styles.artifact]}>
         <View style={styles.artifactName}>
-          {link ? (
-            <Link style={[styles.artifactLink]} to={link}>
+          {linked ? (
+            <Link style={[styles.artifactLink]} to={this.link}>
               {text}
             </Link>
           ) : (
@@ -54,7 +62,16 @@ export default class ArtifactSwitch extends PureComponent {
   _handleValueChange = (toggled: boolean) => {
     this.props.onToggle(this.props.artifactName, toggled);
   };
+
+  get link() {
+    const { artifactName, match: { params: { compareRevisions, revisions } } } = this.props;
+    const revisionPrefix = revisions ? `/revisions/${revisions}` : '';
+    const compareSuffix = compareRevisions ? `/${compareRevisions}` : '';
+    return `${revisionPrefix}/${artifactName}${compareSuffix}`;
+  }
 }
+
+export default withRouter(ArtifactSwitch);
 
 const styles = StyleSheet.create({
   artifact: {

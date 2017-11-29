@@ -1,13 +1,10 @@
+import querystring from 'querystring';
 import { getArtifactsByAvgSize, sortBuilds } from './normalization';
 
 const API_BASE = '/api';
 
 type FetchOptions = {
-  limit: number,
-  sinceTimestamp: number,
-  beforeTimestamp: number,
-  sinceRevision: string,
-  beforeRevision: string
+  revisions: Array<string>
 };
 
 const normalizeData = builds => ({
@@ -19,12 +16,8 @@ export const getBuilds = (opts: FetchOptions) => {
   if (window.DATA) {
     return Promise.resolve(normalizeData(window.DATA));
   }
-  const data = new FormData();
-  Object.entries(opts).forEach(([k, v]) => {
-    data.append(k, v);
-  });
-  const req = new Request(`${API_BASE}/builds`, {
-    // body: data,
+
+  const req = new Request(`${API_BASE}/builds?${querystring.stringify(opts)}`, {
     metod: 'GET'
   });
   return fetch(req)

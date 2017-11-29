@@ -163,7 +163,13 @@ class App extends Component {
   }
 
   _fetchData() {
-    getBuilds({}).then(({ builds, artifacts }: { builds: Array<Build>, artifacts: Array<string> }) => {
+    const { match: { params: { revisions } } } = this.props;
+    const opts = {};
+    if (revisions) {
+      opts.revisions = revisions.split(',');
+    }
+
+    getBuilds(opts).then(({ builds, artifacts }: { builds: Array<Build>, artifacts: Array<string> }) => {
       this._colorScale = scaleSequential(interpolateRainbow).domain([0, artifacts.length]);
       this.setState(() => ({
         activeArtifactNames: _getActiveArtifactNames(this.props, artifacts),
@@ -216,14 +222,14 @@ class App extends Component {
   };
 
   _updateUrl = () => {
-    const { location: { pathname } } = this.props;
+    const { location: { pathname }, match: { params: { revisions } } } = this.props;
     const { activeArtifactNames, artifactNames, compareBuilds } = this.state;
     const urlArtifacts =
       activeArtifactNames.length > 1 && activeArtifactNames.length !== artifactNames.length
         ? activeArtifactNames.filter(b => b !== 'All')
         : ['All'];
     const urlRevisions = compareBuilds.map((b: Build) => formatSha(b.meta.revision)).sort();
-    const newPath = `/${urlArtifacts.join('+')}/${urlRevisions.join('+')}`;
+    const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${urlArtifacts.join('+')}/${urlRevisions.join('+')}`;
     if (newPath !== pathname) {
       this.props.history.push(newPath);
     }

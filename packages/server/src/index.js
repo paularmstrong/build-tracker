@@ -41,6 +41,7 @@ app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
   getBuildsByTimeRange: (startTime: number, endTime?: number) => Promise<Array<Build>>,
+  getBuildsForRevisions: (revisions: Array<string>) => Promise<Array<Build>>,
   getBuildsByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<Build>>,
   getRecentBuilds: (limit?: number) => Promise<Array<Build>>,
   insertBuild: ({}) => Promise<any>,
@@ -51,7 +52,10 @@ export type ServerOptions = {
 export type NormalizedQuery = {
   startTime?: number,
   endTime?: number,
-  count?: number
+  startRevision?: string,
+  endRevision?: string,
+  count?: number,
+  revisions?: Array<string>
 };
 
 const normalizeQuery = (query: {}): NormalizedQuery => {
@@ -67,7 +71,8 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
       case 'endRevision':
         memo[key] = `${value}`;
         break;
-      // no default
+      default:
+        memo[key] = value;
     }
     return memo;
   }, {});
@@ -90,6 +95,7 @@ const createResponseWithJSON = res => data => {
 };
 
 export default function createServer({
+  getBuildsForRevisions,
   getBuildsByRevisionRange,
   getBuildsByTimeRange,
   getRecentBuilds,
@@ -103,7 +109,9 @@ export default function createServer({
       res.write(JSON.stringify(data));
       res.end();
     };
-    if (query.startRevision) {
+    if (query.revisions) {
+      getBuildsForRevisions(query.revisions).then(respondWithJSON);
+    } else if (query.startRevision) {
       getBuildsByRevisionRange(query.startRevision, query.endRevision).then(respondWithJSON);
     } else if (query.startTime) {
       getBuildsByTimeRange(query.startTime, query.endTime).then(respondWithJSON);
@@ -156,9 +164,9 @@ export type StaticServerOptions = {
 };
 
 export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
-  const getRecentBuilds = count => {
+  const getWithGlob = (match, count) => {
     return new Promise((resolve, reject) => {
-      glob(`${statsRoot}/*.json`, (err, matches) => {
+      glob(`${statsRoot}/${match}.json`, (err, matches) => {
         if (err) {
           return reject(err);
         }
@@ -172,7 +180,13 @@ export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
     });
   };
 
+  const getRecentBuilds = count => getWithGlob('*', count);
+  const getBuildsForRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
+
   return createServer({
+    getBuildsForRevisions,
+    getBuildsByRevisionRange: () => Promise.reject('Not implemented'),
+    getBuildsByTimeRange: () => Promise.reject('Not implemented'),
     getRecentBuilds,
     insertBuild: () => Promise.reject(new Error('Static server cannot save new builds')),
     port

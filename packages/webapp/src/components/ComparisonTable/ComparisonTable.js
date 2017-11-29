@@ -239,7 +239,7 @@ export default class Comparisons extends PureComponent {
       case CellType.REVISION_DELTA_HEADER:
         return <RevisionDeltaCell {...cell} key={i} />;
       default:
-        return <Th style={[styles.cell, styles.header]} />;
+        return <Th key={i} style={[styles.cell, styles.header]} />;
     }
   };
 

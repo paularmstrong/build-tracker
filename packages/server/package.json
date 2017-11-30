@@ -7,8 +7,8 @@
   "main": "dist/index.js",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "build-tracker-app": "*",
-    "build-tracker-comparator": "*",
+    "build-tracker-app": "^0.0.1",
+    "build-tracker-comparator": "^0.0.1",
     "express": "^4.15.4",
     "glob": "^7.1.2",
     "morgan": "^1.8.2"

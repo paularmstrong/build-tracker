@@ -7,7 +7,7 @@
   "dependencies": {
     "glob": "^7.1.2",
     "yargs": "^8.0.2",
-    "build-tracker-app": "*"
+    "build-tracker-app": "^0.0.1"
   },
   "files": ["commands/", "index.js", "README.md"],
   "scripts": {

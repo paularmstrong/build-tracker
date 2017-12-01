@@ -64,12 +64,38 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator([build1, build2]);
       expect(comparator.getAscii()).toMatchSnapshot();
     });
+
+    test('can filter rows', () => {
+      const comparator = new BuildComparator([build1, build2]);
+      const rowFilter = row => {
+        return row.some(cell => {
+          if ('sizePercent' in cell && 'size' in cell) {
+            return cell.size > 3;
+          }
+          return false;
+        });
+      };
+      expect(comparator.getAscii({ rowFilter })).toMatchSnapshot();
+    });
   });
 
   describe('getCsv', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator([build1, build2]);
       expect(comparator.getCsv()).toMatchSnapshot();
+    });
+
+    test('can filter rows', () => {
+      const comparator = new BuildComparator([build1, build2]);
+      const rowFilter = row => {
+        return row.some(cell => {
+          if ('sizePercent' in cell && 'size' in cell) {
+            return cell.size > 3;
+          }
+          return false;
+        });
+      };
+      expect(comparator.getCsv({ rowFilter })).toMatchSnapshot();
     });
   });
 });

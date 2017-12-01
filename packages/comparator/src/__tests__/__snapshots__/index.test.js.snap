@@ -54,6 +54,14 @@ Array [
 ]
 `;
 
+exports[`BuildComparator getAscii can filter rows 1`] = `
+".----------------------------------------.
+|          | 1234567 | 8901234 |   Δ0    |
+|----------|---------|---------|---------|
+| burritos | 0       | 93      | 93 (1%) |
+'----------------------------------------'"
+`;
+
 exports[`BuildComparator getAscii gets an ASCII table 1`] = `
 ".-----------------------------------------.
 |          | 1234567 | 8901234 |    Δ0    |
@@ -62,6 +70,11 @@ exports[`BuildComparator getAscii gets an ASCII table 1`] = `
 | churros  | 90      | 0       | -90 (1%) |
 | tacos    | 45      | 45      | 0 (1%)   |
 '-----------------------------------------'"
+`;
+
+exports[`BuildComparator getCsv can filter rows 1`] = `
+",1234567,8901234,Δ0
+burritos,0,93,93 (1%)"
 `;
 
 exports[`BuildComparator getCsv gets a CSV formatted table 1`] = `

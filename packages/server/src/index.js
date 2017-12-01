@@ -41,6 +41,7 @@ app.use(morgan(logFormat));
 app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
+  getPreviousBuild: (timestamp: number) => Promise<Build>,
   getBuildByRevision: (revision: string) => Promise<Build>,
   getBuildsByTimeRange: (startTime: number, endTime?: number) => Promise<Array<Build>>,
   getBuildsForRevisions: (revisions: Array<string>) => Promise<Array<Build>>,

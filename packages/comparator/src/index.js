@@ -81,12 +81,14 @@ type RevisionStringFormatter = (cell: RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCellType) => string;
 type TotalStringFormatter = (cell: TotalCellType) => string;
 type DeltaStringFormatter = (cell: DeltaCellType) => string;
+type RowFilter = (row: Array<BodyCellType>) => string;
 
 type FormattingOptions = {
   formatRevision?: RevisionStringFormatter,
   formatRevisionDelta?: RevisionDeltaStringFormatter,
   formatTotal?: TotalStringFormatter,
-  formatDelta?: DeltaStringFormatter
+  formatDelta?: DeltaStringFormatter,
+  rowFilter?: RowFilter
 };
 
 export const CellType = {
@@ -164,6 +166,7 @@ const defaultFormatRevision = (cell: RevisionCellType): string => cell.revision;
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCellType): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCellType): string => `${cell.gzipSize}`;
 const defaultFormatDelta = (cell: DeltaCellType): string => `${cell.gzipSize} (${cell.gzipSizePercent}%)`;
+const defaultRowFilter = (row: Array<BodyCellType>): boolean => true;
 
 export default class BuildComparator {
   builds: Array<Build>;
@@ -299,9 +302,10 @@ export default class BuildComparator {
 
   getStringFormattedRows(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
-    formatDelta: DeltaStringFormatter = defaultFormatDelta
+    formatDelta: DeltaStringFormatter = defaultFormatDelta,
+    rowFilter: RowFilter = defaultRowFilter
   ): Array<Array<string>> {
-    return this.matrixBody.map((row): Array<string> => {
+    return this.matrixBody.filter(rowFilter).map((row): Array<string> => {
       return row.map((cell): string => {
         switch (cell.type) {
           case CellType.ARTIFACT:
@@ -317,9 +321,11 @@ export default class BuildComparator {
     });
   }
 
-  getAscii({ formatRevision, formatRevisionDelta, formatTotal, formatDelta }: FormattingOptions = {}): string {
+  getAscii(
+    { formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }: FormattingOptions = {}
+  ): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
 
     const table = new AsciiTable('');
     table
@@ -330,9 +336,9 @@ export default class BuildComparator {
     return table.toString();
   }
 
-  getCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta }: FormattingOptions = {}): string {
+  getCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
 
     return [header, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }

@@ -1,10 +1,9 @@
 {
   "name": "build-tracker-server",
-  "version": "0.0.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "main": "dist/index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
-  "main": "dist/index.js",
   "dependencies": {
     "body-parser": "^1.18.2",
     "build-tracker-app": "^0.0.1",

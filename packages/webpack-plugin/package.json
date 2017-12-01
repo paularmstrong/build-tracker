@@ -1,6 +1,6 @@
 {
   "name": "build-tracker-webpack-plugin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A webpack plugin that builds and exports stats for consumption in the build tracker application",
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",

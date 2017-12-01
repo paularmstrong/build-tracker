@@ -1,6 +1,6 @@
 {
   "name": "build-tracker-app",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "build/index.html",
   "dependencies": {
     "ascii-table": "^0.0.9",
@@ -17,12 +17,12 @@
     "deep-equal": "^1.0.1",
     "express": "^4.15.3",
     "glob": "^7.1.2",
+    "querystring": "^0.2.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-native-web": "^0.1.12",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.0.14",
-    "querystring": "^0.2.0"
+    "react-scripts": "^1.0.14"
   },
   "scripts": {
     "start": "react-scripts start",

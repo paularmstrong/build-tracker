@@ -15,7 +15,7 @@
   "scripts": {
     "flow": "flow",
     "precommit": "lint-staged",
-    "release": "yarn lerna build --stream --parallel && yarn lerna publish"
+    "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish"
   },
   "lint-staged": {
     "*.{js,json,css}": ["prettier --write", "git add"]

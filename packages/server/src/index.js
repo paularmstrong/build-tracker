@@ -72,6 +72,8 @@ export type StaticServerOptions = {
   statsRoot: string
 };
 
+const unique = (value, index, self): boolean => self.indexOf(value) === index;
+
 export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
   const getWithGlob = (match, branch, count): Promise<Array<Build>> => {
     return new Promise((resolve, reject) => {
@@ -91,10 +93,23 @@ export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
 
   const getByBranch = (branch?: string, count?: number) => getWithGlob('*', branch, count);
   const getByRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
+  const getBranches = (count?: number) =>
+    getWithGlob('*').then((builds: Array<Build>) => {
+      const branches = builds
+        .map((build: Build) => build.meta.branch)
+        .filter(unique)
+        .sort();
+      const masterIndex = branches.indexOf('master');
+      if (masterIndex) {
+        branches.splice(masterIndex, 1);
+        branches.unshift('master');
+      }
+      return branches.slice(0, count);
+    });
 
   return createServer({
     branches: {
-      getBranches: () => Promise.reject('Not implemented')
+      getBranches
     },
     builds: {
       getByBranch,

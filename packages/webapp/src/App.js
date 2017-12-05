@@ -1,10 +1,11 @@
 // @flow
+import BranchPicker from './components/BranchPicker';
 import BuildInfo from './components/BuildInfo';
 import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
 import Chart from './components/Chart';
 import { formatSha } from './modules/formatting';
-import { getBuilds } from './api';
+import { getBranches, getBuilds } from './api';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import theme from './theme';
@@ -56,6 +57,7 @@ type AppProps = {
 type AppState = {
   activeArtifactNames: Array<string>,
   artifactNames: Array<string>,
+  branches: Array<string>,
   builds: Array<Build>,
   chart: $Values<typeof ChartType>,
   compareBuilds: Array<Build>,
@@ -73,6 +75,7 @@ class App extends Component<AppProps, AppState> {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
+      branches: [],
       builds: [],
       artifactNames: [],
       chart: ChartType.AREA,
@@ -138,6 +141,7 @@ class App extends Component<AppProps, AppState> {
                   xScaleType={xscale}
                   yScaleType={yscale}
                 />
+                <BranchPicker branches={this.state.branches} />
               </View>
             </View>
           </View>
@@ -178,6 +182,10 @@ class App extends Component<AppProps, AppState> {
         chart: builds.length <= 4 ? ChartType.BAR : ChartType.AREA,
         compareBuilds: _getCompareBuilds(this.props, builds)
       }));
+    });
+
+    getBranches().then((branches: Array<string>) => {
+      this.setState(() => ({ branches }));
     });
   }
 

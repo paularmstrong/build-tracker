@@ -24,13 +24,13 @@ const redScale = scaleLinear()
   .interpolate(interpolateHcl)
   .range([rgb('#fde2e1'), rgb('#f7635b')]);
 
-class RevisionHeaderCell extends PureComponent {
-  props: {
-    onClickInfo: Function,
-    onClickRemove: Function,
-    revision: string
-  };
+type RevisionHeaderCellProps = {
+  onClickInfo: Function,
+  onClickRemove: Function,
+  revision: string
+};
 
+class RevisionHeaderCell extends PureComponent<RevisionHeaderCellProps> {
   render() {
     const { revision } = this.props;
     return (
@@ -58,13 +58,13 @@ class RevisionHeaderCell extends PureComponent {
   };
 }
 
-class RevisionDeltaCell extends Component {
-  props: {
-    againstRevision: string,
-    deltaIndex: number,
-    revision: string
-  };
+type RevisionDeltaCellProps = {
+  againstRevision: string,
+  deltaIndex: number,
+  revision: string
+};
 
+class RevisionDeltaCell extends Component<RevisionDeltaCellProps> {
   render() {
     const { againstRevision, deltaIndex, revision } = this.props;
     return (
@@ -84,16 +84,16 @@ const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): 
   return artifactNames.indexOf(a) - artifactNames.indexOf(b);
 };
 
-class DeltaCell extends Component {
-  props: {
-    size: number,
-    sizePercent: number,
-    gzipSize: number,
-    gzipSizePercent: number,
-    hashChanged: boolean,
-    valueAccessor: Function
-  };
+type DeltaCellProps = {
+  gzipSize: number,
+  gzipSizePercent: number,
+  hashChanged: boolean,
+  size: number,
+  sizePercent: number,
+  valueAccessor: Function
+};
 
+class DeltaCell extends Component<DeltaCellProps> {
   render() {
     const { gzipSizePercent, valueAccessor } = this.props;
     const value = valueAccessor(this.props);
@@ -109,13 +109,13 @@ class DeltaCell extends Component {
   }
 }
 
-class ValueCell extends Component {
-  props: {
-    size: number,
-    gzipSize: number,
-    valueAccessor: Function
-  };
+type ValueCellProps = {
+  size: number,
+  gzipSize: number,
+  valueAccessor: Function
+};
 
+class ValueCell extends Component<ValueCellProps> {
   render() {
     const { valueAccessor } = this.props;
     const value = valueAccessor(this.props);
@@ -146,9 +146,7 @@ type ComparisonState = {
   showDeselectedArtifacts: boolean
 };
 
-export default class Comparisons extends PureComponent {
-  props: ComparisonProps;
-  state: ComparisonState;
+export default class Comparisons extends PureComponent<ComparisonProps, ComparisonState> {
   _data: BuildComparator;
 
   constructor(props: ComparisonProps, context: Object) {
@@ -336,21 +334,24 @@ export default class Comparisons extends PureComponent {
   }
 
   _handleShowDeselected = (name: string, toggled: boolean) => {
-    this.setState({ showDeselectedArtifacts: toggled });
+    this.setState(() => ({ showDeselectedArtifacts: toggled }));
   };
 
   _handleRemoveBelowThreshold = (name: string, toggled: boolean) => {
     const { artifactNames, onArtifactsChange } = this.props;
-    this.setState({ showAboveThresholdOnly: toggled }, () => {
-      if (onArtifactsChange) {
-        if (toggled) {
-          const data = this._getFilteredData();
-          onArtifactsChange(data.map(row => (row[0].text ? row[0].text : '')));
-        } else {
-          onArtifactsChange(artifactNames);
+    this.setState(
+      () => ({ showAboveThresholdOnly: toggled }),
+      () => {
+        if (onArtifactsChange) {
+          if (toggled) {
+            const data = this._getFilteredData();
+            onArtifactsChange(data.map(row => (row[0].text ? row[0].text : '')));
+          } else {
+            onArtifactsChange(artifactNames);
+          }
         }
       }
-    });
+    );
   };
 
   _handleToggleArtifact = (artifactName: string, value: boolean) => {

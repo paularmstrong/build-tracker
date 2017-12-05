@@ -18,11 +18,11 @@
     "express": "^4.15.3",
     "glob": "^7.1.2",
     "querystring": "^0.2.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-native-web": "^0.1.12",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-native-web": "^0.1.16",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.0.14"
+    "react-scripts": "^1.0.17"
   },
   "scripts": {
     "start": "react-scripts start",

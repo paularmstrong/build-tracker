@@ -5,7 +5,7 @@
   "license": "MIT",
   "workspaces": ["packages/*"],
   "devDependencies": {
-    "flow-bin": "^0.59.0",
+    "flow-bin": "^0.60.1",
     "flow-typed": "^2.2.3",
     "husky": "^0.14.3",
     "lerna": "^2.5.1",
@@ -19,6 +19,5 @@
   },
   "lint-staged": {
     "*.{js,json,css}": ["prettier --write", "git add"]
-  },
-  "dependencies": {}
+  }
 }

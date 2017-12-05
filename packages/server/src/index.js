@@ -42,23 +42,23 @@ app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
   getPreviousBuild: (timestamp: number) => Promise<Build>,
-  getBuildByRevision: (revision: string) => Promise<Build>,
   getBuildsByTimeRange: (startTime: number, endTime?: number) => Promise<Array<Build>>,
   getBuildsForRevisions: (revisions: Array<string>) => Promise<Array<Build>>,
   getBuildsByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<Build>>,
-  getRecentBuilds: (limit?: number) => Promise<Array<Build>>,
+  getRecentBuilds: (branch?: string, limit?: number) => Promise<Array<Build>>,
   insertBuild: ({}) => Promise<any>,
   onBuildInserted?: (comparator: typeof BuildComparator) => void,
   port?: number
 };
 
 export type NormalizedQuery = {
-  startTime?: number,
-  endTime?: number,
-  startRevision?: string,
-  endRevision?: string,
+  branch?: string,
   count?: number,
-  revisions?: Array<string>
+  endRevision?: string,
+  endTime?: number,
+  revisions?: Array<string>,
+  startRevision?: string,
+  startTime?: number
 };
 
 const normalizeQuery = (query: {}): NormalizedQuery => {
@@ -169,7 +169,7 @@ export type StaticServerOptions = {
 };
 
 export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
-  const getWithGlob = (match, count) => {
+  const getWithGlob = (match, branch, count): Promise<Array<Build>> => {
     return new Promise((resolve, reject) => {
       glob(`${statsRoot}/${match}.json`, (err, matches) => {
         if (err) {
@@ -185,13 +185,14 @@ export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
     });
   };
 
-  const getRecentBuilds = count => getWithGlob('*', count);
+  const getRecentBuilds = (branch?: string, count?: number) => getWithGlob('*', branch, count);
   const getBuildsForRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
 
   return createServer({
     getBuildsForRevisions,
     getBuildsByRevisionRange: () => Promise.reject('Not implemented'),
     getBuildsByTimeRange: () => Promise.reject('Not implemented'),
+    getPreviousBuild: () => Promise.reject('Not implemented'),
     getRecentBuilds,
     insertBuild: () => Promise.reject(new Error('Static server cannot save new builds')),
     port

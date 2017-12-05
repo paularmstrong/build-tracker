@@ -81,7 +81,7 @@ type RevisionStringFormatter = (cell: RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCellType) => string;
 type TotalStringFormatter = (cell: TotalCellType) => string;
 type DeltaStringFormatter = (cell: DeltaCellType) => string;
-type RowFilter = (row: Array<BodyCellType>) => string;
+type RowFilter = (row: Array<BodyCellType>) => boolean;
 
 type FormattingOptions = {
   formatRevision?: RevisionStringFormatter,

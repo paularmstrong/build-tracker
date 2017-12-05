@@ -1,34 +1,36 @@
 // @flow
 import type { Artifact } from '../types';
 
-export const Types = {
+type TypesType = { [string]: string };
+
+export const Types: TypesType = {
   CHART: 'chart',
   VALUES: 'values',
   XSCALE: 'xscale',
   YSCALE: 'yscale'
 };
 
-export const ChartType = {
+export const ChartType: TypesType = {
   AREA: 'area',
   BAR: 'bar'
 };
 
-export const YScaleType = {
+export const YScaleType: TypesType = {
   LINEAR: 'linear',
   POW: 'pow'
 };
 
-export const XScaleType = {
+export const XScaleType: TypesType = {
   TIME: 'time',
   COMMIT: 'commit'
 };
 
-export const ValueType = {
+export const ValueType: TypesType = {
   STAT: 'stat',
   GZIP: 'gzip'
 };
 
-export const TypesEnum = {
+export const TypesEnum: { [string]: TypesType } = {
   [Types.CHART]: ChartType,
   [Types.VALUES]: ValueType,
   [Types.XSCALE]: XScaleType,

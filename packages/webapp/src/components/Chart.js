@@ -61,32 +61,32 @@ const getMouseInformation = (
   };
 };
 
-export default class AreaChart extends Component {
-  props: {
-    activeArtifactNames: Array<string>,
-    artifacts: Array<string>,
-    chartType: $Values<typeof ChartType>,
-    colorScale: Function,
-    onHover: Function,
-    onSelectBuild: Function,
-    selectedBuilds: Array<string>,
-    valueAccessor: Function,
-    yScaleType: $Values<typeof YScaleType>,
-    xScaleType: $Values<typeof XScaleType>,
-    builds: Array<Build>
-  };
+type AreaChartProps = {
+  activeArtifactNames: Array<string>,
+  artifacts: Array<string>,
+  builds: Array<Build>,
+  chartType: $Values<typeof ChartType>,
+  colorScale: Function,
+  onHover: Function,
+  onSelectBuild: Function,
+  selectedBuilds: Array<string>,
+  valueAccessor: Function,
+  xScaleType: $Values<typeof XScaleType>,
+  yScaleType: $Values<typeof YScaleType>
+};
 
+type AreaChartState = {
+  height: number,
+  width: number
+};
+
+export default class AreaChart extends Component<AreaChartProps, AreaChartState> {
   static defaultProps = {
     chartType: ChartType.BAR,
     selectedBuilds: []
   };
 
-  state: {
-    width: number,
-    height: number
-  };
-
-  _svgNode: any;
+  _svgNode: ?any;
   _chartContents: any;
   _overlay: any;
   _hoverLine: any;
@@ -250,8 +250,8 @@ export default class AreaChart extends Component {
       .attr('width', xScale.bandwidth());
   }
 
-  _setSvgRef = (node: Object) => {
-    if (node !== this._svgNode) {
+  _setSvgRef = (node: any) => {
+    if (node && node !== this._svgNode) {
       this._svgNode = node;
       const svg = select(node)
         .append('g')

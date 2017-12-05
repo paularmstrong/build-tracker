@@ -4,20 +4,16 @@ import styles from './styles';
 import { Th } from '../Table';
 import React, { PureComponent } from 'react';
 
+import type { ArtifactSwitchProps } from '../ArtifactSwitch';
+
 const emptyObject = {};
 
-export default class ArtifactCell extends PureComponent {
-  props: {
-    active: boolean,
-    artifactName: string,
-    color: string,
-    disabled?: boolean,
-    hoverColor?: string,
-    isHovered?: boolean,
-    link?: string,
-    onToggle: Function
-  };
+type ArtifactCellProps = ArtifactSwitchProps & {
+  hoverColor?: string,
+  isHovered?: boolean
+};
 
+export default class ArtifactCell extends PureComponent<ArtifactCellProps> {
   render() {
     const { hoverColor, isHovered, ...otherProps } = this.props;
     return (

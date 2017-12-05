@@ -6,6 +6,11 @@ import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom';
 
 const Router = window.location.pathname.endsWith('.html') ? HashRouter : BrowserRouter;
 
+const getRoot = (): Element => {
+  const rootNode = document.getElementById('root');
+  return rootNode instanceof Element ? rootNode : document.createElement('div');
+};
+
 ReactDOM.render(
   <Router>
     <Switch>
@@ -13,5 +18,5 @@ ReactDOM.render(
       <Route path="/:artifactNames?/:compareRevisions?" component={App} />
     </Switch>
   </Router>,
-  document.getElementById('root')
+  getRoot()
 );

@@ -1,5 +1,5 @@
 const path = require('path');
-const { staticServer } = require('./dist');
+const { staticServer } = require('./src');
 
 staticServer({
   port: 8888,

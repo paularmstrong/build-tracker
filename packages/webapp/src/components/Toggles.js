@@ -4,31 +4,38 @@ import React, { PureComponent } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import { ChartType, Types, TypesEnum, ValueType, XScaleType, YScaleType } from '../modules/values';
 
-class ToggleGroup extends PureComponent {
-  props: {
-    color: string,
-    currentValue: string,
-    objectType: $Values<typeof Types>,
-    onChange: Function
-  };
+type OnToggleChange = ($Values<typeof Types>, text: string) => void;
 
+type ToggleGroupProps = {
+  color: string,
+  currentValue: string,
+  objectType: $Values<typeof Types>,
+  onChange: OnToggleChange
+};
+
+class ToggleGroup extends PureComponent<ToggleGroupProps> {
   render() {
     const { color, currentValue, objectType } = this.props;
 
     return (
       <View style={styles.toggleGroup}>
-        {Object.values(TypesEnum[objectType]).map(groupValue => (
-          <Button
-            color={color}
-            disabled={currentValue === groupValue}
-            key={groupValue}
-            onPress={this._handlePress}
-            size="small"
-            style={styles.button}
-            title={groupValue}
-            value={groupValue}
-          />
-        ))}
+        {Object.values(TypesEnum[objectType]).map(groupValue => {
+          if (typeof groupValue !== 'string') {
+            return null;
+          }
+          return (
+            <Button
+              color={color}
+              disabled={currentValue === groupValue.toLowerCase()}
+              key={groupValue}
+              onPress={this._handlePress}
+              size="small"
+              style={styles.button}
+              title={groupValue}
+              value={groupValue}
+            />
+          );
+        })}
       </View>
     );
   }
@@ -62,15 +69,15 @@ const groups = [
   }
 ];
 
-export default class Toggles extends PureComponent {
-  props: {
-    onToggle: Function,
-    chartType: $Values<typeof ChartType>,
-    valueType: $Values<typeof ValueType>,
-    xScaleType: $Values<typeof XScaleType>,
-    yScaleType: $Values<typeof YScaleType>
-  };
+type TogglesProps = {
+  onToggle: OnToggleChange,
+  chartType: $Values<typeof ChartType>,
+  valueType: $Values<typeof ValueType>,
+  xScaleType: $Values<typeof XScaleType>,
+  yScaleType: $Values<typeof YScaleType>
+};
 
+export default class Toggles extends PureComponent<TogglesProps> {
   render() {
     const { onToggle } = this.props;
     return (

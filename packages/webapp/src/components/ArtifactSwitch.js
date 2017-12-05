@@ -8,18 +8,19 @@ import { withRouter } from 'react-router-dom';
 
 import type { Match } from 'react-router-dom';
 
-class ArtifactSwitch extends PureComponent {
-  props: {
-    active: boolean,
-    artifactName: string,
-    color: string,
-    disabled?: boolean,
-    linked: boolean,
-    match: Match,
-    onToggle: Function
-  };
+export type ArtifactSwitchProps = {
+  active: boolean,
+  artifactName: string,
+  color: string,
+  disabled?: boolean,
+  linked?: boolean,
+  match?: Match,
+  onToggle: Function
+};
 
+class ArtifactSwitch extends PureComponent<ArtifactSwitchProps> {
   static defaultProps = {
+    disabled: false,
     linked: false
   };
 
@@ -64,9 +65,10 @@ class ArtifactSwitch extends PureComponent {
   };
 
   get link() {
-    const { artifactName, match: { params: { compareRevisions, revisions } } } = this.props;
-    const revisionPrefix = revisions ? `/revisions/${revisions}` : '';
-    const compareSuffix = compareRevisions ? `/${compareRevisions}` : '';
+    const { artifactName, match } = this.props;
+    const { params } = match || {};
+    const revisionPrefix = params.revisions ? `/revisions/${params.revisions}` : '';
+    const compareSuffix = params.compareRevisions ? `/${params.compareRevisions}` : '';
     return `${revisionPrefix}/${artifactName}${compareSuffix}`;
   }
 }

@@ -47,26 +47,26 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
   return builds.filter(b => buildRevisions.indexOf(formatSha(b.meta.revision)) !== -1);
 };
 
-class App extends Component {
-  state: {
-    activeArtifactNames: Array<string>,
-    builds: Array<Build>,
-    artifactNames: Array<string>,
-    chart: $Values<typeof ChartType>,
-    compareBuilds: Array<Build>,
-    hoveredArtifact?: string,
-    selectedBuild?: Build,
-    values: $Values<typeof ValueType>,
-    xscale: $Values<typeof XScaleType>,
-    yscale: $Values<typeof YScaleType>
-  };
+type AppProps = {
+  history: RouterHistory,
+  location: Location,
+  match: Match
+};
 
-  props: {
-    history: RouterHistory,
-    location: Location,
-    match: Match
-  };
+type AppState = {
+  activeArtifactNames: Array<string>,
+  artifactNames: Array<string>,
+  builds: Array<Build>,
+  chart: $Values<typeof ChartType>,
+  compareBuilds: Array<Build>,
+  hoveredArtifact?: string,
+  selectedBuild?: Build,
+  values: $Values<typeof ValueType>,
+  xscale: $Values<typeof XScaleType>,
+  yscale: $Values<typeof YScaleType>
+};
 
+class App extends Component<AppProps, AppState> {
   _colorScale: Function;
 
   constructor(props: Object, context: Object) {

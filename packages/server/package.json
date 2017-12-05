@@ -2,6 +2,7 @@
   "name": "build-tracker-server",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "module": "src/index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "dependencies": {
@@ -16,7 +17,7 @@
     "build": "npm run build:module && npm run build:flow",
     "build:flow": "flow-copy-source -i __tests__/*.js src dist",
     "build:module": "babel src -d dist --ignore *.test.js",
-    "start:static": "babel-watch testserver.js"
+    "start:static": "babel-watch -w src testserver.js"
   },
   "files": ["dist/*", "README.md"],
   "devDependencies": {

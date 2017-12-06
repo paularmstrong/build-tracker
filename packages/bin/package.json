@@ -1,11 +1,11 @@
 {
   "name": "build-tracker-bin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "dependencies": {
-    "build-tracker-app": "^0.0.1",
+    "build-tracker-app": "^0.0.2",
     "glob": "^7.1.2",
     "yargs": "^8.0.2"
   },

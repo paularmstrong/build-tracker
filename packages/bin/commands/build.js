@@ -22,13 +22,13 @@ const htmlPath = require.resolve('build-tracker-app/build/index.html');
 
 exports.handler = argv => {
   const data = argv.data.map(dataFile => {
-    return fs.readFileSync(dataFile).toString();
+    return JSON.parse(fs.readFileSync(dataFile).toString());
   });
 
   const jsFiles = glob.sync(`${path.resolve(htmlPath, '../static/js')}/*.js`);
 
   const html = fs.readFileSync(htmlPath).toString();
-  let out = html.replace('<body>', `<body><script>window.DATA=[${data}];</script>`);
+  let out = html.replace('<script id="data"></script>', `<script>window.DATA=${JSON.stringify(data)};</script>`);
   jsFiles.forEach(file => {
     const fileName = path.basename(file);
     const fileContents = fs.readFileSync(file);

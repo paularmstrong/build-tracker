@@ -13,6 +13,7 @@
     "prettier": "^1.7.4"
   },
   "scripts": {
+    "build": "lerna run build --stream --parallel",
     "flow": "flow",
     "precommit": "lint-staged",
     "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish"

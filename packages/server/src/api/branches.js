@@ -25,7 +25,6 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
 export const handleGet = ({ getBranches }: BranchGetOptions) => (req: $Request, res: $Response) => {
   const query = normalizeQuery(req.query);
   const respondWithJSON = data => {
-    console.log(data);
     res.write(JSON.stringify(data));
     res.end();
   };

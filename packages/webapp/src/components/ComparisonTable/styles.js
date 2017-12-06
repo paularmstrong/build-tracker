@@ -74,9 +74,7 @@ const styles = StyleSheet.create({
   headerButton: {
     marginLeft: theme.spaceXSmall,
     cursor: 'pointer',
-    fontSize: '0.5rem'
-  },
-  removeBuild: {
+    fontSize: '0.5rem',
     color: theme.colorRed
   },
   copyButton: {

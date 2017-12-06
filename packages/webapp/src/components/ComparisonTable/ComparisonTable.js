@@ -39,8 +39,10 @@ class RevisionHeaderCell extends PureComponent<RevisionHeaderCellProps> {
           <Text onClick={this._handleClickInfo} style={styles.headerSha}>
             {formatSha(revision)}
           </Text>
-          <View onClick={this._handleClickRemove} style={[styles.headerButton, styles.removeBuild]}>
-            <IconX />
+          <View onClick={this._handleClickRemove}>
+            <Text style={[styles.headerButton, styles.removeBuild]}>
+              <IconX />
+            </Text>
           </View>
         </View>
       </Th>

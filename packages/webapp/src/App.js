@@ -14,11 +14,11 @@ import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
-import type { Build, Artifact } from './types';
+import type { Build, Artifact } from 'build-tracker-flowtypes';
 
 const emptyArray = [];
 
-const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames): Array<string> => {
+const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames: Array<string>): Array<string> => {
   const { match: { params } } = props;
   const { artifactNames } = params;
   if (!artifactNames) {
@@ -29,7 +29,7 @@ const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames): Arr
     .split('+')
     .filter(Boolean);
   return activeArtifactNames.length
-    ? allArtifactNames.filter((b: Artifact) => activeArtifactNames.indexOf(b) !== -1)
+    ? allArtifactNames.filter((b: string) => activeArtifactNames.indexOf(b) !== -1)
     : allArtifactNames;
 };
 
@@ -37,10 +37,8 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
   const { match: { params } } = props;
   const { compareRevisions = '' } = params;
 
-  let buildRevisions =
-    !compareRevisions && builds.length === 2
-      ? builds.map(b => formatSha(b.meta.revision))
-      : compareRevisions ? compareRevisions.split('+') : emptyArray;
+  const buildRevisions = compareRevisions ? compareRevisions.split('+') : emptyArray;
+
   if (!buildRevisions.length) {
     return emptyArray;
   }
@@ -193,10 +191,8 @@ class App extends Component<AppProps, AppState> {
     this.setState({ [toggleType]: value });
   };
 
-  _handleHover = (artifact?: Artifact) => {
-    if (artifact) {
-      this.setState({ hoveredArtifact: artifact.key });
-    }
+  _handleHover = (hoveredArtifact?: string, build?: Build) => {
+    this.setState({ hoveredArtifact });
   };
 
   _handleArtifactsChange = (activeArtifacts: Array<string>) => {
@@ -217,7 +213,7 @@ class App extends Component<AppProps, AppState> {
     this.setState(
       state => ({
         compareBuilds: state.compareBuilds.filter(build => build.meta.revision !== revision),
-        selectedBuild: state.compareBuilds.length && state.compareBuilds[0]
+        selectedBuild: state.compareBuilds.length ? state.compareBuilds[0] : undefined
       }),
       this._updateUrl
     );

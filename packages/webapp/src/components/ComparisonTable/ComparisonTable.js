@@ -12,7 +12,7 @@ import { hsl, rgb } from 'd3-color';
 import React, { Component, PureComponent } from 'react';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
 
-import type { Build } from '../../types';
+import type { Build } from 'build-tracker-flowtypes';
 import type { BodyCellType, DeltaCellType, TotalCellType, HeaderCellType } from 'build-tracker-comparator';
 
 const greenScale = scaleLinear()

@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import { Table, Tbody, Tr, Th, Td } from './Table';
 import { StyleSheet, Text, View } from 'react-native';
 
-import type { Build } from '../types';
+import type { Build } from 'build-tracker-flowtypes';
 
 type BuildInfoProps = {
   build: Build

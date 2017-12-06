@@ -1,81 +1,21 @@
 // @flow
 import AsciiTable from 'ascii-table';
-export type BuildMeta = {|
-  revision: string,
-  timestamp: number
-|};
 
-export type Artifact = {|
-  hash: string,
-  name: string,
-  size: number,
-  gzipSize: number
-|};
-
-export type Build = {|
-  meta: BuildMeta,
-  artifacts: { [name: string]: Artifact }
-|};
-
-export type BuildDelta = {|
-  meta: BuildMeta,
-  artifactDeltas: Array<{ [name: string]: DeltaCellType }>,
-  deltas: Array<TotalDeltaCellType>
-|};
-
-export type TextCellType = {|
-  type: 'text',
-  text: string
-|};
-
-export type DeltaCellType = {|
-  type: 'delta',
-  size: number,
-  sizePercent: number,
-  gzipSize: number,
-  gzipSizePercent: number,
-  hashChanged: boolean
-|};
-
-export type TotalCellType = {|
-  type: 'total',
-  size: number,
-  gzipSize: number
-|};
-
-export type TotalDeltaCellType = {|
-  type: 'totalDelta',
-  size: number,
-  sizePercent: number,
-  gzipSize: number,
-  gzipSizePercent: number
-|};
-
-export type RevisionCellType = {|
-  type: 'revision',
-  revision: string
-|};
-
-export type RevisionDeltaCellType = {|
-  type: 'revisionDelta',
-  revision: string,
-  deltaIndex: number,
-  againstRevision: string
-|};
-
-export type ArtifactCellType = {|
-  type: 'artifact',
-  text: string
-|};
-
-export type BodyCellType = ArtifactCellType | DeltaCellType | TotalCellType;
-export type HeaderCellType = TextCellType | RevisionCellType | RevisionDeltaCellType;
-
-export type ComparisonMatrix = {
-  header: Array<HeaderCellType>,
-  total: Array<BodyCellType>,
-  body: Array<Array<BodyCellType>>
-};
+import type {
+  Artifact,
+  Build,
+  BuildMeta,
+  BuildDelta,
+  TextCellType,
+  DeltaCellType,
+  TotalCellType,
+  TotalDeltaCellType,
+  RevisionCellType,
+  RevisionDeltaCellType,
+  BodyCellType,
+  HeaderCellType,
+  ComparisonMatrix
+} from 'build-tracker-flowtypes';
 
 type RevisionStringFormatter = (cell: RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCellType) => string;
@@ -175,7 +115,7 @@ export default class BuildComparator {
   _artifactNames: Array<string>;
   _buildDeltas: Array<BuildDelta>;
 
-  constructor(builds: Array<Build>, artifactSorter: Function = defaultArtifactSorter) {
+  constructor(builds: Array<Build>, artifactSorter: (a: string, b: string) => number = defaultArtifactSorter) {
     this.builds = builds;
     this._artifactSorter = artifactSorter;
   }

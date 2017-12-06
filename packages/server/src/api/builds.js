@@ -1,9 +1,8 @@
+// @flow
+import assert from 'assert';
 import type { $Request, $Response } from 'express';
-
-export type Build = {|
-  meta: BuildMeta,
-  artifacts: { [name: string]: Artifact }
-|};
+import BuildComparator from 'build-tracker-comparator';
+import type { Build } from 'build-tracker-flowtypes';
 
 const isValidBuild = (data): void => {
   assert(data.meta && typeof data.meta === 'object', 'Metadata is provided');
@@ -80,7 +79,11 @@ export type BuildPostOptions = {
   insert: (build: Build) => Promise<any>
 };
 
-export const handlePost = ({ getPrevious, insert }: BuildPostOpts, { onBuildInserted }: BuildPostCallbacks = {}) => (
+export type BuildPostCallbacks = {
+  onBuildInserted?: (comparator: BuildComparator) => void
+};
+
+export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildInserted }: BuildPostCallbacks = {}) => (
   req: $Request,
   res: $Response
 ) => {
@@ -98,7 +101,7 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOpts, { onBuildInse
     .then(() => {
       res.write(JSON.stringify({ success: true }));
     })
-    .then(() => getPreviousBuild(build.meta.timestamp))
+    .then(() => getPrevious(build.meta.timestamp))
     .then((parentBuild: Build) => {
       const comparator = new BuildComparator([parentBuild, build].filter(Boolean));
       onBuildInserted && onBuildInserted(comparator);

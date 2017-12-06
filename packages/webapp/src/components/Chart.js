@@ -12,9 +12,16 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { bytesToKb, formatTime, formatSha } from '../modules/formatting';
 import { ChartType, XScaleType, YScaleType } from '../modules/values';
 
-import type { Build } from '../types';
+import type { Build } from 'build-tracker-flowtypes';
 
-type StackedData = Array<Array<Array<number>>>;
+type StackedData = Array<Array<Array<number> & { data: Build }> & { index: number, key: string }>;
+
+type MouseInformation = {
+  xValue: number,
+  yValue: number,
+  hoveredBuild?: Build,
+  hoveredArtifact?: Array<Array<number> & { data: Build }> & { index: number, key: string }
+};
 
 const margin = { top: 0, right: 20, bottom: 50, left: 60 };
 
@@ -27,7 +34,7 @@ const getMouseInformation = (
   yScale: Function,
   data: StackedData,
   builds: Array<Build>
-) => {
+): MouseInformation => {
   const [xPos, yPos] = mouse(nodes[0]);
 
   let xValue;
@@ -38,14 +45,14 @@ const getMouseInformation = (
     const validTimestamps = builds.map(d => d.meta.timestamp);
     xValue = validTimestamps.reduce((prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev), 0);
     xIndex = validTimestamps.indexOf(xValue);
-    hoveredBuild = builds.find(commit => commit.meta.timestamp === xValue);
+    hoveredBuild = builds.find(build => build.meta.timestamp === xValue);
   } else {
     const domain = xScale.domain();
     xValue = domain.reduce((prev, curr, i) => {
       return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
     }, domain[0]);
     xIndex = builds.findIndex(
-      commit => (typeof xValue === 'string' ? commit.meta.revision === xValue : commit.meta.timestamp === xValue)
+      build => (typeof xValue === 'string' ? build.meta.revision === xValue : build.meta.timestamp === xValue)
     );
     hoveredBuild = builds[xIndex];
   }
@@ -67,7 +74,7 @@ type AreaChartProps = {
   builds: Array<Build>,
   chartType: $Values<typeof ChartType>,
   colorScale: Function,
-  onHover: Function,
+  onHover: (artifactName?: string, build?: Build) => void,
   onSelectBuild: Function,
   selectedBuilds: Array<string>,
   valueAccessor: Function,
@@ -166,11 +173,12 @@ export default class AreaChart extends Component<AreaChartProps, AreaChartState>
       })
       .on('mouseout', () => {
         this._hoverLine.style('opacity', 0);
-        this.props.onHover('', '');
+        this.props.onHover();
       })
       .on('mousemove', (d, index, nodes) => {
         const { xValue, hoveredBuild, hoveredArtifact } = getMouseInformation(nodes, xScale, yScale, data, builds);
         // const [xPos, yPos] = mouse(nodes[0]);
+        const artifactName = hoveredArtifact && hoveredArtifact.key ? hoveredArtifact.key : undefined;
 
         const xSetter = v => (xScale.bandwidth ? xScale(v) + xScale.bandwidth() / 2 : xScale(v));
         this._hoverLine
@@ -178,7 +186,7 @@ export default class AreaChart extends Component<AreaChartProps, AreaChartState>
           .attr('x2', xSetter(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(hoveredArtifact, hoveredBuild);
+        this.props.onHover(artifactName, hoveredBuild);
         // TODO: add a tooltip
       });
   }

@@ -3,7 +3,6 @@ import * as Branches from './api/branches';
 import * as Builds from './api/builds';
 import assert from 'assert';
 import bodyParser from 'body-parser';
-import BuildComparator from 'build-tracker-comparator';
 import express from 'express';
 import glob from 'glob';
 import morgan from 'morgan';
@@ -11,25 +10,9 @@ import path from 'path';
 
 import type { $Application, $Request, $Response } from 'express';
 import type { BranchGetOptions } from './api/branches';
-import type { BuildGetOptions, BuildPostOptions } from './api/builds';
+import type { BuildGetOptions, BuildPostOptions, BuildPostCallbacks } from './api/builds';
 
-export type BuildMeta = {
-  branch: string,
-  revision: string,
-  timestamp: number
-};
-
-export type Artifact = {|
-  hash: string,
-  name: string,
-  size: number,
-  gzipSize: number
-|};
-
-export type Build = {|
-  meta: BuildMeta,
-  artifacts: { [name: string]: Artifact }
-|};
+import type { Artifact, Build, BuildMeta } from 'build-tracker-flowtypes';
 
 const noop = () => {};
 
@@ -47,9 +30,7 @@ app.use(express.static(path.dirname(APP_HTML_PATH)));
 export type ServerOptions = {
   branches: BranchGetOptions,
   builds: BuildGetOptions & BuildPostOptions,
-  callbacks?: {
-    onBuildInserted?: (comparator: typeof BuildComparator) => void
-  },
+  callbacks?: BuildPostCallbacks,
   port?: number
 };
 

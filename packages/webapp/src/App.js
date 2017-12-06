@@ -14,7 +14,7 @@ import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
-import type { Build, Artifact } from 'build-tracker-flowtypes';
+import type { Build } from 'build-tracker-flowtypes';
 
 const emptyArray = [];
 

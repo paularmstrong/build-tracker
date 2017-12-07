@@ -2,6 +2,7 @@
 import ArtifactCell from './ArtifactCell';
 import IconX from '../icons/IconX';
 import { interpolateHcl } from 'd3-interpolate';
+import { object } from 'prop-types';
 import { scaleLinear } from 'd3-scale';
 import styles from './styles';
 import theme from '../../theme';
@@ -13,7 +14,7 @@ import React, { Component, PureComponent } from 'react';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
 
 import type { Build } from 'build-tracker-flowtypes';
-import type { BodyCellType, DeltaCellType, TotalCellType, HeaderCellType } from 'build-tracker-comparator';
+import type { $AppConfig, BodyCellType, DeltaCellType, TotalCellType, HeaderCellType } from 'build-tracker-comparator';
 
 const greenScale = scaleLinear()
   .domain([1, 0])
@@ -87,22 +88,22 @@ const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): 
 };
 
 type DeltaCellProps = {
-  gzipSize: number,
-  gzipSizePercent: number,
+  gzip: number,
+  gzipPercent: number,
   hashChanged: boolean,
   size: number,
   sizePercent: number,
-  valueAccessor: Function
+  valueType: 'gzip' | 'size'
 };
 
 class DeltaCell extends Component<DeltaCellProps> {
   render() {
-    const { gzipSizePercent, valueAccessor } = this.props;
-    const value = valueAccessor(this.props);
+    const { gzipPercent, valueType } = this.props;
+    const value = this.props[valueType];
     const backgroundColor =
-      gzipSizePercent > 1
-        ? redScale(Math.max(Math.min(gzipSizePercent, 2), 1))
-        : gzipSizePercent === 1 ? 'transparent' : greenScale(Math.max(Math.min(gzipSizePercent, 1), 0));
+      gzipPercent > 1
+        ? redScale(Math.max(Math.min(gzipPercent, 2), 1))
+        : gzipPercent === 1 ? 'transparent' : greenScale(Math.max(Math.min(gzipPercent, 1), 0));
     return (
       <Td style={[styles.cell, backgroundColor && { backgroundColor }]}>
         <Text>{value ? bytesToKb(value) : '-'}</Text>
@@ -113,14 +114,14 @@ class DeltaCell extends Component<DeltaCellProps> {
 
 type ValueCellProps = {
   size: number,
-  gzipSize: number,
-  valueAccessor: Function
+  gzip: number,
+  valueType: 'gzip' | 'size'
 };
 
 class ValueCell extends Component<ValueCellProps> {
   render() {
-    const { valueAccessor } = this.props;
-    const value = valueAccessor(this.props);
+    const { valueType } = this.props;
+    const value = this.props[valueType];
     return (
       <Td style={[styles.cell]}>
         <Text>{value ? bytesToKb(value) : '-'}</Text>
@@ -140,7 +141,7 @@ type ComparisonProps = {
   onArtifactsChange?: Function,
   onRemoveBuild?: Function,
   onShowBuildInfo?: Function,
-  valueAccessor: Function
+  valueType: 'gzip' | 'size'
 };
 
 type ComparisonState = {
@@ -149,6 +150,13 @@ type ComparisonState = {
 };
 
 export default class Comparisons extends PureComponent<ComparisonProps, ComparisonState> {
+  context: {
+    config: $AppConfig
+  };
+  static contextTypes = {
+    config: object.isRequired
+  };
+
   _data: BuildComparator;
 
   constructor(props: ComparisonProps, context: Object) {
@@ -297,23 +305,23 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
   };
 
   _renderDeltaCell(cell: DeltaCellType, key: string | number) {
-    const { valueAccessor } = this.props;
+    const { valueType } = this.props;
     return (
       <DeltaCell
-        gzipSize={cell.gzipSize}
-        gzipSizePercent={cell.gzipSizePercent}
+        gzip={cell.gzip}
+        gzipPercent={cell.gzipPercent}
         hashChanged={cell.hashChanged}
         key={key}
         size={cell.size}
         sizePercent={cell.sizePercent}
-        valueAccessor={valueAccessor}
+        valueType={valueType}
       />
     );
   }
 
   _renderValueCell(cell: TotalCellType, key: string | number) {
-    const { valueAccessor } = this.props;
-    return <ValueCell gzipSize={cell.gzipSize} key={key} size={cell.size} valueAccessor={valueAccessor} />;
+    const { valueType } = this.props;
+    return <ValueCell gzip={cell.gzip} key={key} size={cell.size} valueType={valueType} />;
   }
 
   _getActiveData() {
@@ -324,10 +332,18 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
   }
 
   _getFilteredData() {
-    const { valueAccessor } = this.props;
+    const { config: { thresholds } } = this.context;
     return this._data.matrixBody.filter((row, i) => {
-      // TODO: should this threshold on percent change?
-      const deltas = row.filter(cell => (cell.type === CellType.DELTA ? valueAccessor(cell) : 0 > 100));
+      const deltas = row.filter(cell => {
+        if (cell.type === CellType.DELTA) {
+          const thresholdChange = Object.keys(thresholds).some(key => {
+            const threshold: number = thresholds[key];
+            return key.indexOf('Percent') > -1 ? 1 - cell[key] >= threshold : cell[key] >= threshold;
+          });
+          return thresholdChange || ((cell.size === 0 || cell.gzipSize === 0) && cell.hashChanged);
+        }
+        return false;
+      });
       if (i !== 0 && row.length > 2 && deltas.length === 0) {
         return false;
       }
@@ -373,9 +389,9 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
   };
 
   _handleCopyToAscii = () => {
-    const { valueAccessor } = this.props;
+    const { valueType } = this.props;
     const formatValue = cell => {
-      const value = valueAccessor(cell);
+      const value = cell[valueType];
       return value ? bytesToKb(value) : '';
     };
     const table = this._data.getAscii({

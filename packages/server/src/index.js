@@ -13,7 +13,7 @@ import type { $Application, $Request, $Response } from 'express';
 import type { BranchGetOptions } from './api/branches';
 import type { BuildGetOptions, BuildPostOptions, BuildPostCallbacks } from './api/builds';
 
-import type { Artifact, Build, BuildMeta } from 'build-tracker-flowtypes';
+import type { Artifact, Build, BuildMeta, $Thresholds } from 'build-tracker-flowtypes';
 
 const noop = () => {};
 
@@ -32,21 +32,14 @@ export type ServerOptions = {
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
   port?: number,
-  thresholds?: Thresholds
-};
-
-export type Thresholds = {
-  size?: number,
-  sizePercent?: number,
-  gzipSize?: number,
-  gzipSizePercent?: number
+  thresholds?: $Thresholds
 };
 
 const defaultThresholds = {
   size: 5000,
   sizePercent: 0.1,
-  gzipSize: 500,
-  gzipSizePercent: 0.05
+  gzip: 500,
+  gzipPercent: 0.05
 };
 
 export default function createServer({ branches, builds, callbacks, port = 3000, thresholds }: ServerOptions) {
@@ -88,7 +81,7 @@ export default function createServer({ branches, builds, callbacks, port = 3000,
 export type StaticServerOptions = {
   port?: number,
   statsRoot: string,
-  thresholds?: Thresholds
+  thresholds?: $Thresholds
 };
 
 const unique = (value, index, self): boolean => self.indexOf(value) === index;

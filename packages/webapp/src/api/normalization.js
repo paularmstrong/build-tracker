@@ -4,7 +4,7 @@ import { mean } from 'd3-array';
 import type { Build } from 'build-tracker-flowtypes';
 
 const getAverageSize = (builds: Array<Build>, artifact: string): number =>
-  mean(builds, commit => (commit.artifacts[artifact] ? commit.artifacts[artifact].gzipSize : 0));
+  mean(builds, commit => (commit.artifacts[artifact] ? commit.artifacts[artifact].gzip : 0));
 
 export const getArtifactsByAvgSize = (builds: Array<Build>): Array<string> =>
   builds

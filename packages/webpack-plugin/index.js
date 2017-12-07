@@ -1,6 +1,6 @@
 const assert = require('assert');
 const fs = require('fs');
-const gzipSize = require('gzip-size');
+const gzip = require('gzip-size');
 const http = require('http');
 const https = require('https');
 const mkdirp = require('mkdirp');
@@ -40,12 +40,12 @@ class AnalyzerStatsPlugin {
 
         try {
           const file = fs.readFileSync(filePath);
-          const gzippedSize = gzipSize.sync(file);
+          const gzippedSize = gzip.sync(file);
           return {
             hash: chunk.hash,
             name: chunk.name,
             size: chunk.size({}),
-            gzipSize: gzippedSize
+            gzip: gzippedSize
           };
         } catch (e) {
           return;

@@ -3,24 +3,24 @@ import BuildComparator, * as Comparator from '../';
 const build1 = {
   meta: { revision: '1234567' },
   artifacts: {
-    churros: { hash: 'abc', size: 456, gzipSize: 90 },
-    tacos: { hash: 'abc', size: 123, gzipSize: 45 }
+    churros: { hash: 'abc', size: 456, gzip: 90 },
+    tacos: { hash: 'abc', size: 123, gzip: 45 }
   }
 };
 
 const build2 = {
   meta: { revision: '8901234' },
   artifacts: {
-    burritos: { hash: 'def', size: 469, gzipSize: 93 },
-    tacos: { hash: 'abc', size: 123, gzipSize: 45 }
+    burritos: { hash: 'def', size: 469, gzip: 93 },
+    tacos: { hash: 'abc', size: 123, gzip: 45 }
   }
 };
 
 const build3 = {
   meta: { revision: '5678901' },
   artifacts: {
-    burritos: { hash: 'ghi', size: 345, gzipSize: 85 },
-    tacos: { hash: 'abc', size: 123, gzipSize: 45 }
+    burritos: { hash: 'ghi', size: 345, gzip: 85 },
+    tacos: { hash: 'abc', size: 123, gzip: 45 }
   }
 };
 

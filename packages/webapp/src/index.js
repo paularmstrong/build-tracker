@@ -1,4 +1,5 @@
 // @flow
+import ContextProvider from './ContextProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -12,11 +13,13 @@ const getRoot = (): Element => {
 };
 
 ReactDOM.render(
-  <Router>
-    <Switch>
-      <Route path="/revisions/:revisions/:artifactNames?/:compareRevisions?" component={App} />
-      <Route path="/:artifactNames?/:compareRevisions?" component={App} />
-    </Switch>
-  </Router>,
+  <ContextProvider config={window.CONFIG || {}}>
+    <Router>
+      <Switch>
+        <Route path="/revisions/:revisions/:artifactNames?/:compareRevisions?" component={App} />
+        <Route path="/:artifactNames?/:compareRevisions?" component={App} />
+      </Switch>
+    </Router>
+  </ContextProvider>,
   getRoot()
 );

@@ -13,7 +13,7 @@ declare module 'build-tracker-flowtypes' {
     hash: string,
     name: string,
     size: number,
-    gzipSize: number
+    gzip: number
   };
 
   declare type Build = {|
@@ -39,23 +39,23 @@ declare module 'build-tracker-flowtypes' {
     type: 'delta',
     size: number,
     sizePercent: number,
-    gzipSize: number,
-    gzipSizePercent: number,
+    gzip: number,
+    gzipPercent: number,
     hashChanged: boolean
   |};
 
   declare type TotalCellType = {|
     type: 'total',
     size: number,
-    gzipSize: number
+    gzip: number
   |};
 
   declare type TotalDeltaCellType = {|
     type: 'totalDelta',
     size: number,
     sizePercent: number,
-    gzipSize: number,
-    gzipSizePercent: number
+    gzip: number,
+    gzipPercent: number
   |};
 
   declare type RevisionCellType = {|
@@ -83,4 +83,19 @@ declare module 'build-tracker-flowtypes' {
     total: Array<BodyCellType>,
     body: Array<Array<BodyCellType>>
   };
+
+  /**
+   * Application
+   */
+
+  declare type $Thresholds = {|
+    size?: number,
+    sizePercent?: number,
+    gzip?: number,
+    gzipPercent?: number
+  |};
+
+  declare type $AppConfig = {|
+    thresholds?: $Thresholds
+  |};
 }

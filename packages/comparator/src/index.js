@@ -41,7 +41,7 @@ export const CellType = {
   TOTAL_DELTA: 'totalDelta'
 };
 
-const getDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+const getDelta = (key: 'size' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
   if (!changeArtifact) {
     if (!baseArtifact) {
       return 0;
@@ -52,7 +52,7 @@ const getDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, changeArtifa
   return changeArtifact[key] - (baseArtifact ? baseArtifact[key] : 0);
 };
 
-const getPercentDelta = (key: 'size' | 'gzipSize', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+const getPercentDelta = (key: 'size' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
   if (!changeArtifact) {
     if (!baseArtifact) {
       return 0;
@@ -68,8 +68,8 @@ const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact) => {
     type: CellType.DELTA,
     size: getDelta('size', baseArtifact, changeArtifact),
     sizePercent: getPercentDelta('size', baseArtifact, changeArtifact),
-    gzipSize: getDelta('gzipSize', baseArtifact, changeArtifact),
-    gzipSizePercent: getPercentDelta('gzipSize', baseArtifact, changeArtifact)
+    gzip: getDelta('gzip', baseArtifact, changeArtifact),
+    gzipPercent: getPercentDelta('gzip', baseArtifact, changeArtifact)
   };
 };
 
@@ -78,9 +78,9 @@ const getTotalArtifactSizes = (build: Build) =>
     (memo, artifactName) => ({
       type: CellType.TOTAL,
       size: memo.size + build.artifacts[artifactName].size,
-      gzipSize: memo.gzipSize + build.artifacts[artifactName].gzipSize
+      gzip: memo.gzip + build.artifacts[artifactName].gzip
     }),
-    { type: CellType.TOTAL, size: 0, gzipSize: 0 }
+    { type: CellType.TOTAL, size: 0, gzip: 0 }
   );
 
 const getTotalSizeDeltas = (baseBuild: Build, changeBuild: Build): TotalDeltaCellType => {
@@ -91,8 +91,8 @@ const getTotalSizeDeltas = (baseBuild: Build, changeBuild: Build): TotalDeltaCel
     type: CellType.TOTAL_DELTA,
     size: baseSize.size - changeSize.size,
     sizePercent: baseSize.size / changeSize.size,
-    gzipSize: baseSize.gzipSize - changeSize.gzipSize,
-    gzipSizePercent: baseSize.gzipSize / changeSize.gzipSize
+    gzip: baseSize.gzip - changeSize.gzip,
+    gzipPercent: baseSize.gzip / changeSize.gzip
   };
 };
 
@@ -104,8 +104,8 @@ const defaultArtifactSorter = (rowA, rowB): number => {
 
 const defaultFormatRevision = (cell: RevisionCellType): string => cell.revision;
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCellType): string => `Δ${cell.deltaIndex}`;
-const defaultFormatTotal = (cell: TotalCellType): string => `${cell.gzipSize}`;
-const defaultFormatDelta = (cell: DeltaCellType): string => `${cell.gzipSize} (${cell.gzipSizePercent}%)`;
+const defaultFormatTotal = (cell: TotalCellType): string => `${cell.gzip}`;
+const defaultFormatDelta = (cell: DeltaCellType): string => `${cell.gzip} (${cell.gzipPercent}%)`;
 const defaultRowFilter = (row: Array<BodyCellType>): boolean => true;
 
 export default class BuildComparator {
@@ -207,7 +207,7 @@ export default class BuildComparator {
           {
             type: CellType.TOTAL,
             size: artifact ? artifact.size : 0,
-            gzipSize: artifact ? artifact.gzipSize : 0
+            gzip: artifact ? artifact.gzip : 0
           },
           ...artifactDeltas.map(delta => delta[artifactName])
         ];

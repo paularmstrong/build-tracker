@@ -7,7 +7,7 @@ export type Artifact = {
   hash: string,
   name: string,
   size: number,
-  gzipSize: number
+  gzip: number
 };
 
 export type Build = {

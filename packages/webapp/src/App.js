@@ -61,7 +61,7 @@ type AppState = {
   compareBuilds: Array<Build>,
   hoveredArtifact?: string,
   selectedBuild?: Build,
-  values: $Values<typeof ValueType>,
+  valueType: $Values<typeof ValueType>,
   xscale: $Values<typeof XScaleType>,
   yscale: $Values<typeof YScaleType>
 };
@@ -78,7 +78,7 @@ class App extends Component<AppProps, AppState> {
       artifactNames: [],
       chart: ChartType.AREA,
       compareBuilds: [],
-      values: ValueType.GZIP,
+      valueType: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
     };
@@ -106,7 +106,7 @@ class App extends Component<AppProps, AppState> {
       compareBuilds,
       hoveredArtifact,
       selectedBuild,
-      values,
+      valueType,
       xscale,
       yscale
     } = this.state;
@@ -118,7 +118,7 @@ class App extends Component<AppProps, AppState> {
             <Toggles
               chartType={chart}
               onToggle={this._handleToggleValueTypes}
-              valueType={values}
+              valueType={valueType}
               xScaleType={xscale}
               yScaleType={yscale}
             />
@@ -135,7 +135,7 @@ class App extends Component<AppProps, AppState> {
                   onHover={this._handleHover}
                   onSelectBuild={this._handleSelectBuild}
                   selectedBuilds={compareBuilds.map(b => b.meta.revision)}
-                  valueAccessor={valueTypeAccessor[values]}
+                  valueAccessor={valueTypeAccessor[valueType]}
                   xScaleType={xscale}
                   yScaleType={yscale}
                 />
@@ -155,7 +155,7 @@ class App extends Component<AppProps, AppState> {
               onArtifactsChange={this._handleArtifactsChange}
               onRemoveBuild={this._handleRemoveRevision}
               onShowBuildInfo={this._handleShowBuildInfo}
-              valueAccessor={valueTypeAccessor[values]}
+              valueType={valueType}
             />
           </View>
           <View style={styles.info}>{selectedBuild ? <BuildInfo build={selectedBuild} /> : null}</View>

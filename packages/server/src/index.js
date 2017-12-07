@@ -4,6 +4,7 @@ import * as Builds from './api/builds';
 import assert from 'assert';
 import bodyParser from 'body-parser';
 import express from 'express';
+import fs from 'fs';
 import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
@@ -16,7 +17,7 @@ import type { Artifact, Build, BuildMeta } from 'build-tracker-flowtypes';
 
 const noop = () => {};
 
-const APP_HTML_PATH = require.resolve('build-tracker-app');
+const APP_HTML = require.resolve('build-tracker-app');
 
 const app = express();
 app.use(bodyParser.json());
@@ -25,23 +26,59 @@ const logFormat =
   ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms';
 
 app.use(morgan(logFormat));
-app.use(express.static(path.dirname(APP_HTML_PATH)));
 
 export type ServerOptions = {
   branches: BranchGetOptions,
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
-  port?: number
+  port?: number,
+  thresholds?: Thresholds
 };
 
-export default function createServer({ branches, builds, callbacks, port = 3000 }: ServerOptions) {
+export type Thresholds = {
+  size?: number,
+  sizePercent?: number,
+  gzipSize?: number,
+  gzipSizePercent?: number
+};
+
+const defaultThresholds = {
+  size: 5000,
+  sizePercent: 0.1,
+  gzipSize: 500,
+  gzipSizePercent: 0.05
+};
+
+export default function createServer({ branches, builds, callbacks, port = 3000, thresholds }: ServerOptions) {
   app.get('/api/builds', Builds.handleGet(builds));
   app.post('/api/builds', Builds.handlePost(builds, callbacks));
 
   app.get('/api/branches', Branches.handleGet(branches));
 
+  app.get('/static/*', (req: $Request, res: $Response) => {
+    res.sendFile(path.join(path.dirname(APP_HTML), req.path));
+  });
+
   app.get('*', (req: $Request, res: $Response) => {
-    res.sendFile(APP_HTML_PATH);
+    if (/\.[a-z]{2,4}$/.test(req.path)) {
+      res.sendFile(path.join(path.dirname(APP_HTML), req.path));
+    } else {
+      fs.readFile(APP_HTML, (err, data) => {
+        if (err) {
+          res.sendStatus(404);
+          return;
+        }
+
+        const modifiedHtml = data.toString().replace(
+          '<script id="config"></script>',
+          `<script id="config">window.CONFIG=${JSON.stringify({
+            thresholds: Object.assign({}, defaultThresholds, thresholds)
+          })};</script>`
+        );
+        console.log(modifiedHtml);
+        res.send(modifiedHtml);
+      });
+    }
   });
 
   app.listen(port);
@@ -50,12 +87,13 @@ export default function createServer({ branches, builds, callbacks, port = 3000 
 
 export type StaticServerOptions = {
   port?: number,
-  statsRoot: string
+  statsRoot: string,
+  thresholds?: Thresholds
 };
 
 const unique = (value, index, self): boolean => self.indexOf(value) === index;
 
-export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
+export const staticServer = ({ port, statsRoot, thresholds }: StaticServerOptions) => {
   const getWithGlob = (match, branch, count): Promise<Array<Build>> => {
     return new Promise((resolve, reject) => {
       glob(`${statsRoot}/${match}.json`, (err, matches) => {
@@ -100,6 +138,7 @@ export const staticServer = ({ port, statsRoot }: StaticServerOptions) => {
       getPrevious: () => Promise.reject('Not implemented'),
       insert: () => Promise.reject(new Error('Static server cannot save new builds'))
     },
-    port
+    port,
+    thresholds
   });
 };

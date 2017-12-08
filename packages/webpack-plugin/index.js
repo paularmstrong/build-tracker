@@ -25,17 +25,10 @@ class BuildTrackerPlugin {
 
   _handleDone(artifacts) {
     const compilation = artifacts.compilation;
-    const fileNameFormat = compilation.outputOptions.chunkFilename;
-    let hashLength = fileNameFormat.match(/\[(?:chunk)?hash\:(\d+)\]/);
-    if (hashLength && hashLength.length) {
-      hashLength = parseInt(hashLength[1], 10);
-    }
 
     const outputArtifacts = compilation.chunks
       .map(chunk => {
-        const fileName = fileNameFormat
-          .replace('[name]', chunk.name)
-          .replace(/\[(?:chunk)?hash\:\d+\]/, chunk.hash.slice(0, hashLength));
+        const fileName = chunk.files.filter(fileName => /\.js$/.test(fileName))[0];
         const filePath = path.join(compilation.outputOptions.path, fileName);
 
         try {

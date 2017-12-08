@@ -8,289 +8,289 @@
     "bundle.AccessInterstitial": {
       "hash": "5f6d13c9f158dd7ead534b35bf9e07c7",
       "name": "bundle.AccessInterstitial",
-      "size": 22890,
+      "stat": 22890,
       "gzip": 2276
     },
     "bundle.Account": {
       "hash": "03e8a73af26fca5da9a0ff57d0c4556c",
       "name": "bundle.Account",
-      "size": 26157,
+      "stat": 26157,
       "gzip": 2474
     },
-    "bundle.App": { "hash": "5c3e577da4ef31fd5da880964bb81ba9", "name": "bundle.App", "size": 46106, "gzip": 4308 },
+    "bundle.App": { "hash": "5c3e577da4ef31fd5da880964bb81ba9", "name": "bundle.App", "stat": 46106, "gzip": 4308 },
     "bundle.Collection": {
       "hash": "9990f0f0cc3fe2ef3344a9c0f488ed2b",
       "name": "bundle.Collection",
-      "size": 32560,
+      "stat": 32560,
       "gzip": 3037
     },
     "bundle.Compose": {
       "hash": "a7cb24664f42ff1ddcd88e4e3d430cd3",
       "name": "bundle.Compose",
-      "size": 197883,
+      "stat": 197883,
       "gzip": 20372
     },
     "bundle.Conversation": {
       "hash": "26d1a9e36cd98c250084ecb3709092ec",
       "name": "bundle.Conversation",
-      "size": 82748,
+      "stat": 82748,
       "gzip": 8467
     },
     "bundle.ConversationParticipants": {
       "hash": "89a86f75327348182769ae3d8def760b",
       "name": "bundle.ConversationParticipants",
-      "size": 17559,
+      "stat": 17559,
       "gzip": 1338
     },
     "bundle.DirectMessages": {
       "hash": "4be9148a479c5ce2104279bf73d1e3c4",
       "name": "bundle.DirectMessages",
-      "size": 445365,
+      "stat": 445365,
       "gzip": 41975
     },
     "bundle.FollowerRequests": {
       "hash": "92d3e8b7e041c3b85de75cb5cdcf3bcd",
       "name": "bundle.FollowerRequests",
-      "size": 17694,
+      "stat": 17694,
       "gzip": 1413
     },
     "bundle.FoundMedia": {
       "hash": "edb8aa95cf8481f4d734f14c51ec4efb",
       "name": "bundle.FoundMedia",
-      "size": 65092,
+      "stat": 65092,
       "gzip": 5870
     },
     "bundle.GenericTimeline": {
       "hash": "9f64e0f6259ad45a65f2de0bf4360ac3",
       "name": "bundle.GenericTimeline",
-      "size": 15805,
+      "stat": 15805,
       "gzip": 1102
     },
     "bundle.HomeTimeline": {
       "hash": "90d6a3bc8d14db0999503323005d19e9",
       "name": "bundle.HomeTimeline",
-      "size": 59583,
+      "stat": 59583,
       "gzip": 6048
     },
     "bundle.Keyboard": {
       "hash": "0c613511d595730a18247c2f813f13bf",
       "name": "bundle.Keyboard",
-      "size": 44819,
+      "stat": 44819,
       "gzip": 2643
     },
     "bundle.LiveEvent": {
       "hash": "c4e27fa289c9fd07dd7100f089a5c829",
       "name": "bundle.LiveEvent",
-      "size": 160102,
+      "stat": 160102,
       "gzip": 13345
     },
     "bundle.LoggedOutHome": {
       "hash": "9f902e0f39e5e8b81d95f9639f3e6b4e",
       "name": "bundle.LoggedOutHome",
-      "size": 21504,
+      "stat": 21504,
       "gzip": 2107
     },
     "bundle.Login": {
       "hash": "7f3baed093c88d2c7283b3dde9d2adc9",
       "name": "bundle.Login",
-      "size": 24189,
+      "stat": 24189,
       "gzip": 2532
     },
     "bundle.Moment": {
       "hash": "81d821aba88da07b52c663f3d7b905ed",
       "name": "bundle.Moment",
-      "size": 58064,
+      "stat": 58064,
       "gzip": 5614
     },
     "bundle.NotificationDetail": {
       "hash": "d554f5b68f1b1674133c9abd56a4e54e",
       "name": "bundle.NotificationDetail",
-      "size": 21474,
+      "stat": 21474,
       "gzip": 1600
     },
     "bundle.Notifications": {
       "hash": "3d95b55f187542f9604408d3d398d1d8",
       "name": "bundle.Notifications",
-      "size": 113050,
+      "stat": 113050,
       "gzip": 9963
     },
     "bundle.Report": {
       "hash": "e5c8976ef60144ab420167bf027256b1",
       "name": "bundle.Report",
-      "size": 34023,
+      "stat": 34023,
       "gzip": 3393
     },
     "bundle.Search": {
       "hash": "6ecbc41be9ec9eff3569f001ea05b968",
       "name": "bundle.Search",
-      "size": 61312,
+      "stat": 61312,
       "gzip": 5915
     },
     "bundle.SearchTimelines": {
       "hash": "646a14b355ace71e734f96af04d1b266",
       "name": "bundle.SearchTimelines",
-      "size": 64356,
+      "stat": 64356,
       "gzip": 5409
     },
     "bundle.SearchUsers": {
       "hash": "a54d1b2200e174802218f81691915cbf",
       "name": "bundle.SearchUsers",
-      "size": 45379,
+      "stat": 45379,
       "gzip": 3759
     },
     "bundle.Settings": {
       "hash": "cb307fb9523ae66aa18692f1c5567c18",
       "name": "bundle.Settings",
-      "size": 212528,
+      "stat": 212528,
       "gzip": 19604
     },
     "bundle.SettingsInternals": {
       "hash": "a935570846058f582e5c808984bc8806",
       "name": "bundle.SettingsInternals",
-      "size": 393897,
+      "stat": 393897,
       "gzip": 33848
     },
     "bundle.Stickers": {
       "hash": "27b3c0e2f56f93d9eae7857ce3cbcf93",
       "name": "bundle.Stickers",
-      "size": 29999,
+      "stat": 29999,
       "gzip": 2798
     },
     "bundle.StickersTimelines": {
       "hash": "1e5765edb28cebb714cf8b9ecb8505eb",
       "name": "bundle.StickersTimelines",
-      "size": 39908,
+      "stat": 39908,
       "gzip": 3455
     },
     "bundle.TweetActivity": {
       "hash": "b44e42387072c91f406044cdc32a0c48",
       "name": "bundle.TweetActivity",
-      "size": 15752,
+      "stat": 15752,
       "gzip": 983
     },
     "bundle.TweetMediaDetail": {
       "hash": "90ce43bbb5c698a4c4ef309674790b02",
       "name": "bundle.TweetMediaDetail",
-      "size": 78164,
+      "stat": 78164,
       "gzip": 7852
     },
     "bundle.TweetMediaTags": {
       "hash": "d19409bb3aabdea53e1b3d7dced0c80b",
       "name": "bundle.TweetMediaTags",
-      "size": 17170,
+      "stat": 17170,
       "gzip": 1401
     },
     "bundle.UserAvatar": {
       "hash": "2cd6ea0fb7e6e014c4a76a9fa64547a4",
       "name": "bundle.UserAvatar",
-      "size": 17676,
+      "stat": 17676,
       "gzip": 1373
     },
     "bundle.UserFollowLists": {
       "hash": "3fbf11123c8c1a0d685437c6d0d137f1",
       "name": "bundle.UserFollowLists",
-      "size": 57008,
+      "stat": 57008,
       "gzip": 4218
     },
     "bundle.UserLists": {
       "hash": "92bb19677507fe9198e8301587089989",
       "name": "bundle.UserLists",
-      "size": 124212,
+      "stat": 124212,
       "gzip": 8607
     },
     "bundle.UserOnboarding": {
       "hash": "961fcfbba6b15cc3f4f0a1b1ef317df9",
       "name": "bundle.UserOnboarding",
-      "size": 97867,
+      "stat": 97867,
       "gzip": 8843
     },
     "bundle.UserProfile": {
       "hash": "15e7e5bbe85599a8c76b7c1104696c16",
       "name": "bundle.UserProfile",
-      "size": 130621,
+      "stat": 130621,
       "gzip": 13692
     },
     "bundle.UserProfileSuspended": {
       "hash": "cbf9ae1584995f42dc024f891611546e",
       "name": "bundle.UserProfileSuspended",
-      "size": 15729,
+      "stat": 15729,
       "gzip": 1232
     },
     "bundle.UserProfileTimelines": {
       "hash": "574c3fc1054f0997d88f619e134d7595",
       "name": "bundle.UserProfileTimelines",
-      "size": 56100,
+      "stat": 56100,
       "gzip": 4562
     },
     "loader.BroadcastPlayer": {
       "hash": "5cd3244ef461c285dca712ebd3212e5d",
       "name": "loader.BroadcastPlayer",
-      "size": 896460,
+      "stat": 896460,
       "gzip": 87868
     },
     "loader.Devices": {
       "hash": "74ffb575d260baf7685defd82523cd93",
       "name": "loader.Devices",
-      "size": 53647,
+      "stat": 53647,
       "gzip": 4499
     },
     "loader.EntryTombstone": {
       "hash": "7fabd2c0677d389348e578de56fec728",
       "name": "loader.EntryTombstone",
-      "size": 19026,
+      "stat": 19026,
       "gzip": 1617
     },
     "loader.FeedbackSheet": {
       "hash": "8197a38def91664270de5fab75a7eb7b",
       "name": "loader.FeedbackSheet",
-      "size": 16343,
+      "stat": 16343,
       "gzip": 1084
     },
     "loader.PushNotificationsPrompt": {
       "hash": "71da7485a2b5db2a2bb4a3a7fddd76be",
       "name": "loader.PushNotificationsPrompt",
-      "size": 23723,
+      "stat": 23723,
       "gzip": 2123
     },
     "loader.SearchBox": {
       "hash": "501d58b69ada3755e6ead26e2928a5c2",
       "name": "loader.SearchBox",
-      "size": 155335,
+      "stat": 155335,
       "gzip": 14849
     },
     "loader.TimelineGap": {
       "hash": "edf3df909345a819c316ea368d48bb6a",
       "name": "loader.TimelineGap",
-      "size": 14853,
+      "stat": 14853,
       "gzip": 913
     },
     "loader.TweetCurationActionSheet": {
       "hash": "afdca9a47b196cd6bd582c4cba32f114",
       "name": "loader.TweetCurationActionSheet",
-      "size": 36221,
+      "stat": 36221,
       "gzip": 4227
     },
     "loader.UMFPrompt": {
       "hash": "c5afa888755bfcd8b109b2f45de7d91a",
       "name": "loader.UMFPrompt",
-      "size": 27409,
+      "stat": 27409,
       "gzip": 2698
     },
     "loader.directMessagesData": {
       "hash": "d9e8dd588836cb4de697cf49e58d4256",
       "name": "loader.directMessagesData",
-      "size": 145700,
+      "stat": 145700,
       "gzip": 13545
     },
     "loader.notificationsData": {
       "hash": "71e9013e8dec966579e49b375edbaebe",
       "name": "loader.notificationsData",
-      "size": 64065,
+      "stat": 64065,
       "gzip": 6164
     },
-    "main": { "hash": "f3dc5508dd708fa0ce500f28496978aa", "name": "main", "size": 11456780, "gzip": 133644 },
-    "runtime": { "hash": "853bd033ee231342c05f55491a081f49", "name": "runtime", "size": 10000, "gzip": 822 },
-    "shared": { "hash": "a2fc6df0d0d8d53557906080472b586e", "name": "shared", "size": 866914, "gzip": 86469 },
-    "vendor": { "hash": "18c1414338ef0532c9c31fcb04efd0c7", "name": "vendor", "size": 15754590, "gzip": 147957 }
+    "main": { "hash": "f3dc5508dd708fa0ce500f28496978aa", "name": "main", "stat": 11456780, "gzip": 133644 },
+    "runtime": { "hash": "853bd033ee231342c05f55491a081f49", "name": "runtime", "stat": 10000, "gzip": 822 },
+    "shared": { "hash": "a2fc6df0d0d8d53557906080472b586e", "name": "shared", "stat": 866914, "gzip": 86469 },
+    "vendor": { "hash": "18c1414338ef0532c9c31fcb04efd0c7", "name": "vendor", "stat": 15754590, "gzip": 147957 }
   }
 }

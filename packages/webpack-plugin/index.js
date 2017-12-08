@@ -44,7 +44,7 @@ class BuildTrackerPlugin {
           return {
             hash: chunk.hash,
             name: chunk.name,
-            size: chunk.size({}),
+            stat: chunk.size({}),
             gzip: gzippedSize
           };
         } catch (e) {

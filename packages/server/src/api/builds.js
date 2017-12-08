@@ -12,7 +12,7 @@ const isValidBuild = (data): void => {
   Object.keys(data.artifacts).forEach(key => {
     const artifact = data.artifacts[key];
     assert(artifact.name, `Name is provided for artifact ${key}`);
-    assert(artifact.size, `Size is provided for artifact ${key}`);
+    assert(artifact.stat, `Stat size is provided for artifact ${key}`);
   });
 };
 

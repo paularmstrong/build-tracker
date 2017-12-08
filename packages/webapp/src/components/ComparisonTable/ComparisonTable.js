@@ -91,9 +91,9 @@ type DeltaCellProps = {
   gzip: number,
   gzipPercent: number,
   hashChanged: boolean,
-  size: number,
-  sizePercent: number,
-  valueType: 'gzip' | 'size'
+  stat: number,
+  statPercent: number,
+  valueType: 'gzip' | 'stat'
 };
 
 class DeltaCell extends Component<DeltaCellProps> {
@@ -113,9 +113,9 @@ class DeltaCell extends Component<DeltaCellProps> {
 }
 
 type ValueCellProps = {
-  size: number,
+  stat: number,
   gzip: number,
-  valueType: 'gzip' | 'size'
+  valueType: 'gzip' | 'stat'
 };
 
 class ValueCell extends Component<ValueCellProps> {
@@ -141,7 +141,7 @@ type ComparisonProps = {
   onArtifactsChange?: Function,
   onRemoveBuild?: Function,
   onShowBuildInfo?: Function,
-  valueType: 'gzip' | 'size'
+  valueType: 'gzip' | 'stat'
 };
 
 type ComparisonState = {
@@ -313,8 +313,8 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
         gzipPercent={cell.gzipPercent}
         hashChanged={cell.hashChanged}
         key={key}
-        size={cell.size}
-        sizePercent={cell.sizePercent}
+        stat={cell.stat}
+        statPercent={cell.statPercent}
         valueType={valueType}
       />
     );
@@ -322,7 +322,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
 
   _renderValueCell(cell: TotalCellType, key: string | number) {
     const { valueType } = this.props;
-    return <ValueCell gzip={cell.gzip} key={key} size={cell.size} valueType={valueType} />;
+    return <ValueCell gzip={cell.gzip} key={key} stat={cell.stat} valueType={valueType} />;
   }
 
   _getActiveData() {
@@ -341,7 +341,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
             const threshold: number = thresholds[key];
             return key.indexOf('Percent') > -1 ? 1 - cell[key] >= threshold : cell[key] >= threshold;
           });
-          return thresholdChange || ((cell.size === 0 || cell.gzipSize === 0) && cell.hashChanged);
+          return thresholdChange || ((cell.stat === 0 || cell.gzip === 0) && cell.hashChanged);
         }
         return false;
       });

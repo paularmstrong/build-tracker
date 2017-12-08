@@ -3,24 +3,24 @@ import BuildComparator, * as Comparator from '../';
 const build1 = {
   meta: { revision: '1234567' },
   artifacts: {
-    churros: { hash: 'abc', size: 456, gzip: 90 },
-    tacos: { hash: 'abc', size: 123, gzip: 45 }
+    churros: { hash: 'abc', stat: 456, gzip: 90 },
+    tacos: { hash: 'abc', stat: 123, gzip: 45 }
   }
 };
 
 const build2 = {
   meta: { revision: '8901234' },
   artifacts: {
-    burritos: { hash: 'def', size: 469, gzip: 93 },
-    tacos: { hash: 'abc', size: 123, gzip: 45 }
+    burritos: { hash: 'def', stat: 469, gzip: 93 },
+    tacos: { hash: 'abc', stat: 123, gzip: 45 }
   }
 };
 
 const build3 = {
   meta: { revision: '5678901' },
   artifacts: {
-    burritos: { hash: 'ghi', size: 345, gzip: 85 },
-    tacos: { hash: 'abc', size: 123, gzip: 45 }
+    burritos: { hash: 'ghi', stat: 345, gzip: 85 },
+    tacos: { hash: 'abc', stat: 123, gzip: 45 }
   }
 };
 
@@ -69,8 +69,8 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator([build1, build2]);
       const rowFilter = row => {
         return row.some(cell => {
-          if ('sizePercent' in cell && 'size' in cell) {
-            return cell.size > 3;
+          if ('statPercent' in cell && 'stat' in cell) {
+            return cell.stat > 3;
           }
           return false;
         });
@@ -89,8 +89,8 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator([build1, build2]);
       const rowFilter = row => {
         return row.some(cell => {
-          if ('sizePercent' in cell && 'size' in cell) {
-            return cell.size > 3;
+          if ('statPercent' in cell && 'stat' in cell) {
+            return cell.stat > 3;
           }
           return false;
         });

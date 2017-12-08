@@ -6,7 +6,7 @@ export type BuildMeta = {
 export type Artifact = {
   hash: string,
   name: string,
-  size: number,
+  stat: number,
   gzip: number
 };
 

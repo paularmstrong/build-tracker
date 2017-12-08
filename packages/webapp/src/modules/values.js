@@ -5,7 +5,7 @@ type TypesType = { [string]: string };
 
 export const Types: TypesType = {
   CHART: 'chart',
-  VALUES: 'values',
+  VALUES: 'valueType',
   XSCALE: 'xscale',
   YSCALE: 'yscale'
 };
@@ -38,6 +38,6 @@ export const TypesEnum: { [string]: TypesType } = {
 };
 
 export const valueTypeAccessor = {
-  [ValueType.STAT]: (d: Artifact): number => (d && d.size) || 0,
+  [ValueType.STAT]: (d: Artifact): number => (d && d.stat) || 0,
   [ValueType.GZIP]: (d: Artifact): number => (d && d.gzip) || 0
 };

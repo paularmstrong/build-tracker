@@ -12,7 +12,7 @@ declare module 'build-tracker-flowtypes' {
   declare type Artifact = {
     hash: string,
     name: string,
-    size: number,
+    stat: number,
     gzip: number
   };
 
@@ -37,8 +37,8 @@ declare module 'build-tracker-flowtypes' {
 
   declare type DeltaCellType = {|
     type: 'delta',
-    size: number,
-    sizePercent: number,
+    stat: number,
+    statPercent: number,
     gzip: number,
     gzipPercent: number,
     hashChanged: boolean
@@ -46,14 +46,14 @@ declare module 'build-tracker-flowtypes' {
 
   declare type TotalCellType = {|
     type: 'total',
-    size: number,
+    stat: number,
     gzip: number
   |};
 
   declare type TotalDeltaCellType = {|
     type: 'totalDelta',
-    size: number,
-    sizePercent: number,
+    stat: number,
+    statPercent: number,
     gzip: number,
     gzipPercent: number
   |};
@@ -89,8 +89,8 @@ declare module 'build-tracker-flowtypes' {
    */
 
   declare type $Thresholds = {|
-    size?: number,
-    sizePercent?: number,
+    stat?: number,
+    statPercent?: number,
     gzip?: number,
     gzipPercent?: number
   |};

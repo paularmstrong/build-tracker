@@ -41,7 +41,7 @@ export const CellType = {
   TOTAL_DELTA: 'totalDelta'
 };
 
-const getDelta = (key: 'size' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+const getDelta = (key: 'stat' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
   if (!changeArtifact) {
     if (!baseArtifact) {
       return 0;
@@ -52,7 +52,7 @@ const getDelta = (key: 'size' | 'gzip', baseArtifact: Artifact, changeArtifact: 
   return changeArtifact[key] - (baseArtifact ? baseArtifact[key] : 0);
 };
 
-const getPercentDelta = (key: 'size' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+const getPercentDelta = (key: 'stat' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
   if (!changeArtifact) {
     if (!baseArtifact) {
       return 0;
@@ -66,8 +66,8 @@ const getPercentDelta = (key: 'size' | 'gzip', baseArtifact: Artifact, changeArt
 const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact) => {
   return {
     type: CellType.DELTA,
-    size: getDelta('size', baseArtifact, changeArtifact),
-    sizePercent: getPercentDelta('size', baseArtifact, changeArtifact),
+    stat: getDelta('stat', baseArtifact, changeArtifact),
+    statPercent: getPercentDelta('stat', baseArtifact, changeArtifact),
     gzip: getDelta('gzip', baseArtifact, changeArtifact),
     gzipPercent: getPercentDelta('gzip', baseArtifact, changeArtifact)
   };
@@ -77,10 +77,10 @@ const getTotalArtifactSizes = (build: Build) =>
   Object.keys(build.artifacts).reduce(
     (memo, artifactName) => ({
       type: CellType.TOTAL,
-      size: memo.size + build.artifacts[artifactName].size,
+      stat: memo.stat + build.artifacts[artifactName].stat,
       gzip: memo.gzip + build.artifacts[artifactName].gzip
     }),
-    { type: CellType.TOTAL, size: 0, gzip: 0 }
+    { type: CellType.TOTAL, stat: 0, gzip: 0 }
   );
 
 const getTotalSizeDeltas = (baseBuild: Build, changeBuild: Build): TotalDeltaCellType => {
@@ -89,8 +89,8 @@ const getTotalSizeDeltas = (baseBuild: Build, changeBuild: Build): TotalDeltaCel
 
   return {
     type: CellType.TOTAL_DELTA,
-    size: baseSize.size - changeSize.size,
-    sizePercent: baseSize.size / changeSize.size,
+    stat: baseSize.stat - changeSize.stat,
+    statPercent: baseSize.stat / changeSize.stat,
     gzip: baseSize.gzip - changeSize.gzip,
     gzipPercent: baseSize.gzip / changeSize.gzip
   };
@@ -206,7 +206,7 @@ export default class BuildComparator {
         return [
           {
             type: CellType.TOTAL,
-            size: artifact ? artifact.size : 0,
+            stat: artifact ? artifact.stat : 0,
             gzip: artifact ? artifact.gzip : 0
           },
           ...artifactDeltas.map(delta => delta[artifactName])

@@ -36,8 +36,8 @@ export type ServerOptions = {
 };
 
 const defaultThresholds = {
-  size: 5000,
-  sizePercent: 0.1,
+  stat: 5000,
+  statPercent: 0.1,
   gzip: 500,
   gzipPercent: 0.05
 };

@@ -5,6 +5,7 @@ import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
 import Chart from './components/Chart';
 import { formatSha } from './modules/formatting';
+import { object } from 'prop-types';
 import { getBranches, getBuilds } from './api';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -14,7 +15,7 @@ import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
-import type { Build } from 'build-tracker-flowtypes';
+import type { $AppConfig, $ArtifactFilter, Build } from 'build-tracker-flowtypes';
 
 const emptyArray = [];
 
@@ -46,6 +47,36 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
   return builds.filter(b => buildRevisions.indexOf(formatSha(b.meta.revision)) !== -1);
 };
 
+const _getColorScale = (length: number): Function => scaleSequential(interpolateRainbow).domain([0, length]);
+
+const _getFilters = (filters?: $ArtifactFilter): Array<string | RegExp> => {
+  if (!filters) {
+    return [];
+  }
+
+  if (Array.isArray(filters)) {
+    return filters;
+  }
+
+  return [filters];
+};
+
+const _filterArtifactNames = (artifactNames: Array<string>, filters?: $ArtifactFilter): Array<string> => {
+  const activeFilters = _getFilters(filters);
+  if (activeFilters.length === 0) {
+    return artifactNames;
+  }
+
+  return artifactNames.filter(name =>
+    activeFilters.some((filter: RegExp | string) => {
+      if (typeof filter === 'string') {
+        return name.indexOf(filter) === -1;
+      }
+      return !filter.test(name);
+    })
+  );
+};
+
 type AppProps = {
   history: RouterHistory,
   location: Location,
@@ -54,7 +85,7 @@ type AppProps = {
 
 type AppState = {
   activeArtifactNames: Array<string>,
-  artifactFilter?: RegExp,
+  artifactFilter?: $ArtifactFilter,
   artifactNames: Array<string>,
   branches: Array<string>,
   builds: Array<Build>,
@@ -70,10 +101,15 @@ type AppState = {
 };
 
 class App extends Component<AppProps, AppState> {
-  constructor(props: Object, context: Object) {
+  static contextTypes = {
+    config: object
+  };
+
+  constructor(props: Object, context: { config: $AppConfig }) {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
+      artifactFilter: context.config.artifactFilter || /^bundle\./,
       artifactNames: [],
       branches: [],
       builds: [],
@@ -178,8 +214,8 @@ class App extends Component<AppProps, AppState> {
 
     getBuilds(opts).then(({ builds, artifactNames }: { builds: Array<Build>, artifactNames: Array<string> }) => {
       const { artifactFilter } = this.state;
-      const filteredArtifactNames = artifactNames.filter(name => (artifactFilter ? artifactFilter.test(name) : true));
-      const colorScale = scaleSequential(interpolateRainbow).domain([0, filteredArtifactNames.length]);
+      const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilter);
+      const colorScale = _getColorScale(filteredArtifactNames.length);
       this.setState(() => ({
         activeArtifactNames: _getActiveArtifactNames(this.props, filteredArtifactNames),
         artifactNames,
@@ -196,10 +232,10 @@ class App extends Component<AppProps, AppState> {
     });
   }
 
-  _filterArtifacts = (artifactFilter: RegExp) => {
+  _filterArtifacts = (artifactFilter: $ArtifactFilter) => {
     const { artifactNames } = this.state;
-    const filteredArtifactNames = artifactNames.filter(name => artifactFilter.test(name));
-    const colorScale = scaleSequential(interpolateRainbow).domain([0, filteredArtifactNames.length]);
+    const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilter);
+    const colorScale = _getColorScale(filteredArtifactNames.length);
     this.setState(() => ({
       colorScale,
       artifactFilter,
@@ -216,7 +252,10 @@ class App extends Component<AppProps, AppState> {
   };
 
   _handleArtifactsChange = (activeArtifacts: Array<string>) => {
-    this.setState({ activeArtifactNames: activeArtifacts }, this._updateUrl);
+    this.setState(
+      ({ artifactFilter }) => ({ activeArtifactNames: _filterArtifactNames(activeArtifacts, artifactFilter) }),
+      this._updateUrl
+    );
   };
 
   _handleSelectBuild = (build: Build) => {

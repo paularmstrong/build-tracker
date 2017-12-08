@@ -153,6 +153,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
   context: {
     config: $AppConfig
   };
+
   static contextTypes = {
     config: object.isRequired
   };
@@ -178,7 +179,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
   }
 
   render() {
-    const { activeArtifactNames, builds } = this.props;
+    const { activeArtifactNames, artifactNames, builds } = this.props;
     const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
     const { header, total, body } = this._data.matrix;
@@ -194,7 +195,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
             {body.length
               ? body.map((row, i) => {
                   const artifactName = row[0].text ? row[0].text : '';
-                  if (!showDeselectedArtifacts) {
+                  if (!showDeselectedArtifacts || artifactNames.indexOf(artifactName) === -1) {
                     if (activeArtifactNames.indexOf(artifactName) === -1) {
                       return null;
                     }
@@ -344,7 +345,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
         }
         return false;
       });
-      if (i !== 0 && row.length > 2 && deltas.length === 0) {
+      if (row.length > 2 && deltas.length === 0) {
         return false;
       }
       return true;

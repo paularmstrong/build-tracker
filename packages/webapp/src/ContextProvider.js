@@ -25,8 +25,9 @@ export default class ContextProvider extends React.Component<ContextProps> {
   };
 
   getChildContext() {
+    const { config } = this.props;
     return {
-      config: merge(defaultConfig, this.props.config)
+      config: merge(defaultConfig, config)
     };
   }
 

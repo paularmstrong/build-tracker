@@ -68,7 +68,6 @@ export default function createServer({ branches, builds, callbacks, port = 3000,
             thresholds: Object.assign({}, defaultThresholds, thresholds)
           })};</script>`
         );
-        console.log(modifiedHtml);
         res.send(modifiedHtml);
       });
     }

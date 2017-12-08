@@ -54,11 +54,14 @@ type AppProps = {
 
 type AppState = {
   activeArtifactNames: Array<string>,
+  artifactFilter?: RegExp,
   artifactNames: Array<string>,
   branches: Array<string>,
   builds: Array<Build>,
   chart: $Values<typeof ChartType>,
+  colorScale?: Function,
   compareBuilds: Array<Build>,
+  filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
   selectedBuild?: Build,
   valueType: $Values<typeof ValueType>,
@@ -67,17 +70,16 @@ type AppState = {
 };
 
 class App extends Component<AppProps, AppState> {
-  _colorScale: Function;
-
   constructor(props: Object, context: Object) {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
+      artifactNames: [],
       branches: [],
       builds: [],
-      artifactNames: [],
       chart: ChartType.AREA,
       compareBuilds: [],
+      filteredArtifactNames: [],
       valueType: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
@@ -101,8 +103,9 @@ class App extends Component<AppProps, AppState> {
     const {
       activeArtifactNames,
       builds,
-      artifactNames,
+      filteredArtifactNames,
       chart,
+      colorScale,
       compareBuilds,
       hoveredArtifact,
       selectedBuild,
@@ -128,10 +131,10 @@ class App extends Component<AppProps, AppState> {
               <View style={styles.chart}>
                 <Chart
                   activeArtifactNames={activeArtifactNames}
-                  artifacts={artifactNames}
+                  artifacts={filteredArtifactNames}
                   builds={builds}
                   chartType={chart}
-                  colorScale={this._colorScale}
+                  colorScale={colorScale}
                   onHover={this._handleHover}
                   onSelectBuild={this._handleSelectBuild}
                   selectedBuilds={compareBuilds.map(b => b.meta.revision)}
@@ -149,8 +152,8 @@ class App extends Component<AppProps, AppState> {
             <ComparisonTable
               activeArtifactNames={activeArtifactNames}
               builds={compareBuilds}
-              artifactNames={artifactNames}
-              colorScale={this._colorScale}
+              artifactNames={filteredArtifactNames}
+              colorScale={colorScale}
               hoveredArtifact={hoveredArtifact}
               onArtifactsChange={this._handleArtifactsChange}
               onRemoveBuild={this._handleRemoveRevision}
@@ -171,14 +174,18 @@ class App extends Component<AppProps, AppState> {
       opts.revisions = revisions.split(',');
     }
 
-    getBuilds(opts).then(({ builds, artifacts }: { builds: Array<Build>, artifacts: Array<string> }) => {
-      this._colorScale = scaleSequential(interpolateRainbow).domain([0, artifacts.length]);
+    getBuilds(opts).then(({ builds, artifactNames }: { builds: Array<Build>, artifactNames: Array<string> }) => {
+      const { artifactFilter } = this.state;
+      const filteredArtifactNames = artifactNames.filter(name => (artifactFilter ? artifactFilter.test(name) : true));
+      const colorScale = scaleSequential(interpolateRainbow).domain([0, filteredArtifactNames.length]);
       this.setState(() => ({
-        activeArtifactNames: _getActiveArtifactNames(this.props, artifacts),
+        activeArtifactNames: _getActiveArtifactNames(this.props, filteredArtifactNames),
+        artifactNames,
         builds,
-        artifactNames: artifacts,
         chart: builds.length <= 4 ? ChartType.BAR : ChartType.AREA,
-        compareBuilds: _getCompareBuilds(this.props, builds)
+        colorScale,
+        compareBuilds: _getCompareBuilds(this.props, builds),
+        filteredArtifactNames
       }));
     });
 
@@ -186,6 +193,17 @@ class App extends Component<AppProps, AppState> {
       this.setState(() => ({ branches }));
     });
   }
+
+  _filterArtifacts = (artifactFilter?: RegExp) => {
+    const { artifactNames } = this.state;
+    const filteredArtifactNames = artifactNames.filter(name => artifactFilter.test(name));
+    const colorScale = scaleSequential(interpolateRainbow).domain([0, filteredArtifactNames.length]);
+    this.setState(() => ({
+      colorScale,
+      artifactFilter,
+      filteredArtifactNames
+    }));
+  };
 
   _handleToggleValueTypes = (toggleType: string, value: string) => {
     this.setState({ [toggleType]: value });

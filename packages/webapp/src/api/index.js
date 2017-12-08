@@ -8,7 +8,7 @@ type GetBuildOptions = {
 };
 
 const normalizeData = builds => ({
-  artifacts: getArtifactsByAvgSize(builds),
+  artifactNames: getArtifactsByAvgSize(builds),
   builds: sortBuilds(builds)
 });
 

@@ -3,10 +3,10 @@ import * as React from 'react';
 import { object } from 'prop-types';
 import merge from 'deepmerge';
 
-import type { $AppConfig } from 'build-tracker-flowtypes';
+import type { AppConfig } from 'build-tracker-flowtypes';
 
 type ContextProps = {
-  config: $AppConfig,
+  config: AppConfig,
   children: React.Node
 };
 

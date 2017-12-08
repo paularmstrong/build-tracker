@@ -15,7 +15,7 @@ import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
-import type { $AppConfig, $ArtifactFilters, Build } from 'build-tracker-flowtypes';
+import type { AppConfig, ArtifactFilters, Build } from 'build-tracker-flowtypes';
 
 const emptyArray = [];
 
@@ -49,7 +49,7 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
 
 const _getColorScale = (length: number): Function => scaleSequential(interpolateRainbow).domain([0, length]);
 
-const _filterArtifactNames = (artifactNames: Array<string>, filters: $ArtifactFilters): Array<string> => {
+const _filterArtifactNames = (artifactNames: Array<string>, filters: ArtifactFilters): Array<string> => {
   if (!filters || filters.length === 0) {
     return artifactNames;
   }
@@ -65,7 +65,7 @@ type AppProps = {
 
 type AppState = {
   activeArtifactNames: Array<string>,
-  artifactFilters: $ArtifactFilters,
+  artifactFilters: ArtifactFilters,
   artifactNames: Array<string>,
   branches: Array<string>,
   builds: Array<Build>,
@@ -85,7 +85,7 @@ class App extends Component<AppProps, AppState> {
     config: object
   };
 
-  constructor(props: Object, context: { config: $AppConfig }) {
+  constructor(props: Object, context: { config: AppConfig }) {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
@@ -218,7 +218,7 @@ class App extends Component<AppProps, AppState> {
     });
   }
 
-  _filterArtifacts = (artifactFilters: $ArtifactFilters) => {
+  _filterArtifacts = (artifactFilters: ArtifactFilters) => {
     const { artifactNames } = this.state;
     const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
     const colorScale = _getColorScale(filteredArtifactNames.length);

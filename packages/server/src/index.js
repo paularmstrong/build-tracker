@@ -13,7 +13,7 @@ import type { $Application, $Request, $Response } from 'express';
 import type { BranchGetOptions } from './api/branches';
 import type { BuildGetOptions, BuildPostOptions, BuildPostCallbacks } from './api/builds';
 
-import type { Artifact, $ArtifactFilters, Build, BuildMeta, $Thresholds } from 'build-tracker-flowtypes';
+import type { Artifact, ArtifactFilters, Build, BuildMeta, Thresholds } from 'build-tracker-flowtypes';
 
 const noop = () => {};
 
@@ -28,12 +28,12 @@ const logFormat =
 app.use(morgan(logFormat));
 
 export type ServerOptions = {
-  artifactFilters?: $ArtifactFilters,
+  artifactFilters?: ArtifactFilters,
   branches: BranchGetOptions,
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
   port?: number,
-  thresholds?: $Thresholds
+  thresholds?: Thresholds
 };
 
 const defaultThresholds = {
@@ -87,10 +87,10 @@ export default function createServer({
 }
 
 export type StaticServerOptions = {
-  artifactFilters?: $ArtifactFilters,
+  artifactFilters?: ArtifactFilters,
   port?: number,
   statsRoot: string,
-  thresholds?: $Thresholds
+  thresholds?: Thresholds
 };
 
 const unique = (value, index, self): boolean => self.indexOf(value) === index;

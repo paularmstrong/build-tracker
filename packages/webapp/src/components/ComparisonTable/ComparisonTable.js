@@ -14,7 +14,7 @@ import React, { Component, PureComponent } from 'react';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
 
 import type { Build } from 'build-tracker-flowtypes';
-import type { $AppConfig, BodyCellType, DeltaCellType, TotalCellType, HeaderCellType } from 'build-tracker-comparator';
+import type { AppConfig, BodyCellType, DeltaCellType, TotalCellType, HeaderCellType } from 'build-tracker-comparator';
 
 const greenScale = scaleLinear()
   .domain([1, 0])
@@ -151,7 +151,7 @@ type ComparisonState = {
 
 export default class Comparisons extends PureComponent<ComparisonProps, ComparisonState> {
   context: {
-    config: $AppConfig
+    config: AppConfig
   };
 
   static contextTypes = {

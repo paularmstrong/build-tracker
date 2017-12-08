@@ -88,17 +88,17 @@ declare module 'build-tracker-flowtypes' {
    * Application
    */
 
-  declare type $Thresholds = {|
+  declare type Thresholds = {|
     stat?: number,
     statPercent?: number,
     gzip?: number,
     gzipPercent?: number
   |};
 
-  declare type $ArtifactFilters = Array<RegExp>;
+  declare type ArtifactFilters = Array<RegExp>;
 
-  declare type $AppConfig = {|
-    artifactFilters?: $ArtifactFilters,
-    thresholds?: $Thresholds
+  declare type AppConfig = {|
+    artifactFilters?: ArtifactFilters,
+    thresholds?: Thresholds
   |};
 }

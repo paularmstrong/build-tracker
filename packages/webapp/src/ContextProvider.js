@@ -11,6 +11,7 @@ type ContextProps = {
 };
 
 const defaultConfig = {
+  artifactFilters: [],
   thresholds: {
     stat: 5000,
     statPercent: 0.1,
@@ -25,9 +26,19 @@ export default class ContextProvider extends React.Component<ContextProps> {
   };
 
   getChildContext() {
-    const { config } = this.props;
+    const { config: { artifactFilters, ...config } } = this.props;
+    const regexFilters = artifactFilters
+      ? artifactFilters.map(filter => {
+          if (typeof filter === 'string') {
+            const flags = filter.match(/\/([gimu]*)$/);
+            const normalizedFilter = filter.replace(/^\//, '').replace(/\/[gimu]*$/, '');
+            return new RegExp(normalizedFilter, flags.length ? flags[1] : undefined);
+          }
+          return filter;
+        })
+      : [];
     return {
-      config: merge(defaultConfig, config)
+      config: merge.all([defaultConfig, config, { artifactFilters: regexFilters }])
     };
   }
 

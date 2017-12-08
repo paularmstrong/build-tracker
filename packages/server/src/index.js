@@ -13,7 +13,7 @@ import type { $Application, $Request, $Response } from 'express';
 import type { BranchGetOptions } from './api/branches';
 import type { BuildGetOptions, BuildPostOptions, BuildPostCallbacks } from './api/builds';
 
-import type { Artifact, Build, BuildMeta, $Thresholds } from 'build-tracker-flowtypes';
+import type { Artifact, $ArtifactFilters, Build, BuildMeta, $Thresholds } from 'build-tracker-flowtypes';
 
 const noop = () => {};
 
@@ -28,6 +28,7 @@ const logFormat =
 app.use(morgan(logFormat));
 
 export type ServerOptions = {
+  artifactFilters?: $ArtifactFilters,
   branches: BranchGetOptions,
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
@@ -42,7 +43,14 @@ const defaultThresholds = {
   gzipPercent: 0.05
 };
 
-export default function createServer({ branches, builds, callbacks, port = 3000, thresholds }: ServerOptions) {
+export default function createServer({
+  artifactFilters = [],
+  branches,
+  builds,
+  callbacks,
+  port = 3000,
+  thresholds
+}: ServerOptions) {
   app.get('/api/builds', Builds.handleGet(builds));
   app.post('/api/builds', Builds.handlePost(builds, callbacks));
 
@@ -65,6 +73,7 @@ export default function createServer({ branches, builds, callbacks, port = 3000,
         const modifiedHtml = data.toString().replace(
           '<script id="config"></script>',
           `<script id="config">window.CONFIG=${JSON.stringify({
+            artifactFilters: artifactFilters.map(filter => filter.toString()),
             thresholds: Object.assign({}, defaultThresholds, thresholds)
           })};</script>`
         );
@@ -78,6 +87,7 @@ export default function createServer({ branches, builds, callbacks, port = 3000,
 }
 
 export type StaticServerOptions = {
+  artifactFilters?: $ArtifactFilters,
   port?: number,
   statsRoot: string,
   thresholds?: $Thresholds

@@ -95,10 +95,10 @@ declare module 'build-tracker-flowtypes' {
     gzipPercent?: number
   |};
 
-  declare type $ArtifactFilter = RegExp | string | Array<RegExp | string>;
+  declare type $ArtifactFilters = Array<RegExp>;
 
   declare type $AppConfig = {|
-    artifactFilter?: $ArtifactFilter,
+    artifactFilters?: $ArtifactFilters,
     thresholds?: $Thresholds
   |};
 }

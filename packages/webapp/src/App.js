@@ -8,14 +8,14 @@ import { formatSha } from './modules/formatting';
 import { object } from 'prop-types';
 import { getBranches, getBuilds } from './api';
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import theme from './theme';
 import Toggles from './components/Toggles';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 
 import type { Location, Match, RouterHistory } from 'react-router-dom';
-import type { $AppConfig, $ArtifactFilter, Build } from 'build-tracker-flowtypes';
+import type { $AppConfig, $ArtifactFilters, Build } from 'build-tracker-flowtypes';
 
 const emptyArray = [];
 
@@ -49,32 +49,12 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
 
 const _getColorScale = (length: number): Function => scaleSequential(interpolateRainbow).domain([0, length]);
 
-const _getFilters = (filters?: $ArtifactFilter): Array<string | RegExp> => {
-  if (!filters) {
-    return [];
-  }
-
-  if (Array.isArray(filters)) {
-    return filters;
-  }
-
-  return [filters];
-};
-
-const _filterArtifactNames = (artifactNames: Array<string>, filters?: $ArtifactFilter): Array<string> => {
-  const activeFilters = _getFilters(filters);
-  if (activeFilters.length === 0) {
+const _filterArtifactNames = (artifactNames: Array<string>, filters: $ArtifactFilters): Array<string> => {
+  if (!filters || filters.length === 0) {
     return artifactNames;
   }
 
-  return artifactNames.filter(name =>
-    activeFilters.some((filter: RegExp | string) => {
-      if (typeof filter === 'string') {
-        return name.indexOf(filter) === -1;
-      }
-      return !filter.test(name);
-    })
-  );
+  return artifactNames.filter(name => filters.some(filter => !filter.test(name)));
 };
 
 type AppProps = {
@@ -85,7 +65,7 @@ type AppProps = {
 
 type AppState = {
   activeArtifactNames: Array<string>,
-  artifactFilter?: $ArtifactFilter,
+  artifactFilters: $ArtifactFilters,
   artifactNames: Array<string>,
   branches: Array<string>,
   builds: Array<Build>,
@@ -109,7 +89,7 @@ class App extends Component<AppProps, AppState> {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
-      artifactFilter: context.config.artifactFilter || /^bundle\./,
+      artifactFilters: context.config.artifactFilters || [],
       artifactNames: [],
       branches: [],
       builds: [],
@@ -138,6 +118,7 @@ class App extends Component<AppProps, AppState> {
   render() {
     const {
       activeArtifactNames,
+      artifactNames,
       builds,
       filteredArtifactNames,
       chart,
@@ -180,6 +161,11 @@ class App extends Component<AppProps, AppState> {
                     yScaleType={yscale}
                   />
                 ) : null}
+                {filteredArtifactNames.length !== artifactNames.length ? (
+                  <View>
+                    <Text>{artifactNames.length - filteredArtifactNames.length} artifacts hidden via filters</Text>
+                  </View>
+                ) : null}
                 <BranchPicker branches={this.state.branches} />
               </View>
             </View>
@@ -213,8 +199,8 @@ class App extends Component<AppProps, AppState> {
     }
 
     getBuilds(opts).then(({ builds, artifactNames }: { builds: Array<Build>, artifactNames: Array<string> }) => {
-      const { artifactFilter } = this.state;
-      const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilter);
+      const { artifactFilters } = this.state;
+      const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
       const colorScale = _getColorScale(filteredArtifactNames.length);
       this.setState(() => ({
         activeArtifactNames: _getActiveArtifactNames(this.props, filteredArtifactNames),
@@ -232,13 +218,13 @@ class App extends Component<AppProps, AppState> {
     });
   }
 
-  _filterArtifacts = (artifactFilter: $ArtifactFilter) => {
+  _filterArtifacts = (artifactFilters: $ArtifactFilters) => {
     const { artifactNames } = this.state;
-    const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilter);
+    const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
     const colorScale = _getColorScale(filteredArtifactNames.length);
     this.setState(() => ({
       colorScale,
-      artifactFilter,
+      artifactFilters,
       filteredArtifactNames
     }));
   };
@@ -253,7 +239,7 @@ class App extends Component<AppProps, AppState> {
 
   _handleArtifactsChange = (activeArtifacts: Array<string>) => {
     this.setState(
-      ({ artifactFilter }) => ({ activeArtifactNames: _filterArtifactNames(activeArtifacts, artifactFilter) }),
+      ({ artifactFilters }) => ({ activeArtifactNames: _filterArtifactNames(activeArtifacts, artifactFilters) }),
       this._updateUrl
     );
   };

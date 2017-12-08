@@ -68,7 +68,7 @@ const getMouseInformation = (
   };
 };
 
-type AreaChartProps = {
+type ChartProps = {
   activeArtifactNames: Array<string>,
   artifacts: Array<string>,
   builds: Array<Build>,
@@ -82,12 +82,12 @@ type AreaChartProps = {
   yScaleType: $Values<typeof YScaleType>
 };
 
-type AreaChartState = {
+type ChartState = {
   height: number,
   width: number
 };
 
-export default class AreaChart extends Component<AreaChartProps, AreaChartState> {
+export default class Chart extends Component<ChartProps, ChartState> {
   static defaultProps = {
     chartType: ChartType.BAR,
     selectedBuilds: []

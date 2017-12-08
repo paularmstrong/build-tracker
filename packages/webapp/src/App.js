@@ -129,19 +129,21 @@ class App extends Component<AppProps, AppState> {
           <View style={styles.innerMain}>
             <View style={styles.chartRoot}>
               <View style={styles.chart}>
-                <Chart
-                  activeArtifactNames={activeArtifactNames}
-                  artifacts={filteredArtifactNames}
-                  builds={builds}
-                  chartType={chart}
-                  colorScale={colorScale}
-                  onHover={this._handleHover}
-                  onSelectBuild={this._handleSelectBuild}
-                  selectedBuilds={compareBuilds.map(b => b.meta.revision)}
-                  valueAccessor={valueTypeAccessor[valueType]}
-                  xScaleType={xscale}
-                  yScaleType={yscale}
-                />
+                {builds && colorScale ? (
+                  <Chart
+                    activeArtifactNames={activeArtifactNames}
+                    artifacts={filteredArtifactNames}
+                    builds={builds}
+                    chartType={chart}
+                    colorScale={colorScale}
+                    onHover={this._handleHover}
+                    onSelectBuild={this._handleSelectBuild}
+                    selectedBuilds={compareBuilds.map(b => b.meta.revision)}
+                    valueAccessor={valueTypeAccessor[valueType]}
+                    xScaleType={xscale}
+                    yScaleType={yscale}
+                  />
+                ) : null}
                 <BranchPicker branches={this.state.branches} />
               </View>
             </View>
@@ -194,7 +196,7 @@ class App extends Component<AppProps, AppState> {
     });
   }
 
-  _filterArtifacts = (artifactFilter?: RegExp) => {
+  _filterArtifacts = (artifactFilter: RegExp) => {
     const { artifactNames } = this.state;
     const filteredArtifactNames = artifactNames.filter(name => artifactFilter.test(name));
     const colorScale = scaleSequential(interpolateRainbow).domain([0, filteredArtifactNames.length]);

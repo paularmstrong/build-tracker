@@ -8,11 +8,11 @@ const path = require('path');
 const querystring = require('querystring');
 const url = require('url');
 
-class AnalyzerStatsPlugin {
-  constructor({ buildRevision, buildBranch, meta, outputPath, outputUrl }, options) {
-    this._revision = buildRevision;
+class BuildTrackerPlugin {
+  constructor({ revision, branch, meta, outputPath, outputUrl }, options) {
+    this._revision = revision;
     this._meta = meta || {};
-    this._branch = buildBranch;
+    this._branch = branch;
     this._outputPath = outputPath;
     this._outputUrl = outputUrl;
 
@@ -26,7 +26,7 @@ class AnalyzerStatsPlugin {
   _handleDone(artifacts) {
     const compilation = artifacts.compilation;
     const fileNameFormat = compilation.outputOptions.chunkFilename;
-    let hashLength = fileNameFormat.match(/\[chunkhash\:(\d+)\]/);
+    let hashLength = fileNameFormat.match(/\[(?:chunk)?hash\:(\d+)\]/);
     if (hashLength && hashLength.length) {
       hashLength = parseInt(hashLength[1], 10);
     }
@@ -35,7 +35,7 @@ class AnalyzerStatsPlugin {
       .map(chunk => {
         const fileName = fileNameFormat
           .replace('[name]', chunk.name)
-          .replace(/\[chunkhash\:\d+\]/, chunk.hash.slice(0, hashLength));
+          .replace(/\[(?:chunk)?hash\:\d+\]/, chunk.hash.slice(0, hashLength));
         const filePath = path.join(compilation.outputOptions.path, fileName);
 
         try {
@@ -52,15 +52,14 @@ class AnalyzerStatsPlugin {
         }
       })
       .filter(Boolean)
-      .reduce((memo, artifact) => ({ ...memo, [artifact.name]: artifact }), {});
+      .reduce((memo, artifact) => Object.assign({}, memo, { [artifact.name]: artifact }), {});
 
     const output = {
-      meta: {
-        ...meta,
+      meta: Object.assign({}, this._meta, {
         revision: this._revision,
         branch: this._branch,
         timestamp: Date.now()
-      },
+      }),
       artifacts: outputArtifacts
     };
 
@@ -87,11 +86,11 @@ class AnalyzerStatsPlugin {
       `Expected "${this._outputUrl}" to start with http or https`
     );
 
-    const data = querystring.stringify(output);
+    const data = JSON.stringify(output);
     const requestOptions = Object.assign({}, parsedUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data)
       }
     });
@@ -99,10 +98,19 @@ class AnalyzerStatsPlugin {
     let httpModule = requestOptions.protocol === 'https:' ? https : http;
 
     const request = httpModule.request(requestOptions, response => {
-      if (response.statusCode < 200 || response.statusCode >= 400) {
-        throw new Error(`Failed to post build status to URL: ${response.statusCode} - ${response.statusMessage}`);
-        process.exit(1);
-      }
+      response.setEncoding('utf8');
+      let resBody = '';
+      response.on('data', chunk => {
+        resBody += chunk;
+      });
+      response.on('end', () => {
+        if (response.statusCode < 200 || response.statusCode >= 400) {
+          throw new Error(
+            `Failed to post build status to URL: ${response.statusCode} - ${response.statusMessage} - ${resBody}`
+          );
+          process.exit(1);
+        }
+      });
     });
 
     request.write(data);
@@ -110,4 +118,4 @@ class AnalyzerStatsPlugin {
   }
 }
 
-module.exports = AnalyzerStatsPlugin;
+module.exports = BuildTrackerPlugin;

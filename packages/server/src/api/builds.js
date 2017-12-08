@@ -92,7 +92,7 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildI
     isValidBuild(build);
   } catch (err) {
     res.status(400);
-    res.write(JSON.stringify({ success: false, error: err.toString() }));
+    res.write(JSON.stringify({ success: false, error: err.toString(), build }));
     res.end();
     return;
   }

@@ -8,7 +8,7 @@ import { formatSha } from './modules/formatting';
 import { object } from 'prop-types';
 import { getBranches, getBuilds } from './api';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from './theme';
 import Toggles from './components/Toggles';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
@@ -75,6 +75,7 @@ type AppState = {
   filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
   selectedBuild?: Build,
+  isFiltered: boolean,
   valueType: $Values<typeof ValueType>,
   xscale: $Values<typeof XScaleType>,
   yscale: $Values<typeof YScaleType>
@@ -96,6 +97,7 @@ class App extends Component<AppProps, AppState> {
       chart: ChartType.AREA,
       compareBuilds: [],
       filteredArtifactNames: [],
+      isFiltered: true,
       valueType: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
@@ -118,6 +120,7 @@ class App extends Component<AppProps, AppState> {
   render() {
     const {
       activeArtifactNames,
+      artifactFilters,
       artifactNames,
       builds,
       filteredArtifactNames,
@@ -126,6 +129,7 @@ class App extends Component<AppProps, AppState> {
       compareBuilds,
       hoveredArtifact,
       selectedBuild,
+      isFiltered,
       valueType,
       xscale,
       yscale
@@ -161,9 +165,15 @@ class App extends Component<AppProps, AppState> {
                     yScaleType={yscale}
                   />
                 ) : null}
-                {filteredArtifactNames.length !== artifactNames.length ? (
-                  <View>
-                    <Text>{artifactNames.length - filteredArtifactNames.length} artifacts hidden via filters</Text>
+                {artifactFilters.length ? (
+                  <View style={styles.filters}>
+                    <Switch onValueChange={this._handleToggleFilters} value={isFiltered} />
+                    <Text style={styles.filterText}>
+                      Filters{' '}
+                      {isFiltered
+                        ? `enabled (${artifactNames.length - filteredArtifactNames.length} hidden)`
+                        : 'disabled'}
+                    </Text>
                   </View>
                 ) : null}
                 <BranchPicker branches={this.state.branches} />
@@ -218,15 +228,15 @@ class App extends Component<AppProps, AppState> {
     });
   }
 
-  _filterArtifacts = (artifactFilters: ArtifactFilters) => {
-    const { artifactNames } = this.state;
-    const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
-    const colorScale = _getColorScale(filteredArtifactNames.length);
-    this.setState(() => ({
-      colorScale,
-      artifactFilters,
-      filteredArtifactNames
-    }));
+  _handleToggleFilters = (isFiltered: boolean) => {
+    this.setState(({ artifactFilters, artifactNames }) => {
+      const filteredArtifactNames = isFiltered ? _filterArtifactNames(artifactNames, artifactFilters) : artifactNames;
+      return {
+        colorScale: _getColorScale(filteredArtifactNames.length),
+        filteredArtifactNames,
+        isFiltered
+      };
+    });
   };
 
   _handleToggleValueTypes = (toggleType: string, value: string) => {
@@ -340,6 +350,13 @@ const styles = StyleSheet.create({
     marginTop: theme.spaceSmall,
     marginRight: theme.spaceSmall,
     marginBottom: theme.spaceSmall
+  },
+  filters: {
+    flexDirection: 'row',
+    paddingHorizontal: theme.spaceMedium
+  },
+  filterText: {
+    paddingLeft: theme.spaceXXSmall
   }
 });
 

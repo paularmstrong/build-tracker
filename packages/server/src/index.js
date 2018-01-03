@@ -95,10 +95,10 @@ export type StaticServerOptions = {
 
 const unique = (value, index, self): boolean => self.indexOf(value) === index;
 
-export const staticServer = ({ port, statsRoot, thresholds }: StaticServerOptions) => {
+export const staticServer = (options: StaticServerOptions) => {
   const getWithGlob = (match, branch, count): Promise<Array<Build>> => {
     return new Promise((resolve, reject) => {
-      glob(`${statsRoot}/${match}.json`, (err, matches) => {
+      glob(`${options.statsRoot}/${match}.json`, (err, matches) => {
         if (err) {
           return reject(err);
         }
@@ -128,19 +128,19 @@ export const staticServer = ({ port, statsRoot, thresholds }: StaticServerOption
       return branches.slice(0, count);
     });
 
-  return createServer({
-    branches: {
-      getBranches
-    },
-    builds: {
-      getByBranch,
-      getByRevisionRange: () => Promise.reject('Not implemented'),
-      getByRevisions,
-      getByTimeRange: () => Promise.reject('Not implemented'),
-      getPrevious: () => Promise.reject('Not implemented'),
-      insert: () => Promise.reject(new Error('Static server cannot save new builds'))
-    },
-    port,
-    thresholds
-  });
+  return createServer(
+    Object.assign({}, options, {
+      branches: {
+        getBranches
+      },
+      builds: {
+        getByBranch,
+        getByRevisionRange: () => Promise.reject('Not implemented'),
+        getByRevisions,
+        getByTimeRange: () => Promise.reject('Not implemented'),
+        getPrevious: () => Promise.reject('Not implemented'),
+        insert: () => Promise.reject(new Error('Static server cannot save new builds'))
+      }
+    })
+  );
 };

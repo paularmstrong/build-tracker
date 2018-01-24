@@ -98,10 +98,9 @@ class BuildTrackerPlugin {
       });
       response.on('end', () => {
         if (response.statusCode < 200 || response.statusCode >= 400) {
-          throw new Error(
+          console.error(
             `Failed to post build status to URL: ${response.statusCode} - ${response.statusMessage} - ${resBody}`
           );
-          process.exit(1);
         }
       });
     });

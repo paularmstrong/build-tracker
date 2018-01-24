@@ -7,7 +7,6 @@ export default StyleSheet.create({
     height: '1.25em',
     maxWidth: '100%',
     position: 'relative',
-    userSelect: 'none',
-    verticalAlign: 'text-bottom'
+    userSelect: 'none'
   }
 });

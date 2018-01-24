@@ -7,8 +7,7 @@ const styles = StyleSheet.create({
   },
   dataTable: {
     fontSize: theme.fontSizeSmall,
-    borderSpacing: 0,
-    borderCollapse: 'separate'
+    borderCollapse: 'collapse'
   },
   header: {
     position: 'sticky',
@@ -36,7 +35,6 @@ const styles = StyleSheet.create({
     margin: 0,
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
-    verticalAlign: 'middle',
     height: theme.spaceLarge,
     textAlign: 'right',
     borderBottomWidth: '1px',

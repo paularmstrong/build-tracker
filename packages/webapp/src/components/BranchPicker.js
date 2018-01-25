@@ -1,36 +1,51 @@
 // @flow
 import theme from '../theme';
 import React, { PureComponent } from 'react';
-import { createElement, StyleSheet, Text, View } from 'react-native';
-
-// TODO: replace with RNW Picker/Picker.Item in > 0.1.16
-const Picker = props => createElement('select', props);
-const PickerItem = props => createElement('option', props);
+import { StyleSheet, Picker, Text, View } from 'react-native';
 
 type Props = {
   branches: Array<string>
 };
 
-export default class BranchPicker extends PureComponent<Props> {
+type State = {
+  baseBranch: string,
+  compareBranch: string
+};
+
+export default class BranchPicker extends PureComponent<Props, State> {
+  constructor(props: Props, context: any) {
+    super(props, context);
+    this.state = { baseBranch: props.branches[0], compareBranch: props.branches[0] };
+  }
+
   render() {
     const { branches } = this.props;
+    const { baseBranch, compareBranch } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.branch}>
           <Text>Base Branch</Text>
-          <Picker style={styles.picker}>
-            {branches.map((branch: string) => <PickerItem key={branch}>{branch}</PickerItem>)}
+          <Picker style={styles.picker} onValueChange={this._handleChangBaseBranch} selectedValue={baseBranch}>
+            {branches.map((branch: string) => <Picker.Item key={branch} label={branch} />)}
           </Picker>
         </View>
         <View style={styles.branch}>
           <Text>Compare Branch</Text>
-          <Picker style={styles.picker}>
-            {branches.map((branch: string) => <PickerItem key={branch}>{branch}</PickerItem>)}
+          <Picker style={styles.picker} onValueChange={this._handleChangCompareBranch} selectedValue={compareBranch}>
+            {branches.map((branch: string) => <Picker.Item key={branch} label={branch} />)}
           </Picker>
         </View>
       </View>
     );
   }
+
+  _handleChangBaseBranch = (value: string) => {
+    this.setState({ baseBranch: value });
+  };
+
+  _handleChangCompareBranch = (value: string) => {
+    this.setState({ compareBranch: value });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -45,7 +60,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 2,
     backgroundColor: 'rgb(223,223,223)',
-    color: 'rgb(161,161,161)',
-    fontSize: theme.fontSizeNormal
+    color: 'rgb(161,161,161)'
   }
 });

@@ -7,11 +7,11 @@ import { createElement, StyleSheet, Text, View } from 'react-native';
 const Picker = props => createElement('select', props);
 const PickerItem = props => createElement('option', props);
 
-type BranchPickerProps = {
+type Props = {
   branches: Array<string>
 };
 
-export default class BranchPicker extends PureComponent<BranchPickerProps> {
+export default class BranchPicker extends PureComponent<Props> {
   render() {
     const { branches } = this.props;
     return (

@@ -4,7 +4,7 @@ import styles from './styles';
 import { Th } from '../Table';
 import React, { PureComponent } from 'react';
 
-import type { ArtifactSwitchProps } from '../ArtifactSwitch';
+import type { Props as ArtifactSwitchProps } from '../ArtifactSwitch';
 
 const emptyObject = {};
 

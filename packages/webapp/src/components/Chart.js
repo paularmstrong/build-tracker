@@ -68,7 +68,7 @@ const getMouseInformation = (
   };
 };
 
-type ChartProps = {
+type Props = {
   activeArtifactNames: Array<string>,
   artifacts: Array<string>,
   builds: Array<Build>,
@@ -82,12 +82,12 @@ type ChartProps = {
   yScaleType: $Values<typeof YScaleType>
 };
 
-type ChartState = {
+type State = {
   height: number,
   width: number
 };
 
-export default class Chart extends Component<ChartProps, ChartState> {
+export default class Chart extends Component<Props, State> {
   static defaultProps = {
     chartType: ChartType.BAR,
     selectedBuilds: []
@@ -101,7 +101,7 @@ export default class Chart extends Component<ChartProps, ChartState> {
   _yAxis: any;
   _xAxis: any;
 
-  constructor(props: Object, context: Object) {
+  constructor(props: Props, context: any) {
     super(props, context);
     this.state = {
       width: 0,
@@ -117,7 +117,7 @@ export default class Chart extends Component<ChartProps, ChartState> {
     this._renderChart();
   }
 
-  shouldComponentUpdate(nextProps: Object, nextState: Object) {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
     return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 

@@ -57,13 +57,13 @@ const _filterArtifactNames = (artifactNames: Array<string>, filters: ArtifactFil
   return artifactNames.filter(name => filters.some(filter => !filter.test(name)));
 };
 
-type AppProps = {
+type Props = {
   history: RouterHistory,
   location: Location,
   match: Match
 };
 
-type AppState = {
+type State = {
   activeArtifactNames: Array<string>,
   artifactFilters: ArtifactFilters,
   artifactNames: Array<string>,
@@ -81,12 +81,12 @@ type AppState = {
   yscale: $Values<typeof YScaleType>
 };
 
-class App extends Component<AppProps, AppState> {
+class App extends Component<Props, State> {
   static contextTypes = {
     config: object
   };
 
-  constructor(props: Object, context: { config: AppConfig }) {
+  constructor(props: Props, context: { config: AppConfig }) {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
@@ -108,7 +108,7 @@ class App extends Component<AppProps, AppState> {
     this._fetchData();
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Props) {
     if (!deepEqual(this.props.match.params, nextProps.match.params)) {
       this.setState(state => ({
         activeArtifactNames: _getActiveArtifactNames(nextProps, state.artifactNames),

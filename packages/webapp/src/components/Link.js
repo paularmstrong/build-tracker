@@ -4,11 +4,11 @@ import { createElement, StyleSheet } from 'react-native';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import theme from '../theme';
 
-type LinkProps = {
+type Props = {
   style: mixed
 };
 
-export default class Link extends Component<LinkProps> {
+export default class Link extends Component<Props> {
   render() {
     return createElement(ReactRouterLink, {
       ...this.props,

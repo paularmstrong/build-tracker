@@ -7,11 +7,11 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import type { Build } from 'build-tracker-flowtypes';
 
-type BuildInfoProps = {
+type Props = {
   build: Build
 };
 
-export default class BuildInfo extends PureComponent<BuildInfoProps> {
+export default class BuildInfo extends PureComponent<Props> {
   render() {
     const { build: { meta: { revision, timestamp, ...otherMeta } } } = this.props;
     return (

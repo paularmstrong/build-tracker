@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 
 import type { Match } from 'react-router-dom';
 
-export type ArtifactSwitchProps = {
+export type Props = {
   active: boolean,
   artifactName: string,
   color: string,
@@ -18,7 +18,7 @@ export type ArtifactSwitchProps = {
   onToggle: Function
 };
 
-class ArtifactSwitch extends PureComponent<ArtifactSwitchProps> {
+class ArtifactSwitch extends PureComponent<Props> {
   static defaultProps = {
     disabled: false,
     linked: false

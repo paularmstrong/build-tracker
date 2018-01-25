@@ -1,15 +1,19 @@
 {
   "name": "build-tracker-bin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "dependencies": {
-    "build-tracker-app": "^0.0.2",
+    "build-tracker-app": "^0.0.3",
     "glob": "^7.1.2",
     "yargs": "^8.0.2"
   },
-  "files": ["commands/", "index.js", "README.md"],
+  "files": [
+    "commands/",
+    "index.js",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"no tests\""
   }

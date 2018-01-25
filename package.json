@@ -15,7 +15,7 @@
   "scripts": {
     "build": "lerna run build --stream --parallel",
     "flow": "flow",
-    "precommit": "lint-staged",
+    "precommit": "flow && lint-staged",
     "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish"
   },
   "lint-staged": {

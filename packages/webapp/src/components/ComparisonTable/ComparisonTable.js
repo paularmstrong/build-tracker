@@ -141,8 +141,10 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     const { onRemoveBuild, onShowBuildInfo } = this.props;
     switch (cell.type) {
       case CellType.REVISION_HEADER:
+        // $FlowFixMe
         return <RevisionHeaderCell {...cell} key={i} onClickRemove={onRemoveBuild} onClickInfo={onShowBuildInfo} />;
       case CellType.REVISION_DELTA_HEADER:
+        // $FlowFixMe
         return <RevisionDeltaCell {...cell} key={i} />;
       default:
         return <Th key={i} style={[styles.cell, styles.header]} />;

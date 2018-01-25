@@ -1,17 +1,18 @@
 // @flow
 import ArtifactCell from './ArtifactCell';
-import IconX from '../icons/IconX';
-import { interpolateHcl } from 'd3-interpolate';
 import { object } from 'prop-types';
-import { scaleLinear } from 'd3-scale';
 import styles from './styles';
 import theme from '../../theme';
 import BuildComparator, { CellType } from 'build-tracker-comparator';
-import { Button, Clipboard, Text, View } from 'react-native';
+import { Button, Clipboard, View } from 'react-native';
 import { bytesToKb, formatSha } from '../../modules/formatting';
-import { hsl, rgb } from 'd3-color';
-import React, { Component, PureComponent } from 'react';
+import { hsl } from 'd3-color';
+import React, { PureComponent } from 'react';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
+import DeltaCell from './DeltaCell';
+import RevisionHeaderCell from './RevisionHeaderCell';
+import RevisionDeltaCell from './RevisionDeltaCell';
+import ValueCell from './ValueCell';
 
 import type {
   AppConfig,
@@ -22,123 +23,13 @@ import type {
   HeaderCellType
 } from 'build-tracker-flowtypes';
 
-const greenScale = scaleLinear()
-  .domain([1, 0])
-  .interpolate(interpolateHcl)
-  .range([rgb('#d0f8d7'), rgb('#55e86e')]);
-const redScale = scaleLinear()
-  .domain([1, 2])
-  .interpolate(interpolateHcl)
-  .range([rgb('#fde2e1'), rgb('#f7635b')]);
-
-type RevisionHeaderCellProps = {
-  onClickInfo: Function,
-  onClickRemove: Function,
-  revision: string
-};
-
-class RevisionHeaderCell extends PureComponent<RevisionHeaderCellProps> {
-  render() {
-    const { revision } = this.props;
-    return (
-      <Th style={[styles.cell, styles.header]} title={revision}>
-        <View style={styles.headerContent}>
-          <Text onClick={this._handleClickInfo} style={styles.headerSha}>
-            {formatSha(revision)}
-          </Text>
-          <View onClick={this._handleClickRemove}>
-            <Text style={[styles.headerButton, styles.removeBuild]}>
-              <IconX />
-            </Text>
-          </View>
-        </View>
-      </Th>
-    );
-  }
-
-  _handleClickRemove = () => {
-    const { onClickRemove, revision } = this.props;
-    onClickRemove && onClickRemove(revision);
-  };
-
-  _handleClickInfo = () => {
-    const { onClickInfo, revision } = this.props;
-    onClickInfo && onClickInfo(revision);
-  };
-}
-
-type RevisionDeltaCellProps = {
-  againstRevision: string,
-  deltaIndex: number,
-  revision: string
-};
-
-class RevisionDeltaCell extends Component<RevisionDeltaCellProps> {
-  render() {
-    const { againstRevision, deltaIndex, revision } = this.props;
-    return (
-      <Th
-        style={[styles.cell, styles.header]}
-        title={`Delta from ${formatSha(againstRevision)} to ${formatSha(revision)}`}
-      >
-        <View style={styles.headerContent}>
-          <Text style={styles.headerSha}>{`𝚫${deltaIndex}`}</Text>
-        </View>
-      </Th>
-    );
-  }
-}
-
 const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): number => {
   return artifactNames.indexOf(a) - artifactNames.indexOf(b);
 };
 
-type DeltaCellProps = {
-  gzip: number,
-  gzipPercent: number,
-  hashChanged: boolean,
-  stat: number,
-  statPercent: number,
-  valueType: 'gzip' | 'stat'
-};
-
-class DeltaCell extends Component<DeltaCellProps> {
-  render() {
-    const { gzipPercent, valueType } = this.props;
-    const value = this.props[valueType];
-    const backgroundColor =
-      gzipPercent > 1
-        ? redScale(Math.max(Math.min(gzipPercent, 2), 1))
-        : gzipPercent === 1 ? 'transparent' : greenScale(Math.max(Math.min(gzipPercent, 1), 0));
-    return (
-      <Td style={[styles.cell, backgroundColor && { backgroundColor }]}>
-        <Text>{value ? bytesToKb(value) : '-'}</Text>
-      </Td>
-    );
-  }
-}
-
-type ValueCellProps = {
-  stat: number,
-  gzip: number,
-  valueType: 'gzip' | 'stat'
-};
-
-class ValueCell extends Component<ValueCellProps> {
-  render() {
-    const { valueType } = this.props;
-    const value = this.props[valueType];
-    return (
-      <Td style={[styles.cell]}>
-        <Text>{value ? bytesToKb(value) : '-'}</Text>
-      </Td>
-    );
-  }
-}
-
 const sortBuilds = (a, b) => a.meta.timestamp - b.meta.timestamp;
 
-type ComparisonProps = {
+type Props = {
   activeArtifactNames: Array<string>,
   builds: Array<Build>,
   artifactNames: Array<string>,
@@ -150,12 +41,12 @@ type ComparisonProps = {
   valueType: 'gzip' | 'stat'
 };
 
-type ComparisonState = {
+type State = {
   showAboveThresholdOnly: boolean,
   showDeselectedArtifacts: boolean
 };
 
-export default class Comparisons extends PureComponent<ComparisonProps, ComparisonState> {
+export default class ComparisonTable extends PureComponent<Props, State> {
   context: {
     config: AppConfig
   };
@@ -166,7 +57,7 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
 
   _data: BuildComparator;
 
-  constructor(props: ComparisonProps, context: Object) {
+  constructor(props: Props, context: Object) {
     super(props, context);
     this.state = {
       showAboveThresholdOnly: false,
@@ -175,11 +66,11 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
     this.setData(props);
   }
 
-  componentWillUpdate(nextProps: ComparisonProps, nextState: ComparisonState) {
+  componentWillUpdate(nextProps: Props, nextState: State) {
     this.setData(nextProps);
   }
 
-  setData(props: ComparisonProps) {
+  setData(props: Props) {
     const matrixBodySorter = getBodySorter(props.artifactNames);
     this._data = new BuildComparator(props.builds.sort(sortBuilds), matrixBodySorter);
   }
@@ -274,9 +165,11 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
           />
         );
       case CellType.DELTA:
+        // $FlowFixMe
         return this._renderDeltaCell(cell, i);
       case CellType.TOTAL:
       default:
+        // $FlowFixMe
         return this._renderValueCell(cell, i);
     }
   };
@@ -304,9 +197,11 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
           />
         );
       case CellType.DELTA:
+        // $FlowFixMe
         return this._renderDeltaCell(cell, i);
       case CellType.TOTAL:
       default:
+        // $FlowFixMe
         return this._renderValueCell(cell, i);
     }
   };
@@ -340,11 +235,18 @@ export default class Comparisons extends PureComponent<ComparisonProps, Comparis
 
   _getFilteredData() {
     const { config: { thresholds } } = this.context;
+    if (!thresholds) {
+      return this._data.matrixBody;
+    }
+
     return this._data.matrixBody.filter((row, i) => {
       const deltas = row.filter(cell => {
         if (cell.type === CellType.DELTA) {
           const thresholdChange = Object.keys(thresholds).some(key => {
-            const threshold: number = thresholds[key];
+            const threshold = thresholds[key];
+            if (typeof threshold !== 'number') {
+              return false;
+            }
             return key.indexOf('Percent') > -1 ? 1 - cell[key] >= threshold : cell[key] >= threshold;
           });
           return thresholdChange || ((cell.stat === 0 || cell.gzip === 0) && cell.hashChanged);

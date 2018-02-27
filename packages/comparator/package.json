@@ -7,7 +7,6 @@
   "bugs": {
     "url": "https://github.com/paularmstrong/build-tracker/issues"
   },
-  "homepage": "https://github.com/paularmstrong/build-tracker",
   "repository": {
     "url": "https://github.com/paularmstrong/build-tracker.git",
     "type": "git"
@@ -31,8 +30,5 @@
     "babel-watch": "^2.0.7",
     "flow-copy-source": "^1.2.1"
   },
-  "files": [
-    "index.js",
-    "README.md"
-  ]
+  "files": ["index.js", "README.md"]
 }

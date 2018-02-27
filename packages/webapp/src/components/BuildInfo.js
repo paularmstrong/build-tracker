@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import type { Build } from '@build-tracker/flowtypes';
 import theme from '../theme';
 import { formatSha, formatTime } from '../modules/formatting';
 import { StyleSheet, Text, View } from 'react-native';

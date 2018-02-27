@@ -11,4 +11,4 @@ flow-typed
 
 [options]
 all=false
-module.name_mapper='^@build-tracker/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1'
+module.name_mapper='@build-tracker/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1'

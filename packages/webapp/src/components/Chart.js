@@ -1,7 +1,6 @@
 // @flow
 import 'd3-transition';
 import * as React from 'react';
-import type { Build } from '@build-tracker/flowtypes';
 import deepEqual from 'deep-equal';
 import theme from '../theme';
 import { area, stack } from 'd3-shape';

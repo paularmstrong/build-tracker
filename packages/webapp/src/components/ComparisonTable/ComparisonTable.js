@@ -8,14 +8,6 @@ import RevisionHeaderCell from './RevisionHeaderCell';
 import styles from './styles';
 import theme from '../../theme';
 import ValueCell from './ValueCell';
-import type {
-  AppConfig,
-  BodyCellType,
-  Build,
-  DeltaCellType,
-  HeaderCellType,
-  TotalCellType
-} from '@build-tracker/flowtypes';
 import BuildComparator, { CellType } from '@build-tracker/comparator';
 import { Button, Clipboard, View } from 'react-native';
 import { bytesToKb, formatSha } from '../../modules/formatting';

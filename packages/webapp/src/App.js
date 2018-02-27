@@ -8,7 +8,6 @@ import { formatSha } from './modules/formatting';
 import { object } from 'prop-types';
 import theme from './theme';
 import Toggles from './components/Toggles';
-import type { AppConfig, ArtifactFilters, Build } from '@build-tracker/flowtypes';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 import { getBranches, getBuilds } from './api';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';

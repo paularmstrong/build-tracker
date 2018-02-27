@@ -9,7 +9,6 @@ import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
 import type { $Request, $Response } from 'express';
-import type { ArtifactFilters, Build, Thresholds } from '@build-tracker/flowtypes';
 import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions } from './api/builds';
 
 const APP_HTML = require.resolve('@build-tracker/app');

@@ -1,21 +1,6 @@
 // @flow
 import AsciiTable from 'ascii-table';
 
-import type {
-  Artifact,
-  BodyCellType,
-  Build,
-  BuildDelta,
-  ComparisonMatrix,
-  DeltaCellType,
-  HeaderCellType,
-  RevisionCellType,
-  RevisionDeltaCellType,
-  TextCellType,
-  TotalCellType,
-  TotalDeltaCellType
-} from '@build-tracker/flowtypes';
-
 type RevisionStringFormatter = (cell: RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCellType) => string;
 type TotalStringFormatter = (cell: TotalCellType) => string;

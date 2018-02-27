@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import type { AppConfig } from '@build-tracker/flowtypes';
 import merge from 'deepmerge';
 import { object } from 'prop-types';
 

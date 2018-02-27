@@ -68,6 +68,7 @@
     "fs-extra": "3.0.1",
     "glob": "^7.1.2",
     "html-webpack-plugin": "2.29.0",
+    "react-dev-utils": "^5.0.0",
     "sw-precache-webpack-plugin": "0.11.4",
     "url-loader": "0.6.2",
     "webpack": "3.8.1",

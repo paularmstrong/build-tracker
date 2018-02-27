@@ -33,7 +33,8 @@
     "flow": "flow",
     "lint": "eslint . --fix",
     "precommit": "flow && lint-staged",
-    "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish",
+    "release":
+      "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish -- --access public",
     "test": "jest"
   },
   "lint-staged": {

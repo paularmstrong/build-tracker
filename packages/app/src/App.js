@@ -3,6 +3,7 @@ import BranchPicker from './components/BranchPicker';
 import BuildInfo from './components/BuildInfo';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
+import DateRangePicker from './components/DateRangePicker';
 import deepEqual from 'deep-equal';
 import { formatSha } from './modules/formatting';
 import { object } from 'prop-types';
@@ -72,8 +73,8 @@ type State = {
   compareBuilds: Array<BT$Build>,
   filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
-  selectedBuild?: BT$Build,
   isFiltered: boolean,
+  selectedBuild?: BT$Build,
   valueType: $Values<typeof ValueType>,
   xscale: $Values<typeof XScaleType>,
   yscale: $Values<typeof YScaleType>
@@ -137,13 +138,8 @@ class App extends Component<Props, State> {
       <View style={styles.root}>
         <View style={styles.main}>
           <View style={styles.scaleTypeButtons}>
-            <Toggles
-              chartType={chart}
-              onToggle={this._handleToggleValueTypes}
-              valueType={valueType}
-              xScaleType={xscale}
-              yScaleType={yscale}
-            />
+            <DateRangePicker onChangeRange={this._handleSetStartEndDate} />
+            <BranchPicker branches={this.state.branches} />
           </View>
           <View style={styles.innerMain}>
             <View style={styles.chartRoot}>
@@ -174,7 +170,15 @@ class App extends Component<Props, State> {
                     </Text>
                   </View>
                 ) : null}
-                <BranchPicker branches={this.state.branches} />
+                <View style={styles.scaleTypeButtons}>
+                  <Toggles
+                    chartType={chart}
+                    onToggle={this._handleToggleValueTypes}
+                    valueType={valueType}
+                    xScaleType={xscale}
+                    yScaleType={yscale}
+                  />
+                </View>
               </View>
             </View>
           </View>
@@ -199,9 +203,9 @@ class App extends Component<Props, State> {
     );
   }
 
-  _fetchData() {
+  _fetchData(options: {} = {}) {
     const { match: { params: { revisions } } } = this.props;
-    const opts = {};
+    const opts = { ...options };
     if (revisions) {
       opts.revisions = revisions.split(',');
     }
@@ -225,6 +229,10 @@ class App extends Component<Props, State> {
       this.setState(() => ({ branches }));
     });
   }
+
+  _handleSetStartEndDate = (startDate: Date, endDate: Date) => {
+    this._fetchData({ startTime: startDate.valueOf(), endTime: endDate.valueOf() });
+  };
 
   _handleToggleFilters = (isFiltered: boolean) => {
     this.setState(({ artifactFilters, artifactNames }) => {

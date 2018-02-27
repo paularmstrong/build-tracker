@@ -11,4 +11,5 @@ flow-typed
 
 [options]
 all=false
+emoji=true
 module.name_mapper='@build-tracker/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1'

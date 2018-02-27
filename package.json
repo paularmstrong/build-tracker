@@ -43,5 +43,6 @@
   "lint-staged": {
     "*.js": ["lint", "jest --passWithNoTests", "git add"],
     "*.{js,json,css,md}": ["prettier --write", "git add"]
-  }
+  },
+  "dependencies": {}
 }

@@ -1,8 +1,8 @@
 {
   "name": "@build-tracker/server",
   "version": "0.0.5",
-  "main": "dist/index.js",
-  "module": "src/index.js",
+  "main": "dist",
+  "module": "src",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "bugs": {
@@ -26,10 +26,7 @@
     "build:module": "babel src -d dist --ignore *.test.js",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": [
-    "dist/*",
-    "README.md"
-  ],
+  "files": ["dist/*", "README.md"],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

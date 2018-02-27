@@ -77,7 +77,7 @@ export default function createServer({
   });
 
   app.listen(port);
-  console.log(`Application running on port ${port}`);
+  console.log(`Application running at http://localhost:${port}`);
 }
 
 export type StaticServerOptions = {
@@ -121,6 +121,7 @@ export const staticServer = (options: StaticServerOptions) => {
       }
       return branches.slice(0, count);
     });
+  const getByTimeRange = (startTime: number, endTime?: number) => getWithGlob('*');
 
   return createServer(
     Object.assign({}, options, {
@@ -132,7 +133,7 @@ export const staticServer = (options: StaticServerOptions) => {
         getByBranch,
         getByRevisionRange: () => Promise.reject('Not implemented'),
         getByRevisions,
-        getByTimeRange: () => Promise.reject('Not implemented'),
+        getByTimeRange,
         getPrevious: () => Promise.reject('Not implemented'),
         insert: () => Promise.reject(new Error('Static server cannot save new builds'))
       }

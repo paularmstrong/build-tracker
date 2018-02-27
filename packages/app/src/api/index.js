@@ -5,7 +5,9 @@ import { getArtifactsByAvgSize, sortBuilds } from './normalization';
 const API_BASE = '/api';
 
 type GetBuildOptions = {
-  revisions?: Array<string>
+  endTime?: number,
+  revisions?: Array<string>,
+  startTime?: number
 };
 
 const normalizeData = builds => ({

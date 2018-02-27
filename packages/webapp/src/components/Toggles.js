@@ -1,8 +1,8 @@
 // @flow
 import theme from '../theme';
-import React, { PureComponent } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import { ChartType, Types, TypesEnum, ValueType, XScaleType, YScaleType } from '../modules/values';
+import React, { PureComponent } from 'react';
 
 type OnToggleChange = ($Values<typeof Types>, text: string) => void;
 

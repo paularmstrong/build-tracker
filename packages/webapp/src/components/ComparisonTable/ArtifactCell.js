@@ -1,19 +1,17 @@
 // @flow
+import * as React from 'react';
 import ArtifactSwitch from '../ArtifactSwitch';
 import styles from './styles';
 import { Th } from '../Table';
-import React, { PureComponent } from 'react';
-
-import type { Props as ArtifactSwitchProps } from '../ArtifactSwitch';
 
 const emptyObject = {};
 
-type ArtifactCellProps = ArtifactSwitchProps & {
+type Props = React.ElementConfig<typeof ArtifactSwitch> & {
   hoverColor?: string,
   isHovered?: boolean
 };
 
-export default class ArtifactCell extends PureComponent<ArtifactCellProps> {
+export default class ArtifactCell extends React.PureComponent<Props> {
   render() {
     const { hoverColor, isHovered, ...otherProps } = this.props;
     return (

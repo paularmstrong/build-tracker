@@ -1,21 +1,16 @@
 // @flow
 import * as Branches from './api/branches';
 import * as Builds from './api/builds';
-import assert from 'assert';
 import bodyParser from 'body-parser';
+import type { BranchGetOptions } from './api/branches';
 import express from 'express';
 import fs from 'fs';
 import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
-
-import type { $Application, $Request, $Response } from 'express';
-import type { BranchGetOptions } from './api/branches';
-import type { BuildGetOptions, BuildPostOptions, BuildPostCallbacks } from './api/builds';
-
-import type { Artifact, ArtifactFilters, Build, BuildMeta, Thresholds } from '@build-tracker/flowtypes';
-
-const noop = () => {};
+import type { $Request, $Response } from 'express';
+import type { ArtifactFilters, Build, Thresholds } from '@build-tracker/flowtypes';
+import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions } from './api/builds';
 
 const APP_HTML = require.resolve('@build-tracker/app');
 
@@ -131,6 +126,7 @@ export const staticServer = (options: StaticServerOptions) => {
   return createServer(
     Object.assign({}, options, {
       branches: {
+        // $FlowFixMe
         getBranches
       },
       builds: {

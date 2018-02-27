@@ -2,8 +2,8 @@
 import { bytesToKb } from '../../modules/formatting';
 import styles from './styles';
 import { Td } from '../Table';
-import React, { PureComponent } from 'react';
 import { Text } from 'react-native';
+import React, { PureComponent } from 'react';
 
 type Props = {
   stat: number,

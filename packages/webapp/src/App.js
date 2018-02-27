@@ -1,21 +1,20 @@
 // @flow
 import BranchPicker from './components/BranchPicker';
 import BuildInfo from './components/BuildInfo';
+import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
-import Chart from './components/Chart';
 import { formatSha } from './modules/formatting';
 import { object } from 'prop-types';
-import { getBranches, getBuilds } from './api';
-import React, { Component } from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
 import theme from './theme';
 import Toggles from './components/Toggles';
-import { interpolateRainbow, scaleSequential } from 'd3-scale';
-import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
-
-import type { Location, Match, RouterHistory } from 'react-router-dom';
 import type { AppConfig, ArtifactFilters, Build } from '@build-tracker/flowtypes';
+import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
+import { getBranches, getBuilds } from './api';
+import { interpolateRainbow, scaleSequential } from 'd3-scale';
+import type { Location, Match, RouterHistory } from 'react-router-dom';
+import React, { Component } from 'react';
+import { StyleSheet, Switch, Text, View } from 'react-native';
 
 const emptyArray = [];
 
@@ -185,8 +184,8 @@ class App extends Component<Props, State> {
           <View style={styles.table}>
             <ComparisonTable
               activeArtifactNames={activeArtifactNames}
-              builds={compareBuilds}
               artifactNames={filteredArtifactNames}
+              builds={compareBuilds}
               colorScale={colorScale}
               hoveredArtifact={hoveredArtifact}
               onArtifactsChange={this._handleArtifactsChange}

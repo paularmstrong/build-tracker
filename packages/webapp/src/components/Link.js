@@ -1,8 +1,8 @@
 // @flow
 import { Component } from 'react';
-import { createElement, StyleSheet } from 'react-native';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import theme from '../theme';
+import { createElement, StyleSheet } from 'react-native';
 
 type Props = {
   style: mixed

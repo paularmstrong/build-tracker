@@ -1,3 +1,4 @@
+// @flow
 import type { $Request, $Response } from 'express';
 
 export type BranchGetOptions = {

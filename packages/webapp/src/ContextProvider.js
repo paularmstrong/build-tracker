@@ -1,9 +1,8 @@
 // @flow
 import * as React from 'react';
-import { object } from 'prop-types';
-import merge from 'deepmerge';
-
 import type { AppConfig } from '@build-tracker/flowtypes';
+import merge from 'deepmerge';
+import { object } from 'prop-types';
 
 type ContextProps = {
   config: AppConfig,

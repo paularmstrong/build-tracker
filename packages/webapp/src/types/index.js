@@ -1,3 +1,4 @@
+// @flow
 export type BuildMeta = {
   revision: string,
   timestamp: number

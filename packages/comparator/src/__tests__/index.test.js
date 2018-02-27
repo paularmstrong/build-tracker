@@ -1,4 +1,4 @@
-import BuildComparator, * as Comparator from '../';
+import BuildComparator from '../';
 
 const build1 = {
   meta: { revision: '1234567' },
@@ -12,14 +12,6 @@ const build2 = {
   meta: { revision: '8901234' },
   artifacts: {
     burritos: { hash: 'def', stat: 469, gzip: 93 },
-    tacos: { hash: 'abc', stat: 123, gzip: 45 }
-  }
-};
-
-const build3 = {
-  meta: { revision: '5678901' },
-  artifacts: {
-    burritos: { hash: 'ghi', stat: 345, gzip: 85 },
     tacos: { hash: 'abc', stat: 123, gzip: 45 }
   }
 };

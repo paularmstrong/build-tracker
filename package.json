@@ -5,7 +5,20 @@
   "license": "MIT",
   "workspaces": ["packages/*"],
   "devDependencies": {
+    "babel-eslint": "^8.2.2",
     "babel-jest": "^22.4.1",
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-flowtype": "^2.46.1",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jest": "^21.12.2",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-markdown": "^1.0.0-beta.6",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-react": "^7.7.0",
     "flow-bin": "^0.66.0",
     "flow-typed": "^2.2.3",
     "husky": "^0.14.3",
@@ -18,12 +31,13 @@
   "scripts": {
     "build": "lerna run build --stream --parallel",
     "flow": "flow",
+    "lint": "eslint . --fix",
     "precommit": "flow && lint-staged",
     "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish",
     "test": "jest"
   },
   "lint-staged": {
-    "*.js": ["jest --passWithNoTests", "git add"],
+    "*.js": ["lint", "jest --passWithNoTests", "git add"],
     "*.{js,json,css,md}": ["prettier --write", "git add"]
   }
 }

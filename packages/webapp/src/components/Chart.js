@@ -1,18 +1,17 @@
 // @flow
 import 'd3-transition';
+import * as React from 'react';
+import type { Build } from '@build-tracker/flowtypes';
 import deepEqual from 'deep-equal';
 import theme from '../theme';
 import { area, stack } from 'd3-shape';
+import { axisBottom, axisLeft } from 'd3-axis';
+import { bytesToKb, formatSha, formatTime } from '../modules/formatting';
+import { ChartType, XScaleType, YScaleType } from '../modules/values';
 import { extent, max } from 'd3-array';
 import { mouse, select } from 'd3-selection';
-import React, { Component } from 'react';
+import { scaleBand, scaleLinear, scalePoint, scalePow, scaleTime } from 'd3-scale';
 import { StyleSheet, View } from 'react-native';
-import { scaleBand, scaleTime, scaleLinear, scalePoint, scalePow } from 'd3-scale';
-import { axisBottom, axisLeft } from 'd3-axis';
-import { bytesToKb, formatTime, formatSha } from '../modules/formatting';
-import { ChartType, XScaleType, YScaleType } from '../modules/values';
-
-import type { Build } from '@build-tracker/flowtypes';
 
 type StackedData = Array<Array<Array<number> & { data: Build }> & { index: number, key: string }>;
 
@@ -87,7 +86,7 @@ type State = {
   width: number
 };
 
-export default class Chart extends Component<Props, State> {
+export default class Chart extends React.Component<Props, State> {
   static defaultProps = {
     chartType: ChartType.BAR,
     selectedBuilds: []
@@ -125,7 +124,7 @@ export default class Chart extends Component<Props, State> {
     const { height, width } = this.state;
     return (
       <View onLayout={this._handleLayout} style={styles.root}>
-        <svg ref={this._setSvgRef} height={height} width={width} />
+        <svg height={height} ref={this._setSvgRef} width={width} />
       </View>
     );
   }

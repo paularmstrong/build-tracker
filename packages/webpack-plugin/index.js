@@ -5,7 +5,6 @@ const http = require('http');
 const https = require('https');
 const mkdirp = require('mkdirp');
 const path = require('path');
-const querystring = require('querystring');
 const url = require('url');
 
 class BuildTrackerPlugin {
@@ -88,7 +87,7 @@ class BuildTrackerPlugin {
       }
     });
 
-    let httpModule = requestOptions.protocol === 'https:' ? https : http;
+    const httpModule = requestOptions.protocol === 'https:' ? https : http;
 
     const request = httpModule.request(requestOptions, response => {
       response.setEncoding('utf8');

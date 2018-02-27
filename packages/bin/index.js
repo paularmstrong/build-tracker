@@ -2,7 +2,7 @@
 
 const path = require('path');
 
-const argv = require('yargs')
+require('yargs')
   .usage(`Usage: $0 build --data build-1.json --data build-2.json [...]`)
   .help('help', 'Show this help screen')
   .alias('help', 'h')

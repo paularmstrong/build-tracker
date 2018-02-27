@@ -1,27 +1,26 @@
 // @flow
 import ArtifactCell from './ArtifactCell';
+import DeltaCell from './DeltaCell';
+import { hsl } from 'd3-color';
 import { object } from 'prop-types';
+import RevisionDeltaCell from './RevisionDeltaCell';
+import RevisionHeaderCell from './RevisionHeaderCell';
 import styles from './styles';
 import theme from '../../theme';
-import BuildComparator, { CellType } from '@build-tracker/comparator';
-import { Button, Clipboard, View } from 'react-native';
-import { bytesToKb, formatSha } from '../../modules/formatting';
-import { hsl } from 'd3-color';
-import React, { PureComponent } from 'react';
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td } from '../Table';
-import DeltaCell from './DeltaCell';
-import RevisionHeaderCell from './RevisionHeaderCell';
-import RevisionDeltaCell from './RevisionDeltaCell';
 import ValueCell from './ValueCell';
-
 import type {
   AppConfig,
   BodyCellType,
   Build,
   DeltaCellType,
-  TotalCellType,
-  HeaderCellType
+  HeaderCellType,
+  TotalCellType
 } from '@build-tracker/flowtypes';
+import BuildComparator, { CellType } from '@build-tracker/comparator';
+import { Button, Clipboard, View } from 'react-native';
+import { bytesToKb, formatSha } from '../../modules/formatting';
+import React, { PureComponent } from 'react';
+import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from '../Table';
 
 const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): number => {
   return artifactNames.indexOf(a) - artifactNames.indexOf(b);
@@ -107,8 +106,8 @@ export default class ComparisonTable extends PureComponent<Props, State> {
                 <ArtifactCell
                   active={showAboveThresholdOnly}
                   artifactName="Above threshold only"
-                  disabled={false}
                   color={theme.colorMidnight}
+                  disabled={false}
                   onToggle={this._handleRemoveBelowThreshold}
                 />
                 <Td colSpan={header.length - 1} rowSpan={2} style={styles.footer}>
@@ -142,7 +141,7 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     switch (cell.type) {
       case CellType.REVISION_HEADER:
         // $FlowFixMe
-        return <RevisionHeaderCell {...cell} key={i} onClickRemove={onRemoveBuild} onClickInfo={onShowBuildInfo} />;
+        return <RevisionHeaderCell {...cell} key={i} onClickInfo={onShowBuildInfo} onClickRemove={onRemoveBuild} />;
       case CellType.REVISION_DELTA_HEADER:
         // $FlowFixMe
         return <RevisionDeltaCell {...cell} key={i} />;

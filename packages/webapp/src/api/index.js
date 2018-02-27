@@ -1,3 +1,5 @@
+// @flow
+import type { Build } from '@build-tracker/flowtypes';
 import querystring from 'querystring';
 import { getArtifactsByAvgSize, sortBuilds } from './normalization';
 
@@ -12,7 +14,7 @@ const normalizeData = builds => ({
   builds: sortBuilds(builds)
 });
 
-export const getBuilds = (opts: GetBuildOptions) => {
+export const getBuilds = (opts: GetBuildOptions): Promise<{ artifactNames: Array<string>, builds: Array<Build> }> => {
   if (window.DATA) {
     return Promise.resolve(normalizeData(window.DATA));
   }
@@ -28,8 +30,8 @@ export const getBuilds = (opts: GetBuildOptions) => {
 type GetBranchOptions = {
   count?: number
 };
-export const getBranches = (opts: GetBranchOptions) => {
-  const req = new Request(`${API_BASE}/branches?${querystring.stringify(opts)}`, {
+export const getBranches = (opts?: GetBranchOptions): Promise<Array<string>> => {
+  const req = new Request(`${API_BASE}/branches?${opts ? querystring.stringify(opts) : ''}`, {
     metod: 'GET'
   });
   return fetch(req).then(res => res.json());

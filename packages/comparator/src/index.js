@@ -3,18 +3,17 @@ import AsciiTable from 'ascii-table';
 
 import type {
   Artifact,
+  BodyCellType,
   Build,
-  BuildMeta,
   BuildDelta,
-  TextCellType,
+  ComparisonMatrix,
   DeltaCellType,
-  TotalCellType,
-  TotalDeltaCellType,
+  HeaderCellType,
   RevisionCellType,
   RevisionDeltaCellType,
-  BodyCellType,
-  HeaderCellType,
-  ComparisonMatrix
+  TextCellType,
+  TotalCellType,
+  TotalDeltaCellType
 } from '@build-tracker/flowtypes';
 
 type RevisionStringFormatter = (cell: RevisionCellType) => string;

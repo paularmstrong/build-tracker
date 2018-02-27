@@ -1,7 +1,7 @@
 {
   "name": "@build-tracker/app",
   "version": "0.0.3",
-  "main": "build/index.html",
+  "main": "dist/index.html",
   "bugs": {
     "url": "https://github.com/paularmstrong/build-tracker/issues"
   },
@@ -44,11 +44,10 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "proxy": "http://localhost:8888/",
-  "files": ["build/", "README.md"],
+  "files": ["dist/", "README.md"],
   "devDependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",
-    "babel-eslint": "7.2.3",
     "babel-loader": "7.1.2",
     "babel-plugin-react-native-web": "^0.5.0",
     "babel-preset-react-app": "^3.1.1",
@@ -60,10 +59,6 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.1",
-    "eslint-plugin-flowtype": "2.39.1",
-    "eslint-plugin-import": "2.8.0",
-    "eslint-plugin-jsx-a11y": "5.1.1",
-    "eslint-plugin-react": "7.4.0",
     "file-loader": "1.1.5",
     "fs-extra": "3.0.1",
     "glob": "^7.1.2",
@@ -78,8 +73,5 @@
   "babel": {
     "presets": ["react-app"],
     "plugins": ["react-native-web"]
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   }
 }

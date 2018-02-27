@@ -31,11 +31,14 @@
   "scripts": {
     "build": "lerna run build --stream --parallel",
     "flow": "flow",
+    "flow:ci": "flow check",
     "lint": "eslint . --fix",
+    "lint:ci": "eslint .",
     "precommit": "flow && lint-staged",
     "release":
       "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish -- --access public",
-    "test": "jest"
+    "test": "jest",
+    "test:ci": "jest --ci"
   },
   "lint-staged": {
     "*.js": ["lint", "jest --passWithNoTests", "git add"],

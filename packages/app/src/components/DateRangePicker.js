@@ -1,17 +1,21 @@
 // @flow
 import * as React from 'react';
+import endOfDay from 'date-fns/end_of_day';
 import ModalDatePicker from './DatePicker/Modal';
+import startOfDay from 'date-fns/start_of_day';
 import theme from '../theme';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 type Props = {
-  onChangeRange: (startDate: Date, endDate: Date) => void
+  endDate: Date,
+  onChangeRange: (startDate: Date, endDate: Date) => void,
+  startDate: Date
 };
 type State = {
-  endDate: Date,
+  endDate?: Date,
   showEndDatePicker: boolean,
   showStartDatePicker: boolean,
-  startDate: Date
+  startDate?: Date
 };
 
 const today = new Date();
@@ -21,14 +25,13 @@ export default class DateRangePicker extends React.Component<Props, State> {
   _startInputRef: React.ElementRef<typeof TextInput>;
 
   state = {
-    endDate: today,
     showEndDatePicker: false,
-    showStartDatePicker: false,
-    startDate: today
+    showStartDatePicker: false
   };
 
   render() {
-    const { endDate, showEndDatePicker, showStartDatePicker, startDate } = this.state;
+    const { endDate, startDate } = this.props;
+    const { showEndDatePicker, showStartDatePicker } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.date}>
@@ -71,17 +74,17 @@ export default class DateRangePicker extends React.Component<Props, State> {
   }
 
   _handleSelectEndDate = (endDate: Date) => {
-    this.setState({ endDate }, this._afterSelectDate);
+    this.setState({ endDate: endOfDay(endDate) }, this._afterSelectDate);
     this._handleToggleEndDatePicker();
   };
 
   _handleSelectStartDate = (startDate: Date) => {
-    this.setState({ startDate }, this._afterSelectDate);
+    this.setState({ startDate: startOfDay(startDate) }, this._afterSelectDate);
     this._handleToggleStartDatePicker();
   };
 
   _afterSelectDate = () => {
-    this.props.onChangeRange(this.state.startDate, this.state.endDate);
+    this.props.onChangeRange(this.state.startDate || this.props.startDate, this.state.endDate || this.props.endDate);
   };
 
   _handleToggleEndDatePicker = () => {

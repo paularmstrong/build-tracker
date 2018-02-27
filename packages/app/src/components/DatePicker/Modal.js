@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   root: {
     backgroundColor: theme.colorWhite,
     position: 'absolute',
-    zIndex: 1
+    zIndex: 1,
+    boxShadow: '0 0 8px 0 rgba(0,0,0,0.12), 0 8px 8px 0 rgba(0,0,0,0.24)'
   }
 });

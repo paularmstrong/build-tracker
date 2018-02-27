@@ -1,10 +1,10 @@
 // @flow
-import BranchPicker from './components/BranchPicker';
+import BuildFilter from './components/BuildFilter';
 import BuildInfo from './components/BuildInfo';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
-import DateRangePicker from './components/DateRangePicker';
 import deepEqual from 'deep-equal';
+import type { Filters } from './components/BuildFilter/types';
 import { formatSha } from './modules/formatting';
 import { object } from 'prop-types';
 import theme from './theme';
@@ -137,9 +137,9 @@ class App extends Component<Props, State> {
     return (
       <View style={styles.root}>
         <View style={styles.main}>
-          <View style={styles.scaleTypeButtons}>
-            <DateRangePicker onChangeRange={this._handleSetStartEndDate} />
-            <BranchPicker branches={this.state.branches} />
+          <View style={styles.header}>
+            <Text style={styles.title}>Build Tracker</Text>
+            <BuildFilter branches={this.state.branches} onFilter={this._handleChangeBuildFilter} />
           </View>
           <View style={styles.innerMain}>
             <View style={styles.chartRoot}>
@@ -203,7 +203,7 @@ class App extends Component<Props, State> {
     );
   }
 
-  _fetchData(options: {} = {}) {
+  _fetchData(options: {} = {}, fetchBranches: boolean = true) {
     const { match: { params: { revisions } } } = this.props;
     const opts = { ...options };
     if (revisions) {
@@ -225,13 +225,23 @@ class App extends Component<Props, State> {
       }));
     });
 
-    getBranches().then((branches: Array<string>) => {
-      this.setState(() => ({ branches }));
-    });
+    if (fetchBranches) {
+      getBranches().then((branches: Array<string>) => {
+        this.setState(() => ({ branches }));
+      });
+    }
   }
 
-  _handleSetStartEndDate = (startDate: Date, endDate: Date) => {
-    this._fetchData({ startTime: startDate.valueOf(), endTime: endDate.valueOf() });
+  _handleChangeBuildFilter = ({ baseBranch, compareBranch, endDate, startDate }: Filters) => {
+    this._fetchData(
+      {
+        baseBranch,
+        compareBranch,
+        startTime: startDate ? startDate.valueOf() : undefined,
+        endTime: endDate ? endDate.valueOf() : undefined
+      },
+      false
+    );
   };
 
   _handleToggleFilters = (isFiltered: boolean) => {
@@ -309,6 +319,18 @@ const styles = StyleSheet.create({
     width: '100vw',
     top: 0,
     left: 0
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spaceMedium,
+    paddingVertical: theme.spaceXSmall,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colorGray
+  },
+  title: {
+    fontWeight: 'bold'
   },
   data: {
     flexGrow: 0,

@@ -1,8 +1,7 @@
 {
   "name": "@build-tracker/webpack-plugin",
-  "version": "0.0.4",
-  "description":
-    "A webpack plugin that builds and exports artifact sizes for consumption in the build tracker application",
+  "version": "0.0.5",
+  "description": "A webpack plugin that builds and exports artifact sizes for consumption in the build tracker application",
   "main": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -17,7 +16,10 @@
     "gzip-size": "^3.0.0",
     "mkdirp": "^0.5.1"
   },
-  "files": ["index.js", "README.md"],
+  "files": [
+    "index.js",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"no tests\""
   }

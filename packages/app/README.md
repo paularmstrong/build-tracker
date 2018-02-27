@@ -5,3 +5,22 @@
 ```
 yarn add @build-tracker/app
 ```
+
+## Development
+
+When adding new features, it's easiest to run this in tandem with a static server available in [packages/server](../server).
+
+Run the static server:
+
+```
+cd <root>/packages/server
+yarn start:static
+```
+
+Run the web application:
+
+```
+cd <root>/packages/app
+yarn start
+```
+

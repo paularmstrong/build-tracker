@@ -3,7 +3,7 @@ import ArtifactCell from './ArtifactCell';
 import { object } from 'prop-types';
 import styles from './styles';
 import theme from '../../theme';
-import BuildComparator, { CellType } from 'build-tracker-comparator';
+import BuildComparator, { CellType } from '@build-tracker/comparator';
 import { Button, Clipboard, View } from 'react-native';
 import { bytesToKb, formatSha } from '../../modules/formatting';
 import { hsl } from 'd3-color';
@@ -21,7 +21,7 @@ import type {
   DeltaCellType,
   TotalCellType,
   HeaderCellType
-} from 'build-tracker-flowtypes';
+} from '@build-tracker/flowtypes';
 
 const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): number => {
   return artifactNames.indexOf(a) - artifactNames.indexOf(b);

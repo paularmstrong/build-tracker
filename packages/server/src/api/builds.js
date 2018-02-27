@@ -1,8 +1,8 @@
 // @flow
 import assert from 'assert';
 import type { $Request, $Response } from 'express';
-import BuildComparator from 'build-tracker-comparator';
-import type { Build } from 'build-tracker-flowtypes';
+import BuildComparator from '@build-tracker/comparator';
+import type { Build } from '@build-tracker/flowtypes';
 
 const isValidBuild = (data): void => {
   assert(data.meta && typeof data.meta === 'object', 'Metadata is provided');

@@ -1,9 +1,15 @@
 {
-  "name": "build-tracker-comparator",
+  "name": "@build-tracker/comparator",
   "version": "0.0.3",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
+  "bugs": { "url": "https://github.com/paularmstrong/build-tracker/issues" },
+  "homepage": "https://github.com/paularmstrong/build-tracker",
+  "repository": {
+    "url": "https://github.com/paularmstrong/build-tracker.git",
+    "type": "git"
+  },
   "scripts": {
     "build": "npm run build:module && npm run build:flow",
     "build:flow": "flow-copy-source -i __tests__/*.js src dist",
@@ -17,21 +23,11 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-jest": "^21.2.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "babel-watch": "^2.0.7",
-    "flow-copy-source": "^1.2.1",
-    "jest": "^21.2.1"
+    "flow-copy-source": "^1.2.1"
   },
-  "files": [
-    "index.js",
-    "README.md"
-  ],
-  "jest": {
-    "roots": [
-      "<rootDir>/src"
-    ]
-  }
+  "files": ["index.js", "README.md"]
 }

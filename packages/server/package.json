@@ -1,14 +1,20 @@
 {
-  "name": "build-tracker-server",
+  "name": "@build-tracker/server",
   "version": "0.0.3",
   "main": "dist/index.js",
   "module": "src/index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
+  "bugs": { "url": "https://github.com/paularmstrong/build-tracker/issues" },
+  "homepage": "https://github.com/paularmstrong/build-tracker",
+  "repository": {
+    "url": "https://github.com/paularmstrong/build-tracker.git",
+    "type": "git"
+  },
   "dependencies": {
+    "@build-tracker/app": "^0.0.3",
+    "@build-tracker/comparator": "^0.0.3",
     "body-parser": "^1.18.2",
-    "build-tracker-app": "^0.0.3",
-    "build-tracker-comparator": "^0.0.3",
     "express": "^4.15.4",
     "glob": "^7.1.2",
     "morgan": "^1.8.2"
@@ -19,10 +25,7 @@
     "build:module": "babel src -d dist --ignore *.test.js",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": [
-    "dist/*",
-    "README.md"
-  ],
+  "files": ["dist/*", "README.md"],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

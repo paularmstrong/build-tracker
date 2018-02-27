@@ -10,4 +10,4 @@ flow-typed
 [lints]
 
 [options]
-module.name_mapper='^build-tracker-\(.*\)$' -> '<PROJECT_ROOT>/packages/\1'
+module.name_mapper='^@build-tracker/\(.*\)$' -> '<PROJECT_ROOT>/packages/\1'

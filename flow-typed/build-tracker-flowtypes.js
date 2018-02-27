@@ -1,4 +1,4 @@
-declare module 'build-tracker-flowtypes' {
+declare module '@build-tracker/flowtypes' {
   /**
    * Generic Types
    */

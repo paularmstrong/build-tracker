@@ -15,7 +15,7 @@ import type {
   BodyCellType,
   HeaderCellType,
   ComparisonMatrix
-} from 'build-tracker-flowtypes';
+} from '@build-tracker/flowtypes';
 
 type RevisionStringFormatter = (cell: RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCellType) => string;
@@ -261,9 +261,13 @@ export default class BuildComparator {
     });
   }
 
-  getAscii(
-    { formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }: FormattingOptions = {}
-  ): string {
+  getAscii({
+    formatRevision,
+    formatRevisionDelta,
+    formatTotal,
+    formatDelta,
+    rowFilter
+  }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
 

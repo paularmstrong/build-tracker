@@ -13,11 +13,11 @@ import type { $Application, $Request, $Response } from 'express';
 import type { BranchGetOptions } from './api/branches';
 import type { BuildGetOptions, BuildPostOptions, BuildPostCallbacks } from './api/builds';
 
-import type { Artifact, ArtifactFilters, Build, BuildMeta, Thresholds } from 'build-tracker-flowtypes';
+import type { Artifact, ArtifactFilters, Build, BuildMeta, Thresholds } from '@build-tracker/flowtypes';
 
 const noop = () => {};
 
-const APP_HTML = require.resolve('build-tracker-app');
+const APP_HTML = require.resolve('@build-tracker/app');
 
 const app = express();
 app.use(bodyParser.json());

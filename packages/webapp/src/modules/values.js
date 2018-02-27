@@ -1,5 +1,5 @@
 // @flow
-import type { Artifact } from 'build-tracker-flowtypes';
+import type { Artifact } from '@build-tracker/flowtypes';
 
 type TypesType = { [string]: string };
 

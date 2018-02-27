@@ -5,10 +5,13 @@
   "license": "MIT",
   "workspaces": ["packages/*"],
   "devDependencies": {
-    "flow-bin": "^0.64.0",
+    "babel-jest": "^22.4.1",
+    "flow-bin": "^0.66.0",
     "flow-typed": "^2.2.3",
     "husky": "^0.14.3",
-    "lerna": "^2.8.0",
+    "jest": "^22.4.2",
+    "jest-environment-jsdom": "^22.4.1",
+    "lerna": "^2.9.0",
     "lint-staged": "^6.0.1",
     "prettier": "^1.10.2"
   },
@@ -16,9 +19,11 @@
     "build": "lerna run build --stream --parallel",
     "flow": "flow",
     "precommit": "flow && lint-staged",
-    "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish"
+    "release": "./node_modules/.bin/lerna run build --stream --parallel && ./node_modules/.bin/lerna publish",
+    "test": "jest"
   },
   "lint-staged": {
-    "*.{js,json,css}": ["prettier --write", "git add"]
+    "*.js": ["jest --passWithNoTests", "git add"],
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
   }
 }

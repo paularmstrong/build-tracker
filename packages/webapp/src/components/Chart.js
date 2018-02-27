@@ -12,7 +12,7 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { bytesToKb, formatTime, formatSha } from '../modules/formatting';
 import { ChartType, XScaleType, YScaleType } from '../modules/values';
 
-import type { Build } from 'build-tracker-flowtypes';
+import type { Build } from '@build-tracker/flowtypes';
 
 type StackedData = Array<Array<Array<number> & { data: Build }> & { index: number, key: string }>;
 

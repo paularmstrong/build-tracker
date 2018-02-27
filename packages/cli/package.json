@@ -1,5 +1,5 @@
 {
-  "name": "@build-tracker/bin",
+  "name": "@build-tracker/cli",
   "version": "0.0.4",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
@@ -17,11 +17,7 @@
     "glob": "^7.1.2",
     "yargs": "^8.0.2"
   },
-  "files": [
-    "commands/",
-    "index.js",
-    "README.md"
-  ],
+  "files": ["commands/", "index.js", "README.md"],
   "scripts": {
     "test": "echo \"no tests\""
   }

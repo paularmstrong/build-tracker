@@ -1,21 +1,27 @@
 {
   "name": "@build-tracker/bin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
-  "bugs": { "url": "https://github.com/paularmstrong/build-tracker/issues" },
+  "bugs": {
+    "url": "https://github.com/paularmstrong/build-tracker/issues"
+  },
   "homepage": "https://github.com/paularmstrong/build-tracker",
   "repository": {
     "url": "https://github.com/paularmstrong/build-tracker.git",
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/app": "^0.0.3",
+    "@build-tracker/app": "^0.0.4",
     "glob": "^7.1.2",
     "yargs": "^8.0.2"
   },
-  "files": ["commands/", "index.js", "README.md"],
+  "files": [
+    "commands/",
+    "index.js",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"no tests\""
   }

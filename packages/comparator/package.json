@@ -1,10 +1,12 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
-  "bugs": { "url": "https://github.com/paularmstrong/build-tracker/issues" },
+  "bugs": {
+    "url": "https://github.com/paularmstrong/build-tracker/issues"
+  },
   "homepage": "https://github.com/paularmstrong/build-tracker",
   "repository": {
     "url": "https://github.com/paularmstrong/build-tracker.git",
@@ -29,5 +31,8 @@
     "babel-watch": "^2.0.7",
     "flow-copy-source": "^1.2.1"
   },
-  "files": ["index.js", "README.md"]
+  "files": [
+    "index.js",
+    "README.md"
+  ]
 }

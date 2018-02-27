@@ -37,6 +37,6 @@ export const TypesEnum: { [string]: TypesType } = {
 };
 
 export const valueTypeAccessor = {
-  [ValueType.STAT]: (d: Artifact): number => (d && d.stat) || 0,
-  [ValueType.GZIP]: (d: Artifact): number => (d && d.gzip) || 0
+  [ValueType.STAT]: (d: BT$Artifact): number => (d && d.stat) || 0,
+  [ValueType.GZIP]: (d: BT$Artifact): number => (d && d.gzip) || 0
 };

@@ -47,10 +47,10 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
 };
 
 export type BuildGetOptions = {
-  getByBranch: (branch?: string, limit?: number) => Promise<Array<Build>>,
-  getByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<Build>>,
-  getByRevisions: (revisions: Array<string>) => Promise<Array<Build>>,
-  getByTimeRange: (startTime: number, endTime?: number) => Promise<Array<Build>>
+  getByBranch: (branch?: string, limit?: number) => Promise<Array<BT$Build>>,
+  getByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<BT$Build>>,
+  getByRevisions: (revisions: Array<string>) => Promise<Array<BT$Build>>,
+  getByTimeRange: (startTime: number, endTime?: number) => Promise<Array<BT$Build>>
 };
 
 export const handleGet = ({ getByRevisionRange, getByTimeRange, getByRevisions, getByBranch }: BuildGetOptions) => (
@@ -74,8 +74,8 @@ export const handleGet = ({ getByRevisionRange, getByTimeRange, getByRevisions, 
 };
 
 export type BuildPostOptions = {
-  getPrevious: (timestamp: number) => Promise<Build>,
-  insert: (build: Build) => Promise<any>
+  getPrevious: (timestamp: number) => Promise<BT$Build>,
+  insert: (build: BT$Build) => Promise<any>
 };
 
 export type BuildPostCallbacks = {
@@ -101,7 +101,7 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildI
       res.write(JSON.stringify({ success: true }));
     })
     .then(() => getPrevious(build.meta.timestamp))
-    .then((parentBuild: Build) => {
+    .then((parentBuild: BT$Build) => {
       const comparator = new BuildComparator([parentBuild, build].filter(Boolean));
       onBuildInserted && onBuildInserted(comparator);
     })

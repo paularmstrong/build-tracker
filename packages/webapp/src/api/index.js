@@ -13,7 +13,9 @@ const normalizeData = builds => ({
   builds: sortBuilds(builds)
 });
 
-export const getBuilds = (opts: GetBuildOptions): Promise<{ artifactNames: Array<string>, builds: Array<Build> }> => {
+export const getBuilds = (
+  opts: GetBuildOptions
+): Promise<{ artifactNames: Array<string>, builds: Array<BT$Build> }> => {
   if (window.DATA) {
     return Promise.resolve(normalizeData(window.DATA));
   }

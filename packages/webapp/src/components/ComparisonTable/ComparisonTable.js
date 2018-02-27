@@ -22,7 +22,7 @@ const sortBuilds = (a, b) => a.meta.timestamp - b.meta.timestamp;
 
 type Props = {
   activeArtifactNames: Array<string>,
-  builds: Array<Build>,
+  builds: Array<BT$Build>,
   artifactNames: Array<string>,
   colorScale: Function,
   hoveredArtifact?: string,
@@ -39,7 +39,7 @@ type State = {
 
 export default class ComparisonTable extends PureComponent<Props, State> {
   context: {
-    config: AppConfig
+    config: BT$AppConfig
   };
 
   static contextTypes = {
@@ -128,7 +128,7 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     ) : null;
   }
 
-  _renderHeaderCell = (cell: HeaderCellType, i: number) => {
+  _renderHeaderCell = (cell: BT$HeaderCellType, i: number) => {
     const { onRemoveBuild, onShowBuildInfo } = this.props;
     switch (cell.type) {
       case CellType.REVISION_HEADER:
@@ -142,7 +142,7 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     }
   };
 
-  _renderTotalCell = (cell: BodyCellType, i: number) => {
+  _renderTotalCell = (cell: BT$BodyCellType, i: number) => {
     const { activeArtifactNames, artifactNames } = this.props;
     switch (cell.type) {
       case CellType.ARTIFACT:
@@ -167,7 +167,7 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     }
   };
 
-  _renderBodyCell = (cell: BodyCellType, i: number, artifactName: string) => {
+  _renderBodyCell = (cell: BT$BodyCellType, i: number, artifactName: string) => {
     const { activeArtifactNames, artifactNames, colorScale, hoveredArtifact } = this.props;
     const isHovered = hoveredArtifact === artifactName;
     const color = colorScale(1 - artifactNames.indexOf(artifactName));
@@ -199,7 +199,7 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     }
   };
 
-  _renderDeltaCell(cell: DeltaCellType, key: string | number) {
+  _renderDeltaCell(cell: BT$DeltaCellType, key: string | number) {
     const { valueType } = this.props;
     return (
       <DeltaCell
@@ -214,7 +214,7 @@ export default class ComparisonTable extends PureComponent<Props, State> {
     );
   }
 
-  _renderValueCell(cell: TotalCellType, key: string | number) {
+  _renderValueCell(cell: BT$TotalCellType, key: string | number) {
     const { valueType } = this.props;
     return <ValueCell gzip={cell.gzip} key={key} stat={cell.stat} valueType={valueType} />;
   }

@@ -22,15 +22,15 @@ const logFormat =
 app.use(morgan(logFormat));
 
 export type ServerOptions = {
-  artifactFilters?: ArtifactFilters,
+  artifactFilters?: BT$ArtifactFilters,
   branches: BranchGetOptions,
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
   port?: number,
-  thresholds?: Thresholds
+  thresholds?: BT$Thresholds
 };
 
-const defaultThresholds = {
+const defaultBT$Thresholds = {
   stat: 5000,
   statPercent: 0.1,
   gzip: 500,
@@ -68,7 +68,7 @@ export default function createServer({
           '<script id="config"></script>',
           `<script id="config">window.CONFIG=${JSON.stringify({
             artifactFilters: artifactFilters.map(filter => filter.toString()),
-            thresholds: Object.assign({}, defaultThresholds, thresholds)
+            thresholds: Object.assign({}, defaultBT$Thresholds, thresholds)
           })};</script>`
         );
         res.send(modifiedHtml);
@@ -81,16 +81,16 @@ export default function createServer({
 }
 
 export type StaticServerOptions = {
-  artifactFilters?: ArtifactFilters,
+  artifactFilters?: BT$ArtifactFilters,
   port?: number,
   statsRoot: string,
-  thresholds?: Thresholds
+  thresholds?: BT$Thresholds
 };
 
 const unique = (value, index, self): boolean => self.indexOf(value) === index;
 
 export const staticServer = (options: StaticServerOptions) => {
-  const getWithGlob = (match, branch, count): Promise<Array<Build>> => {
+  const getWithGlob = (match, branch, count): Promise<Array<BT$Build>> => {
     return new Promise((resolve, reject) => {
       glob(`${options.statsRoot}/${match}.json`, (err, matches) => {
         if (err) {
@@ -109,9 +109,9 @@ export const staticServer = (options: StaticServerOptions) => {
   const getByBranch = (branch?: string, count?: number) => getWithGlob('*', branch, count);
   const getByRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
   const getBranches = (count?: number) =>
-    getWithGlob('*').then((builds: Array<Build>) => {
+    getWithGlob('*').then((builds: Array<BT$Build>) => {
       const branches = builds
-        .map((build: Build) => build.meta.branch)
+        .map((build: BT$Build) => build.meta.branch)
         .filter(unique)
         .sort();
       const masterIndex = branches.indexOf('master');

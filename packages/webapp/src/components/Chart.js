@@ -12,13 +12,13 @@ import { mouse, select } from 'd3-selection';
 import { scaleBand, scaleLinear, scalePoint, scalePow, scaleTime } from 'd3-scale';
 import { StyleSheet, View } from 'react-native';
 
-type StackedData = Array<Array<Array<number> & { data: Build }> & { index: number, key: string }>;
+type StackedData = Array<Array<Array<number> & { data: BT$Build }> & { index: number, key: string }>;
 
 type MouseInformation = {
   xValue: number,
   yValue: number,
-  hoveredBuild?: Build,
-  hoveredArtifact?: Array<Array<number> & { data: Build }> & { index: number, key: string }
+  hoveredBuild?: BT$Build,
+  hoveredArtifact?: Array<Array<number> & { data: BT$Build }> & { index: number, key: string }
 };
 
 const margin = { top: 0, right: 20, bottom: 50, left: 60 };
@@ -31,7 +31,7 @@ const getMouseInformation = (
   xScale: Function,
   yScale: Function,
   data: StackedData,
-  builds: Array<Build>
+  builds: Array<BT$Build>
 ): MouseInformation => {
   const [xPos, yPos] = mouse(nodes[0]);
 
@@ -69,10 +69,10 @@ const getMouseInformation = (
 type Props = {
   activeArtifactNames: Array<string>,
   artifacts: Array<string>,
-  builds: Array<Build>,
+  builds: Array<BT$Build>,
   chartType: $Values<typeof ChartType>,
   colorScale: Function,
-  onHover: (artifactName?: string, build?: Build) => void,
+  onHover: (artifactName?: string, build?: BT$Build) => void,
   onSelectBuild: Function,
   selectedBuilds: Array<string>,
   valueAccessor: Function,

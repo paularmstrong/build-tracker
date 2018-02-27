@@ -6,7 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Table, Tbody, Td, Th, Tr } from './Table';
 
 type Props = {
-  build: Build
+  build: BT$Build
 };
 
 export default class BuildInfo extends React.PureComponent<Props> {

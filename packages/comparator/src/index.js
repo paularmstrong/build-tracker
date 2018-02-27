@@ -1,11 +1,11 @@
 // @flow
 import AsciiTable from 'ascii-table';
 
-type RevisionStringFormatter = (cell: RevisionCellType) => string;
-type RevisionDeltaStringFormatter = (cell: RevisionDeltaCellType) => string;
-type TotalStringFormatter = (cell: TotalCellType) => string;
-type DeltaStringFormatter = (cell: DeltaCellType) => string;
-type RowFilter = (row: Array<BodyCellType>) => boolean;
+type RevisionStringFormatter = (cell: BT$RevisionCellType) => string;
+type RevisionDeltaStringFormatter = (cell: BT$RevisionDeltaCellType) => string;
+type TotalStringFormatter = (cell: BT$TotalCellType) => string;
+type DeltaStringFormatter = (cell: BT$DeltaCellType) => string;
+type RowFilter = (row: Array<BT$BodyCellType>) => boolean;
 
 type FormattingOptions = {
   formatRevision?: RevisionStringFormatter,
@@ -25,7 +25,7 @@ export const CellType = {
   TOTAL_DELTA: 'totalDelta'
 };
 
-const getDelta = (key: 'stat' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+const getDelta = (key: 'stat' | 'gzip', baseArtifact: BT$Artifact, changeArtifact: BT$Artifact): number => {
   if (!changeArtifact) {
     if (!baseArtifact) {
       return 0;
@@ -36,7 +36,7 @@ const getDelta = (key: 'stat' | 'gzip', baseArtifact: Artifact, changeArtifact: 
   return changeArtifact[key] - (baseArtifact ? baseArtifact[key] : 0);
 };
 
-const getPercentDelta = (key: 'stat' | 'gzip', baseArtifact: Artifact, changeArtifact: Artifact): number => {
+const getPercentDelta = (key: 'stat' | 'gzip', baseArtifact: BT$Artifact, changeArtifact: BT$Artifact): number => {
   if (!changeArtifact) {
     if (!baseArtifact) {
       return 0;
@@ -47,7 +47,7 @@ const getPercentDelta = (key: 'stat' | 'gzip', baseArtifact: Artifact, changeArt
   return !baseArtifact ? 1 : changeArtifact[key] / baseArtifact[key];
 };
 
-const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact) => {
+const getSizeDeltas = (baseArtifact: BT$Artifact, changeArtifact: BT$Artifact) => {
   return {
     type: CellType.DELTA,
     stat: getDelta('stat', baseArtifact, changeArtifact),
@@ -57,7 +57,7 @@ const getSizeDeltas = (baseArtifact: Artifact, changeArtifact: Artifact) => {
   };
 };
 
-const getTotalArtifactSizes = (build: Build) =>
+const getTotalArtifactSizes = (build: BT$Build) =>
   Object.keys(build.artifacts).reduce(
     (memo, artifactName) => ({
       type: CellType.TOTAL,
@@ -67,7 +67,7 @@ const getTotalArtifactSizes = (build: Build) =>
     { type: CellType.TOTAL, stat: 0, gzip: 0 }
   );
 
-const getTotalSizeDeltas = (baseBuild: Build, changeBuild: Build): TotalDeltaCellType => {
+const getTotalSizeDeltas = (baseBuild: BT$Build, changeBuild: BT$Build): BT$TotalDeltaCellType => {
   const baseSize = getTotalArtifactSizes(baseBuild);
   const changeSize = getTotalArtifactSizes(changeBuild);
 
@@ -86,20 +86,20 @@ const defaultArtifactSorter = (rowA, rowB): number => {
   return rowA > rowB ? 1 : rowB > rowA ? -1 : 0;
 };
 
-const defaultFormatRevision = (cell: RevisionCellType): string => cell.revision;
-const defaultFormatRevisionDelta = (cell: RevisionDeltaCellType): string => `Δ${cell.deltaIndex}`;
-const defaultFormatTotal = (cell: TotalCellType): string => `${cell.gzip}`;
-const defaultFormatDelta = (cell: DeltaCellType): string => `${cell.gzip} (${cell.gzipPercent}%)`;
-const defaultRowFilter = (row: Array<BodyCellType>): boolean => true;
+const defaultFormatRevision = (cell: BT$RevisionCellType): string => cell.revision;
+const defaultFormatRevisionDelta = (cell: BT$RevisionDeltaCellType): string => `Δ${cell.deltaIndex}`;
+const defaultFormatTotal = (cell: BT$TotalCellType): string => `${cell.gzip}`;
+const defaultFormatDelta = (cell: BT$DeltaCellType): string => `${cell.gzip} (${cell.gzipPercent}%)`;
+const defaultRowFilter = (row: Array<BT$BodyCellType>): boolean => true;
 
 export default class BuildComparator {
-  builds: Array<Build>;
+  builds: Array<BT$Build>;
 
   _artifactSorter: Function;
   _artifactNames: Array<string>;
-  _buildDeltas: Array<BuildDelta>;
+  _buildDeltas: Array<BT$BuildDelta>;
 
-  constructor(builds: Array<Build>, artifactSorter: (a: string, b: string) => number = defaultArtifactSorter) {
+  constructor(builds: Array<BT$Build>, artifactSorter: (a: string, b: string) => number = defaultArtifactSorter) {
     this.builds = builds;
     this._artifactSorter = artifactSorter;
   }
@@ -113,7 +113,7 @@ export default class BuildComparator {
     return this._artifactNames;
   }
 
-  get buildDeltas(): Array<BuildDelta> {
+  get buildDeltas(): Array<BT$BuildDelta> {
     if (!this._buildDeltas) {
       return this.builds.map((build, i) => {
         const totalDeltas = [];
@@ -150,7 +150,7 @@ export default class BuildComparator {
     return this._buildDeltas;
   }
 
-  get matrixHeader(): Array<HeaderCellType> {
+  get matrixHeader(): Array<BT$HeaderCellType> {
     return [
       { type: CellType.TEXT, text: '' },
       ...flatten(
@@ -159,7 +159,7 @@ export default class BuildComparator {
           const revisionIndex = this.builds.findIndex(build => build.meta.revision === revision);
           return [
             { type: CellType.REVISION_HEADER, revision },
-            ...buildDelta.artifactDeltas.map((delta, i): RevisionDeltaCellType => {
+            ...buildDelta.artifactDeltas.map((delta, i): BT$RevisionDeltaCellType => {
               const deltaIndex = buildDelta.artifactDeltas.length - 1 - i;
               return {
                 type: CellType.REVISION_DELTA_HEADER,
@@ -174,17 +174,17 @@ export default class BuildComparator {
     ];
   }
 
-  get matrixTotal(): Array<BodyCellType> {
+  get matrixTotal(): Array<BT$BodyCellType> {
     return [
       { type: CellType.ARTIFACT, text: 'All' },
       ...flatten(this.buildDeltas.map(({ deltas }, i) => [getTotalArtifactSizes(this.builds[i]), ...deltas]))
     ];
   }
 
-  get matrixBody(): Array<Array<BodyCellType>> {
+  get matrixBody(): Array<Array<BT$BodyCellType>> {
     return this.artifactNames.sort(this._artifactSorter).map(artifactName => {
       const cells = this.buildDeltas.map(({ artifactDeltas }, i): Array<
-        TextCellType | TotalCellType | DeltaCellType
+        BT$TextCellType | BT$TotalCellType | BT$DeltaCellType
       > => {
         const artifact = this.builds[i].artifacts[artifactName];
         return [
@@ -200,7 +200,7 @@ export default class BuildComparator {
     });
   }
 
-  get matrix(): ComparisonMatrix {
+  get matrix(): BT$ComparisonMatrix {
     return {
       header: this.matrixHeader,
       total: this.matrixTotal,

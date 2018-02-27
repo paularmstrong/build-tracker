@@ -32,7 +32,7 @@ const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames: Arra
     : allArtifactNames;
 };
 
-const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array<Build> => {
+const _getCompareBuilds = (props: { match: Match }, builds: Array<BT$Build>): Array<BT$Build> => {
   const { match: { params } } = props;
   const { compareRevisions = '' } = params;
 
@@ -47,7 +47,7 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<Build>): Array
 
 const _getColorScale = (length: number): Function => scaleSequential(interpolateRainbow).domain([0, length]);
 
-const _filterArtifactNames = (artifactNames: Array<string>, filters: ArtifactFilters): Array<string> => {
+const _filterArtifactNames = (artifactNames: Array<string>, filters: BT$ArtifactFilters): Array<string> => {
   if (!filters || filters.length === 0) {
     return artifactNames;
   }
@@ -63,16 +63,16 @@ type Props = {
 
 type State = {
   activeArtifactNames: Array<string>,
-  artifactFilters: ArtifactFilters,
+  artifactFilters: BT$ArtifactFilters,
   artifactNames: Array<string>,
   branches: Array<string>,
-  builds: Array<Build>,
+  builds: Array<BT$Build>,
   chart: $Values<typeof ChartType>,
   colorScale?: Function,
-  compareBuilds: Array<Build>,
+  compareBuilds: Array<BT$Build>,
   filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
-  selectedBuild?: Build,
+  selectedBuild?: BT$Build,
   isFiltered: boolean,
   valueType: $Values<typeof ValueType>,
   xscale: $Values<typeof XScaleType>,
@@ -84,7 +84,7 @@ class App extends Component<Props, State> {
     config: object
   };
 
-  constructor(props: Props, context: { config: AppConfig }) {
+  constructor(props: Props, context: { config: BT$AppConfig }) {
     super(props, context);
     this.state = {
       activeArtifactNames: [],
@@ -206,7 +206,7 @@ class App extends Component<Props, State> {
       opts.revisions = revisions.split(',');
     }
 
-    getBuilds(opts).then(({ builds, artifactNames }: { builds: Array<Build>, artifactNames: Array<string> }) => {
+    getBuilds(opts).then(({ builds, artifactNames }: { builds: Array<BT$Build>, artifactNames: Array<string> }) => {
       const { artifactFilters } = this.state;
       const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
       const colorScale = _getColorScale(filteredArtifactNames.length);
@@ -241,7 +241,7 @@ class App extends Component<Props, State> {
     this.setState({ [toggleType]: value });
   };
 
-  _handleHover = (hoveredArtifact?: string, build?: Build) => {
+  _handleHover = (hoveredArtifact?: string, build?: BT$Build) => {
     this.setState({ hoveredArtifact });
   };
 
@@ -252,7 +252,7 @@ class App extends Component<Props, State> {
     );
   };
 
-  _handleSelectBuild = (build: Build) => {
+  _handleSelectBuild = (build: BT$Build) => {
     this.setState(
       state => ({
         compareBuilds: [...state.compareBuilds, build].filter((value, index, self) => self.indexOf(value) === index),
@@ -285,7 +285,7 @@ class App extends Component<Props, State> {
       activeArtifactNames.length > 1 && activeArtifactNames.length !== artifactNames.length
         ? activeArtifactNames.filter(b => b !== 'All')
         : ['All'];
-    const urlRevisions = compareBuilds.map((b: Build) => formatSha(b.meta.revision)).sort();
+    const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(b.meta.revision)).sort();
     const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${urlArtifacts.join('+')}/${urlRevisions.join('+')}`;
     if (newPath !== pathname) {
       this.props.history.push(newPath);

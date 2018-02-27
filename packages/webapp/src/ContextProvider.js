@@ -4,7 +4,7 @@ import merge from 'deepmerge';
 import { object } from 'prop-types';
 
 type ContextProps = {
-  config: AppConfig,
+  config: BT$AppConfig,
   children: React.Node
 };
 

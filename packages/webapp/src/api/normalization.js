@@ -1,10 +1,10 @@
 // @flow
 import { mean } from 'd3-array';
 
-const getAverageSize = (builds: Array<Build>, artifact: string): number =>
+const getAverageSize = (builds: Array<BT$Build>, artifact: string): number =>
   mean(builds, commit => (commit.artifacts[artifact] ? commit.artifacts[artifact].gzip : 0));
 
-export const getArtifactsByAvgSize = (builds: Array<Build>): Array<string> =>
+export const getArtifactsByAvgSize = (builds: Array<BT$Build>): Array<string> =>
   builds
     .reduce((memo, commit): Array<string> => {
       const artifactNAmes = Object.keys(commit.artifacts);
@@ -12,5 +12,5 @@ export const getArtifactsByAvgSize = (builds: Array<Build>): Array<string> =>
     }, [])
     .sort((a: string, b: string) => getAverageSize(builds, b) - getAverageSize(builds, a));
 
-export const sortBuilds = (builds: Array<Build>): Array<Build> =>
+export const sortBuilds = (builds: Array<BT$Build>): Array<BT$Build> =>
   builds.sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp));

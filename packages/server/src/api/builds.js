@@ -15,21 +15,17 @@ const isValidBuild = (data): void => {
   });
 };
 
-type NormalizedQuery = {
-  branch?: string,
-  count?: number,
-  endTime?: number,
-  revisions?: Array<string>,
-  startTime?: number
-};
+type DateFilter = { startTime: number, endTime: number };
+type BranchFilter = { branch?: string, limit?: number };
+export type GetBuildsOptions = (DateFilter & BranchFilter) | BranchFilter;
 
-const normalizeQuery = (query: {}): NormalizedQuery => {
-  return Object.keys(query).reduce((memo: NormalizedQuery, key) => {
+const normalizeQuery = (query: {}): GetBuildsOptions => {
+  return Object.keys(query).reduce((memo: GetBuildsOptions, key) => {
     const value = query[key];
     switch (key) {
       case 'startTime':
       case 'endTime':
-      case 'count':
+      case 'limit':
         memo[key] = parseInt(value, 10);
         break;
       case 'branch':
@@ -43,26 +39,20 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
 };
 
 export type BuildGetOptions = {
-  getByBranch: (branch: string, limit?: number) => Promise<Array<BT$Build>>,
   getByRevisions: (revisions: Array<string>) => Promise<Array<BT$Build>>,
-  getByTimeRange: ({ startTime: number, endTime?: number, branch?: string }) => Promise<Array<BT$Build>>
+  getBuilds: (options: GetBuildsOptions) => Promise<Array<BT$Build>>
 };
 
-export const handleGet = ({ getByBranch, getByRevisions, getByTimeRange }: BuildGetOptions) => (
-  req: $Request,
-  res: $Response
-) => {
-  const query = normalizeQuery(req.query);
+export const handleGet = ({ getByRevisions, getBuilds }: BuildGetOptions) => (req: $Request, res: $Response) => {
   const respondWithJSON = data => {
     res.write(JSON.stringify(data));
     res.end();
   };
-  if (query.revisions) {
-    getByRevisions(query.revisions).then(respondWithJSON);
-  } else if (query.startTime) {
-    getByTimeRange({ startTime: query.startTime, endTime: query.endTime, branch: query.branch }).then(respondWithJSON);
+  if (req.query.revisions) {
+    getByRevisions(req.query.revisions).then(respondWithJSON);
   } else {
-    getByBranch(query.branch || 'master', query.count).then(respondWithJSON);
+    const query = normalizeQuery(req.query);
+    getBuilds(query).then(respondWithJSON);
   }
 };
 

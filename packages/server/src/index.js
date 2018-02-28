@@ -7,7 +7,7 @@ import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
 import type { $Request, $Response } from 'express';
-import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions } from './api/builds';
+import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions, GetBuildsOptions } from './api/builds';
 
 const APP_HTML = require.resolve('@build-tracker/app');
 
@@ -82,7 +82,7 @@ export type StaticServerOptions = {
 };
 
 export const staticServer = (options: StaticServerOptions) => {
-  const getWithGlob = (match, branch, count): Promise<Array<BT$Build>> => {
+  const getWithGlob = (match, branch, limit): Promise<Array<BT$Build>> => {
     return new Promise((resolve, reject) => {
       glob(`${options.statsRoot}/${match}.json`, (err, matches) => {
         if (err) {
@@ -93,29 +93,31 @@ export const staticServer = (options: StaticServerOptions) => {
           .map(match => require(match))
           .filter((build: BT$Build) => !branch || build.meta.branch === branch)
           .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp))
-          .slice(0, count);
+          .slice(0, limit);
         resolve(builds);
       });
     });
   };
 
-  const getByBranch = (branch: string, count?: number) => getWithGlob('*', branch, count);
+  const getBuilds = (options: GetBuildsOptions) =>
+    getWithGlob('*', options.branch, options.limit).then(builds =>
+      builds.filter(build => {
+        if (options.startTime && options.endTime) {
+          // $FlowFixMe
+          return options.startTime <= build.meta.timestamp && options.endTime >= build.meta.timestamp;
+        }
+        return true;
+      })
+    );
 
   const getByRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
-  const getByTimeRange = ({ startTime, endTime, branch }: { startTime: number, endTime?: number, branch?: string }) =>
-    getWithGlob('*', branch).then((builds: Array<BT$Build>) => {
-      return builds.filter(build => {
-        return startTime <= build.meta.timestamp && (!endTime || endTime >= build.meta.timestamp);
-      });
-    });
 
   return createServer(
     Object.assign({}, options, {
       builds: {
-        getByBranch,
+        getBuilds,
         getByRevisions,
-        getByTimeRange,
-        getPrevious: () => Promise.reject('Not implemented'),
+        getPrevious: () => Promise.reject(new Error('Not implemented')),
         insert: () => Promise.reject(new Error('Static server cannot save new builds'))
       }
     })

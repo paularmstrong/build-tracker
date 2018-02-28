@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist",
   "module": "src",
   "author": "Paul Armstrong <paul@spaceyak.com>",
@@ -13,7 +13,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/app": "^0.0.5",
+    "@build-tracker/app": "^0.0.6",
     "@build-tracker/comparator": "^0.0.5",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
@@ -26,7 +26,10 @@
     "build:module": "babel src -d dist --ignore *.test.js",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": ["dist/*", "README.md"],
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

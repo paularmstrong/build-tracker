@@ -29,13 +29,3 @@ export const getBuilds = (
     .then(res => res.json())
     .then(normalizeData);
 };
-
-type GetBranchOptions = {
-  count?: number
-};
-export const getBranches = (opts?: GetBranchOptions): Promise<Array<string>> => {
-  const req = new Request(`${API_BASE}/branches?${opts ? querystring.stringify(opts) : ''}`, {
-    metod: 'GET'
-  });
-  return fetch(req).then(res => res.json());
-};

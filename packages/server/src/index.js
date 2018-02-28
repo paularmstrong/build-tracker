@@ -1,8 +1,6 @@
 // @flow
-import * as Branches from './api/branches';
 import * as Builds from './api/builds';
 import bodyParser from 'body-parser';
-import type { BranchGetOptions } from './api/branches';
 import express from 'express';
 import fs from 'fs';
 import glob from 'glob';
@@ -23,7 +21,6 @@ app.use(morgan(logFormat));
 
 export type ServerOptions = {
   artifactFilters?: BT$ArtifactFilters,
-  branches: BranchGetOptions,
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
   port?: number,
@@ -39,7 +36,6 @@ const defaultBT$Thresholds = {
 
 export default function createServer({
   artifactFilters = [],
-  branches,
   builds,
   callbacks,
   port = 3000,
@@ -47,8 +43,6 @@ export default function createServer({
 }: ServerOptions) {
   app.get('/api/builds', Builds.handleGet(builds));
   app.post('/api/builds', Builds.handlePost(builds, callbacks));
-
-  app.get('/api/branches', Branches.handleGet(branches));
 
   app.get('/static/*', (req: $Request, res: $Response) => {
     res.sendFile(path.join(path.dirname(APP_HTML), req.path));
@@ -87,8 +81,6 @@ export type StaticServerOptions = {
   thresholds?: BT$Thresholds
 };
 
-const unique = (value, index, self): boolean => self.indexOf(value) === index;
-
 export const staticServer = (options: StaticServerOptions) => {
   const getWithGlob = (match, branch, count): Promise<Array<BT$Build>> => {
     return new Promise((resolve, reject) => {
@@ -97,41 +89,30 @@ export const staticServer = (options: StaticServerOptions) => {
           return reject(err);
         }
 
-        const stats = matches
+        const builds = matches
           .map(match => require(match))
+          .filter((build: BT$Build) => !branch || build.meta.branch === branch)
           .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp))
           .slice(0, count);
-        resolve(stats);
+        resolve(builds);
       });
     });
   };
 
-  const getByBranch = (branch?: string, count?: number) => getWithGlob('*', branch, count);
+  const getByBranch = (branch: string, count?: number) => getWithGlob('*', branch, count);
+
   const getByRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
-  const getBranches = (count?: number) =>
-    getWithGlob('*').then((builds: Array<BT$Build>) => {
-      const branches = builds
-        .map((build: BT$Build) => build.meta.branch)
-        .filter(unique)
-        .sort();
-      const masterIndex = branches.indexOf('master');
-      if (masterIndex) {
-        branches.splice(masterIndex, 1);
-        branches.unshift('master');
-      }
-      return branches.slice(0, count);
+  const getByTimeRange = ({ startTime, endTime, branch }: { startTime: number, endTime?: number, branch?: string }) =>
+    getWithGlob('*', branch).then((builds: Array<BT$Build>) => {
+      return builds.filter(build => {
+        return startTime <= build.meta.timestamp && (!endTime || endTime >= build.meta.timestamp);
+      });
     });
-  const getByTimeRange = (startTime: number, endTime?: number) => getWithGlob('*');
 
   return createServer(
     Object.assign({}, options, {
-      branches: {
-        // $FlowFixMe
-        getBranches
-      },
       builds: {
         getByBranch,
-        getByRevisionRange: () => Promise.reject('Not implemented'),
         getByRevisions,
         getByTimeRange,
         getPrevious: () => Promise.reject('Not implemented'),

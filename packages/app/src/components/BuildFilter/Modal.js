@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import BranchPicker from '../BranchPicker';
 import DateRangePicker from '../DateRangePicker';
 import type { Filters } from './types';
 import ReactDOM from 'react-dom';
@@ -8,7 +7,6 @@ import theme from '../../theme';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 type Props = Filters & {
-  branches: Array<string>,
   onClose: (filters: Filters) => void
 };
 
@@ -23,8 +21,6 @@ export default class BuildFilter extends React.Component<Props, State> {
     super(props, context);
     this._el = document.createElement('div');
     this.state = {
-      baseBranch: props.baseBranch,
-      compareBranch: props.compareBranch,
       endDate: props.endDate,
       startDate: props.startDate
     };
@@ -43,8 +39,7 @@ export default class BuildFilter extends React.Component<Props, State> {
   }
 
   _render() {
-    const { branches } = this.props;
-    const { baseBranch, compareBranch, endDate, startDate } = this.state;
+    const { endDate, startDate } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.container}>
@@ -53,14 +48,8 @@ export default class BuildFilter extends React.Component<Props, State> {
             <Button onPress={this._handleClose} title="Done" />
           </View>
           <View style={styles.content}>
-            <BranchPicker
-              baseBranch={baseBranch}
-              branches={branches}
-              compareBranch={compareBranch}
-              onChangeBranches={this._handleChangeBranches}
-            />
-            <View style={styles.hr} />
             <DateRangePicker endDate={endDate} onChangeRange={this._handleChangeDateRange} startDate={startDate} />
+            <View style={styles.hr} />
           </View>
         </View>
       </View>
@@ -69,10 +58,6 @@ export default class BuildFilter extends React.Component<Props, State> {
 
   _handleChangeDateRange = (startDate: Date, endDate: Date) => {
     this.setState({ startDate, endDate });
-  };
-
-  _handleChangeBranches = (baseBranch: string, compareBranch: string) => {
-    this.setState({ baseBranch, compareBranch });
   };
 
   _handleClose = () => {

@@ -1,4 +1,2 @@
 // @flow
-export type BranchFilters = { baseBranch: string, compareBranch: string };
-export type DateFilters = { startDate: Date, endDate: Date };
-export type Filters = BranchFilters & DateFilters;
+export type Filters = { startDate: Date, endDate: Date };

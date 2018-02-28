@@ -6,11 +6,11 @@ import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
 import type { Filters } from './components/BuildFilter/types';
 import { formatSha } from './modules/formatting';
+import { getBuilds } from './api';
 import { object } from 'prop-types';
 import theme from './theme';
 import Toggles from './components/Toggles';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
-import { getBranches, getBuilds } from './api';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import type { Location, Match, RouterHistory } from 'react-router-dom';
 import React, { Component } from 'react';
@@ -66,7 +66,6 @@ type State = {
   activeArtifactNames: Array<string>,
   artifactFilters: BT$ArtifactFilters,
   artifactNames: Array<string>,
-  branches: Array<string>,
   builds: Array<BT$Build>,
   chart: $Values<typeof ChartType>,
   colorScale?: Function,
@@ -91,7 +90,6 @@ class App extends Component<Props, State> {
       activeArtifactNames: [],
       artifactFilters: context.config.artifactFilters || [],
       artifactNames: [],
-      branches: [],
       builds: [],
       chart: ChartType.AREA,
       compareBuilds: [],
@@ -139,7 +137,7 @@ class App extends Component<Props, State> {
         <View style={styles.main}>
           <View style={styles.header}>
             <Text style={styles.title}>Build Tracker</Text>
-            <BuildFilter branches={this.state.branches} onFilter={this._handleChangeBuildFilter} />
+            <BuildFilter onFilter={this._handleChangeBuildFilter} />
           </View>
           <View style={styles.innerMain}>
             <View style={styles.chartRoot}>
@@ -203,7 +201,7 @@ class App extends Component<Props, State> {
     );
   }
 
-  _fetchData(options: {} = {}, fetchBranches: boolean = true) {
+  _fetchData(options: {} = {}) {
     const { match: { params: { revisions } } } = this.props;
     const opts = { ...options };
     if (revisions) {
@@ -224,24 +222,13 @@ class App extends Component<Props, State> {
         filteredArtifactNames
       }));
     });
-
-    if (fetchBranches) {
-      getBranches().then((branches: Array<string>) => {
-        this.setState(() => ({ branches }));
-      });
-    }
   }
 
-  _handleChangeBuildFilter = ({ baseBranch, compareBranch, endDate, startDate }: Filters) => {
-    this._fetchData(
-      {
-        baseBranch,
-        compareBranch,
-        startTime: startDate ? startDate.valueOf() : undefined,
-        endTime: endDate ? endDate.valueOf() : undefined
-      },
-      false
-    );
+  _handleChangeBuildFilter = ({ endDate, startDate }: Filters) => {
+    this._fetchData({
+      startTime: startDate ? startDate.valueOf() : undefined,
+      endTime: endDate ? endDate.valueOf() : undefined
+    });
   };
 
   _handleToggleFilters = (isFiltered: boolean) => {

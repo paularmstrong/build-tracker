@@ -18,10 +18,8 @@ const isValidBuild = (data): void => {
 type NormalizedQuery = {
   branch?: string,
   count?: number,
-  endRevision?: string,
   endTime?: number,
   revisions?: Array<string>,
-  startRevision?: string,
   startTime?: number
 };
 
@@ -34,8 +32,6 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
       case 'count':
         memo[key] = parseInt(value, 10);
         break;
-      case 'startRevision':
-      case 'endRevision':
       case 'branch':
         memo[key] = `${value}`;
         break;
@@ -47,13 +43,12 @@ const normalizeQuery = (query: {}): NormalizedQuery => {
 };
 
 export type BuildGetOptions = {
-  getByBranch: (branch?: string, limit?: number) => Promise<Array<BT$Build>>,
-  getByRevisionRange: (startRevision: string, endRevision?: string) => Promise<Array<BT$Build>>,
+  getByBranch: (branch: string, limit?: number) => Promise<Array<BT$Build>>,
   getByRevisions: (revisions: Array<string>) => Promise<Array<BT$Build>>,
-  getByTimeRange: (startTime: number, endTime?: number) => Promise<Array<BT$Build>>
+  getByTimeRange: ({ startTime: number, endTime?: number, branch?: string }) => Promise<Array<BT$Build>>
 };
 
-export const handleGet = ({ getByRevisionRange, getByTimeRange, getByRevisions, getByBranch }: BuildGetOptions) => (
+export const handleGet = ({ getByBranch, getByRevisions, getByTimeRange }: BuildGetOptions) => (
   req: $Request,
   res: $Response
 ) => {
@@ -64,10 +59,8 @@ export const handleGet = ({ getByRevisionRange, getByTimeRange, getByRevisions, 
   };
   if (query.revisions) {
     getByRevisions(query.revisions).then(respondWithJSON);
-  } else if (query.startRevision) {
-    getByRevisionRange(query.startRevision, query.endRevision).then(respondWithJSON);
   } else if (query.startTime) {
-    getByTimeRange(query.startTime, query.endTime).then(respondWithJSON);
+    getByTimeRange({ startTime: query.startTime, endTime: query.endTime, branch: query.branch }).then(respondWithJSON);
   } else {
     getByBranch(query.branch || 'master', query.count).then(respondWithJSON);
   }

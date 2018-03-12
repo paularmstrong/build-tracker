@@ -29,6 +29,11 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator([build1, build2]);
       expect(comparator.buildDeltas).toMatchSnapshot();
     });
+
+    test('are cached across gets', () => {
+      const comparator = new BuildComparator([build1, build2]);
+      expect(comparator.buildDeltas).toBe(comparator.buildDeltas);
+    });
   });
 
   describe('matrix', () => {

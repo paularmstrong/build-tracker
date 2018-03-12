@@ -115,7 +115,7 @@ export default class BuildComparator {
 
   get buildDeltas(): Array<BT$BuildDelta> {
     if (!this._buildDeltas) {
-      return this.builds.map((build, i) => {
+      this._buildDeltas = this.builds.map((build, i) => {
         const totalDeltas = [];
         const artifactDeltas = this.builds
           .map((compareBuild, j) => {
@@ -147,6 +147,7 @@ export default class BuildComparator {
         };
       });
     }
+
     return this._buildDeltas;
   }
 

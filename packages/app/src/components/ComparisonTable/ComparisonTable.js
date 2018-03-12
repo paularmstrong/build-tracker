@@ -1,5 +1,7 @@
 // @flow
+import * as React from 'react';
 import ArtifactCell from './ArtifactCell';
+import deepEqual from 'deep-equal';
 import DeltaCell from './DeltaCell';
 import { hsl } from 'd3-color';
 import { object } from 'prop-types';
@@ -11,7 +13,6 @@ import ValueCell from './ValueCell';
 import BuildComparator, { CellType } from '@build-tracker/comparator';
 import { Button, Clipboard, View } from 'react-native';
 import { bytesToKb, formatSha } from '../../modules/formatting';
-import React, { PureComponent } from 'react';
 import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from '../Table';
 
 const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): number => {
@@ -37,7 +38,7 @@ type State = {
   showDeselectedArtifacts: boolean
 };
 
-export default class ComparisonTable extends PureComponent<Props, State> {
+export default class ComparisonTable extends React.Component<Props, State> {
   context: {
     config: BT$AppConfig
   };
@@ -55,6 +56,12 @@ export default class ComparisonTable extends PureComponent<Props, State> {
       showDeselectedArtifacts: true
     };
     this.setData(props);
+  }
+
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    const arePropsEqual = deepEqual(this.props, nextProps);
+    const isStateEqual = deepEqual(this.state, nextState);
+    return !arePropsEqual || !isStateEqual;
   }
 
   componentWillUpdate(nextProps: Props, nextState: State) {
@@ -217,13 +224,6 @@ export default class ComparisonTable extends PureComponent<Props, State> {
   _renderValueCell(cell: BT$TotalCellType, key: string | number) {
     const { valueType } = this.props;
     return <ValueCell gzip={cell.gzip} key={key} stat={cell.stat} valueType={valueType} />;
-  }
-
-  _getActiveData() {
-    const { activeArtifactNames } = this.props;
-    return this._data.matrixBody.filter((row, i) => {
-      return i === 0 || (row[0].text && activeArtifactNames.indexOf(row[0].text) !== -1);
-    });
   }
 
   _getFilteredData() {

@@ -82,7 +82,8 @@ type Props = {
 
 type State = {
   height: number,
-  width: number
+  width: number,
+  hoveredArtifact?: string
 };
 
 export default class Chart extends React.Component<Props, State> {
@@ -99,13 +100,10 @@ export default class Chart extends React.Component<Props, State> {
   _yAxis: any;
   _xAxis: any;
 
-  constructor(props: Props, context: any) {
-    super(props, context);
-    this.state = {
-      width: 0,
-      height: 0
-    };
-  }
+  state = {
+    width: 0,
+    height: 0
+  };
 
   componentDidMount() {
     this._renderChart();
@@ -171,6 +169,7 @@ export default class Chart extends React.Component<Props, State> {
       })
       .on('mouseout', () => {
         this._hoverLine.style('opacity', 0);
+        this.setState({ hoveredArtifact: undefined });
         this.props.onHover();
       })
       .on('mousemove', (d, index, nodes) => {
@@ -184,7 +183,10 @@ export default class Chart extends React.Component<Props, State> {
           .attr('x2', xSetter(xValue))
           .attr('y1', 0)
           .attr('y2', height - margin.top - margin.bottom);
-        this.props.onHover(artifactName, hoveredBuild);
+        if (this.state.hoveredArtifact !== artifactName) {
+          this.setState({ hoveredArtifact: artifactName });
+          this.props.onHover(artifactName, hoveredBuild);
+        }
         // TODO: add a tooltip
       });
   }

@@ -66,6 +66,8 @@ const getMouseInformation = (
   };
 };
 
+const _makeColorScale = (artifacts, colorScale) => (d, i) => colorScale(artifacts.length - artifacts.indexOf(d.key));
+
 type Props = {
   activeArtifactNames: Array<string>,
   artifacts: Array<string>,
@@ -195,6 +197,8 @@ export default class Chart extends React.Component<Props, State> {
     const { artifacts, colorScale, xScaleType } = this.props;
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
 
+    const fillFunction = _makeColorScale(artifacts, colorScale);
+
     const areaChart = area()
       .x(d => xScale(d.data.meta[xAccessor]))
       .y0(d => yScale(d[0]))
@@ -211,10 +215,11 @@ export default class Chart extends React.Component<Props, State> {
       .enter()
       .append('path')
       .attr('class', 'artifact')
-      .style('fill', (d, i) => colorScale(artifacts.length - artifacts.indexOf(d.key)))
+      .style('fill', fillFunction)
       .merge(artifact)
       .transition()
       .duration(150)
+      .style('fill', fillFunction)
       .attr('d', areaChart);
   }
 
@@ -222,8 +227,15 @@ export default class Chart extends React.Component<Props, State> {
     const { artifacts, colorScale, xScaleType } = this.props;
     const { height } = this.state;
 
+    const fillFunction = _makeColorScale(artifacts, colorScale);
+
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
     const artifactGroups = this._chartContents.selectAll('g.artifactGroup').data(data, (d: { key: string }) => d.key);
+    artifactGroups
+      .transition()
+      .duration(150)
+      .style('fill', fillFunction);
+
     const artifact = this._chartContents.selectAll('path.artifact').data([]);
     artifact.exit().remove();
 
@@ -234,7 +246,7 @@ export default class Chart extends React.Component<Props, State> {
       .enter()
       .append('g')
       .attr('class', 'artifactGroup')
-      .style('fill', (d, i) => colorScale(artifacts.length - artifacts.indexOf(d.key)))
+      .style('fill', fillFunction)
       .merge(artifactGroups)
       .selectAll('rect.artifact')
       .data(d => d);

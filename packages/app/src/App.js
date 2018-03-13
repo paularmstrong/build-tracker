@@ -234,10 +234,16 @@ class App extends Component<Props, State> {
   _handleChangeBuildFilter = (filters: Filters) => {
     const { startDate: prevStartDate, endDate: prevEndDate } = this.state;
     this.setState(
-      {
-        artifactFilters: filters.artifactFilters,
-        endDate: filters.endDate,
-        startDate: filters.startDate
+      ({ artifactNames }) => {
+        const filteredArtifactNames = _filterArtifactNames(artifactNames, filters.artifactFilters);
+        return {
+          activeArtifactNames: _getActiveArtifactNames(this.props, filteredArtifactNames),
+          artifactFilters: filters.artifactFilters,
+          colorScale: _getColorScale(filteredArtifactNames.length),
+          endDate: filters.endDate,
+          filteredArtifactNames,
+          startDate: filters.startDate
+        };
       },
       () => {
         const { startDate, endDate } = this.state;
@@ -249,18 +255,6 @@ class App extends Component<Props, State> {
         }
       }
     );
-    this._handleToggleFilters(filters.artifactFilters);
-  };
-
-  _handleToggleFilters = (artifactFilters: BT$ArtifactFilters) => {
-    this.setState(({ artifactNames }) => {
-      const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
-      return {
-        artifactFilters,
-        colorScale: _getColorScale(filteredArtifactNames.length),
-        filteredArtifactNames
-      };
-    });
   };
 
   _handleToggleValueTypes = (toggleType: string, value: string) => {

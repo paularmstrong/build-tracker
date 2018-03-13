@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist/index.html",
   "bugs": {
     "url": "https://github.com/paularmstrong/build-tracker/issues"
@@ -10,7 +10,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/comparator": "^0.0.5",
+    "@build-tracker/comparator": "^0.0.7",
     "ascii-table": "^0.0.9",
     "css-loader": "0.28.7",
     "d3-array": "^1.2.0",

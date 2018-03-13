@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist",
   "module": "src",
   "author": "Paul Armstrong <paul@spaceyak.com>",
@@ -13,8 +13,8 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/app": "^0.0.6",
-    "@build-tracker/comparator": "^0.0.5",
+    "@build-tracker/app": "^0.0.7",
+    "@build-tracker/comparator": "^0.0.7",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
     "glob": "^7.1.2",

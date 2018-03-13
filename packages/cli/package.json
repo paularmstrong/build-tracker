@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/app": "^0.0.6",
+    "@build-tracker/app": "^0.0.7",
     "glob": "^7.1.2",
     "yargs": "^8.0.2"
   },

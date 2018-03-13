@@ -56,7 +56,7 @@ const _filterArtifactNames = (artifactNames: Array<string>, filters: BT$Artifact
     return artifactNames;
   }
 
-  return artifactNames.filter(name => filters.some(filter => !filter.test(name)));
+  return artifactNames.filter(name => !filters.some(filter => !!filter.test(name)));
 };
 
 type Props = {

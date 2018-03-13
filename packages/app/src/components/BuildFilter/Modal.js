@@ -69,8 +69,8 @@ export default class BuildFilter extends React.Component<Props, State> {
             </View>
             {artifactFilters.length ? (
               <View accessibilityRole="list" style={styles.filterList}>
-                {artifactFilters.map(filter => (
-                  <View accessibilityRole="listitem" style={styles.filterItem}>
+                {artifactFilters.map((filter, i) => (
+                  <View accessibilityRole="listitem" key={i} style={styles.filterItem}>
                     <Text style={styles.filter}>{filter.toString()}</Text>
                   </View>
                 ))}

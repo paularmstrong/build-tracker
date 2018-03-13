@@ -4,17 +4,20 @@ import BuildInfo from './components/BuildInfo';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
+import endOfDay from 'date-fns/end_of_day';
 import type { Filters } from './components/BuildFilter/types';
 import { formatSha } from './modules/formatting';
 import { getBuilds } from './api';
 import { object } from 'prop-types';
+import startOfDay from 'date-fns/start_of_day';
+import subDays from 'date-fns/sub_days';
 import theme from './theme';
 import Toggles from './components/Toggles';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import type { Location, Match, RouterHistory } from 'react-router-dom';
 import React, { Component } from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 const emptyArray = [];
 
@@ -70,31 +73,40 @@ type State = {
   chart: $Values<typeof ChartType>,
   colorScale?: Function,
   compareBuilds: Array<BT$Build>,
+  endDate: Date,
   filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
   isFiltered: boolean,
   selectedBuild?: BT$Build,
+  startDate: Date,
   valueType: $Values<typeof ValueType>,
   xscale: $Values<typeof XScaleType>,
   yscale: $Values<typeof YScaleType>
 };
 
+const today = new Date();
+
 class App extends Component<Props, State> {
+  _defaultFilters: BT$ArtifactFilters;
+
   static contextTypes = {
     config: object
   };
 
   constructor(props: Props, context: { config: BT$AppConfig }) {
     super(props, context);
+    this._defaultFilters = context.config.artifactFilters || [];
     this.state = {
       activeArtifactNames: [],
-      artifactFilters: context.config.artifactFilters || [],
+      artifactFilters: this._defaultFilters,
       artifactNames: [],
       builds: [],
       chart: ChartType.AREA,
       compareBuilds: [],
+      endDate: endOfDay(today),
       filteredArtifactNames: [],
       isFiltered: true,
+      startDate: subDays(startOfDay(today), 30),
       valueType: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
@@ -102,7 +114,7 @@ class App extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this._fetchData();
+    this._fetchData({ startDate: this.state.startDate.valueOf(), endDate: this.state.endDate.valueOf() });
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -118,15 +130,15 @@ class App extends Component<Props, State> {
     const {
       activeArtifactNames,
       artifactFilters,
-      artifactNames,
       builds,
+      endDate,
       filteredArtifactNames,
       chart,
       colorScale,
       compareBuilds,
       hoveredArtifact,
       selectedBuild,
-      isFiltered,
+      startDate,
       valueType,
       xscale,
       yscale
@@ -137,7 +149,13 @@ class App extends Component<Props, State> {
         <View style={styles.main}>
           <View style={styles.header}>
             <Text style={styles.title}>Build Tracker</Text>
-            <BuildFilter onFilter={this._handleChangeBuildFilter} />
+            <BuildFilter
+              artifactFilters={artifactFilters}
+              defaultArtifactFilters={this._defaultFilters}
+              endDate={endDate}
+              onFilter={this._handleChangeBuildFilter}
+              startDate={startDate}
+            />
           </View>
           <View style={styles.innerMain}>
             <View style={styles.chartRoot}>
@@ -156,17 +174,6 @@ class App extends Component<Props, State> {
                     xScaleType={xscale}
                     yScaleType={yscale}
                   />
-                ) : null}
-                {artifactFilters.length ? (
-                  <View style={styles.filters}>
-                    <Switch onValueChange={this._handleToggleFilters} value={isFiltered} />
-                    <Text style={styles.filterText}>
-                      Filters{' '}
-                      {isFiltered
-                        ? `enabled (${artifactNames.length - filteredArtifactNames.length} hidden)`
-                        : 'disabled'}
-                    </Text>
-                  </View>
                 ) : null}
                 <View style={styles.scaleTypeButtons}>
                   <Toggles
@@ -224,20 +231,34 @@ class App extends Component<Props, State> {
     });
   }
 
-  _handleChangeBuildFilter = ({ endDate, startDate }: Filters) => {
-    this._fetchData({
-      startTime: startDate ? startDate.valueOf() : undefined,
-      endTime: endDate ? endDate.valueOf() : undefined
-    });
+  _handleChangeBuildFilter = (filters: Filters) => {
+    const { startDate: prevStartDate, endDate: prevEndDate } = this.state;
+    this.setState(
+      {
+        artifactFilters: filters.artifactFilters,
+        endDate: filters.endDate,
+        startDate: filters.startDate
+      },
+      () => {
+        const { startDate, endDate } = this.state;
+        if (prevStartDate !== startDate || prevEndDate !== endDate) {
+          this._fetchData({
+            startTime: startDate.valueOf(),
+            endTime: endDate.valueOf()
+          });
+        }
+      }
+    );
+    this._handleToggleFilters(filters.artifactFilters);
   };
 
-  _handleToggleFilters = (isFiltered: boolean) => {
-    this.setState(({ artifactFilters, artifactNames }) => {
-      const filteredArtifactNames = isFiltered ? _filterArtifactNames(artifactNames, artifactFilters) : artifactNames;
+  _handleToggleFilters = (artifactFilters: BT$ArtifactFilters) => {
+    this.setState(({ artifactNames }) => {
+      const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
       return {
+        artifactFilters,
         colorScale: _getColorScale(filteredArtifactNames.length),
-        filteredArtifactNames,
-        isFiltered
+        filteredArtifactNames
       };
     });
   };
@@ -365,13 +386,6 @@ const styles = StyleSheet.create({
     marginTop: theme.spaceSmall,
     marginRight: theme.spaceSmall,
     marginBottom: theme.spaceSmall
-  },
-  filters: {
-    flexDirection: 'row',
-    paddingHorizontal: theme.spaceMedium
-  },
-  filterText: {
-    paddingLeft: theme.spaceXXSmall
   }
 });
 

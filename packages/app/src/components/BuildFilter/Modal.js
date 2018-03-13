@@ -4,23 +4,32 @@ import DateRangePicker from '../DateRangePicker';
 import type { Filters } from './types';
 import ReactDOM from 'react-dom';
 import theme from '../../theme';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Switch, Text, View } from 'react-native';
 
-type Props = Filters & {
-  onClose: (filters: Filters) => void
+type Props = {
+  artifactFilters: BT$ArtifactFilters,
+  defaultArtifactFilters: BT$ArtifactFilters,
+  onClose: (filters: Filters) => void,
+  startDate: Date,
+  endDate: Date
 };
 
 type State = Filters;
 
 const modalRoot = document.getElementById('buildFilterRoot');
+const emptyArray = [];
 
 export default class BuildFilter extends React.Component<Props, State> {
   _el: HTMLElement;
+  _artifactNameFiltersAvailable: boolean;
 
   constructor(props: Props, context: any) {
     super(props, context);
     this._el = document.createElement('div');
+    this._artifactNameFiltersAvailable = !!props.defaultArtifactFilters.length;
     this.state = {
+      artifactFilters: props.artifactFilters,
+      artifactsFiltered: !!props.artifactFilters.length,
       endDate: props.endDate,
       startDate: props.startDate
     };
@@ -39,7 +48,7 @@ export default class BuildFilter extends React.Component<Props, State> {
   }
 
   _render() {
-    const { endDate, startDate } = this.state;
+    const { artifactFilters, artifactsFiltered, endDate, startDate } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.container}>
@@ -50,6 +59,23 @@ export default class BuildFilter extends React.Component<Props, State> {
           <View style={styles.content}>
             <DateRangePicker endDate={endDate} onChangeRange={this._handleChangeDateRange} startDate={startDate} />
             <View style={styles.hr} />
+            <View style={styles.filters}>
+              <Switch
+                disabled={!this._artifactNameFiltersAvailable}
+                onValueChange={this._handleToggleFilters}
+                value={artifactsFiltered}
+              />
+              <Text style={styles.filterText}>Artifact name filters</Text>
+            </View>
+            {artifactFilters.length ? (
+              <View accessibilityRole="list" style={styles.filterList}>
+                {artifactFilters.map(filter => (
+                  <View accessibilityRole="listitem" style={styles.filterItem}>
+                    <Text style={styles.filter}>{filter.toString()}</Text>
+                  </View>
+                ))}
+              </View>
+            ) : null}
           </View>
         </View>
       </View>
@@ -58,6 +84,16 @@ export default class BuildFilter extends React.Component<Props, State> {
 
   _handleChangeDateRange = (startDate: Date, endDate: Date) => {
     this.setState({ startDate, endDate });
+  };
+
+  _handleToggleFilters = (artifactsFiltered: boolean) => {
+    const { artifactFilters, defaultArtifactFilters } = this.props;
+    this.setState({
+      artifactFilters: artifactsFiltered
+        ? artifactFilters.length ? artifactFilters : defaultArtifactFilters
+        : emptyArray,
+      artifactsFiltered
+    });
   };
 
   _handleClose = () => {
@@ -96,5 +132,18 @@ const styles = StyleSheet.create({
     marginVertical: theme.spaceSmall,
     borderBottomWidth: 1,
     borderBottomColor: theme.colorGray
+  },
+  filters: {
+    flexDirection: 'row',
+    paddingHorizontal: theme.spaceMedium
+  },
+  filterText: {
+    paddingLeft: theme.spaceXXSmall
+  },
+  filterList: {
+    paddingHorizontal: theme.spaceMedium
+  },
+  filter: {
+    fontFamily: 'monospace'
   }
 });

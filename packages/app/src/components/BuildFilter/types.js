@@ -1,2 +1,7 @@
 // @flow
-export type Filters = { startDate: Date, endDate: Date };
+export type Filters = {|
+  artifactFilters: BT$ArtifactFilters,
+  artifactsFiltered: boolean,
+  startDate: Date,
+  endDate: Date
+|};

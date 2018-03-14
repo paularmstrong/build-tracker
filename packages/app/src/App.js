@@ -52,10 +52,6 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<BT$Build>): Ar
 const _getColorScale = (length: number): Function => scaleSequential(interpolateRainbow).domain([0, length]);
 
 const _filterArtifactNames = (artifactNames: Array<string>, filters: BT$ArtifactFilters): Array<string> => {
-  if (!filters || filters.length === 0) {
-    return artifactNames;
-  }
-
   return artifactNames.filter(name => !filters.some(filter => !!filter.test(name)));
 };
 
@@ -267,7 +263,12 @@ class App extends Component<Props, State> {
 
   _handleArtifactsChange = (activeArtifacts: Array<string>) => {
     this.setState(
-      ({ artifactFilters }) => ({ activeArtifactNames: _filterArtifactNames(activeArtifacts, artifactFilters) }),
+      ({ artifactFilters, artifactNames }) => ({
+        activeArtifactNames: _filterArtifactNames(
+          activeArtifacts.length === 1 && activeArtifacts[0] === 'All' ? artifactNames : activeArtifacts,
+          artifactFilters
+        )
+      }),
       this._updateUrl
     );
   };
@@ -304,7 +305,7 @@ class App extends Component<Props, State> {
     const urlArtifacts =
       activeArtifactNames.length > 1 && activeArtifactNames.length !== filteredArtifactNames.length
         ? activeArtifactNames.filter(b => b !== 'All')
-        : ['All'];
+        : activeArtifactNames.length === 0 ? ['None'] : activeArtifactNames;
     const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(b.meta.revision)).sort();
     const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${urlArtifacts.join('+')}/${urlRevisions.join('+')}`;
     if (newPath !== pathname) {

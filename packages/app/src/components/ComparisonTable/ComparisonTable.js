@@ -38,6 +38,8 @@ type State = {
   showDeselectedArtifacts: boolean
 };
 
+const emptyArray = [];
+
 export default class ComparisonTable extends React.Component<Props, State> {
   context: {
     config: BT$AppConfig
@@ -158,7 +160,6 @@ export default class ComparisonTable extends React.Component<Props, State> {
             active={activeArtifactNames.length === artifactNames.length}
             artifactName="All"
             color={theme.colorMidnight}
-            disabled={activeArtifactNames.length === artifactNames.length}
             key={i}
             linked
             onToggle={this._handleToggleAllArtifacts}
@@ -285,9 +286,9 @@ export default class ComparisonTable extends React.Component<Props, State> {
     }
   };
 
-  _handleToggleAllArtifacts = (value: boolean) => {
-    const { artifactNames, onArtifactsChange } = this.props;
-    onArtifactsChange && onArtifactsChange(artifactNames);
+  _handleToggleAllArtifacts = (name: string, value: boolean) => {
+    const { onArtifactsChange } = this.props;
+    onArtifactsChange && onArtifactsChange(value ? [name] : emptyArray);
   };
 
   _handleCopyToAscii = () => {

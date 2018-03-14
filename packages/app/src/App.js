@@ -116,7 +116,10 @@ class App extends Component<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
     if (!deepEqual(this.props.match.params, nextProps.match.params)) {
       this.setState(state => ({
-        activeArtifactNames: _getActiveArtifactNames(nextProps, state.artifactNames),
+        activeArtifactNames: _filterArtifactNames(
+          _getActiveArtifactNames(nextProps, state.artifactNames),
+          this.state.artifactFilters
+        ),
         compareBuilds: _getCompareBuilds(nextProps, state.builds)
       }));
     }

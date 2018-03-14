@@ -300,9 +300,9 @@ class App extends Component<Props, State> {
 
   _updateUrl = () => {
     const { location: { pathname }, match: { params: { revisions } } } = this.props;
-    const { activeArtifactNames, artifactNames, compareBuilds } = this.state;
+    const { activeArtifactNames, compareBuilds, filteredArtifactNames } = this.state;
     const urlArtifacts =
-      activeArtifactNames.length > 1 && activeArtifactNames.length !== artifactNames.length
+      activeArtifactNames.length > 1 && activeArtifactNames.length !== filteredArtifactNames.length
         ? activeArtifactNames.filter(b => b !== 'All')
         : ['All'];
     const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(b.meta.revision)).sort();

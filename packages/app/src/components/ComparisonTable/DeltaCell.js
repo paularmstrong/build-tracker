@@ -28,15 +28,21 @@ const redScale = scaleLinear()
 
 export default class DeltaCell extends PureComponent<Props> {
   render() {
-    const { gzipPercent, valueType } = this.props;
+    const { gzipPercent, hashChanged, statPercent, valueType } = this.props;
     const value = this.props[valueType];
     const backgroundColor =
       gzipPercent > 1
         ? redScale(Math.max(Math.min(gzipPercent, 2), 1))
-        : gzipPercent === 1 ? 'transparent' : greenScale(Math.max(Math.min(gzipPercent, 1), 0));
+        : gzipPercent === 1
+          ? hashChanged ? '#ffd18c' : 'transparent'
+          : greenScale(Math.max(Math.min(gzipPercent, 1), 0));
+    const percentChange = 100 - (valueType === 'gzip' ? gzipPercent : statPercent) * 100;
     return (
-      <Td style={[styles.cell, backgroundColor && { backgroundColor }]}>
-        <Text>{value ? bytesToKb(value) : '-'}</Text>
+      <Td
+        style={[styles.cell, backgroundColor && { backgroundColor }]}
+        title={`${percentChange.toFixed(3)}% ${hashChanged ? ' - Hash Changed' : ''}`}
+      >
+        <Text>{value ? bytesToKb(value) : hashChanged ? '*' : '-'}</Text>
       </Td>
     );
   }

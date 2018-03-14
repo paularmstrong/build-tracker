@@ -25,18 +25,19 @@ class BuildTrackerPlugin {
   _handleDone(artifacts) {
     const compilation = artifacts.compilation;
 
-    const outputArtifacts = compilation.chunks
-      .map(chunk => {
-        const fileName = chunk.files.filter(fileName => /\.js$/.test(fileName))[0];
+    const outputArtifacts = Object.keys(compilation.assets)
+      .filter(fileName => /\.js$/.test(fileName))
+      .map(fileName => {
         const filePath = path.join(compilation.outputOptions.path, fileName);
+        const fileNameParts = fileName.match(/(.+)\.([a-f0-9]+)\.js$/);
 
         try {
           const file = fs.readFileSync(filePath);
           const gzippedSize = gzip.sync(file);
           return {
-            hash: chunk.hash,
-            name: chunk.name,
-            stat: chunk.size({}),
+            hash: fileNameParts[2],
+            name: fileNameParts[1],
+            stat: file.toString().length,
             gzip: gzippedSize
           };
         } catch (e) {

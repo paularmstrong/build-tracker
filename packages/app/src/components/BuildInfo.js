@@ -30,7 +30,16 @@ export default class BuildInfo extends React.PureComponent<Props> {
         {Object.keys(otherMeta).length > 0 ? (
           <View>
             <Text style={styles.sectionHeading}>Build Meta</Text>
-            {/* TODO: format for build meta? */}
+            <Table>
+              <Tbody>
+                {Object.keys(otherMeta).map(key => (
+                  <Tr>
+                    <Th>{key}</Th>
+                    <Td>{otherMeta[key]}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </View>
         ) : null}
       </View>

@@ -203,7 +203,9 @@ class App extends Component<Props, State> {
               valueType={valueType}
             />
           </View>
-          <View style={styles.info}>{selectedBuild ? <BuildInfo build={selectedBuild} /> : null}</View>
+          <View style={styles.info}>
+            {selectedBuild ? <BuildInfo build={selectedBuild} /> : <Text>Select a build to see more information.</Text>}
+          </View>
         </View>
       </View>
     );
@@ -345,25 +347,26 @@ const styles = StyleSheet.create({
   },
   data: {
     flexGrow: 0,
-    minWidth: `${2 * (100 / theme.columns)}%`,
-    maxWidth: `${6 * (100 / theme.columns)}%`,
+    minWidth: '20vw',
+    maxWidth: '50vw',
+    maxHeight: '100vh',
     borderLeftStyle: 'solid',
     borderLeftWidth: '1px',
     borderLeftColor: theme.colorGray
   },
   table: {
     overflowY: 'scroll',
-    minHeight: '50vh',
-    maxHeight: '80vh',
+    minHeight: '75%',
+    maxHeight: '75%',
     borderBottomStyle: 'solid',
     borderBottomWidth: '1px',
     borderBottomColor: theme.colorGray
   },
   info: {
-    flexGrow: 1,
-    minHeight: '20vh',
-    maxHeight: '50vh',
-    margin: theme.spaceSmall
+    minHeight: '25%',
+    maxHeight: '25%',
+    padding: theme.spaceSmall,
+    overflowY: 'scroll'
   },
   main: {
     height: '100vh',

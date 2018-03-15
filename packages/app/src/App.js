@@ -92,7 +92,7 @@ class App extends Component<Props, State> {
 
   constructor(props: Props, context: { config: BT$AppConfig }) {
     super(props, context);
-    this._defaultFilters = [/^globalize-compiled-/] || context.config.artifactFilters || [];
+    this._defaultFilters = context.config.artifactFilters || [];
     this.state = {
       activeArtifactNames: [],
       artifactFilters: this._defaultFilters,

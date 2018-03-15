@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/app",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "dist/index.html",
   "bugs": {
     "url": "https://github.com/paularmstrong/build-tracker/issues"
@@ -10,8 +10,8 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/builds": "^0.0.8",
-    "@build-tracker/comparator": "^0.0.7",
+    "@build-tracker/builds": "^0.0.9",
+    "@build-tracker/comparator": "^0.0.9",
     "ascii-table": "^0.0.9",
     "css-loader": "0.28.7",
     "d3-array": "^1.2.0",
@@ -45,7 +45,10 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "proxy": "http://localhost:3000/",
-  "files": ["dist/", "README.md"],
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "devDependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",

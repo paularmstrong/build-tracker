@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@build-tracker/builds": "0.0.8",
+    "@build-tracker/builds": "^0.0.9",
     "ascii-table": "^0.0.9"
   },
   "main": "dist",
@@ -31,5 +31,8 @@
     "babel-watch": "^2.0.7",
     "flow-copy-source": "^1.2.1"
   },
-  "files": ["index.js", "README.md"]
+  "files": [
+    "index.js",
+    "README.md"
+  ]
 }

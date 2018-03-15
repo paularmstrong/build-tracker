@@ -202,7 +202,7 @@ export default class Chart extends React.Component<Props, State> {
     const fillFunction = _makeColorScale(artifacts, colorScale);
 
     const areaChart = area()
-      .x(d => xScale(d.data.meta[xAccessor]))
+      .x(d => xScale(BuildMeta.getValue(d.data, xAccessor)))
       .y0(d => yScale(d[0]))
       .y1(d => yScale(d[1]));
 
@@ -259,14 +259,14 @@ export default class Chart extends React.Component<Props, State> {
       .enter()
       .append('rect')
       .attr('class', 'artifact')
-      .attr('x', d => xScale(d.data.meta[xAccessor]))
+      .attr('x', d => xScale(BuildMeta.getValue(d.data, xAccessor)))
       .attr('y', d => height - margin.top - margin.bottom)
       .attr('width', xScale.bandwidth())
       .attr('height', 0)
       .merge(artifactRects)
       .transition()
       .duration(150)
-      .attr('x', d => xScale(d.data.meta[xAccessor]))
+      .attr('x', d => xScale(BuildMeta.getValue(d.data, xAccessor)))
       .attr('y', d => yScale(d[1]))
       .attr('height', d => yScale(d[0]) - yScale(d[1]))
       .attr('width', xScale.bandwidth());
@@ -362,7 +362,7 @@ export default class Chart extends React.Component<Props, State> {
 
     const range = [0, width - (margin.left + margin.right)];
     const timeRange = [range[0] + 10, range[1] - 10];
-    const domain = builds.sort((a, b) => BuildMeta.getDate(a) - BuildMeta.getDate(b));
+    const domain = builds.sort((a, b) => BuildMeta.getTimestamp(a) - BuildMeta.getTimestamp(b));
     const padding = 0.25;
 
     switch (xScaleType) {
@@ -371,11 +371,11 @@ export default class Chart extends React.Component<Props, State> {
           return scaleBand()
             .rangeRound(range)
             .padding(padding)
-            .domain(domain.map(d => d.meta.timestamp));
+            .domain(domain.map(d => BuildMeta.getTimestamp(d)));
         }
         return scaleTime()
           .range(timeRange)
-          .domain(extent(builds, d => d.meta.timestamp));
+          .domain(extent(builds, d => BuildMeta.getTimestamp(d)));
 
       case XScaleType.COMMIT:
       default: {

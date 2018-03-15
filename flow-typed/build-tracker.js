@@ -3,10 +3,13 @@
  * Generic Types
  */
 
+declare type BT$BuildMetaItem = string | { value: string, url: string };
+
 declare type BT$BuildMeta = {
-  branch?: string,
-  revision: string,
-  timestamp: number
+  branch?: BT$BuildMetaItem,
+  revision: BT$BuildMetaItem,
+  timestamp: number,
+  [key: string]: BT$BuildMetaItem
 };
 
 declare type BT$Artifact = {

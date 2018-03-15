@@ -2,7 +2,6 @@
   "name": "@build-tracker/server",
   "version": "0.0.8",
   "main": "dist",
-  "module": "src",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "bugs": {
@@ -14,6 +13,7 @@
   },
   "dependencies": {
     "@build-tracker/app": "^0.0.8",
+    "@build-tracker/builds": "^0.0.8",
     "@build-tracker/comparator": "^0.0.7",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",

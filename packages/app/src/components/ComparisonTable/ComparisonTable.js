@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import ArtifactCell from './ArtifactCell';
+import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import DeltaCell from './DeltaCell';
 import { hsl } from 'd3-color';
@@ -19,7 +20,7 @@ const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): 
   return artifactNames.indexOf(a) - artifactNames.indexOf(b);
 };
 
-const sortBuilds = (a, b) => a.meta.timestamp - b.meta.timestamp;
+const sortBuilds = (a: BT$Build, b: BT$Build) => BuildMeta.getTimestamp(a) - BuildMeta.getTimestamp(b);
 
 type Props = {
   activeArtifactNames: Array<string>,

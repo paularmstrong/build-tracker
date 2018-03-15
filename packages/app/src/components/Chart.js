@@ -1,6 +1,7 @@
 // @flow
 import 'd3-transition';
 import * as React from 'react';
+import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import theme from '../theme';
 import { area, stack } from 'd3-shape';
@@ -40,17 +41,18 @@ const getMouseInformation = (
   let hoveredBuild;
   if (xScale.invert) {
     const xDate = xScale.invert(xPos);
-    const validTimestamps = builds.map(d => d.meta.timestamp);
+    const validTimestamps = builds.map(d => BuildMeta.getTimestamp(d));
     xValue = validTimestamps.reduce((prev, curr) => (Math.abs(curr - xDate) < Math.abs(prev - xDate) ? curr : prev), 0);
     xIndex = validTimestamps.indexOf(xValue);
-    hoveredBuild = builds.find(build => build.meta.timestamp === xValue);
+    hoveredBuild = builds.find(build => BuildMeta.getTimestamp(build) === xValue);
   } else {
     const domain = xScale.domain();
     xValue = domain.reduce((prev, curr, i) => {
       return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
     }, domain[0]);
     xIndex = builds.findIndex(
-      build => (typeof xValue === 'string' ? build.meta.revision === xValue : build.meta.timestamp === xValue)
+      build =>
+        typeof xValue === 'string' ? BuildMeta.getRevision(build) === xValue : BuildMeta.getTimestamp(build) === xValue
     );
     hoveredBuild = builds[xIndex];
   }
@@ -299,7 +301,9 @@ export default class Chart extends React.Component<Props, State> {
     const { selectedBuilds, builds, xScaleType } = this.props;
     const data =
       xScaleType === XScaleType.TIME
-        ? builds.filter(d => selectedBuilds.indexOf(d.meta.revision) !== -1).map(d => d.meta.timestamp)
+        ? builds
+            .filter(d => selectedBuilds.indexOf(BuildMeta.getRevision(d)) !== -1)
+            .map(d => BuildMeta.getTimestamp(d))
         : selectedBuilds;
     const lines = this._staticLines.selectAll('line').data(data);
     lines.exit().remove();
@@ -358,7 +362,7 @@ export default class Chart extends React.Component<Props, State> {
 
     const range = [0, width - (margin.left + margin.right)];
     const timeRange = [range[0] + 10, range[1] - 10];
-    const domain = builds.sort((a, b) => new Date(a.meta.timestamp) - new Date(b.meta.timestamp));
+    const domain = builds.sort((a, b) => BuildMeta.getDate(a) - BuildMeta.getDate(b));
     const padding = 0.25;
 
     switch (xScaleType) {
@@ -375,7 +379,7 @@ export default class Chart extends React.Component<Props, State> {
 
       case XScaleType.COMMIT:
       default: {
-        const commitDomain = domain.map(d => d.meta.revision);
+        const commitDomain = domain.map(d => BuildMeta.getRevision(d));
         return chartType === ChartType.BAR
           ? scaleBand()
               .rangeRound(range)

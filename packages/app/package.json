@@ -10,6 +10,7 @@
     "type": "git"
   },
   "dependencies": {
+    "@build-tracker/builds": "^0.0.8",
     "@build-tracker/comparator": "^0.0.7",
     "ascii-table": "^0.0.9",
     "css-loader": "0.28.7",

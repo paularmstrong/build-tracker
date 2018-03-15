@@ -1,6 +1,7 @@
 // @flow
 import * as Builds from './api/builds';
 import bodyParser from 'body-parser';
+import { BuildMeta } from '@build-tracker/builds';
 import express from 'express';
 import fs from 'fs';
 import glob from 'glob';
@@ -91,8 +92,8 @@ export const staticServer = (options: StaticServerOptions) => {
 
         const builds = matches
           .map(match => require(match))
-          .filter((build: BT$Build) => !branch || build.meta.branch === branch)
-          .sort((a, b) => new Date(b.meta.timestamp) - new Date(a.meta.timestamp))
+          .filter((build: BT$Build) => !branch || BuildMeta.getBranch(build) === branch)
+          .sort((a, b) => BuildMeta.getDate(b) - BuildMeta.getDate(a))
           .slice(0, limit);
         resolve(builds);
       });

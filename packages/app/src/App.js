@@ -1,6 +1,7 @@
 // @flow
 import BuildFilter from './components/BuildFilter';
 import BuildInfo from './components/BuildInfo';
+import { BuildMeta } from '@build-tracker/builds';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
@@ -47,7 +48,7 @@ const _getCompareBuilds = (props: { match: Match }, builds: Array<BT$Build>): Ar
     return emptyArray;
   }
 
-  return builds.filter(b => buildRevisions.indexOf(formatSha(b.meta.revision)) !== -1);
+  return builds.filter(b => buildRevisions.indexOf(formatSha(BuildMeta.getRevision(b))) !== -1);
 };
 
 const _getColorScale = (length: number): Function => scaleSequential(interpolateRainbow).domain([0, length]);
@@ -169,7 +170,7 @@ class App extends Component<Props, State> {
                     colorScale={colorScale}
                     onHover={this._handleHover}
                     onSelectBuild={this._handleSelectBuild}
-                    selectedBuilds={compareBuilds.map(b => b.meta.revision)}
+                    selectedBuilds={compareBuilds.map((b: BT$Build) => BuildMeta.getRevision(b))}
                     valueAccessor={valueTypeAccessor[valueType]}
                     xScaleType={xscale}
                     yScaleType={yscale}
@@ -290,7 +291,7 @@ class App extends Component<Props, State> {
   _handleRemoveRevision = (revision: string) => {
     this.setState(
       state => ({
-        compareBuilds: state.compareBuilds.filter(build => build.meta.revision !== revision),
+        compareBuilds: state.compareBuilds.filter(build => BuildMeta.getRevision(build) !== revision),
         selectedBuild: state.compareBuilds.length ? state.compareBuilds[0] : undefined
       }),
       this._updateUrl
@@ -299,7 +300,7 @@ class App extends Component<Props, State> {
 
   _handleShowBuildInfo = (revision: string) => {
     this.setState(state => ({
-      selectedBuild: state.compareBuilds.find(build => build.meta.revision === revision)
+      selectedBuild: state.compareBuilds.find(build => BuildMeta.getRevision(build) === revision)
     }));
   };
 
@@ -311,7 +312,7 @@ class App extends Component<Props, State> {
         ? activeArtifactNames.filter(b => b !== 'All')
         : activeArtifactNames.length === 0 ? ['None'] : activeArtifactNames;
     const safeUrlArtifacts = urlArtifacts.map(name => window.encodeURIComponent(name));
-    const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(b.meta.revision)).sort();
+    const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(BuildMeta.getRevision(b))).sort();
     const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${safeUrlArtifacts.join('+')}/${urlRevisions.join(
       '+'
     )}`;

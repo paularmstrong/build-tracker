@@ -1,12 +1,13 @@
 // @flow
 import assert from 'assert';
 import BuildComparator from '@build-tracker/comparator';
+import { BuildMeta } from '@build-tracker/builds';
 import type { $Request, $Response } from 'express';
 
-const isValidBuild = (data): void => {
+const isValidBuild = (data: BT$Build): void => {
   assert(data.meta && typeof data.meta === 'object', 'Metadata is provided');
-  assert(data.meta.revision && typeof data.meta.revision === 'string', 'Build revision is provided');
-  assert(data.meta.timestamp && typeof data.meta.timestamp === 'number', 'Build timestamp is provided');
+  assert(BuildMeta.getRevision(data) === 'string', 'Build revision is provided');
+  assert(BuildMeta.getTimestamp(data) === 'number', 'Build timestamp is provided');
   assert(data.artifacts && typeof data.artifacts === 'object', 'Build artifacts are provided');
   Object.keys(data.artifacts).forEach(key => {
     const artifact = data.artifacts[key];
@@ -83,7 +84,7 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildI
     .then(() => {
       res.write(JSON.stringify({ success: true }));
     })
-    .then(() => getPrevious(build.meta.timestamp))
+    .then(() => getPrevious(BuildMeta.getTimestamp(build.meta)))
     .then((parentBuild: BT$Build) => {
       const comparator = new BuildComparator([parentBuild, build].filter(Boolean));
       onBuildInserted && onBuildInserted(comparator);

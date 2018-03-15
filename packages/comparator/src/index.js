@@ -1,5 +1,6 @@
 // @flow
 import AsciiTable from 'ascii-table';
+import { BuildMeta } from '@build-tracker/builds';
 
 type RevisionStringFormatter = (cell: BT$RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: BT$RevisionDeltaCellType) => string;
@@ -156,8 +157,8 @@ export default class BuildComparator {
       { type: CellType.TEXT, text: '' },
       ...flatten(
         this.buildDeltas.map(buildDelta => {
-          const revision = buildDelta.meta.revision;
-          const revisionIndex = this.builds.findIndex(build => build.meta.revision === revision);
+          const revision = BuildMeta.getRevision(buildDelta);
+          const revisionIndex = this.builds.findIndex(build => BuildMeta.getRevision(build) === revision);
           return [
             { type: CellType.REVISION_HEADER, revision },
             ...buildDelta.artifactDeltas.map((delta, i): BT$RevisionDeltaCellType => {
@@ -165,7 +166,7 @@ export default class BuildComparator {
               return {
                 type: CellType.REVISION_DELTA_HEADER,
                 deltaIndex,
-                againstRevision: this.builds[revisionIndex - deltaIndex - 1].meta.revision,
+                againstRevision: BuildMeta.getRevision(this.builds[revisionIndex - deltaIndex - 1]),
                 revision
               };
             })

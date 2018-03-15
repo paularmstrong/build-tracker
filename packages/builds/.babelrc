@@ -1,0 +1,10 @@
+{
+  "presets": [
+    "env",
+    "flow"
+  ],
+  "plugins": [
+    "syntax-flow",
+    "transform-object-rest-spread"
+  ]
+}

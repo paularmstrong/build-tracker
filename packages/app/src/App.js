@@ -30,6 +30,7 @@ const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames: Arra
   const activeArtifactNames = artifactNames
     .replace(/All\+?/, '')
     .split('+')
+    .map(name => window.decodeURIComponent(name))
     .filter(Boolean);
   return activeArtifactNames.length
     ? allArtifactNames.filter((b: string) => activeArtifactNames.indexOf(b) !== -1)
@@ -309,8 +310,11 @@ class App extends Component<Props, State> {
       activeArtifactNames.length > 1 && activeArtifactNames.length !== filteredArtifactNames.length
         ? activeArtifactNames.filter(b => b !== 'All')
         : activeArtifactNames.length === 0 ? ['None'] : activeArtifactNames;
+    const safeUrlArtifacts = urlArtifacts.map(name => window.encodeURIComponent(name));
     const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(b.meta.revision)).sort();
-    const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${urlArtifacts.join('+')}/${urlRevisions.join('+')}`;
+    const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${safeUrlArtifacts.join('+')}/${urlRevisions.join(
+      '+'
+    )}`;
     if (newPath !== pathname) {
       this.props.history.push(newPath);
     }

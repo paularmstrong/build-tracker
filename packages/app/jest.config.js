@@ -5,5 +5,8 @@ module.exports = {
   rootDir: './',
   roots: ['<rootDir>/src'],
   testEnvironment: 'jsdom',
-  testURL: 'http://localhost'
+  testURL: 'http://localhost',
+  transform: {
+    '^.+\\.js$': 'babel-jest'
+  }
 };

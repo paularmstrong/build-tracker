@@ -23,13 +23,10 @@
   "scripts": {
     "build": "npm run build:module && npm run build:flow",
     "build:flow": "flow-copy-source -i __tests__/*.js src dist",
-    "build:module": "babel src -d dist --ignore *.test.js",
+    "build:module": "babel src --ignore __tests__ -d dist",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": [
-    "dist/*",
-    "README.md"
-  ],
+  "files": ["dist/*", "README.md"],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

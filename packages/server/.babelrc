@@ -4,6 +4,7 @@
     "flow"
   ],
   "plugins": [
-    "syntax-flow"
+    "syntax-flow",
+    "transform-object-rest-spread"
   ]
 }

@@ -27,7 +27,7 @@ export type ServerOptions = {
   thresholds?: BT$Thresholds
 };
 
-const defaultBT$Thresholds = {
+const defaultThresholds = {
   stat: 5000,
   statPercent: 0.1,
   gzip: 500,
@@ -62,7 +62,7 @@ export default function createServer({
           '<script id="config"></script>',
           `<script id="config">window.CONFIG=${JSON.stringify({
             artifactFilters: artifactFilters.map(filter => filter.toString()),
-            thresholds: Object.assign({}, defaultBT$Thresholds, thresholds)
+            thresholds: { ...defaultThresholds, ...thresholds }
           })};</script>`
         );
         res.send(modifiedHtml);
@@ -112,14 +112,13 @@ export const staticServer = (options: StaticServerOptions) => {
 
   const getByRevisions = revisions => getWithGlob(`*+(${revisions.join('|')})*`);
 
-  return createServer(
-    Object.assign({}, options, {
-      builds: {
-        getBuilds,
-        getByRevisions,
-        getPrevious: () => Promise.reject(new Error('Not implemented')),
-        insert: () => Promise.reject(new Error('Static server cannot save new builds'))
-      }
-    })
-  );
+  return createServer({
+    ...options,
+    builds: {
+      getBuilds,
+      getByRevisions,
+      getPrevious: () => Promise.reject(new Error('Not implemented')),
+      insert: () => Promise.reject(new Error('Static server cannot save new builds'))
+    }
+  });
 };

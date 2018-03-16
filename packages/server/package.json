@@ -26,10 +26,7 @@
     "build:module": "babel src --ignore __tests__ -d dist",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": [
-    "dist/*",
-    "README.md"
-  ],
+  "files": ["dist/*", "README.md"],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -37,6 +34,8 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
     "babel-watch": "^2.0.7",
-    "flow-copy-source": "^1.2.1"
+    "flow-copy-source": "^1.2.1",
+    "mock-express-request": "^0.2.2",
+    "mock-express-response": "^0.2.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "dist",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/app": "^0.0.9",
+    "@build-tracker/app": "^0.0.10",
     "@build-tracker/builds": "^0.0.9",
     "@build-tracker/comparator": "^0.0.9",
     "body-parser": "^1.18.2",
@@ -26,7 +26,10 @@
     "build:module": "babel src --ignore __tests__ -d dist",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": ["dist/*", "README.md"],
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",

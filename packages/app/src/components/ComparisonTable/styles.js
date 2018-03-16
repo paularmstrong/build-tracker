@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     left: 'auto',
     zIndex: 2
   },
+
   rowHeader: {
     textAlign: 'left',
     paddingRight: theme.spaceXXSmall
@@ -68,6 +69,9 @@ const styles = StyleSheet.create({
   },
   headerSha: {
     cursor: 'pointer'
+  },
+  headerShaHovered: {
+    color: theme.colorGreen
   },
   headerButton: {
     marginLeft: theme.spaceXSmall,

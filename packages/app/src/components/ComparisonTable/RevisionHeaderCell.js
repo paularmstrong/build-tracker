@@ -1,5 +1,6 @@
 // @flow
 import { formatSha } from '../../modules/formatting';
+import Hoverable from '../Hoverable';
 import IconX from '../icons/IconX';
 import styles from './styles';
 import { Th } from '../Table';
@@ -16,18 +17,22 @@ export default class RevisionHeaderCell extends PureComponent<Props> {
   render() {
     const { revision } = this.props;
     return (
-      <Th style={[styles.cell, styles.header]} title={revision}>
-        <View style={styles.headerContent}>
-          <Text onClick={this._handleClickInfo} style={styles.headerSha}>
-            {formatSha(revision)}
-          </Text>
-          <View onClick={this._handleClickRemove}>
-            <Text style={[styles.headerButton, styles.removeBuild]}>
-              <IconX />
-            </Text>
-          </View>
-        </View>
-      </Th>
+      <Hoverable>
+        {isHovered => (
+          <Th style={[styles.cell, styles.header]} title={revision}>
+            <View style={styles.headerContent}>
+              <Text onClick={this._handleClickInfo} style={[styles.headerSha, isHovered && styles.headerShaHovered]}>
+                {formatSha(revision)}
+              </Text>
+              <View onClick={this._handleClickRemove}>
+                <Text style={[styles.headerButton, styles.removeBuild]}>
+                  <IconX />
+                </Text>
+              </View>
+            </View>
+          </Th>
+        )}
+      </Hoverable>
     );
   }
 

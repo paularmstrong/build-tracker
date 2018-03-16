@@ -68,7 +68,7 @@ class ArtifactSwitch extends PureComponent<Props> {
     const { params } = match || {};
     const revisionPrefix = params.revisions ? `/revisions/${params.revisions}` : '';
     const compareSuffix = params.compareRevisions ? `/${params.compareRevisions}` : '';
-    return `${revisionPrefix}/${artifactName}${compareSuffix}`;
+    return `${revisionPrefix}/${encodeURIComponent(artifactName)}${compareSuffix}`;
   }
 }
 

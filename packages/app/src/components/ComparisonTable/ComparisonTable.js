@@ -4,6 +4,7 @@ import ArtifactCell from './ArtifactCell';
 import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import DeltaCell from './DeltaCell';
+import Hoverable from '../Hoverable';
 import { hsl } from 'd3-color';
 import { object } from 'prop-types';
 import RevisionDeltaCell from './RevisionDeltaCell';
@@ -77,7 +78,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
   }
 
   render() {
-    const { activeArtifactNames, artifactNames, builds } = this.props;
+    const { activeArtifactNames, artifactNames, builds, hoveredArtifact } = this.props;
     const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
     const { header, total, body } = this._data.matrix;
@@ -98,7 +99,17 @@ export default class ComparisonTable extends React.Component<Props, State> {
                       return null;
                     }
                   }
-                  return <Tr key={i}>{row.map((cell, i) => this._renderBodyCell(cell, i, artifactName))}</Tr>;
+                  return (
+                    <Hoverable key={i}>
+                      {isHovered => (
+                        <Tr>
+                          {row.map((cell, i) =>
+                            this._renderBodyCell(cell, i, artifactName, isHovered || artifactName === hoveredArtifact)
+                          )}
+                        </Tr>
+                      )}
+                    </Hoverable>
+                  );
                 })
               : null}
           </Tbody>
@@ -176,9 +187,8 @@ export default class ComparisonTable extends React.Component<Props, State> {
     }
   };
 
-  _renderBodyCell = (cell: BT$BodyCellType, i: number, artifactName: string) => {
-    const { activeArtifactNames, artifactNames, colorScale, hoveredArtifact } = this.props;
-    const isHovered = hoveredArtifact === artifactName;
+  _renderBodyCell = (cell: BT$BodyCellType, i: number, artifactName: string, isHovered: boolean) => {
+    const { activeArtifactNames, artifactNames, colorScale } = this.props;
     const color = colorScale(1 - artifactNames.indexOf(artifactName));
     const hoverColor = hsl(color);
     hoverColor.s = 0.7;
@@ -204,7 +214,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
       case CellType.TOTAL:
       default:
         // $FlowFixMe
-        return this._renderValueCell(cell, i);
+        return this._renderValueCell(cell, i, hoverColor.toString(), isHovered);
     }
   };
 
@@ -223,9 +233,18 @@ export default class ComparisonTable extends React.Component<Props, State> {
     );
   }
 
-  _renderValueCell(cell: BT$TotalCellType, key: string | number) {
+  _renderValueCell(cell: BT$TotalCellType, key: string | number, hoverColor: string, isHovered: boolean) {
     const { valueType } = this.props;
-    return <ValueCell gzip={cell.gzip} key={key} stat={cell.stat} valueType={valueType} />;
+    return (
+      <ValueCell
+        gzip={cell.gzip}
+        hoverColor={hoverColor}
+        isHovered={isHovered}
+        key={key}
+        stat={cell.stat}
+        valueType={valueType}
+      />
+    );
   }
 
   _getFilteredData() {

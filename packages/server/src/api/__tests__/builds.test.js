@@ -22,7 +22,7 @@ describe('API Builds', () => {
       handleGet = Builds.handleGet({ getByRevisions, getBuilds });
     });
 
-    test('returns specific revisions', done => {
+    test('queries for specific revisions', done => {
       const request = new MockRequest({ method: 'GET', query: { revisions: ['123456', '789012'] } });
       const response = new MockResponse();
       const responseBody = Promise.resolve(builds);
@@ -30,6 +30,51 @@ describe('API Builds', () => {
 
       response.write = data => {
         expect(getByRevisions).toHaveBeenCalledWith(['123456', '789012']);
+        expect(data).toEqual(JSON.stringify(builds));
+        done();
+      };
+      handleGet(request, response);
+    });
+
+    test('queries for builds filtered by date', done => {
+      const query = { startTime: 100000, endTime: 800000 };
+      const request = new MockRequest({ method: 'GET', query });
+      const response = new MockResponse();
+      const responseBody = Promise.resolve(builds);
+      getBuilds.mockReturnValue(responseBody);
+
+      response.write = data => {
+        expect(getBuilds).toHaveBeenCalledWith(query);
+        expect(data).toEqual(JSON.stringify(builds));
+        done();
+      };
+      handleGet(request, response);
+    });
+
+    test('queries for builds filtered by branch', done => {
+      const query = { branch: 'foobar' };
+      const request = new MockRequest({ method: 'GET', query });
+      const response = new MockResponse();
+      const responseBody = Promise.resolve(builds);
+      getBuilds.mockReturnValue(responseBody);
+
+      response.write = data => {
+        expect(getBuilds).toHaveBeenCalledWith(query);
+        expect(data).toEqual(JSON.stringify(builds));
+        done();
+      };
+      handleGet(request, response);
+    });
+
+    test('queries for builds with a full query', done => {
+      const query = { branch: 'foobar', limit: 4, startTime: 123, endTime: 800000 };
+      const request = new MockRequest({ method: 'GET', query });
+      const response = new MockResponse();
+      const responseBody = Promise.resolve(builds);
+      getBuilds.mockReturnValue(responseBody);
+
+      response.write = data => {
+        expect(getBuilds).toHaveBeenCalledWith(query);
         expect(data).toEqual(JSON.stringify(builds));
         done();
       };
@@ -66,6 +111,28 @@ describe('API Builds', () => {
         done();
       };
       handlePost(request, response);
+    });
+
+    describe('returns an error when', () => {
+      Object.entries({
+        'missing meta': { artifacts: {} },
+        'missing revision': { meta: { timestamp: 123 }, artifacts: {} },
+        'revision is not a string': { meta: { revision: 4, timestamp: 123 }, artifacts: {} },
+        'missing timestamp': { meta: { revision: '123' }, artifacts: {} },
+        'timestamp is not a number': { meta: { revision: '123', timestamp: 'tacos' }, artifacts: {} },
+        'missing artifacts': { meta: { timestamp: 123, revision: '123' } }
+      }).forEach(([title, body]) => {
+        test(`${title}`, done => {
+          const request = new MockRequest({ method: 'POST', body });
+          const response = new MockResponse();
+          response.write = data => {
+            expect(response.statusCode).toEqual(400);
+            expect(JSON.parse(data).success).toBe(false);
+            done();
+          };
+          handlePost(request, response);
+        });
+      });
     });
   });
 });

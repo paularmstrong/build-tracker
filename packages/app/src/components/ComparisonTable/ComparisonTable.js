@@ -50,6 +50,32 @@ type State = {
 
 const emptyArray = [];
 
+const createRowFilter = thresholds => {
+  if (!thresholds) {
+    return row => true;
+  }
+
+  return row => {
+    const deltas = row.filter(cell => {
+      if (cell.type === CellType.DELTA) {
+        const thresholdChange = Object.keys(thresholds).some(key => {
+          const threshold = thresholds[key];
+          if (typeof threshold !== 'number') {
+            return false;
+          }
+          return key.indexOf('Percent') > -1 ? 1 - cell[key] >= threshold : cell[key] >= threshold;
+        });
+        return thresholdChange || ((cell.stat === 0 || cell.gzip === 0) && cell.hashChanged);
+      }
+      return false;
+    });
+    if (row.length > 2 && deltas.length === 0) {
+      return false;
+    }
+    return true;
+  };
+};
+
 export default class ComparisonTable extends React.Component<Props, State> {
   context: {
     config: BT$AppConfig
@@ -261,25 +287,8 @@ export default class ComparisonTable extends React.Component<Props, State> {
       return this._data.matrixBody;
     }
 
-    return this._data.matrixBody.filter((row, i) => {
-      const deltas = row.filter(cell => {
-        if (cell.type === CellType.DELTA) {
-          const thresholdChange = Object.keys(thresholds).some(key => {
-            const threshold = thresholds[key];
-            if (typeof threshold !== 'number') {
-              return false;
-            }
-            return key.indexOf('Percent') > -1 ? 1 - cell[key] >= threshold : cell[key] >= threshold;
-          });
-          return thresholdChange || ((cell.stat === 0 || cell.gzip === 0) && cell.hashChanged);
-        }
-        return false;
-      });
-      if (row.length > 2 && deltas.length === 0) {
-        return false;
-      }
-      return true;
-    });
+    const rowFilter = createRowFilter(thresholds);
+    return this._data.matrixBody.filter(rowFilter);
   }
 
   _handleShowDeselected = (name: string, toggled: boolean) => {
@@ -320,15 +329,30 @@ export default class ComparisonTable extends React.Component<Props, State> {
   };
 
   _handleCopyToAscii = () => {
-    const { valueType } = this.props;
+    const { config: { thresholds } } = this.context;
+    const { activeArtifactNames, artifactNames, valueType } = this.props;
+    const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
     const formatValue = cell => {
       const value = cell[valueType];
       return value ? bytesToKb(value) : '';
     };
+
+    const thresholdRowFilter = createRowFilter(thresholds);
+    const rowFilter = row => {
+      const artifactName = row[0].text ? row[0].text : '';
+      if (!showDeselectedArtifacts || artifactNames.indexOf(artifactName) === -1) {
+        if (activeArtifactNames.indexOf(artifactName) === -1) {
+          return false;
+        }
+      }
+
+      return showAboveThresholdOnly ? thresholdRowFilter(row) : row => true;
+    };
     const table = this._data.getAscii({
       formatRevision: cell => formatSha(cell.revision),
       formatValue,
-      formatDelta: formatValue
+      formatDelta: formatValue,
+      rowFilter
     });
 
     // Clipboard requires using template strings and special encoding for newlines and spaces

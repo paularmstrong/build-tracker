@@ -1,6 +1,18 @@
 # Build Tracker [![build status](https://img.shields.io/travis/paularmstrong/build-tracker/master.svg?style=flat-square)](https://travis-ci.org/paularmstrong/build-tracker)
 
-Work in progress.
+Build Tracker is a set of tools to track the size of your build artifacts over time.
+
+![app screenshot](docs/app-screenshot.png?raw=true)
+
+Package-specific information and documentation can be found here:
+
+* [@build-tracker/app](packages/app)
+* [@build-tracker/builds](packages/builds)
+* [@build-tracker/cli](packages/cli)
+* [@build-tracker/comparator](packages/comparator)
+* [@build-tracker/server](packages/server)
+* [@build-tracker/types](packages/types)
+* [@build-tracker/webpack-plugin](packages/webpack-plugin)
 
 ## Development
 

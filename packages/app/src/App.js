@@ -312,9 +312,9 @@ class App extends Component<Props, State> {
     const { location: { pathname }, match: { params: { revisions } } } = this.props;
     const { activeArtifactNames, compareBuilds, filteredArtifactNames } = this.state;
     const urlArtifacts =
-      activeArtifactNames.length > 1 && activeArtifactNames.length !== filteredArtifactNames.length
-        ? activeArtifactNames.filter(b => b !== 'All')
-        : activeArtifactNames.length === 0 ? ['None'] : activeArtifactNames;
+      activeArtifactNames.length !== filteredArtifactNames.length
+        ? activeArtifactNames.length === 0 ? ['None'] : activeArtifactNames
+        : ['All'];
     const safeUrlArtifacts = urlArtifacts.map(name => window.encodeURIComponent(name));
     const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(BuildMeta.getRevision(b))).sort();
     const newPath = `${revisions ? `/revisions/${revisions}` : ''}/${safeUrlArtifacts.join('+')}/${urlRevisions.join(

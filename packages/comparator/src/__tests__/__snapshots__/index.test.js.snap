@@ -33,6 +33,7 @@ Array [
     "deltas": Array [],
     "meta": Object {
       "revision": "1234567",
+      "timestamp": 1234567,
     },
   },
   Object {
@@ -75,6 +76,7 @@ Array [
     ],
     "meta": Object {
       "revision": "8901234",
+      "timestamp": 8901234,
     },
   },
 ]

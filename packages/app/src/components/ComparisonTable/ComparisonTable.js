@@ -12,6 +12,14 @@ import RevisionHeaderCell from './RevisionHeaderCell';
 import styles from './styles';
 import theme from '../../theme';
 import ValueCell from './ValueCell';
+import type {
+  BT$AppConfig,
+  BT$BodyCellType,
+  BT$Build,
+  BT$DeltaCellType,
+  BT$HeaderCellType,
+  BT$TotalCellType
+} from '@build-tracker/types';
 import BuildComparator, { CellType } from '@build-tracker/comparator';
 import { Button, Clipboard, View } from 'react-native';
 import { bytesToKb, formatSha } from '../../modules/formatting';

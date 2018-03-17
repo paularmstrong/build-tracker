@@ -26,11 +26,9 @@
     "build:module": "babel src --ignore __tests__ -d dist",
     "start:static": "babel-watch -w src testserver.js"
   },
-  "files": [
-    "dist/*",
-    "README.md"
-  ],
+  "files": ["dist/*", "README.md"],
   "devDependencies": {
+    "@build-tracker/builds": "^0.0.9",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-flow": "^6.18.0",

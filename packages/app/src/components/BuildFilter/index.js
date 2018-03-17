@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import type { BT$ArtifactFilters } from '@build-tracker/types';
 import type { Filters } from './types';
 import isSameDay from 'date-fns/is_same_day';
 import isToday from 'date-fns/is_today';

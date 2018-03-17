@@ -1,6 +1,7 @@
 // @flow
 import 'd3-transition';
 import * as React from 'react';
+import type { BT$Build } from '@build-tracker/types';
 import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import theme from '../theme';

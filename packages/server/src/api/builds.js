@@ -1,5 +1,6 @@
 // @flow
 import assert from 'assert';
+import type { BT$Build } from '@build-tracker/types';
 import BuildComparator from '@build-tracker/comparator';
 import { BuildMeta } from '@build-tracker/builds';
 import type { $Request, $Response } from 'express';

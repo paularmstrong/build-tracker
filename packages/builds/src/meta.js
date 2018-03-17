@@ -1,4 +1,5 @@
 // @flow
+import type { BT$Build, BT$BuildMetaItem } from '@build-tracker/types';
 
 export const getMetaValue = (metaItem: BT$BuildMetaItem) => {
   return typeof metaItem === 'object' ? metaItem.value : metaItem;

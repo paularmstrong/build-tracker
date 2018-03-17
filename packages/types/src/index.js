@@ -1,25 +1,26 @@
 // @flow
+
 /**
  * Generic Types
  */
 
-declare type BT$BuildMetaItem = string | { value: string, url: string };
+export type BT$BuildMetaItem = string | { value: string, url: string };
 
-declare type BT$BuildMeta = {
+export type BT$BuildMeta = {
   branch?: BT$BuildMetaItem,
   revision: BT$BuildMetaItem,
   timestamp: number,
   [key: string]: BT$BuildMetaItem
 };
 
-declare type BT$Artifact = {
+export type BT$Artifact = {
   hash: string,
   name: string,
   stat: number,
   gzip: number
 };
 
-declare type BT$Build = {|
+export type BT$Build = {|
   meta: BT$BuildMeta,
   artifacts: { [name: string]: BT$Artifact }
 |};
@@ -28,17 +29,18 @@ declare type BT$Build = {|
  * Comparison Matrix
  */
 
-declare type BT$BuildDelta = {|
+export type BT$BuildDelta = {|
   meta: BT$BuildMeta,
   artifactDeltas: Array<{ [name: string]: BT$DeltaCellType }>,
   deltas: Array<BT$TotalDeltaCellType>
 |};
-declare type BT$TextCellType = {|
+
+export type BT$TextCellType = {|
   type: 'text',
   text: string
 |};
 
-declare type BT$DeltaCellType = {|
+export type BT$DeltaCellType = {|
   type: 'delta',
   stat: number,
   statPercent: number,
@@ -47,13 +49,13 @@ declare type BT$DeltaCellType = {|
   hashChanged: boolean
 |};
 
-declare type BT$TotalCellType = {|
+export type BT$TotalCellType = {|
   type: 'total',
   stat: number,
   gzip: number
 |};
 
-declare type BT$TotalDeltaCellType = {|
+export type BT$TotalDeltaCellType = {|
   type: 'totalDelta',
   stat: number,
   statPercent: number,
@@ -61,27 +63,27 @@ declare type BT$TotalDeltaCellType = {|
   gzipPercent: number
 |};
 
-declare type BT$RevisionCellType = {|
+export type BT$RevisionCellType = {|
   type: 'revision',
   revision: string
 |};
 
-declare type BT$RevisionDeltaCellType = {|
+export type BT$RevisionDeltaCellType = {|
   type: 'revisionDelta',
   revision: string,
   deltaIndex: number,
   againstRevision: string
 |};
 
-declare type BT$ArtifactCellType = {|
+export type BT$ArtifactCellType = {|
   type: 'artifact',
   text: string
 |};
 
-declare type BT$BodyCellType = BT$ArtifactCellType | BT$DeltaCellType | BT$TotalCellType;
-declare type BT$HeaderCellType = BT$TextCellType | BT$RevisionCellType | BT$RevisionDeltaCellType;
+export type BT$BodyCellType = BT$ArtifactCellType | BT$DeltaCellType | BT$TotalCellType;
+export type BT$HeaderCellType = BT$TextCellType | BT$RevisionCellType | BT$RevisionDeltaCellType;
 
-declare type BT$ComparisonMatrix = {
+export type BT$ComparisonMatrix = {
   header: Array<BT$HeaderCellType>,
   total: Array<BT$BodyCellType>,
   body: Array<Array<BT$BodyCellType>>
@@ -91,16 +93,16 @@ declare type BT$ComparisonMatrix = {
  * Application
  */
 
-declare type BT$Thresholds = {|
+export type BT$Thresholds = {|
   stat?: number,
   statPercent?: number,
   gzip?: number,
   gzipPercent?: number
 |};
 
-declare type BT$ArtifactFilters = Array<RegExp>;
+export type BT$ArtifactFilters = Array<RegExp>;
 
-declare type BT$AppConfig = {|
+export type BT$AppConfig = {|
   artifactFilters?: BT$ArtifactFilters,
   thresholds?: BT$Thresholds
 |};

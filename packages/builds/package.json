@@ -12,6 +12,7 @@
     "type": "git"
   },
   "devDependencies": {
+    "@build-tracker/types": "^0.0.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-flow": "^6.18.0",
@@ -20,10 +21,7 @@
     "babel-watch": "^2.0.7",
     "flow-copy-source": "^1.2.1"
   },
-  "files": [
-    "dist/*",
-    "README.md"
-  ],
+  "files": ["dist/*", "README.md"],
   "scripts": {
     "build": "npm run build:module && npm run build:flow",
     "build:flow": "flow-copy-source -i __tests__/*.js src dist",

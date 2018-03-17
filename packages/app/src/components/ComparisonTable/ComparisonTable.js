@@ -14,6 +14,7 @@ import theme from '../../theme';
 import ValueCell from './ValueCell';
 import type {
   BT$AppConfig,
+  BT$ArtifactFilters,
   BT$BodyCellType,
   BT$Build,
   BT$DeltaCellType,
@@ -33,6 +34,7 @@ const sortBuilds = (a: BT$Build, b: BT$Build) => BuildMeta.getTimestamp(a) - Bui
 
 type Props = {
   activeArtifactNames: Array<string>,
+  artifactFilters: BT$ArtifactFilters,
   builds: Array<BT$Build>,
   artifactNames: Array<string>,
   colorScale: Function,
@@ -108,7 +110,11 @@ export default class ComparisonTable extends React.Component<Props, State> {
 
   setData(props: Props) {
     const matrixBodySorter = getBodySorter(props.artifactNames);
-    this._data = new BuildComparator(props.builds.sort(sortBuilds), matrixBodySorter);
+    this._data = new BuildComparator({
+      builds: props.builds.sort(sortBuilds),
+      artifactSorter: matrixBodySorter,
+      artifactFilters: props.artifactFilters
+    });
   }
 
   render() {

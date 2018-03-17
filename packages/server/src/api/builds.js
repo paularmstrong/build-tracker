@@ -87,7 +87,7 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildI
     })
     .then(() => getPrevious(BuildMeta.getTimestamp(build)))
     .then((parentBuild: BT$Build) => {
-      const comparator = new BuildComparator([parentBuild, build].filter(Boolean));
+      const comparator = new BuildComparator({ builds: [parentBuild, build].filter(Boolean) });
       onBuildInserted && onBuildInserted(comparator);
     })
     .then(() => {

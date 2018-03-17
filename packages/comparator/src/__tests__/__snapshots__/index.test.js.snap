@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`BuildComparator artifactFilters filters artifact sizes from the totals 1`] = `
+Array [
+  Object {
+    "text": "All",
+    "type": "artifact",
+  },
+  Object {
+    "gzip": 45,
+    "stat": 123,
+    "type": "total",
+  },
+  Object {
+    "gzip": 45,
+    "stat": 123,
+    "type": "total",
+  },
+  Object {
+    "gzip": 0,
+    "gzipPercent": 1,
+    "stat": 0,
+    "statPercent": 1,
+    "type": "totalDelta",
+  },
+]
+`;
+
 exports[`BuildComparator buildDeltas returns an array of deltas 1`] = `
 Array [
   Object {
@@ -62,6 +88,14 @@ exports[`BuildComparator getAscii can filter rows 1`] = `
 '----------------------------------------'"
 `;
 
+exports[`BuildComparator getAscii does not include filtered artifacts 1`] = `
+".------------------------------------.
+|       | 1234567 | 8901234 |   Δ0   |
+|-------|---------|---------|--------|
+| tacos | 45      | 45      | 0 (1%) |
+'------------------------------------'"
+`;
+
 exports[`BuildComparator getAscii gets an ASCII table 1`] = `
 ".-----------------------------------------.
 |          | 1234567 | 8901234 |    Δ0    |
@@ -75,6 +109,11 @@ exports[`BuildComparator getAscii gets an ASCII table 1`] = `
 exports[`BuildComparator getCsv can filter rows 1`] = `
 ",1234567,8901234,Δ0
 burritos,0,93,93 (1%)"
+`;
+
+exports[`BuildComparator getCsv does not include filtered artifacts 1`] = `
+",1234567,8901234,Δ0
+tacos,45,45,0 (1%)"
 `;
 
 exports[`BuildComparator getCsv gets a CSV formatted table 1`] = `

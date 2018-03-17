@@ -194,6 +194,7 @@ class App extends Component<Props, State> {
           <View style={styles.table}>
             <ComparisonTable
               activeArtifactNames={activeArtifactNames}
+              artifactFilters={artifactFilters}
               artifactNames={filteredArtifactNames}
               builds={compareBuilds}
               colorScale={colorScale}

@@ -4,6 +4,7 @@ import { BuildMeta } from '@build-tracker/builds';
 
 import type {
   BT$Artifact,
+  BT$ArtifactFilters,
   BT$BodyCellType,
   BT$Build,
   BT$BuildDelta,
@@ -73,19 +74,27 @@ const getSizeDeltas = (baseArtifact: BT$Artifact, changeArtifact: BT$Artifact) =
   };
 };
 
-const getTotalArtifactSizes = (build: BT$Build) =>
-  Object.keys(build.artifacts).reduce(
-    (memo, artifactName) => ({
-      type: CellType.TOTAL,
-      stat: memo.stat + build.artifacts[artifactName].stat,
-      gzip: memo.gzip + build.artifacts[artifactName].gzip
-    }),
-    { type: CellType.TOTAL, stat: 0, gzip: 0 }
-  );
+const getTotalArtifactSizes = (build: BT$Build, artifactFilters: BT$ArtifactFilters) =>
+  Object.keys(build.artifacts)
+    .filter(artifactName => !artifactFilters.some(filter => !!filter.test(artifactName)))
+    .reduce(
+      (memo, artifactName) => {
+        return {
+          type: CellType.TOTAL,
+          stat: memo.stat + build.artifacts[artifactName].stat,
+          gzip: memo.gzip + build.artifacts[artifactName].gzip
+        };
+      },
+      { type: CellType.TOTAL, stat: 0, gzip: 0 }
+    );
 
-const getTotalSizeDeltas = (baseBuild: BT$Build, changeBuild: BT$Build): BT$TotalDeltaCellType => {
-  const baseSize = getTotalArtifactSizes(baseBuild);
-  const changeSize = getTotalArtifactSizes(changeBuild);
+const getTotalSizeDeltas = (
+  baseBuild: BT$Build,
+  changeBuild: BT$Build,
+  artifactFilters: BT$ArtifactFilters
+): BT$TotalDeltaCellType => {
+  const baseSize = getTotalArtifactSizes(baseBuild, artifactFilters);
+  const changeSize = getTotalArtifactSizes(changeBuild, artifactFilters);
 
   return {
     type: CellType.TOTAL_DELTA,
@@ -108,23 +117,36 @@ const defaultFormatTotal = (cell: BT$TotalCellType): string => `${cell.gzip}`;
 const defaultFormatDelta = (cell: BT$DeltaCellType): string => `${cell.gzip} (${cell.gzipPercent}%)`;
 const defaultRowFilter = (row: Array<BT$BodyCellType>): boolean => true;
 
+const emptyArray = [];
+
+type ComparatorOptions = {
+  artifactFilters?: BT$ArtifactFilters,
+  artifactSorter?: (a: string, b: string) => number,
+  builds: Array<BT$Build>
+};
+
 export default class BuildComparator {
   builds: Array<BT$Build>;
 
-  _artifactSorter: Function;
+  _artifactFilters: BT$ArtifactFilters;
   _artifactNames: Array<string>;
+  _artifactSorter: Function;
   _buildDeltas: Array<BT$BuildDelta>;
 
-  constructor(builds: Array<BT$Build>, artifactSorter: (a: string, b: string) => number = defaultArtifactSorter) {
+  constructor({ artifactFilters, artifactSorter, builds }: ComparatorOptions) {
     this.builds = builds;
-    this._artifactSorter = artifactSorter;
+    this._artifactSorter = artifactSorter || defaultArtifactSorter;
+    this._artifactFilters = artifactFilters || emptyArray;
   }
 
   get artifactNames(): Array<string> {
     if (!this._artifactNames) {
       this._artifactNames = Array.prototype.concat
         .apply([], this.builds.map(({ artifacts }) => Object.keys(artifacts)))
-        .filter((value, index, self) => self.indexOf(value) === index);
+        .filter(
+          (value, index, self) =>
+            self.indexOf(value) === index && !this._artifactFilters.some(filter => filter.test(value))
+        );
     }
     return this._artifactNames;
   }
@@ -139,7 +161,7 @@ export default class BuildComparator {
               return null;
             }
 
-            totalDeltas[j] = getTotalSizeDeltas(build, compareBuild);
+            totalDeltas[j] = getTotalSizeDeltas(build, compareBuild, this._artifactFilters);
 
             return this.artifactNames.reduce((memo, name) => {
               const buildArtifact = build.artifacts[name];
@@ -194,7 +216,12 @@ export default class BuildComparator {
   get matrixTotal(): Array<BT$BodyCellType> {
     return [
       { type: CellType.ARTIFACT, text: 'All' },
-      ...flatten(this.buildDeltas.map(({ deltas }, i) => [getTotalArtifactSizes(this.builds[i]), ...deltas]))
+      ...flatten(
+        this.buildDeltas.map(({ deltas }, i) => [
+          getTotalArtifactSizes(this.builds[i], this._artifactFilters),
+          ...deltas
+        ])
+      )
     ];
   }
 

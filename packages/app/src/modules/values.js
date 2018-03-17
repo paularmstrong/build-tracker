@@ -1,5 +1,5 @@
 // @flow
-
+import type { BT$Artifact } from '@build-tracker/types';
 type TypesType = { [string]: string };
 
 export const Types: TypesType = {

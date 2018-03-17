@@ -14,6 +14,7 @@ import startOfDay from 'date-fns/start_of_day';
 import subDays from 'date-fns/sub_days';
 import theme from './theme';
 import Toggles from './components/Toggles';
+import type { BT$AppConfig, BT$ArtifactFilters, BT$Build } from '@build-tracker/types';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import type { Location, Match, RouterHistory } from 'react-router-dom';

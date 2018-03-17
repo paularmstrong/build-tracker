@@ -2,6 +2,21 @@
 import AsciiTable from 'ascii-table';
 import { BuildMeta } from '@build-tracker/builds';
 
+import type {
+  BT$Artifact,
+  BT$BodyCellType,
+  BT$Build,
+  BT$BuildDelta,
+  BT$ComparisonMatrix,
+  BT$DeltaCellType,
+  BT$HeaderCellType,
+  BT$RevisionCellType,
+  BT$RevisionDeltaCellType,
+  BT$TextCellType,
+  BT$TotalCellType,
+  BT$TotalDeltaCellType
+} from '@build-tracker/types';
+
 type RevisionStringFormatter = (cell: BT$RevisionCellType) => string;
 type RevisionDeltaStringFormatter = (cell: BT$RevisionDeltaCellType) => string;
 type TotalStringFormatter = (cell: BT$TotalCellType) => string;

@@ -1,4 +1,5 @@
 // @flow
+import type { BT$Build } from '@build-tracker/types';
 import { BuildMeta } from '@build-tracker/builds';
 import { mean } from 'd3-array';
 

@@ -8,6 +8,7 @@ import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
 import type { $Request, $Response } from 'express';
+import type { BT$ArtifactFilters, BT$Build, BT$Thresholds } from '@build-tracker/types';
 import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions, GetBuildsOptions } from './api/builds';
 
 const APP_HTML = require.resolve('@build-tracker/app');

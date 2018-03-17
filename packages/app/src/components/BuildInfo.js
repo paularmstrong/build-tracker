@@ -1,4 +1,5 @@
 // @flow
+import type { BT$Build } from '@build-tracker/types';
 import { BuildMeta } from '@build-tracker/builds';
 import Link from './Link';
 import theme from '../theme';

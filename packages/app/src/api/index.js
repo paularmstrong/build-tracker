@@ -1,4 +1,5 @@
 // @flow
+import type { BT$Build } from '@build-tracker/types';
 import querystring from 'querystring';
 import { getArtifactsByAvgSize, sortBuilds } from './normalization';
 

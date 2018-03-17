@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/types",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -12,8 +12,9 @@
     "type": "git"
   },
   "scripts": {},
-  "dependencies": {},
   "main": "src",
-  "devDependencies": {},
-  "files": ["src/", "README.md"]
+  "files": [
+    "src/",
+    "README.md"
+  ]
 }

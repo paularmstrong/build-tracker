@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -18,12 +18,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@build-tracker/builds": "^0.0.9",
+    "@build-tracker/builds": "^0.0.11",
     "ascii-table": "^0.0.9"
   },
   "main": "dist",
   "devDependencies": {
-    "@build-tracker/types": "^0.0.1",
+    "@build-tracker/types": "^0.0.11",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-flow": "^6.18.0",
@@ -32,5 +32,8 @@
     "babel-watch": "^2.0.7",
     "flow-copy-source": "^1.2.1"
   },
-  "files": ["dist/*", "README.md"]
+  "files": [
+    "dist/*",
+    "README.md"
+  ]
 }

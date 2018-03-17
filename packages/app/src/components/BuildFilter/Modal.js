@@ -18,19 +18,15 @@ type Props = {
 type State = Filters;
 
 const modalRoot = document.getElementById('buildFilterRoot');
-const emptyArray = [];
 
 export default class BuildFilter extends React.Component<Props, State> {
   _el: HTMLElement;
-  _artifactNameFiltersAvailable: boolean;
 
   constructor(props: Props, context: any) {
     super(props, context);
     this._el = document.createElement('div');
-    this._artifactNameFiltersAvailable = !!props.defaultArtifactFilters.length;
     this.state = {
       artifactFilters: props.artifactFilters,
-      artifactsFiltered: !!props.artifactFilters.length,
       endDate: props.endDate,
       startDate: props.startDate
     };
@@ -49,7 +45,8 @@ export default class BuildFilter extends React.Component<Props, State> {
   }
 
   _render() {
-    const { artifactFilters, artifactsFiltered, endDate, startDate } = this.state;
+    const { defaultArtifactFilters } = this.props;
+    const { artifactFilters, endDate, startDate } = this.state;
     return (
       <View style={styles.root}>
         <View style={styles.container}>
@@ -60,22 +57,23 @@ export default class BuildFilter extends React.Component<Props, State> {
           <View style={styles.content}>
             <DateRangePicker endDate={endDate} onChangeRange={this._handleChangeDateRange} startDate={startDate} />
             <View style={styles.hr} />
-            <View style={styles.filters}>
-              <Switch
-                disabled={!this._artifactNameFiltersAvailable}
-                onValueChange={this._handleToggleFilters}
-                value={artifactsFiltered}
-              />
-              <Text style={styles.filterText}>Artifact name filters</Text>
-            </View>
-            {artifactFilters.length ? (
-              <View accessibilityRole="list" style={styles.filterList}>
-                {artifactFilters.map((filter, i) => (
-                  <View accessibilityRole="listitem" key={i} style={styles.filterItem}>
-                    <Text style={styles.filter}>{filter.toString()}</Text>
-                  </View>
-                ))}
-              </View>
+            {defaultArtifactFilters.length ? (
+              <React.Fragment>
+                <Text style={styles.filterHeader}>Artifact name filters</Text>
+                <View accessibilityRole="list" style={styles.filterList}>
+                  {defaultArtifactFilters.map((filter, i) => (
+                    <View accessibilityRole="listitem" key={i} style={styles.filterItem}>
+                      {/* eslint-disable react/jsx-no-bind */}
+                      <Switch
+                        onValueChange={(value: boolean) => this._handleToggleFilter(filter, value)}
+                        value={artifactFilters.indexOf(filter) !== -1}
+                      />
+                      {/* eslint-enable react/jsx-no-bind */}
+                      <Text style={styles.filterText}>{filter.toString()}</Text>
+                    </View>
+                  ))}
+                </View>
+              </React.Fragment>
             ) : null}
           </View>
         </View>
@@ -87,14 +85,10 @@ export default class BuildFilter extends React.Component<Props, State> {
     this.setState({ startDate, endDate });
   };
 
-  _handleToggleFilters = (artifactsFiltered: boolean) => {
-    const { artifactFilters, defaultArtifactFilters } = this.props;
-    this.setState({
-      artifactFilters: artifactsFiltered
-        ? artifactFilters.length ? artifactFilters : defaultArtifactFilters
-        : emptyArray,
-      artifactsFiltered
-    });
+  _handleToggleFilter = (filter: RegExp, value: boolean) => {
+    this.setState(({ artifactFilters }) => ({
+      artifactFilters: !value ? artifactFilters.filter(aFilter => aFilter !== filter) : [...artifactFilters, filter]
+    }));
   };
 
   _handleClose = () => {
@@ -134,17 +128,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colorGray
   },
-  filters: {
+  filterItem: {
     flexDirection: 'row',
-    paddingHorizontal: theme.spaceMedium
+    marginBottom: theme.spaceXXSmall
+  },
+  filterHeader: {
+    fontWeight: 'bold'
   },
   filterText: {
+    fontFamily: 'monospace',
     paddingLeft: theme.spaceXXSmall
   },
   filterList: {
     paddingHorizontal: theme.spaceMedium
-  },
-  filter: {
-    fontFamily: 'monospace'
   }
 });

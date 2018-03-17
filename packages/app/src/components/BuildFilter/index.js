@@ -28,7 +28,7 @@ export default class BuildFilter extends React.Component<Props, State> {
     const { modalVisible } = this.state;
     return (
       <View style={styles.root}>
-        {!isSameDay(startDate, endDate) || (!isToday(startDate) && !isToday(endDate)) ? (
+        {!window.DATA && (!isSameDay(startDate, endDate) || (!isToday(startDate) && !isToday(endDate))) ? (
           <View style={styles.filter}>
             <Text style={styles.filterLabel}>Date Range:</Text>
             <Text>{`${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()}`}</Text>

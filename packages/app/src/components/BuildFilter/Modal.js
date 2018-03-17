@@ -55,8 +55,12 @@ export default class BuildFilter extends React.Component<Props, State> {
             <Button onPress={this._handleClose} title="Done" />
           </View>
           <View style={styles.content}>
-            <DateRangePicker endDate={endDate} onChangeRange={this._handleChangeDateRange} startDate={startDate} />
-            <View style={styles.hr} />
+            {!window.DATA ? (
+              <React.Fragment>
+                <DateRangePicker endDate={endDate} onChangeRange={this._handleChangeDateRange} startDate={startDate} />
+                <View style={styles.hr} />
+              </React.Fragment>
+            ) : null}
             {defaultArtifactFilters.length ? (
               <React.Fragment>
                 <Text style={styles.filterHeader}>Artifact name filters</Text>

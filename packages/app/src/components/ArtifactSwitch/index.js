@@ -1,23 +1,23 @@
 // @flow
+import * as React from 'react';
 import { hsl } from 'd3-color';
 import Link from '../Link';
 import type { Match } from 'react-router-dom';
 import theme from '../../theme';
 import { withRouter } from 'react-router-dom';
-import React, { PureComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
-export type Props = {
+export type Props = {|
   active: boolean,
   artifactName: string,
   color: string,
   disabled?: boolean,
   linked?: boolean,
   match?: Match,
-  onToggle: Function
-};
+  onToggle: (artifactName: string, toggled: boolean) => void
+|};
 
-class ArtifactSwitch extends PureComponent<Props> {
+class ArtifactSwitch extends React.PureComponent<Props> {
   static defaultProps = {
     disabled: false,
     linked: false

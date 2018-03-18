@@ -339,6 +339,8 @@ export default class Chart extends React.Component<Props, State> {
       .attr('dy', '.35em')
       .attr('transform', 'rotate(24)')
       .style('text-anchor', 'start');
+    this._xAxis.selectAll('.domain,.tick line').attr('stroke', theme.colorDarkGray);
+    this._xAxis.selectAll('.tick text').attr('fill', theme.colorDarkGray);
   }
 
   _drawYAxis(yScale: Object) {
@@ -349,6 +351,9 @@ export default class Chart extends React.Component<Props, State> {
       .transition()
       .duration(150)
       .call(yAxis);
+
+    this._yAxis.selectAll('.domain,.tick line').attr('stroke', theme.colorDarkGray);
+    this._yAxis.selectAll('.tick text').attr('fill', theme.colorDarkGray);
   }
 
   _handleLayout = (event: Object) => {

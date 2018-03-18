@@ -12,6 +12,7 @@ const theme = {
   colorMidnight: '#233754',
   colorBlack: '#000000',
   colorWhite: '#FFFFFF',
+  colorDarkGray: '#666666',
   colorGray: '#DDDDDD',
 
   fontSizeSmall: '0.85rem',

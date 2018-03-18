@@ -390,7 +390,8 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   chart: {
-    flexGrow: 1
+    flexGrow: 1,
+    paddingVertical: theme.spaceSmall
   },
   scaleTypeButtons: {
     flex: 0,

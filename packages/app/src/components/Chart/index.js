@@ -4,6 +4,7 @@ import * as React from 'react';
 import type { BT$Build } from '@build-tracker/types';
 import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
+import { format } from 'd3-format';
 import theme from '../../theme';
 import { area, stack } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
@@ -343,7 +344,7 @@ export default class Chart extends React.Component<Props, State> {
   _drawYAxis(yScale: Object) {
     const yAxis = axisLeft()
       .scale(yScale)
-      .tickFormat(v => bytesToKb(v, ''));
+      .tickFormat(v => bytesToKb(v, { units: '', format: format(',.0f') }));
     this._yAxis
       .transition()
       .duration(150)

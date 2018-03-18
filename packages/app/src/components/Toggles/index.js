@@ -1,50 +1,17 @@
 // @flow
+import * as React from 'react';
 import theme from '../../theme';
-import { Button, StyleSheet, View } from 'react-native';
-import { ChartType, Types, TypesEnum, ValueType, XScaleType, YScaleType } from '../../modules/values';
-import React, { PureComponent } from 'react';
+import ToggleGroup from './Group';
+import { ChartType, Types, ValueType, XScaleType, YScaleType } from '../../modules/values';
+import { StyleSheet, View } from 'react-native';
 
-type OnToggleChange = ($Values<typeof Types>, text: string) => void;
-
-type ToggleGroupProps = {
-  color: string,
-  currentValue: string,
-  objectType: $Values<typeof Types>,
-  onChange: OnToggleChange
-};
-
-class ToggleGroup extends PureComponent<ToggleGroupProps> {
-  render() {
-    const { color, currentValue, objectType } = this.props;
-
-    return (
-      <View style={styles.toggleGroup}>
-        {Object.values(TypesEnum[objectType]).map(groupValue => {
-          if (typeof groupValue !== 'string') {
-            return null;
-          }
-          return (
-            <Button
-              color={color}
-              disabled={currentValue === groupValue.toLowerCase()}
-              key={groupValue}
-              onPress={this._handlePress}
-              size="small"
-              style={styles.button}
-              title={groupValue}
-              value={groupValue}
-            />
-          );
-        })}
-      </View>
-    );
-  }
-
-  _handlePress = event => {
-    const { objectType, onChange } = this.props;
-    onChange(objectType, event.target.innerText.toLowerCase());
-  };
-}
+type Props = {|
+  onToggle: $PropertyType<React.ElementConfig<typeof ToggleGroup>, 'onChange'>,
+  chartType: $Values<typeof ChartType>,
+  valueType: $Values<typeof ValueType>,
+  xScaleType: $Values<typeof XScaleType>,
+  yScaleType: $Values<typeof YScaleType>
+|};
 
 const groups = [
   {
@@ -69,15 +36,7 @@ const groups = [
   }
 ];
 
-type TogglesProps = {
-  onToggle: OnToggleChange,
-  chartType: $Values<typeof ChartType>,
-  valueType: $Values<typeof ValueType>,
-  xScaleType: $Values<typeof XScaleType>,
-  yScaleType: $Values<typeof YScaleType>
-};
-
-export default class Toggles extends PureComponent<TogglesProps> {
+export default class Toggles extends React.PureComponent<Props> {
   render() {
     const { onToggle } = this.props;
     return (
@@ -94,12 +53,5 @@ const styles = StyleSheet.create({
   scaleTypeButtons: {
     flexDirection: 'row',
     justifyContent: 'flex-end'
-  },
-  toggleGroup: {
-    flexDirection: 'row',
-    marginLeft: theme.spaceSmall
-  },
-  button: {
-    fontSize: '12px'
   }
 });

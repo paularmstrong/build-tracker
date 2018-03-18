@@ -1,35 +1,34 @@
 // @flow
 import type { BT$Artifact } from '@build-tracker/types';
-type TypesType = { [string]: string };
 
-export const Types: TypesType = {
+export const Types = {
   CHART: 'chart',
   VALUES: 'valueType',
   XSCALE: 'xscale',
   YSCALE: 'yscale'
 };
 
-export const ChartType: TypesType = {
+export const ChartType = {
   AREA: 'area',
   BAR: 'bar'
 };
 
-export const YScaleType: TypesType = {
+export const YScaleType = {
   LINEAR: 'linear',
   POW: 'pow'
 };
 
-export const XScaleType: TypesType = {
+export const XScaleType = {
   TIME: 'time',
   COMMIT: 'commit'
 };
 
-export const ValueType: TypesType = {
+export const ValueType = {
   STAT: 'stat',
   GZIP: 'gzip'
 };
 
-export const TypesEnum: { [string]: TypesType } = {
+export const TypesEnum = {
   [Types.CHART]: ChartType,
   [Types.VALUES]: ValueType,
   [Types.XSCALE]: XScaleType,

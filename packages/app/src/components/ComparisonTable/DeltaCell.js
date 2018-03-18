@@ -34,7 +34,7 @@ export default class DeltaCell extends PureComponent<Props> {
       gzipPercent > 1
         ? redScale(Math.max(Math.min(gzipPercent, 2), 1))
         : gzipPercent === 1
-          ? hashChanged ? '#ffd18c' : 'transparent'
+          ? hashChanged ? '#fff9d6' : 'transparent'
           : greenScale(Math.max(Math.min(gzipPercent, 1), 0));
     const percentChange = 100 - (valueType === 'gzip' ? gzipPercent : statPercent) * 100;
     return (
@@ -42,7 +42,7 @@ export default class DeltaCell extends PureComponent<Props> {
         style={[styles.cell, backgroundColor && { backgroundColor }]}
         title={`${percentChange.toFixed(3)}% ${hashChanged ? ' - Hash Changed' : ''}`}
       >
-        <Text>{value ? bytesToKb(value) : hashChanged ? '*' : '-'}</Text>
+        <Text>{value ? bytesToKb(value) : hashChanged ? '⚠️' : '-'}</Text>
       </Td>
     );
   }

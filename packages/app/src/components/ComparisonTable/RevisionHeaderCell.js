@@ -1,7 +1,6 @@
 // @flow
 import { formatSha } from '../../modules/formatting';
 import Hoverable from '../Hoverable';
-import IconX from '../icons/IconX';
 import styles from './styles';
 import { Th } from '../Table';
 import React, { PureComponent } from 'react';
@@ -25,9 +24,11 @@ export default class RevisionHeaderCell extends PureComponent<Props> {
                 {formatSha(revision)}
               </Text>
               <View onClick={this._handleClickRemove}>
-                <Text style={[styles.headerButton, styles.removeBuild]}>
-                  <IconX />
+                {/* eslint-disable jsx-a11y/accessible-emoji */}
+                <Text accessibilityLabel="Remove" style={[styles.headerButton, styles.removeBuild]}>
+                  ❌
                 </Text>
+                {/* eslint-enable jsx-a11y/accessible-emoji */}
               </View>
             </View>
           </Th>

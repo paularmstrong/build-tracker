@@ -1,7 +1,7 @@
 // @flow
-import Hoverable from './Hoverable';
+import Hoverable from '../Hoverable';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import theme from '../theme';
+import theme from '../../theme';
 import { createElement, StyleSheet } from 'react-native';
 import React, { Component } from 'react';
 

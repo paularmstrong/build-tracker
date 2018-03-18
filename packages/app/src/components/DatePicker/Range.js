@@ -1,10 +1,10 @@
 // @flow
 import * as React from 'react';
 import endOfDay from 'date-fns/end_of_day';
-import { formatDate } from '../modules/formatting';
-import ModalDatePicker from './DatePicker/Modal';
+import { formatDate } from '../../modules/formatting';
+import ModalDatePicker from './Modal';
 import startOfDay from 'date-fns/start_of_day';
-import theme from '../theme';
+import theme from '../../theme';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 type Props = {

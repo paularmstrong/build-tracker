@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { BT$ArtifactFilters } from '@build-tracker/types';
-import DateRangePicker from '../DateRangePicker';
+import DateRangePicker from '../DatePicker/Range';
 import type { Filters } from './types';
 import ReactDOM from 'react-dom';
 import theme from '../../theme';

@@ -1,12 +1,12 @@
 // @flow
 import type { BT$Build } from '@build-tracker/types';
 import { BuildMeta } from '@build-tracker/builds';
-import Link from './Link';
-import theme from '../theme';
-import { formatSha, formatTime } from '../modules/formatting';
+import Link from '../Link';
+import theme from '../../theme';
+import { formatSha, formatTime } from '../../modules/formatting';
 import React, { PureComponent } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Table, Tbody, Td, Th, Tr } from './Table';
+import { Table, Tbody, Td, Th, Tr } from '../Table';
 
 type Props = {
   build: BT$Build

@@ -1,8 +1,8 @@
 // @flow
 import { hsl } from 'd3-color';
-import Link from './Link';
+import Link from '../Link';
 import type { Match } from 'react-router-dom';
-import theme from '../theme';
+import theme from '../../theme';
 import { withRouter } from 'react-router-dom';
 import React, { PureComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';

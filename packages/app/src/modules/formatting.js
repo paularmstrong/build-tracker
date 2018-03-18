@@ -1,6 +1,6 @@
 // @flow
 import { format } from 'd3-format';
-import { timeFormat } from 'd3-time-format';
+import timeFormat from 'date-fns/format';
 
 const KIB = 1024;
 const KIB_UNIT = 'KiB';
@@ -10,6 +10,7 @@ export const bytesToKb = (bytes: number, units: string = KIB_UNIT) => {
   return `${numberFormat(value)}${units ? ` ${units}` : ''}`;
 };
 
-export const formatTime = timeFormat('%Y-%m-%d %H:%M');
+export const formatTime = (d: Date | string | number) => timeFormat(d, 'YYYY-MM-DD HH:mm');
+export const formatDate = (d: Date | string | number) => timeFormat(d, 'YYYY-MM-DD');
 
 export const formatSha = (sha: string) => sha.slice(0, 7);

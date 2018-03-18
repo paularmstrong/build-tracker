@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import endOfDay from 'date-fns/end_of_day';
+import { formatDate } from '../modules/formatting';
 import ModalDatePicker from './DatePicker/Modal';
 import startOfDay from 'date-fns/start_of_day';
 import theme from '../theme';
@@ -40,7 +41,7 @@ export default class DateRangePicker extends React.Component<Props, State> {
             onFocus={this._handleToggleStartDatePicker}
             ref={this._handleStartInputRef}
             style={styles.input}
-            value={startDate.toLocaleDateString()}
+            value={formatDate(startDate)}
           />
         </View>
         <View style={styles.date}>
@@ -49,7 +50,7 @@ export default class DateRangePicker extends React.Component<Props, State> {
             onFocus={this._handleToggleEndDatePicker}
             ref={this._handleEndInputRef}
             style={styles.input}
-            value={endDate.toLocaleDateString()}
+            value={formatDate(endDate)}
           />
         </View>
         {showEndDatePicker ? (

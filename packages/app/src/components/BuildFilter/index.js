@@ -2,6 +2,7 @@
 import * as React from 'react';
 import type { BT$ArtifactFilters } from '@build-tracker/types';
 import type { Filters } from './types';
+import { formatDate } from '../../modules/formatting';
 import isSameDay from 'date-fns/is_same_day';
 import isToday from 'date-fns/is_today';
 import Modal from './Modal';
@@ -31,7 +32,7 @@ export default class BuildFilter extends React.Component<Props, State> {
         {!window.DATA && (!isSameDay(startDate, endDate) || (!isToday(startDate) && !isToday(endDate))) ? (
           <View style={styles.filter}>
             <Text style={styles.filterLabel}>Date Range:</Text>
-            <Text>{`${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()}`}</Text>
+            <Text>{`${formatDate(startDate)} – ${formatDate(endDate)}`}</Text>
           </View>
         ) : null}
         <Button onPress={this._handleOpenModal} title="Edit Filters" />

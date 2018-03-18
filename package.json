@@ -37,7 +37,7 @@
     "lint": "eslint . --fix",
     "lint:ci": "eslint .",
     "precommit": "flow && lint-staged",
-    "prerelease": "yarn build",
+    "prerelease": "yarn build && yarn flow && yarn lint && yarn test ",
     "release": "./node_modules/.bin/lerna publish -- --access public",
     "test": "jest",
     "test:ci": "jest --ci"

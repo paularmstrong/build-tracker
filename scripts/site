@@ -19,5 +19,5 @@ node packages/cli generate \
 
 node packages/cli build \
     --data docs/app/data/*.json \
-    --root '/app' \
+    --root '/build-tracker/app' \
     > docs/app/index.html

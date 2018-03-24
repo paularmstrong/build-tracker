@@ -125,6 +125,32 @@ churros,90,0,-90 (1%)
 tacos,45,45,0 (1%)"
 `;
 
+exports[`BuildComparator getSum gets a row of sums 1`] = `
+Array [
+  Object {
+    "text": "Sum",
+    "type": "text",
+  },
+  Object {
+    "gzip": 135,
+    "stat": 579,
+    "type": "total",
+  },
+  Object {
+    "gzip": 45,
+    "stat": 123,
+    "type": "total",
+  },
+  Object {
+    "gzip": -90,
+    "gzipPercent": 0.3333333333333333,
+    "stat": -456,
+    "statPercent": 0.21243523316062177,
+    "type": "totalDelta",
+  },
+]
+`;
+
 exports[`BuildComparator matrix includes a body of all artifacts 1`] = `
 Array [
   Array [

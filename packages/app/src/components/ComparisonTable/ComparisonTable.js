@@ -10,6 +10,7 @@ import { object } from 'prop-types';
 import RevisionDeltaCell from './RevisionDeltaCell';
 import RevisionHeaderCell from './RevisionHeaderCell';
 import styles from './styles';
+import TextCell from './TextCell';
 import theme from '../../theme';
 import ValueCell from './ValueCell';
 import type {
@@ -131,6 +132,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
           </Thead>
           <Tbody>
             {total.length ? <Tr>{total.map(this._renderTotalCell)}</Tr> : null}
+            <Tr>{this._data.getSum(activeArtifactNames).map(this._renderTotalCell)}</Tr>
             {body.length
               ? body.map((row, i) => {
                   const artifactName = row[0].text ? row[0].text : '';
@@ -205,18 +207,23 @@ export default class ComparisonTable extends React.Component<Props, State> {
 
   _renderTotalCell = (cell: BT$BodyCellType, i: number) => {
     const { activeArtifactNames, artifactNames } = this.props;
+    // $FlowFixMe
+    const cellText = cell.hasOwnProperty('text') ? cell.text : '';
     switch (cell.type) {
       case CellType.ARTIFACT:
         return (
           <ArtifactCell
             active={activeArtifactNames.length === artifactNames.length}
-            artifactName="All"
+            artifactName={cellText}
             color={theme.colorMidnight}
             key={i}
             linked
             onToggle={this._handleToggleAllArtifacts}
           />
         );
+      case CellType.TEXT:
+        return <TextCell key={i} text={cellText} />;
+      case CellType.TOTAL_DELTA:
       case CellType.DELTA:
         // $FlowFixMe
         return this._renderDeltaCell(cell, i);

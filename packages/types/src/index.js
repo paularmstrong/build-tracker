@@ -80,7 +80,7 @@ export type BT$ArtifactCellType = {|
   text: string
 |};
 
-export type BT$BodyCellType = BT$ArtifactCellType | BT$DeltaCellType | BT$TotalCellType;
+export type BT$BodyCellType = BT$ArtifactCellType | BT$DeltaCellType | BT$TotalCellType | BT$TextCellType;
 export type BT$HeaderCellType = BT$TextCellType | BT$RevisionCellType | BT$RevisionDeltaCellType;
 
 export type BT$ComparisonMatrix = {

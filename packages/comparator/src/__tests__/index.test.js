@@ -83,6 +83,14 @@ describe('BuildComparator', () => {
     });
   });
 
+  describe('getSum', () => {
+    test('gets a row of sums', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
+      const sum = comparator.getSum(['churros', 'tacos']);
+      expect(sum).toMatchSnapshot();
+    });
+  });
+
   describe('getAscii', () => {
     test('gets an ASCII table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });

@@ -76,7 +76,7 @@ const getSizeDeltas = (baseArtifact: BT$Artifact, changeArtifact: BT$Artifact) =
 
 const getTotalArtifactSizes = (build: BT$Build, artifactFilters: BT$ArtifactFilters) =>
   Object.keys(build.artifacts)
-    .filter(artifactName => !artifactFilters.some(filter => !!filter.test(artifactName)))
+    .filter(artifactName => !artifactFilters.some(filter => filter.test(artifactName)))
     .reduce(
       (memo, artifactName) => {
         return {
@@ -250,6 +250,29 @@ export default class BuildComparator {
       total: this.matrixTotal,
       body: this.matrixBody
     };
+  }
+
+  getSum(artifactNames: Array<string>): Array<BT$BodyCellType> {
+    const filters = [new RegExp(`^(?!${artifactNames.join('|')})`)];
+    return [
+      { type: CellType.TEXT, text: 'Sum' },
+      ...flatten(
+        this.builds.map((build, i) => [
+          getTotalArtifactSizes(build, filters),
+          ...flatten(
+            this.builds
+              .map((compareBuild, j) => {
+                if (j >= i) {
+                  return null;
+                }
+
+                return getTotalSizeDeltas(build, compareBuild, filters);
+              })
+              .filter(Boolean)
+          )
+        ])
+      ).filter(cell => !cell.length)
+    ];
   }
 
   getStringFormattedHeader(

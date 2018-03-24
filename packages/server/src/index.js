@@ -104,7 +104,7 @@ export const staticServer = (options: StaticServerOptions) => {
   const getBuilds = (options: GetBuildsOptions) =>
     getWithGlob('*', options.branch, options.limit).then(builds =>
       builds.filter(build => {
-        if (options.startTime && options.endTime) {
+        if (options.hasOwnProperty('startTime') && options.hasOwnProperty('endTime')) {
           // $FlowFixMe
           return options.startTime <= build.meta.timestamp && options.endTime >= build.meta.timestamp;
         }

@@ -44,10 +44,7 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "proxy": "http://localhost:3000/",
-  "files": [
-    "dist/",
-    "README.md"
-  ],
+  "files": ["dist/", "README.md"],
   "devDependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",

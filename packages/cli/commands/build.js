@@ -11,12 +11,21 @@ const usage = `Usage: $0 build -o <filename>
 ${exports.describe}.`;
 
 exports.builder = yargs =>
-  yargs.usage(usage).option('data', {
-    alias: 'd',
-    demandOption: true,
-    normalize: true,
-    type: 'array'
-  });
+  yargs
+    .usage(usage)
+    .option('data', {
+      alias: 'd',
+      demandOption: true,
+      describe: 'JSON build files',
+      normalize: true,
+      type: 'array'
+    })
+    .option('root', {
+      alias: 'r',
+      default: '/',
+      describe: 'URL path root',
+      type: 'string'
+    });
 
 const htmlPath = require.resolve('@build-tracker/app');
 
@@ -25,10 +34,14 @@ exports.handler = argv => {
     return JSON.parse(fs.readFileSync(dataFile).toString());
   });
 
+  const config = { root: argv.root };
+
   const jsFiles = glob.sync(`${path.resolve(htmlPath, '../static/js')}/*.js`);
 
   const html = fs.readFileSync(htmlPath).toString();
-  let out = html.replace('<script id="data"></script>', `<script>window.DATA=${JSON.stringify(data)};</script>`);
+  let out = html
+    .replace('<script id="data"></script>', `<script>window.DATA=${JSON.stringify(data)};</script>`)
+    .replace('<script id="config"></script>', `<script>window.CONFIG=${JSON.stringify(config)};</script>`);
   jsFiles.forEach(file => {
     const fileName = path.basename(file);
     const fileContents = fs.readFileSync(file);

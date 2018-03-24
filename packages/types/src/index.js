@@ -104,5 +104,6 @@ export type BT$ArtifactFilters = Array<RegExp>;
 
 export type BT$AppConfig = {|
   artifactFilters?: BT$ArtifactFilters,
+  root: string,
   thresholds?: BT$Thresholds
 |};

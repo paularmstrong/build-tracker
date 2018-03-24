@@ -3,6 +3,6 @@ const { staticServer } = require('./src');
 
 staticServer({
   artifactFilters: [/^loader\./],
-  port: 8888,
+  port: 3000,
   statsRoot: path.join(__dirname, 'fixtures/stats')
 });

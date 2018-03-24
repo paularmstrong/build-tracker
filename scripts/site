@@ -1,0 +1,22 @@
+#!/bin/bash
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+SHA=`git rev-parse HEAD`
+TIMESTAMP="`git log -1 --pretty=format:%ct`000"
+
+yarn build
+
+mkdir -p docs/app/data
+
+node packages/cli generate \
+    --dir packages/app/dist \
+    --glob "**/*.js" \
+    --filename-template "^([^.]+)" \
+    --meta.revision=$SHA \
+    --meta.branch=$BRANCH \
+    --meta.timestamp=$TIMESTAMP \
+    > docs/app/data/build-${SHA}.json
+
+node packages/cli build \
+    --data docs/app/data/*.json \
+    > docs/app/index.html

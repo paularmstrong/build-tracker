@@ -1,0 +1,12 @@
+{
+  "meta": { "timestamp": 1521908666000, "revision": "f030024f8879553ec2ccf5e105945873abda9abc", "branch": "master" },
+  "artifacts": {
+    "service-worker": {
+      "hash": "b5d2397491db1b67d2665a43a7426d5d",
+      "name": "service-worker",
+      "stat": 3095,
+      "gzip": 1256
+    },
+    "main": { "hash": "280da3bf290ad4fb493c7c71ce872f8b", "name": "main", "stat": 477770, "gzip": 134493 }
+  }
+}

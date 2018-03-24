@@ -67,7 +67,7 @@ exports.handler = argv => {
   }, {});
 
   const build = {
-    meta: argv.meta,
+    meta: Object.assign({}, { timestamp: new Date().valueOf() }, argv.meta),
     artifacts
   };
 

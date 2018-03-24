@@ -43,7 +43,7 @@
     "test:ci": "jest --ci"
   },
   "lint-staged": {
-    "*.js": ["lint", "jest --passWithNoTests", "git add"],
+    "*.js": ["lint", "jest", "git add"],
     "*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "dependencies": {}

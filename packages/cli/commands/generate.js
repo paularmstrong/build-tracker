@@ -33,8 +33,8 @@ exports.builder = yargs =>
       describe: 'Regular expression for matching the name of the file',
       type: 'string'
     })
-    .option('meta.sha', {
-      describe: 'SHA of the build',
+    .option('meta.revision', {
+      describe: 'Revision of the build',
       type: 'string'
     })
     .option('meta.branch', {

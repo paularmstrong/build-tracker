@@ -14,13 +14,10 @@
   "dependencies": {
     "@build-tracker/app": "^0.0.12",
     "glob": "^7.1.2",
+    "gzip-size": "^4.1.0",
     "yargs": "^8.0.2"
   },
-  "files": [
-    "commands/",
-    "index.js",
-    "README.md"
-  ],
+  "files": ["commands/", "index.js", "README.md"],
   "scripts": {
     "test": "echo \"no tests\""
   }

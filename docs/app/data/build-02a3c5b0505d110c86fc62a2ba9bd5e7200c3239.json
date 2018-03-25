@@ -1,0 +1,14 @@
+{
+  "meta": { "timestamp": 1521948212000, "revision": "02a3c5b0505d110c86fc62a2ba9bd5e7200c3239", "branch": "master" },
+  "artifacts": {
+    "service-worker": {
+      "hash": "35d3a5a13691e0171c18a655c87b71d3",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1344
+    },
+    "main": { "hash": "3643061362e69343933573aa4bab60b6", "name": "main", "stat": 75042, "gzip": 16092 },
+    "runtime": { "hash": "cca4064f7b0e01e1277dfba92d874f20", "name": "runtime", "stat": 1476, "gzip": 832 },
+    "vendor": { "hash": "b254f91a557d0106bba52972a0e9303a", "name": "vendor", "stat": 404897, "gzip": 117469 }
+  }
+}

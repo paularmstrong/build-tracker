@@ -43,6 +43,7 @@ type Props = {
   onArtifactsChange?: Function,
   onRemoveBuild?: Function,
   onShowBuildInfo?: Function,
+  toggleGroups: { [key: string]: Array<string> },
   valueType: 'gzip' | 'stat'
 };
 
@@ -119,7 +120,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
   }
 
   render() {
-    const { activeArtifactNames, artifactNames, builds, hoveredArtifact } = this.props;
+    const { activeArtifactNames, artifactNames, builds, hoveredArtifact, toggleGroups } = this.props;
     const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
     const { header, total, body } = this._data.matrix;
@@ -129,8 +130,26 @@ export default class ComparisonTable extends React.Component<Props, State> {
         <Table style={styles.dataTable}>
           <Thead>
             <Tr>{header ? header.map(this._renderHeaderCell) : null}</Tr>
-            <Tr>{this._data.getSum(activeArtifactNames).map((cell, i) => this._renderTotalCell(cell, i, 1))}</Tr>
-            {total.length ? <Tr>{total.map((cell, i) => this._renderTotalCell(cell, i, 2))}</Tr> : null}
+            <Tr>{this._data.getSum(activeArtifactNames).map((cell, i) => this._renderTotalCell(cell, i))}</Tr>
+            {total.length ? <Tr>{total.map((cell, i) => this._renderTotalCell(cell, i))}</Tr> : null}
+            {Object.keys(toggleGroups).length
+              ? Object.keys(toggleGroups).map((groupName, i) => {
+                  const activeGroup = activeArtifactNames.slice(0).sort();
+                  const group = toggleGroups[groupName].sort();
+                  return (
+                    <Tr key={i}>
+                      <ArtifactCell
+                        active={activeGroup.length === group.length && activeGroup.every((v, i) => v === group[i])}
+                        artifactName={groupName}
+                        color={theme.colorMidnight}
+                        linked={false}
+                        onToggle={this._handleToggleGroup}
+                      />
+                      {this._data.getSum(group).map((cell, i) => (i ? this._renderTotalCell(cell, i) : null))}
+                    </Tr>
+                  );
+                })
+              : null}
           </Thead>
           <Tbody>
             {body.length
@@ -205,7 +224,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
     }
   };
 
-  _renderTotalCell = (cell: BT$BodyCellType, i: number, rowNum: number) => {
+  _renderTotalCell = (cell: BT$BodyCellType, i: number) => {
     const { activeArtifactNames, artifactNames } = this.props;
     // $FlowFixMe
     const cellText = cell.hasOwnProperty('text') ? cell.text : '';
@@ -339,6 +358,11 @@ export default class ComparisonTable extends React.Component<Props, State> {
   _handleToggleAllArtifacts = (name: string, value: boolean) => {
     const { onArtifactsChange } = this.props;
     onArtifactsChange && onArtifactsChange(value ? [name] : emptyArray);
+  };
+
+  _handleToggleGroup = (name: string, value: boolean) => {
+    const { onArtifactsChange, toggleGroups } = this.props;
+    onArtifactsChange && onArtifactsChange(value ? toggleGroups[name] : emptyArray);
   };
 
   _handleCopyToAscii = () => {

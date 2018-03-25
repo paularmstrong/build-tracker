@@ -8,7 +8,7 @@ import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
 import type { $Request, $Response } from 'express';
-import type { BT$ArtifactFilters, BT$Build, BT$Thresholds } from '@build-tracker/types';
+import type { BT$AppConfig, BT$ArtifactFilters, BT$Build, BT$Thresholds } from '@build-tracker/types';
 import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions, GetBuildsOptions } from './api/builds';
 
 const APP_HTML = require.resolve('@build-tracker/app');
@@ -26,7 +26,8 @@ export type ServerOptions = {
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
   port?: number,
-  thresholds?: BT$Thresholds
+  thresholds?: BT$Thresholds,
+  toggleGroups?: $PropertyType<BT$AppConfig, 'toggleGroups'>
 };
 
 const defaultThresholds = {
@@ -41,7 +42,8 @@ export default function createServer({
   builds,
   callbacks,
   port = 3000,
-  thresholds
+  thresholds,
+  toggleGroups
 }: ServerOptions) {
   app.get('/api/builds', Builds.handleGet(builds));
   app.post('/api/builds', Builds.handlePost(builds, callbacks));
@@ -64,7 +66,8 @@ export default function createServer({
           '<script id="config"></script>',
           `<script id="config">window.CONFIG=${JSON.stringify({
             artifactFilters: artifactFilters.map(filter => filter.toString()),
-            thresholds: { ...defaultThresholds, ...thresholds }
+            thresholds: { ...defaultThresholds, ...thresholds },
+            toggleGroups: toggleGroups || {}
           })};</script>`
         );
         res.send(modifiedHtml);

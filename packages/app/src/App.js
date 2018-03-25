@@ -22,6 +22,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 const emptyArray = [];
+const emptyObject = {};
 
 const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames: Array<string>): Array<string> => {
   const { match: { params } } = props;
@@ -202,6 +203,7 @@ class App extends Component<Props, State> {
               onArtifactsChange={this._handleArtifactsChange}
               onRemoveBuild={this._handleRemoveRevision}
               onShowBuildInfo={this._handleShowBuildInfo}
+              toggleGroups={this.context.config.toggleGroups || emptyObject}
               valueType={valueType}
             />
           </View>

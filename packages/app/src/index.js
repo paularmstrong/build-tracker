@@ -11,7 +11,12 @@ const getRoot = (): Element => {
   return rootNode instanceof Element ? rootNode : document.createElement('div');
 };
 
-const config: BT$AppConfig = window.CONFIG || { root: '/' };
+const config: BT$AppConfig = window.CONFIG || {
+  root: '/',
+  toggleGroups: {
+    // boot: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline']
+  }
+};
 
 ReactDOM.render(
   <ContextProvider config={config}>

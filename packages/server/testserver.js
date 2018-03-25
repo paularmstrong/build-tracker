@@ -4,5 +4,6 @@ const { staticServer } = require('./src');
 staticServer({
   artifactFilters: [/^loader\./],
   port: 3000,
-  statsRoot: path.join(__dirname, 'fixtures/stats')
+  statsRoot: path.join(__dirname, 'fixtures/stats'),
+  toggleGroups: { boot: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'] }
 });

@@ -7,14 +7,15 @@ import { Th } from '../Table';
 type Props = {
   hoverColor?: string,
   isHovered?: boolean,
+  style?: mixed,
   text: string
 };
 
 export default class ArtifactCell extends React.PureComponent<Props> {
   render() {
-    const { text } = this.props;
+    const { style, text } = this.props;
     return (
-      <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn]}>
+      <Th style={[styles.cell, styles.rowHeader, styles.stickyColumn, style]}>
         <Text>{text}</Text>
       </Th>
     );

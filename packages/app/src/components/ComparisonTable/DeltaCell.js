@@ -14,6 +14,7 @@ type Props = {
   hashChanged: boolean,
   stat: number,
   statPercent: number,
+  style?: mixed,
   valueType: 'gzip' | 'stat'
 };
 
@@ -28,7 +29,7 @@ const redScale = scaleLinear()
 
 export default class DeltaCell extends PureComponent<Props> {
   render() {
-    const { gzipPercent, hashChanged, statPercent, valueType } = this.props;
+    const { gzipPercent, hashChanged, statPercent, style, valueType } = this.props;
     const value = this.props[valueType];
     const backgroundColor =
       gzipPercent > 1
@@ -39,7 +40,7 @@ export default class DeltaCell extends PureComponent<Props> {
     const percentChange = 100 - (valueType === 'gzip' ? gzipPercent : statPercent) * 100;
     return (
       <Td
-        style={[styles.cell, backgroundColor && { backgroundColor }]}
+        style={[styles.cell, backgroundColor && { backgroundColor }, style]}
         title={`${percentChange.toFixed(3)}% ${hashChanged ? ' - Hash Changed' : ''}`}
       >
         <Text>{value ? bytesToKb(value) : hashChanged ? '⚠️' : '-'}</Text>

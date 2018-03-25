@@ -10,15 +10,16 @@ type Props = {
   isHovered: boolean,
   stat: number,
   gzip: number,
+  style?: mixed,
   valueType: 'gzip' | 'stat'
 };
 
 export default class ValueCell extends PureComponent<Props> {
   render() {
-    const { hoverColor, isHovered, valueType } = this.props;
+    const { hoverColor, isHovered, style, valueType } = this.props;
     const value = this.props[valueType];
     return (
-      <Td style={[styles.cell, isHovered && { backgroundColor: hoverColor }]}>
+      <Td style={[styles.cell, isHovered && { backgroundColor: hoverColor }, style]}>
         <Text>{value ? bytesToKb(value) : '-'}</Text>
       </Td>
     );

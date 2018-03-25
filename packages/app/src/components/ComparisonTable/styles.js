@@ -13,9 +13,9 @@ const styles = StyleSheet.create({
     position: 'sticky',
     top: 0,
     left: 'auto',
-    zIndex: 2
+    zIndex: 2,
+    boxShadow: `0px 0px 0px 0.5px ${theme.colorGray}`
   },
-
   rowHeader: {
     textAlign: 'left',
     paddingRight: theme.spaceXXSmall
@@ -32,11 +32,14 @@ const styles = StyleSheet.create({
     fontWeight: 'normal'
   },
   cell: {
+    boxSizing: 'border-box',
     backgroundColor: theme.colorWhite,
     margin: 0,
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
     height: theme.spaceLarge,
+    maxHeight: theme.spaceLarge,
+    overflow: 'hidden',
     textAlign: 'right',
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
@@ -62,7 +65,14 @@ const styles = StyleSheet.create({
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
     borderRightColor: theme.colorGray,
-    zIndex: 1
+    zIndex: 1,
+    boxShadow: `0px 0px 0px 0.5px ${theme.colorGray}`
+  },
+  stickyBlankHeader: {
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    zIndex: 3
   },
   headerContent: {
     flexDirection: 'row'

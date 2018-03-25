@@ -8,19 +8,21 @@ const emptyObject = {};
 
 type Props = React.ElementConfig<typeof ArtifactSwitch> & {
   hoverColor?: string,
-  isHovered?: boolean
+  isHovered?: boolean,
+  style?: mixed
 };
 
 export default class ArtifactCell extends React.PureComponent<Props> {
   render() {
-    const { hoverColor, isHovered, ...otherProps } = this.props;
+    const { hoverColor, isHovered, style, ...otherProps } = this.props;
     return (
       <Th
         style={[
           styles.cell,
           styles.rowHeader,
           styles.stickyColumn,
-          isHovered ? { backgroundColor: hoverColor } : emptyObject
+          isHovered ? { backgroundColor: hoverColor } : emptyObject,
+          style
         ]}
       >
         <ArtifactSwitch {...otherProps} />

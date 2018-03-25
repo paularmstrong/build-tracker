@@ -129,10 +129,10 @@ export default class ComparisonTable extends React.Component<Props, State> {
         <Table style={styles.dataTable}>
           <Thead>
             <Tr>{header ? header.map(this._renderHeaderCell) : null}</Tr>
+            <Tr>{this._data.getSum(activeArtifactNames).map((cell, i) => this._renderTotalCell(cell, i, 1))}</Tr>
+            {total.length ? <Tr>{total.map((cell, i) => this._renderTotalCell(cell, i, 2))}</Tr> : null}
           </Thead>
           <Tbody>
-            {total.length ? <Tr>{total.map(this._renderTotalCell)}</Tr> : null}
-            <Tr>{this._data.getSum(activeArtifactNames).map(this._renderTotalCell)}</Tr>
             {body.length
               ? body.map((row, i) => {
                   const artifactName = row[0].text ? row[0].text : '';
@@ -201,11 +201,11 @@ export default class ComparisonTable extends React.Component<Props, State> {
         // $FlowFixMe
         return <RevisionDeltaCell {...cell} key={i} />;
       default:
-        return <Th key={i} style={[styles.cell, styles.header]} />;
+        return <Th key={i} style={[styles.cell, styles.header, styles.stickyBlankHeader]} />;
     }
   };
 
-  _renderTotalCell = (cell: BT$BodyCellType, i: number) => {
+  _renderTotalCell = (cell: BT$BodyCellType, i: number, rowNum: number) => {
     const { activeArtifactNames, artifactNames } = this.props;
     // $FlowFixMe
     const cellText = cell.hasOwnProperty('text') ? cell.text : '';
@@ -230,7 +230,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
       case CellType.TOTAL:
       default:
         // $FlowFixMe
-        return this._renderValueCell(cell, i);
+        return this._renderValueCell(cell, i, undefined, false);
     }
   };
 

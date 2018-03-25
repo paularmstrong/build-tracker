@@ -236,7 +236,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
 
   _renderBodyCell = (cell: BT$BodyCellType, i: number, artifactName: string, isHovered: boolean) => {
     const { activeArtifactNames, artifactNames, colorScale } = this.props;
-    const color = colorScale(1 - artifactNames.indexOf(artifactName));
+    const color = colorScale(artifactNames.length - artifactNames.indexOf(artifactName));
     const hoverColor = hsl(color);
     hoverColor.s = 0.7;
     hoverColor.l = 0.95;

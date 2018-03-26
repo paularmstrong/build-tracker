@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/types",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",

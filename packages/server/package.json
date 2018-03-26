@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "dist",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -12,9 +12,9 @@
     "type": "git"
   },
   "dependencies": {
-    "@build-tracker/app": "^0.0.12",
-    "@build-tracker/builds": "^0.0.11",
-    "@build-tracker/comparator": "^0.0.11",
+    "@build-tracker/app": "^0.0.13",
+    "@build-tracker/builds": "^0.0.13",
+    "@build-tracker/comparator": "^0.0.13",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
     "glob": "^7.1.2",
@@ -31,7 +31,7 @@
     "README.md"
   ],
   "devDependencies": {
-    "@build-tracker/builds": "^0.0.11",
+    "@build-tracker/builds": "^0.0.13",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-flow": "^6.18.0",

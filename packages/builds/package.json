@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/builds",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "main": "dist",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "type": "git"
   },
   "devDependencies": {
-    "@build-tracker/types": "^0.0.11",
+    "@build-tracker/types": "^0.0.13",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-flow": "^6.18.0",

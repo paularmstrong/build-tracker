@@ -25,6 +25,7 @@
     "date-fns": "^1.29.0",
     "deep-equal": "^1.0.1",
     "deepmerge": "^2.0.1",
+    "fetch-status": "^1.0.1",
     "object-assign": "4.1.1",
     "promise": "8.0.1",
     "querystring": "^0.2.0",
@@ -43,10 +44,7 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "proxy": "http://localhost:3000/",
-  "files": [
-    "dist/",
-    "README.md"
-  ],
+  "files": ["dist/", "README.md"],
   "devDependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",

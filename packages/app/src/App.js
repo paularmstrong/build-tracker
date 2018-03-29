@@ -5,18 +5,20 @@ import { BuildMeta } from '@build-tracker/builds';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
+import FetchStatus from 'fetch-status';
+import type { FetchStatusEnum } from 'fetch-status';
 import type { Filters } from './components/BuildFilter/types';
 import { formatSha } from './modules/formatting';
 import { getBuilds } from './api';
 import { object } from 'prop-types';
 import theme from './theme';
 import Toggles from './components/Toggles';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import type { BT$AppConfig, BT$ArtifactFilters, BT$Build } from '@build-tracker/types';
 import { ChartType, ValueType, valueTypeAccessor, XScaleType, YScaleType } from './modules/values';
 import { interpolateRainbow, scaleSequential } from 'd3-scale';
 import type { Location, Match, RouterHistory } from 'react-router-dom';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
 const emptyArray = [];
 const emptyObject = {};
@@ -71,6 +73,7 @@ type State = {
   colorScale?: Function,
   compareBuilds: Array<BT$Build>,
   endDate?: Date,
+  fetchStatus: FetchStatusEnum,
   filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
   isFiltered: boolean,
@@ -98,6 +101,7 @@ class App extends Component<Props, State> {
       builds: [],
       chart: ChartType.AREA,
       compareBuilds: [],
+      fetchStatus: FetchStatus.NONE,
       filteredArtifactNames: [],
       isFiltered: true,
       valueType: ValueType.GZIP,
@@ -128,6 +132,7 @@ class App extends Component<Props, State> {
       artifactFilters,
       builds,
       endDate,
+      fetchStatus,
       filteredArtifactNames,
       chart,
       colorScale,
@@ -145,6 +150,7 @@ class App extends Component<Props, State> {
         <View style={styles.main}>
           <View style={styles.header}>
             <Text style={styles.title}>Build Tracker</Text>
+            {fetchStatus === FetchStatus.LOADING ? <ActivityIndicator color={theme.colorBlue} /> : null}
             <BuildFilter
               artifactFilters={artifactFilters}
               defaultArtifactFilters={this._defaultFilters}
@@ -215,20 +221,26 @@ class App extends Component<Props, State> {
       opts.revisions = revisions.split(',');
     }
 
-    getBuilds(opts).then(({ builds, artifactNames }: { builds: Array<BT$Build>, artifactNames: Array<string> }) => {
-      const { artifactFilters } = this.state;
-      const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
-      const colorScale = _getColorScale(filteredArtifactNames.length);
-      this.setState(() => ({
-        activeArtifactNames: _getActiveArtifactNames(this.props, filteredArtifactNames),
-        artifactNames,
-        builds,
-        chart: builds.length <= 4 ? ChartType.BAR : ChartType.AREA,
-        colorScale,
-        compareBuilds: _getCompareBuilds(this.props, builds),
-        filteredArtifactNames
-      }));
-    });
+    this.setState({ fetchStatus: FetchStatus.LOADING });
+    getBuilds(opts)
+      .then(({ builds, artifactNames }: { builds: Array<BT$Build>, artifactNames: Array<string> }) => {
+        const { artifactFilters } = this.state;
+        const filteredArtifactNames = _filterArtifactNames(artifactNames, artifactFilters);
+        const colorScale = _getColorScale(filteredArtifactNames.length);
+        this.setState(() => ({
+          activeArtifactNames: _getActiveArtifactNames(this.props, filteredArtifactNames),
+          artifactNames,
+          builds,
+          chart: builds.length <= 4 ? ChartType.BAR : ChartType.AREA,
+          colorScale,
+          compareBuilds: _getCompareBuilds(this.props, builds),
+          fetchStatus: FetchStatus.LOADED,
+          filteredArtifactNames
+        }));
+      })
+      .catch(() => {
+        this.setState({ fetchStatus: FetchStatus.FAILED });
+      });
   }
 
   _handleChangeBuildFilter = (filters: Filters) => {

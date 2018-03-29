@@ -5,13 +5,10 @@ import { BuildMeta } from '@build-tracker/builds';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
 import deepEqual from 'deep-equal';
-import endOfDay from 'date-fns/end_of_day';
 import type { Filters } from './components/BuildFilter/types';
 import { formatSha } from './modules/formatting';
 import { getBuilds } from './api';
 import { object } from 'prop-types';
-import startOfDay from 'date-fns/start_of_day';
-import subDays from 'date-fns/sub_days';
 import theme from './theme';
 import Toggles from './components/Toggles';
 import type { BT$AppConfig, BT$ArtifactFilters, BT$Build } from '@build-tracker/types';
@@ -73,18 +70,16 @@ type State = {
   chart: $Values<typeof ChartType>,
   colorScale?: Function,
   compareBuilds: Array<BT$Build>,
-  endDate: Date,
+  endDate?: Date,
   filteredArtifactNames: Array<string>,
   hoveredArtifact?: string,
   isFiltered: boolean,
   selectedBuild?: BT$Build,
-  startDate: Date,
+  startDate?: Date,
   valueType: $Values<typeof ValueType>,
   xscale: $Values<typeof XScaleType>,
   yscale: $Values<typeof YScaleType>
 };
-
-const today = new Date();
 
 class App extends Component<Props, State> {
   _defaultFilters: BT$ArtifactFilters;
@@ -103,10 +98,8 @@ class App extends Component<Props, State> {
       builds: [],
       chart: ChartType.AREA,
       compareBuilds: [],
-      endDate: endOfDay(today),
       filteredArtifactNames: [],
       isFiltered: true,
-      startDate: subDays(startOfDay(today), 30),
       valueType: ValueType.GZIP,
       xscale: XScaleType.COMMIT,
       yscale: YScaleType.LINEAR
@@ -114,7 +107,7 @@ class App extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this._fetchData({ startDate: this.state.startDate.valueOf(), endDate: this.state.endDate.valueOf() });
+    this._fetchData();
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -254,11 +247,13 @@ class App extends Component<Props, State> {
       },
       () => {
         const { startDate, endDate } = this.state;
-        if (prevStartDate !== startDate || prevEndDate !== endDate) {
+        if (startDate && endDate && (prevStartDate !== startDate || prevEndDate !== endDate)) {
           this._fetchData({
             startTime: startDate.valueOf(),
             endTime: endDate.valueOf()
           });
+        } else {
+          this._fetchData();
         }
       }
     );

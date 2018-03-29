@@ -2,8 +2,11 @@
 import * as React from 'react';
 import type { BT$ArtifactFilters } from '@build-tracker/types';
 import DateRangePicker from '../DatePicker/Range';
+import endOfDay from 'date-fns/end_of_day';
 import type { Filters } from './types';
 import ReactDOM from 'react-dom';
+import startOfDay from 'date-fns/start_of_day';
+import subDays from 'date-fns/sub_days';
 import theme from '../../theme';
 import { Button, StyleSheet, Switch, Text, View } from 'react-native';
 
@@ -11,13 +14,14 @@ type Props = {
   artifactFilters: BT$ArtifactFilters,
   defaultArtifactFilters: BT$ArtifactFilters,
   onClose: (filters: Filters) => void,
-  startDate: Date,
-  endDate: Date
+  startDate?: Date,
+  endDate?: Date
 };
 
 type State = Filters;
 
 const modalRoot = document.getElementById('buildFilterRoot');
+const today = new Date();
 
 export default class BuildFilter extends React.Component<Props, State> {
   _el: HTMLElement;
@@ -27,8 +31,8 @@ export default class BuildFilter extends React.Component<Props, State> {
     this._el = document.createElement('div');
     this.state = {
       artifactFilters: props.artifactFilters,
-      endDate: props.endDate,
-      startDate: props.startDate
+      endDate: props.endDate || endOfDay(today),
+      startDate: props.startDate || subDays(startOfDay(today), 30)
     };
   }
 

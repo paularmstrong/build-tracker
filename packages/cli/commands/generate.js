@@ -33,12 +33,20 @@ exports.builder = yargs =>
       describe: 'Regular expression for matching the name of the file',
       type: 'string'
     })
-    .option('meta.revision', {
-      describe: 'Revision of the build',
+    .option('meta.revision.value', {
+      describe: 'Unique revision of the build',
       type: 'string'
     })
-    .option('meta.branch', {
-      describe: 'Branch of the build',
+    .option('meta.revision.url', {
+      describe: "URL of the build's revision",
+      type: 'string'
+    })
+    .option('meta.branch.value', {
+      describe: "Name of the build's branch",
+      type: 'string'
+    })
+    .option('meta.branch.url', {
+      describe: "URL for the build's branch",
       type: 'string'
     })
     .option('pretty', {

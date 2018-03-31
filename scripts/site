@@ -1,8 +1,16 @@
 #!/bin/bash
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+if [[ $BRANCH != 'master' && $1 != 'force' ]]; then
+    echo 'Not on master, exiting'
+    echo 'Add "force" command to force-continue'
+    exit 0;
+fi
+
 SHA=`git rev-parse HEAD`
 TIMESTAMP="`git log -1 --pretty=format:%ct`000"
+COMMIT=`git log -n 1 --pretty=format:%s | tr -d '\n'`
 
 yarn build
 
@@ -12,12 +20,17 @@ node packages/cli generate \
     --dir packages/app/dist \
     --glob "**/*.js" \
     --filename-template "^([^.]+)" \
-    --meta.revision=$SHA \
-    --meta.branch=$BRANCH \
+    --meta.revision.value="$SHA" \
+    --meta.revision.url="https://github.com/paularmstrong/build-tracker/commit/${SHA}" \
+    --meta.branch.value=$BRANCH \
     --meta.timestamp=$TIMESTAMP \
+    --meta.commit="${COMMIT}" \
     > docs/app/data/build-${SHA}.json
 
 node packages/cli build \
     --data docs/app/data/*.json \
     --root '/build-tracker/app' \
     > docs/app/index.html
+
+git add docs
+git commit -am "[docs] updating docs example static app"

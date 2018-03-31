@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1522521927000,
+    "revision": {
+      "value": "9ac6af1b477c7b27c7137cc77e8b18153a4cd7ff",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/9ac6af1b477c7b27c7137cc77e8b18153a4cd7ff"
+    },
+    "branch": { "value": "master" },
+    "commit": "[app][server] add config to use hash-router"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "8cec4c50352b1ae5644784b34ed7b3b5",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1340
+    },
+    "main": { "hash": "e2e7976003a63f25c7c2c6c7aba4b5b7", "name": "main", "stat": 78340, "gzip": 17060 },
+    "runtime": { "hash": "4efc7eb578ab5880baa743178bf6c879", "name": "runtime", "stat": 1476, "gzip": 830 },
+    "vendor": { "hash": "c1cb760af366df90c8af2d2420c609a8", "name": "vendor", "stat": 407394, "gzip": 118450 }
+  }
+}

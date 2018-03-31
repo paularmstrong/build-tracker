@@ -46,6 +46,8 @@ const styles = StyleSheet.create({
   cell: {
     boxSizing: 'border-box',
     backgroundColor: theme.colorWhite,
+    height: theme.spaceLarge,
+    maxHeight: theme.spaceLarge,
     margin: 0,
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
@@ -97,6 +99,10 @@ const styles = StyleSheet.create({
     zIndex: 4
   },
   headerContent: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: theme.spaceLarge,
+    maxHeight: theme.spaceLarge,
     flexDirection: 'row'
   },
   headerSha: {

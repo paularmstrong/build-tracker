@@ -105,6 +105,7 @@ export type BT$ArtifactFilters = Array<RegExp>;
 export type BT$AppConfig = {|
   artifactFilters?: BT$ArtifactFilters,
   root: string,
+  routing?: 'hash' | 'history',
   thresholds?: BT$Thresholds,
   toggleGroups?: { [key: string]: Array<string> }
 |};

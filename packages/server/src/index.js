@@ -8,7 +8,7 @@ import glob from 'glob';
 import morgan from 'morgan';
 import path from 'path';
 import type { $Request, $Response } from 'express';
-import type { BT$AppConfig, BT$ArtifactFilters, BT$Build, BT$Thresholds } from '@build-tracker/types';
+import type { BT$AppConfig, BT$Build } from '@build-tracker/types';
 import type { BuildGetOptions, BuildPostCallbacks, BuildPostOptions, GetBuildsOptions } from './api/builds';
 
 const APP_HTML = require.resolve('@build-tracker/app');
@@ -22,12 +22,10 @@ const logFormat =
 app.use(morgan(logFormat));
 
 export type ServerOptions = {
-  artifactFilters?: BT$ArtifactFilters,
+  appConfig: BT$AppConfig,
   builds: BuildGetOptions & BuildPostOptions,
   callbacks?: BuildPostCallbacks,
-  port?: number,
-  thresholds?: BT$Thresholds,
-  toggleGroups?: $PropertyType<BT$AppConfig, 'toggleGroups'>
+  port?: number
 };
 
 const defaultThresholds = {
@@ -38,7 +36,7 @@ const defaultThresholds = {
 };
 
 export default function createServer({
-  artifactFilters = [],
+  appConfig,
   builds,
   callbacks,
   port = 3000,
@@ -65,9 +63,11 @@ export default function createServer({
         const modifiedHtml = data.toString().replace(
           '<script id="config"></script>',
           `<script id="config">window.CONFIG=${JSON.stringify({
-            artifactFilters: artifactFilters.map(filter => filter.toString()),
-            thresholds: { ...defaultThresholds, ...thresholds },
-            toggleGroups: toggleGroups || {}
+            ...appConfig,
+            artifactFilters: appConfig.artifactFilters
+              ? appConfig.artifactFilters.map(filter => filter.toString())
+              : [],
+            thresholds: { ...defaultThresholds, ...appConfig.thresholds }
           })};</script>`
         );
         res.send(modifiedHtml);
@@ -80,10 +80,9 @@ export default function createServer({
 }
 
 export type StaticServerOptions = {
-  artifactFilters?: BT$ArtifactFilters,
+  appConfig: BT$AppConfig,
   port?: number,
-  statsRoot: string,
-  thresholds?: BT$Thresholds
+  statsRoot: string
 };
 
 export const staticServer = (options: StaticServerOptions) => {

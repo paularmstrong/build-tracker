@@ -34,7 +34,7 @@ exports.handler = argv => {
     return JSON.parse(fs.readFileSync(dataFile).toString());
   });
 
-  const config = { root: argv.root };
+  const config = { root: argv.root, routing: 'hash' };
 
   const jsFiles = glob.sync(`${path.resolve(htmlPath, '../static/js')}/*.js`);
 

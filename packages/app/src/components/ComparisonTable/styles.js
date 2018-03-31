@@ -25,6 +25,9 @@ const styles = StyleSheet.create({
     zIndex: 2,
     boxShadow: `0px 0px 0px 0.5px ${theme.colorGray}`
   },
+  lastStickyHeader: {
+    boxShadow: `0px 0px 0px 0.5px ${theme.colorGray}, 0px 2px 2px -2px ${theme.colorDarkGray}`
+  },
   rowHeader: {
     textAlign: 'left',
     paddingRight: theme.spaceXXSmall

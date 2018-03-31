@@ -136,7 +136,13 @@ export default class ComparisonTable extends React.Component<Props, State> {
                 {this._data
                   .getSum(activeArtifactNames)
                   .map((cell, i) =>
-                    this._renderTotalCell(cell, i, 2, cell.type === CellType.TEXT ? 'Selected Sum' : undefined)
+                    this._renderTotalCell(
+                      cell,
+                      i,
+                      2,
+                      cell.type === CellType.TEXT ? 'Selected Sum' : undefined,
+                      styles.lastStickyHeader
+                    )
                   )}
               </Tr>
               {Object.keys(toggleGroups).length
@@ -234,11 +240,17 @@ export default class ComparisonTable extends React.Component<Props, State> {
     }
   };
 
-  _renderTotalCell = (cell: BT$BodyCellType, cellIndex: number, rowIndex?: number, cellText?: string) => {
+  _renderTotalCell = (
+    cell: BT$BodyCellType,
+    cellIndex: number,
+    rowIndex?: number,
+    cellText?: string,
+    style?: mixed
+  ) => {
     const { activeArtifactNames, artifactNames } = this.props;
     // $FlowFixMe
     const text = cellText || (cell.hasOwnProperty('text') ? cell.text : '');
-    const style = rowIndex ? [styles.header, { top: getHeaderTopPos(rowIndex) }] : undefined;
+    const cellStyles = rowIndex ? [styles.header, { top: getHeaderTopPos(rowIndex) }, style] : undefined;
     switch (cell.type) {
       case CellType.ARTIFACT:
         return (
@@ -249,19 +261,25 @@ export default class ComparisonTable extends React.Component<Props, State> {
             key={cellIndex}
             linked
             onToggle={this._handleToggleAllArtifacts}
-            style={style && [...style, styles.stickyColumnStickyHeader]}
+            style={cellStyles && [...cellStyles, styles.stickyColumnStickyHeader]}
           />
         );
       case CellType.TEXT:
-        return <TextCell key={cellIndex} style={style && [...style, styles.stickyColumnStickyHeader]} text={text} />;
+        return (
+          <TextCell
+            key={cellIndex}
+            style={cellStyles && [...cellStyles, styles.stickyColumnStickyHeader]}
+            text={text}
+          />
+        );
       case CellType.TOTAL_DELTA:
       case CellType.DELTA:
         // $FlowFixMe
-        return this._renderDeltaCell(cell, cellIndex, style);
+        return this._renderDeltaCell(cell, cellIndex, cellStyles);
       case CellType.TOTAL:
       default:
         // $FlowFixMe
-        return this._renderValueCell(cell, cellIndex, undefined, false, style);
+        return this._renderValueCell(cell, cellIndex, undefined, false, cellStyles);
     }
   };
 

@@ -42,7 +42,7 @@ type Props = {
   hoveredArtifact?: string,
   onArtifactsChange?: Function,
   onRemoveBuild?: Function,
-  onShowBuildInfo?: Function,
+  onShowBuildInfo?: (revision: string) => void,
   toggleGroups: { [key: string]: Array<string> },
   valueType: 'gzip' | 'stat'
 };
@@ -320,12 +320,27 @@ export default class ComparisonTable extends React.Component<Props, State> {
         hoverColor={hoverColor}
         isHovered={isHovered}
         key={cellIndex}
+        onClick={this._handleCellClick(cellIndex)}
         stat={cell.stat}
         style={style}
         valueType={valueType}
       />
     );
   }
+
+  _handleCellClick = (cellIndex: number) => () => {
+    const { builds, onShowBuildInfo } = this.props;
+    if (!onShowBuildInfo) {
+      return;
+    }
+    for (let i = 0, acc = 1; i <= builds.length; i++) {
+      acc += i;
+      if (cellIndex === acc) {
+        onShowBuildInfo(BuildMeta.getRevision(builds[i]));
+        return;
+      }
+    }
+  };
 
   _getFilteredData() {
     const { config: { thresholds } } = this.context;

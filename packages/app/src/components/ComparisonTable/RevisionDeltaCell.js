@@ -19,8 +19,8 @@ export default class RevisionDeltaCell extends PureComponent<Props> {
         style={[styles.cell, styles.header]}
         title={`Delta from ${formatSha(againstRevision)} to ${formatSha(revision)}`}
       >
-        <View style={styles.headerContent}>
-          <Text style={styles.headerSha}>{`𝚫${deltaIndex}`}</Text>
+        <View style={[styles.headerContent, styles.cellContent]}>
+          <Text style={[styles.headerSha, styles.cellValue]}>{`𝚫${deltaIndex}`}</Text>
         </View>
       </Th>
     );

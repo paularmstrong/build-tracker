@@ -9,7 +9,6 @@ import { hsl } from 'd3-color';
 import { object } from 'prop-types';
 import RevisionDeltaCell from './RevisionDeltaCell';
 import RevisionHeaderCell from './RevisionHeaderCell';
-import styles from './styles';
 import TextCell from './TextCell';
 import theme from '../../theme';
 import ValueCell from './ValueCell';
@@ -25,6 +24,7 @@ import type {
 import BuildComparator, { CellType } from '@build-tracker/comparator';
 import { Button, Clipboard, View } from 'react-native';
 import { bytesToKb, formatSha } from '../../modules/formatting';
+import styles, { getHeaderTopPos } from './styles';
 import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from '../Table';
 
 const getBodySorter = (artifactNames: Array<string>) => (a: string, b: string): number => {
@@ -125,135 +125,147 @@ export default class ComparisonTable extends React.Component<Props, State> {
 
     const { header, total, body } = this._data.matrix;
 
-    return this._data ? (
+    return this._data && builds.length ? (
       <View style={styles.root}>
-        <Table style={styles.dataTable}>
-          <Thead>
-            <Tr>{header ? header.map(this._renderHeaderCell) : null}</Tr>
-            <Tr>{this._data.getSum(activeArtifactNames).map((cell, i) => this._renderTotalCell(cell, i))}</Tr>
-            {total.length ? <Tr>{total.map((cell, i) => this._renderTotalCell(cell, i))}</Tr> : null}
-            {Object.keys(toggleGroups).length
-              ? Object.keys(toggleGroups).map((groupName, i) => {
-                  const activeGroup = activeArtifactNames.slice(0).sort();
-                  const group = toggleGroups[groupName].sort();
-                  return (
-                    <Tr key={i}>
-                      <ArtifactCell
-                        active={activeGroup.length === group.length && activeGroup.every((v, i) => v === group[i])}
-                        artifactName={groupName}
-                        color={theme.colorMidnight}
-                        linked={false}
-                        onToggle={this._handleToggleGroup}
-                      />
-                      {this._data.getSum(group).map((cell, i) => (i ? this._renderTotalCell(cell, i) : null))}
-                    </Tr>
-                  );
-                })
-              : null}
-          </Thead>
-          <Tbody>
-            {body.length
-              ? body.map((row, i) => {
-                  const artifactName = row[0].text ? row[0].text : '';
-                  if (!showDeselectedArtifacts || artifactNames.indexOf(artifactName) === -1) {
-                    if (activeArtifactNames.indexOf(artifactName) === -1) {
-                      return null;
+        {builds.length ? (
+          <Table style={styles.dataTable}>
+            <Thead>
+              <Tr>{header.map(this._renderHeaderCell)}</Tr>
+              <Tr>{total.map((cell, i) => this._renderTotalCell(cell, i, 1))}</Tr>
+              <Tr>
+                {this._data
+                  .getSum(activeArtifactNames)
+                  .map((cell, i) =>
+                    this._renderTotalCell(cell, i, 2, cell.type === CellType.TEXT ? 'Selected Sum' : undefined)
+                  )}
+              </Tr>
+              {Object.keys(toggleGroups).length
+                ? Object.keys(toggleGroups).map((groupName, i) => {
+                    const activeGroup = activeArtifactNames.slice(0).sort();
+                    const group = toggleGroups[groupName].sort();
+                    return (
+                      <Tr key={i}>
+                        <ArtifactCell
+                          active={activeGroup.length === group.length && activeGroup.every((v, i) => v === group[i])}
+                          artifactName={groupName}
+                          color={theme.colorMidnight}
+                          linked={false}
+                          onToggle={this._handleToggleGroup}
+                        />
+                        {this._data.getSum(group).map((cell, i) => (i ? this._renderTotalCell(cell, i) : null))}
+                      </Tr>
+                    );
+                  })
+                : null}
+            </Thead>
+            <Tbody>
+              {body.length
+                ? body.map((row, i) => {
+                    const artifactName = row[0].text ? row[0].text : '';
+                    if (!showDeselectedArtifacts || artifactNames.indexOf(artifactName) === -1) {
+                      if (activeArtifactNames.indexOf(artifactName) === -1) {
+                        return null;
+                      }
                     }
-                  }
-                  return (
-                    <Hoverable key={i}>
-                      {isHovered => (
-                        <Tr>
-                          {row.map((cell, i) =>
-                            this._renderBodyCell(cell, i, artifactName, isHovered || artifactName === hoveredArtifact)
-                          )}
-                        </Tr>
-                      )}
-                    </Hoverable>
-                  );
-                })
-              : null}
-          </Tbody>
-          {builds.length > 1 ? (
-            <Tfoot>
-              <Tr>
-                <ArtifactCell
-                  active={showAboveThresholdOnly}
-                  artifactName="Above threshold only"
-                  color={theme.colorMidnight}
-                  disabled={false}
-                  onToggle={this._handleRemoveBelowThreshold}
-                />
-                <Td colSpan={header.length - 1} rowSpan={2} style={styles.footer}>
-                  <View style={styles.footerContent}>
-                    <View style={styles.copyButton}>
-                      <Button onPress={this._handleCopyToAscii} style={styles.copyButton} title="Copy to ASCII" />
+                    return (
+                      <Hoverable key={i}>
+                        {isHovered => (
+                          <Tr>
+                            {row.map((cell, i) =>
+                              this._renderBodyCell(cell, i, artifactName, isHovered || artifactName === hoveredArtifact)
+                            )}
+                          </Tr>
+                        )}
+                      </Hoverable>
+                    );
+                  })
+                : null}
+            </Tbody>
+            {builds.length > 1 ? (
+              <Tfoot>
+                <Tr>
+                  <ArtifactCell
+                    active={showAboveThresholdOnly}
+                    artifactName="Above threshold only"
+                    color={theme.colorMidnight}
+                    disabled={false}
+                    onToggle={this._handleRemoveBelowThreshold}
+                  />
+                  <Td colSpan={header.length - 1} rowSpan={2} style={styles.footer}>
+                    <View style={styles.footerContent}>
+                      <View style={styles.copyButton}>
+                        <Button onPress={this._handleCopyToAscii} style={styles.copyButton} title="Copy to ASCII" />
+                      </View>
+                      <View style={styles.copyButton}>
+                        <Button onPress={this._handleCopyToCSV} style={styles.copyButton} title={'Copy to CSV'} />
+                      </View>
                     </View>
-                    <View style={styles.copyButton}>
-                      <Button onPress={this._handleCopyToCSV} style={styles.copyButton} title={'Copy to CSV'} />
-                    </View>
-                  </View>
-                </Td>
-              </Tr>
-              <Tr>
-                <ArtifactCell
-                  active={showDeselectedArtifacts}
-                  artifactName="Show deselected"
-                  color={theme.colorMidnight}
-                  onToggle={this._handleShowDeselected}
-                />
-              </Tr>
-            </Tfoot>
-          ) : null}
-        </Table>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <ArtifactCell
+                    active={showDeselectedArtifacts}
+                    artifactName="Show deselected"
+                    color={theme.colorMidnight}
+                    onToggle={this._handleShowDeselected}
+                  />
+                </Tr>
+              </Tfoot>
+            ) : null}
+          </Table>
+        ) : null}
       </View>
     ) : null;
   }
 
-  _renderHeaderCell = (cell: BT$HeaderCellType, i: number) => {
+  _renderHeaderCell = (cell: BT$HeaderCellType, cellIndex: number) => {
     const { onRemoveBuild, onShowBuildInfo } = this.props;
     switch (cell.type) {
       case CellType.REVISION_HEADER:
         // $FlowFixMe
-        return <RevisionHeaderCell {...cell} key={i} onClickInfo={onShowBuildInfo} onClickRemove={onRemoveBuild} />;
+        return (
+          <RevisionHeaderCell {...cell} key={cellIndex} onClickInfo={onShowBuildInfo} onClickRemove={onRemoveBuild} />
+        );
       case CellType.REVISION_DELTA_HEADER:
         // $FlowFixMe
-        return <RevisionDeltaCell {...cell} key={i} />;
+        return <RevisionDeltaCell {...cell} key={cellIndex} />;
       default:
-        return <Th key={i} style={[styles.cell, styles.header, styles.stickyBlankHeader]} />;
+        return <Th key={cellIndex} style={[styles.cell, styles.header, styles.stickyBlankHeader]} />;
     }
   };
 
-  _renderTotalCell = (cell: BT$BodyCellType, i: number) => {
+  _renderTotalCell = (cell: BT$BodyCellType, cellIndex: number, rowIndex?: number, cellText?: string) => {
     const { activeArtifactNames, artifactNames } = this.props;
     // $FlowFixMe
-    const cellText = cell.hasOwnProperty('text') ? cell.text : '';
+    const text = cellText || (cell.hasOwnProperty('text') ? cell.text : '');
+    const style = rowIndex ? [styles.header, { top: getHeaderTopPos(rowIndex) }] : undefined;
     switch (cell.type) {
       case CellType.ARTIFACT:
         return (
           <ArtifactCell
             active={activeArtifactNames.length === artifactNames.length}
-            artifactName={cellText}
+            artifactName={text}
             color={theme.colorMidnight}
-            key={i}
+            key={cellIndex}
             linked
             onToggle={this._handleToggleAllArtifacts}
+            style={style && [...style, styles.stickyColumnStickyHeader]}
           />
         );
       case CellType.TEXT:
-        return <TextCell key={i} text={cellText} />;
+        return <TextCell key={cellIndex} style={style && [...style, styles.stickyColumnStickyHeader]} text={text} />;
       case CellType.TOTAL_DELTA:
       case CellType.DELTA:
         // $FlowFixMe
-        return this._renderDeltaCell(cell, i);
+        return this._renderDeltaCell(cell, cellIndex, style);
       case CellType.TOTAL:
       default:
         // $FlowFixMe
-        return this._renderValueCell(cell, i, undefined, false);
+        return this._renderValueCell(cell, cellIndex, undefined, false, style);
     }
   };
 
-  _renderBodyCell = (cell: BT$BodyCellType, i: number, artifactName: string, isHovered: boolean) => {
+  _renderBodyCell = (cell: BT$BodyCellType, cellIndex: number, artifactName: string, isHovered: boolean) => {
     const { activeArtifactNames, artifactNames, colorScale } = this.props;
     const color = colorScale(artifactNames.length - artifactNames.indexOf(artifactName));
     const hoverColor = hsl(color);
@@ -269,45 +281,47 @@ export default class ComparisonTable extends React.Component<Props, State> {
             color={color}
             hoverColor={hoverColor.toString()}
             isHovered={isHovered}
-            key={i}
+            key={cellIndex}
             linked
             onToggle={this._handleToggleArtifact}
           />
         );
       case CellType.DELTA:
         // $FlowFixMe
-        return this._renderDeltaCell(cell, i);
+        return this._renderDeltaCell(cell, cellIndex);
       case CellType.TOTAL:
       default:
         // $FlowFixMe
-        return this._renderValueCell(cell, i, hoverColor.toString(), isHovered);
+        return this._renderValueCell(cell, cellIndex, hoverColor.toString(), isHovered);
     }
   };
 
-  _renderDeltaCell(cell: BT$DeltaCellType, key: string | number) {
+  _renderDeltaCell(cell: BT$DeltaCellType, cellIndex: number, style?: mixed) {
     const { valueType } = this.props;
     return (
       <DeltaCell
         gzip={cell.gzip}
         gzipPercent={cell.gzipPercent}
         hashChanged={cell.hashChanged}
-        key={key}
+        key={cellIndex}
         stat={cell.stat}
         statPercent={cell.statPercent}
+        style={style}
         valueType={valueType}
       />
     );
   }
 
-  _renderValueCell(cell: BT$TotalCellType, key: string | number, hoverColor: string, isHovered: boolean) {
+  _renderValueCell(cell: BT$TotalCellType, cellIndex: number, hoverColor: string, isHovered: boolean, style?: mixed) {
     const { valueType } = this.props;
     return (
       <ValueCell
         gzip={cell.gzip}
         hoverColor={hoverColor}
         isHovered={isHovered}
-        key={key}
+        key={cellIndex}
         stat={cell.stat}
+        style={style}
         valueType={valueType}
       />
     );

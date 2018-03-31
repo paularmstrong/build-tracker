@@ -2,8 +2,8 @@
 import { bytesToKb } from '../../modules/formatting';
 import styles from './styles';
 import { Td } from '../Table';
-import { Text } from 'react-native';
 import React, { PureComponent } from 'react';
+import { Text, View } from 'react-native';
 
 type Props = {
   hoverColor: string,
@@ -20,7 +20,9 @@ export default class ValueCell extends PureComponent<Props> {
     const value = this.props[valueType];
     return (
       <Td style={[styles.cell, isHovered && { backgroundColor: hoverColor }, style]}>
-        <Text>{value ? bytesToKb(value) : '-'}</Text>
+        <View style={styles.cellContent}>
+          <Text style={styles.cellValue}>{value ? bytesToKb(value) : '-'}</Text>
+        </View>
       </Td>
     );
   }

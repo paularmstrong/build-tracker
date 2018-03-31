@@ -5,8 +5,8 @@ import { rgb } from 'd3-color';
 import { scaleLinear } from 'd3-scale';
 import styles from './styles';
 import { Td } from '../Table';
-import { Text } from 'react-native';
 import React, { PureComponent } from 'react';
+import { Text, View } from 'react-native';
 
 type Props = {
   gzip: number,
@@ -43,7 +43,9 @@ export default class DeltaCell extends PureComponent<Props> {
         style={[styles.cell, backgroundColor && { backgroundColor }, style]}
         title={`${percentChange.toFixed(3)}% ${hashChanged ? ' - Hash Changed' : ''}`}
       >
-        <Text>{value ? bytesToKb(value) : hashChanged ? '⚠️' : '-'}</Text>
+        <View style={styles.cellContent}>
+          <Text style={styles.cellValue}>{value ? bytesToKb(value) : hashChanged ? '⚠️' : '-'}</Text>
+        </View>
       </Td>
     );
   }

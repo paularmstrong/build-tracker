@@ -18,11 +18,9 @@ export default class RevisionHeaderCell extends PureComponent<Props> {
     return (
       <Hoverable>
         {isHovered => (
-          <Th style={[styles.cell, styles.header]} title={revision}>
+          <Th onClick={this._handleClickInfo} style={[styles.cell, styles.header]} title={revision}>
             <View style={styles.headerContent}>
-              <Text onClick={this._handleClickInfo} style={[styles.headerSha, isHovered && styles.headerShaHovered]}>
-                {formatSha(revision)}
-              </Text>
+              <Text style={[styles.headerSha, isHovered && styles.headerShaHovered]}>{formatSha(revision)}</Text>
               <View onClick={this._handleClickRemove}>
                 {/* eslint-disable jsx-a11y/accessible-emoji */}
                 <Text accessibilityLabel="Remove" style={[styles.headerButton, styles.removeBuild]}>
@@ -37,7 +35,8 @@ export default class RevisionHeaderCell extends PureComponent<Props> {
     );
   }
 
-  _handleClickRemove = () => {
+  _handleClickRemove = (e: SyntheticMouseEvent<*>) => {
+    e.preventDefault();
     const { onClickRemove, revision } = this.props;
     onClickRemove && onClickRemove(revision);
   };

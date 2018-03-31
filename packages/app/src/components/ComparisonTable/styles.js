@@ -1,5 +1,15 @@
+// @flow
 import { StyleSheet } from 'react-native';
 import theme from '../../theme';
+
+export const getHeaderTopPos = (i: number) => {
+  const height = theme.spaceLarge;
+  const cellHeight = parseFloat(height.replace('rem', ''));
+  // Hack to accommodate calc rounding errors
+  const borderSize = 1 + i * 0.25;
+  // (2x border size * num) + (cellHeight * num)
+  return `calc(${2 * borderSize * i}px + ${cellHeight * i}rem)`;
+};
 
 const styles = StyleSheet.create({
   root: {
@@ -11,8 +21,7 @@ const styles = StyleSheet.create({
   },
   header: {
     position: 'sticky',
-    top: 0,
-    left: 'auto',
+    top: getHeaderTopPos(0),
     zIndex: 2,
     boxShadow: `0px 0px 0px 0.5px ${theme.colorGray}`
   },
@@ -37,17 +46,24 @@ const styles = StyleSheet.create({
     margin: 0,
     paddingLeft: theme.spaceXSmall,
     paddingRight: theme.spaceXSmall,
-    height: theme.spaceLarge,
-    maxHeight: theme.spaceLarge,
-    overflow: 'hidden',
     textAlign: 'right',
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
     borderBottomColor: theme.colorGray,
     borderRightWidth: '1px',
     borderRightStyle: 'dotted',
-    borderRightColor: theme.colorGray,
-    whiteSpace: 'nowrap'
+    borderRightColor: theme.colorGray
+  },
+  cellContent: {
+    display: 'block',
+    height: theme.spaceLarge,
+    maxHeight: theme.spaceLarge,
+    overflow: 'hidden'
+  },
+  cellValue: {
+    lineHeight: theme.spaceLarge,
+    whiteSpace: 'nowrap',
+    wordWrap: 'unset'
   },
   toggle: {
     color: theme.colorBlue,
@@ -65,20 +81,24 @@ const styles = StyleSheet.create({
     borderRightWidth: '1px',
     borderRightStyle: 'solid',
     borderRightColor: theme.colorGray,
-    zIndex: 1,
+    zIndex: 3,
     boxShadow: `0px 0px 0px 0.5px ${theme.colorGray}`
+  },
+  stickyColumnStickyHeader: {
+    zIndex: 4
   },
   stickyBlankHeader: {
     position: 'sticky',
     top: 0,
     left: 0,
-    zIndex: 3
+    zIndex: 4
   },
   headerContent: {
     flexDirection: 'row'
   },
   headerSha: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    zIndex: 5
   },
   headerShaHovered: {
     color: theme.colorGreen

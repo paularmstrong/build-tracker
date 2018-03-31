@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1522518799000,
+    "revision": {
+      "value": "6710c4e995fce65a56092e25b2c4e546c8d889a4",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/6710c4e995fce65a56092e25b2c4e546c8d889a4"
+    },
+    "branch": { "value": "master" },
+    "commit": "[docs] add postmerge generation script"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "b9e5e8b23dd93a4346ceb64f7b4ef5e4",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1342
+    },
+    "main": { "hash": "1a0620b07ebac9178687022a294135f4", "name": "main", "stat": 78286, "gzip": 17032 },
+    "runtime": { "hash": "4e4b6908b9368a0b42265b5090d39a19", "name": "runtime", "stat": 1476, "gzip": 830 },
+    "vendor": { "hash": "c1cb760af366df90c8af2d2420c609a8", "name": "vendor", "stat": 407394, "gzip": 118450 }
+  }
+}

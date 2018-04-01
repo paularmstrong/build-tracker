@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1522546248000,
+    "revision": {
+      "value": "55b8de377ad8c31b314edac8048bff5a7259192b",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/55b8de377ad8c31b314edac8048bff5a7259192b"
+    },
+    "branch": { "value": "master" },
+    "commit": "Merge branch upgrade react to 16.3.0"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "27885fe7708b7bf3d111ba030ff65fd4",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1351
+    },
+    "main": { "hash": "afac9a2992e8a8e93d055c89532cf741", "name": "main", "stat": 80859, "gzip": 17579 },
+    "runtime": { "hash": "cb27a6f142e436edcf1e0e3300da929a", "name": "runtime", "stat": 1476, "gzip": 832 },
+    "vendor": { "hash": "bc7a9dd06f9f3a676a36166eaddfa12c", "name": "vendor", "stat": 415228, "gzip": 120527 }
+  }
+}

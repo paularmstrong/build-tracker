@@ -3438,7 +3438,7 @@ flow-copy-source@^1.2.1:
     kefir "^3.7.3"
     yargs "^11.0.0"
 
-flow-typed@^2.2.3:
+flow-typed@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/flow-typed/-/flow-typed-2.4.0.tgz#3d2f48cf85df29df3bca6745b623726496ff4788"
   dependencies:

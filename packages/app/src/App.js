@@ -4,7 +4,6 @@ import BuildInfo from './components/BuildInfo';
 import { BuildMeta } from '@build-tracker/builds';
 import Chart from './components/Chart';
 import ComparisonTable from './components/ComparisonTable';
-import deepEqual from 'deep-equal';
 import FetchStatus from 'fetch-status';
 import type { FetchStatusEnum } from 'fetch-status';
 import type { Filters } from './components/BuildFilter/types';
@@ -91,6 +90,16 @@ class App extends Component<Props, State> {
     config: object
   };
 
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    return {
+      activeArtifactNames: _filterArtifactNames(
+        _getActiveArtifactNames(nextProps, prevState.artifactNames),
+        prevState.artifactFilters
+      ),
+      compareBuilds: _getCompareBuilds(nextProps, prevState.builds)
+    };
+  }
+
   constructor(props: Props, context: { config: BT$AppConfig }) {
     super(props, context);
     this._defaultFilters = context.config.artifactFilters || [];
@@ -112,18 +121,6 @@ class App extends Component<Props, State> {
 
   componentDidMount() {
     this._fetchData();
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (!deepEqual(this.props.match.params, nextProps.match.params)) {
-      this.setState(state => ({
-        activeArtifactNames: _filterArtifactNames(
-          _getActiveArtifactNames(nextProps, state.artifactNames),
-          this.state.artifactFilters
-        ),
-        compareBuilds: _getCompareBuilds(nextProps, state.builds)
-      }));
-    }
   }
 
   render() {

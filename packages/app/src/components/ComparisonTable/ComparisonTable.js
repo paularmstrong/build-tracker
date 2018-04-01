@@ -1,11 +1,13 @@
 // @flow
 import * as React from 'react';
 import ArtifactCell from './ArtifactCell';
+import ArtifactRow from './ArtifactRow';
 import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import DeltaCell from './DeltaCell';
 import Hoverable from '../Hoverable';
 import { hsl } from 'd3-color';
+import memoize from 'fast-memoize';
 import { object } from 'prop-types';
 import RevisionDeltaCell from './RevisionDeltaCell';
 import RevisionHeaderCell from './RevisionHeaderCell';
@@ -48,9 +50,21 @@ type Props = {
 };
 
 type State = {
+  comparator: BuildComparator,
   showAboveThresholdOnly: boolean,
   showDeselectedArtifacts: boolean
 };
+
+const getComparator = memoize(
+  (builds: Array<BT$Build>, artifactNames: Array<string>, artifactFilters: BT$ArtifactFilters) => {
+    const artifactSorter = getBodySorter(artifactNames);
+    return new BuildComparator({
+      builds,
+      artifactFilters,
+      artifactSorter
+    });
+  }
+);
 
 const emptyArray = [];
 
@@ -89,15 +103,27 @@ export default class ComparisonTable extends React.Component<Props, State> {
     config: object.isRequired
   };
 
-  _data: BuildComparator;
+  state = {
+    comparator: getComparator([], [], []),
+    showAboveThresholdOnly: false,
+    showDeselectedArtifacts: true
+  };
 
-  constructor(props: Props, context: Object) {
-    super(props, context);
-    this.state = {
-      showAboveThresholdOnly: false,
-      showDeselectedArtifacts: true
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    const comparator = getComparator(
+      nextProps.builds.sort(sortBuilds),
+      nextProps.artifactNames,
+      nextProps.artifactFilters
+    );
+
+    if (comparator === prevState.comparator) {
+      return null;
+    }
+
+    return {
+      ...prevState,
+      comparator
     };
-    this.setData(props);
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -106,26 +132,13 @@ export default class ComparisonTable extends React.Component<Props, State> {
     return !arePropsEqual || !isStateEqual;
   }
 
-  componentWillUpdate(nextProps: Props, nextState: State) {
-    this.setData(nextProps);
-  }
-
-  setData(props: Props) {
-    const matrixBodySorter = getBodySorter(props.artifactNames);
-    this._data = new BuildComparator({
-      builds: props.builds.sort(sortBuilds),
-      artifactSorter: matrixBodySorter,
-      artifactFilters: props.artifactFilters
-    });
-  }
-
   render() {
     const { activeArtifactNames, artifactNames, builds, hoveredArtifact, toggleGroups } = this.props;
-    const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
+    const { comparator, showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
-    const { header, total, body } = this._data.matrix;
+    const { header, total, body } = comparator.matrix;
 
-    return this._data && builds.length ? (
+    return builds.length ? (
       <View style={styles.root}>
         {builds.length ? (
           <Table style={styles.dataTable}>
@@ -133,7 +146,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
               <Tr>{header.map(this._renderHeaderCell)}</Tr>
               <Tr>{total.map((cell, i) => this._renderTotalCell(cell, i, 1))}</Tr>
               <Tr>
-                {this._data
+                {comparator
                   .getSum(activeArtifactNames)
                   .map((cell, i) =>
                     this._renderTotalCell(
@@ -158,7 +171,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
                           linked={false}
                           onToggle={this._handleToggleGroup}
                         />
-                        {this._data.getSum(group).map((cell, i) => (i ? this._renderTotalCell(cell, i) : null))}
+                        {comparator.getSum(group).map((cell, i) => (i ? this._renderTotalCell(cell, i) : null))}
                       </Tr>
                     );
                   })
@@ -177,9 +190,11 @@ export default class ComparisonTable extends React.Component<Props, State> {
                       <Hoverable key={i}>
                         {isHovered => (
                           <Tr>
-                            {row.map((cell, i) =>
-                              this._renderBodyCell(cell, i, artifactName, isHovered || artifactName === hoveredArtifact)
-                            )}
+                            <ArtifactRow
+                              isHovered={isHovered || artifactName === hoveredArtifact}
+                              render={this._renderBodyCell}
+                              row={row}
+                            />
                           </Tr>
                         )}
                       </Hoverable>
@@ -362,12 +377,14 @@ export default class ComparisonTable extends React.Component<Props, State> {
 
   _getFilteredData() {
     const { config: { thresholds } } = this.context;
+    const { comparator } = this.state;
+
     if (!thresholds) {
-      return this._data.matrixBody;
+      return comparator.matrixBody;
     }
 
     const rowFilter = createRowFilter(thresholds);
-    return this._data.matrixBody.filter(rowFilter);
+    return comparator.matrixBody.filter(rowFilter);
   }
 
   _handleShowDeselected = (name: string, toggled: boolean) => {
@@ -415,7 +432,8 @@ export default class ComparisonTable extends React.Component<Props, State> {
   _handleCopyToAscii = () => {
     const { config: { thresholds } } = this.context;
     const { activeArtifactNames, artifactNames, valueType } = this.props;
-    const { showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
+    const { comparator, showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
+
     const formatValue = cell => {
       const value = cell[valueType];
       return value ? bytesToKb(value) : '';
@@ -432,7 +450,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
 
       return showAboveThresholdOnly ? thresholdRowFilter(row) : row => true;
     };
-    const table = this._data.getAscii({
+    const table = comparator.getAscii({
       formatRevision: cell => formatSha(cell.revision),
       formatValue,
       formatDelta: formatValue,
@@ -449,6 +467,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
   };
 
   _handleCopyToCSV = () => {
-    Clipboard.setString(this._data.getCsv());
+    const { comparator } = this.state;
+    Clipboard.setString(comparator.getCsv());
   };
 }

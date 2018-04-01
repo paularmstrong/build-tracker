@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import ArtifactCell from './ArtifactCell';
+import ArtifactRow from './ArtifactRow';
 import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import DeltaCell from './DeltaCell';
@@ -189,9 +190,11 @@ export default class ComparisonTable extends React.Component<Props, State> {
                       <Hoverable key={i}>
                         {isHovered => (
                           <Tr>
-                            {row.map((cell, i) =>
-                              this._renderBodyCell(cell, i, artifactName, isHovered || artifactName === hoveredArtifact)
-                            )}
+                            <ArtifactRow
+                              isHovered={isHovered || artifactName === hoveredArtifact}
+                              render={this._renderBodyCell}
+                              row={row}
+                            />
                           </Tr>
                         )}
                       </Hoverable>

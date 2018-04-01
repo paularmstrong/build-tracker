@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1522625786000,
+    "revision": {
+      "value": "8ddbc59de20288acd62d695734dc91e6ce15b23d",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/8ddbc59de20288acd62d695734dc91e6ce15b23d"
+    },
+    "branch": { "value": "master" },
+    "commit": "[app] fade out non-hovered items on chart"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "4985a719ffbf94bf781e41e24c4fcd26",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1348
+    },
+    "main": { "hash": "b30d8c71974767794adadab86bd5f6e9", "name": "main", "stat": 81418, "gzip": 17669 },
+    "runtime": { "hash": "44740d6e922e55402aae5c449cf4c31a", "name": "runtime", "stat": 1476, "gzip": 833 },
+    "vendor": { "hash": "bc7a9dd06f9f3a676a36166eaddfa12c", "name": "vendor", "stat": 415228, "gzip": 120527 }
+  }
+}

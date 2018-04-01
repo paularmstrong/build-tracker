@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "0.0.13",
+  "version": "0.1.0",
   "bin": "index.js",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
@@ -18,12 +18,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@build-tracker/builds": "^0.0.13",
+    "@build-tracker/builds": "^0.1.0",
     "ascii-table": "^0.0.9"
   },
   "main": "dist",
   "devDependencies": {
-    "@build-tracker/types": "^0.0.13",
+    "@build-tracker/types": "^0.1.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-flow": "^6.18.0",

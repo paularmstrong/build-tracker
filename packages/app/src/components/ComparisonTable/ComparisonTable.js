@@ -43,6 +43,7 @@ type Props = {
   colorScale: Function,
   hoveredArtifact?: string,
   onArtifactsChange?: Function,
+  onHover: (artifactName?: string, build?: BT$Build) => void,
   onRemoveBuild?: Function,
   onShowBuildInfo?: (revision: string) => void,
   toggleGroups: { [key: string]: Array<string> },
@@ -187,7 +188,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
                       }
                     }
                     return (
-                      <Hoverable key={i}>
+                      <Hoverable key={i} onHoverIn={this._handleHover(artifactName)} onHoverOut={this._handleHoverOut}>
                         {isHovered => (
                           <Tr>
                             <ArtifactRow
@@ -238,6 +239,14 @@ export default class ComparisonTable extends React.Component<Props, State> {
       </View>
     ) : null;
   }
+
+  _handleHover = (artifactName: string) => () => {
+    this.props.onHover(artifactName);
+  };
+
+  _handleHoverOut = () => {
+    this.props.onHover();
+  };
 
   _renderHeaderCell = (cell: BT$HeaderCellType, cellIndex: number) => {
     const { onRemoveBuild, onShowBuildInfo } = this.props;

@@ -166,6 +166,7 @@ class App extends Component<Props, State> {
                     builds={builds}
                     chartType={chart}
                     colorScale={colorScale}
+                    hoveredArtifact={hoveredArtifact}
                     onHover={this._handleHover}
                     onSelectBuild={this._handleSelectBuild}
                     selectedBuilds={compareBuilds.map((b: BT$Build) => BuildMeta.getRevision(b))}
@@ -197,6 +198,7 @@ class App extends Component<Props, State> {
               colorScale={colorScale}
               hoveredArtifact={hoveredArtifact}
               onArtifactsChange={this._handleArtifactsChange}
+              onHover={this._handleHover}
               onRemoveBuild={this._handleRemoveRevision}
               onShowBuildInfo={this._handleShowBuildInfo}
               toggleGroups={this.context.config.toggleGroups || emptyObject}

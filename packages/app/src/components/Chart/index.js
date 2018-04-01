@@ -5,6 +5,7 @@ import type { BT$Build } from '@build-tracker/types';
 import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import { format } from 'd3-format';
+import { rgb } from 'd3-color';
 import theme from '../../theme';
 import { area, stack } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
@@ -79,6 +80,7 @@ type Props = {
   builds: Array<BT$Build>,
   chartType: $Values<typeof ChartType>,
   colorScale: Function,
+  hoveredArtifact?: string,
   onHover: (artifactName?: string, build?: BT$Build) => void,
   onSelectBuild: Function,
   selectedBuilds: Array<string>,
@@ -108,8 +110,9 @@ export default class Chart extends React.Component<Props, State> {
   _xAxis: any;
 
   state = {
-    width: 0,
-    height: 0
+    hoveredArtifact: undefined,
+    height: 0,
+    width: 0
   };
 
   componentDidMount() {
@@ -201,6 +204,7 @@ export default class Chart extends React.Component<Props, State> {
   _drawArea(data: Array<Array<number>>, xScale: Function, yScale: Function) {
     const { artifacts, colorScale, xScaleType } = this.props;
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
+    const hoveredArtifactName = this.props.hoveredArtifact || this.state.hoveredArtifact;
 
     const fillFunction = _makeColorScale(artifacts, colorScale);
 
@@ -224,22 +228,40 @@ export default class Chart extends React.Component<Props, State> {
       .merge(artifact)
       .transition()
       .duration(150)
-      .style('fill', fillFunction)
+      .style('fill', d => {
+        const baseColor = fillFunction(d);
+        if (hoveredArtifactName && d.key !== hoveredArtifactName) {
+          const color = rgb(baseColor);
+          color.opacity = 0.75;
+          return color.rgb();
+        }
+        return baseColor;
+      })
       .attr('d', areaChart);
   }
 
   _drawBars(data: Array<Array<number>>, xScale: Function, yScale: Function) {
     const { artifacts, colorScale, xScaleType } = this.props;
     const { height } = this.state;
+    const hoveredArtifactName = this.props.hoveredArtifact || this.state.hoveredArtifact;
 
     const fillFunction = _makeColorScale(artifacts, colorScale);
+    const fill = d => {
+      const baseColor = fillFunction(d);
+      if (hoveredArtifactName && d.key !== hoveredArtifactName) {
+        const color = rgb(baseColor);
+        color.opacity = 0.75;
+        return color.rgb();
+      }
+      return baseColor;
+    };
 
     const xAccessor = xScaleType === 'time' ? 'timestamp' : 'revision';
     const artifactGroups = this._chartContents.selectAll('g.artifactGroup').data(data, (d: { key: string }) => d.key);
     artifactGroups
       .transition()
       .duration(150)
-      .style('fill', fillFunction);
+      .style('fill', fill);
 
     const artifact = this._chartContents.selectAll('path.artifact').data([]);
     artifact.exit().remove();
@@ -251,7 +273,7 @@ export default class Chart extends React.Component<Props, State> {
       .enter()
       .append('g')
       .attr('class', 'artifactGroup')
-      .style('fill', fillFunction)
+      .style('fill', fill)
       .merge(artifactGroups)
       .selectAll('rect.artifact')
       .data(d => d);

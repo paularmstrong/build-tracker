@@ -6,7 +6,7 @@ import React, { PureComponent } from 'react';
 import { Text, View } from 'react-native';
 
 type Props = {
-  hoverColor: string,
+  hoverColor?: string,
   isHovered: boolean,
   onClick?: () => void,
   stat: number,
@@ -16,11 +16,15 @@ type Props = {
 };
 
 export default class ValueCell extends PureComponent<Props> {
+  static defaultProps = {
+    isHovered: false
+  };
+
   render() {
     const { hoverColor, isHovered, onClick, style, valueType } = this.props;
     const value = this.props[valueType];
     return (
-      <Td onClick={onClick} style={[styles.cell, isHovered && { backgroundColor: hoverColor }, style]}>
+      <Td onClick={onClick} style={[styles.cell, isHovered && hoverColor && { backgroundColor: hoverColor }, style]}>
         <View style={styles.cellContent}>
           <Text style={styles.cellValue}>{value ? bytesToKb(value) : '-'}</Text>
         </View>

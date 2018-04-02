@@ -6,7 +6,6 @@ import { BuildMeta } from '@build-tracker/builds';
 import deepEqual from 'deep-equal';
 import DeltaCell from './DeltaCell';
 import Hoverable from '../Hoverable';
-import { hsl } from 'd3-color';
 import memoize from 'fast-memoize';
 import { object } from 'prop-types';
 import RevisionDeltaCell from './RevisionDeltaCell';
@@ -134,7 +133,15 @@ export default class ComparisonTable extends React.Component<Props, State> {
   }
 
   render() {
-    const { activeArtifactNames, artifactNames, builds, hoveredArtifact, toggleGroups } = this.props;
+    const {
+      activeArtifactNames,
+      artifactNames,
+      builds,
+      colorScale,
+      hoveredArtifact,
+      toggleGroups,
+      valueType
+    } = this.props;
     const { comparator, showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 
     const { header, total, body } = comparator.matrix;
@@ -192,9 +199,13 @@ export default class ComparisonTable extends React.Component<Props, State> {
                         {isHovered => (
                           <Tr>
                             <ArtifactRow
+                              color={colorScale(artifactNames.length - artifactNames.indexOf(artifactName))}
+                              isActive={activeArtifactNames.indexOf(artifactName) !== -1}
                               isHovered={isHovered || artifactName === hoveredArtifact}
-                              render={this._renderBodyCell}
+                              onCellClick={this._handleCellClick}
+                              onToggleArtifact={this._handleToggleArtifact}
                               row={row}
+                              valueType={valueType}
                             />
                           </Tr>
                         )}
@@ -271,7 +282,7 @@ export default class ComparisonTable extends React.Component<Props, State> {
     cellText?: string,
     style?: mixed
   ) => {
-    const { activeArtifactNames, artifactNames } = this.props;
+    const { activeArtifactNames, artifactNames, valueType } = this.props;
     // $FlowFixMe
     const text = cellText || (cell.hasOwnProperty('text') ? cell.text : '');
     const cellStyles = rowIndex ? [styles.header, { top: getHeaderTopPos(rowIndex) }, style] : undefined;
@@ -297,78 +308,40 @@ export default class ComparisonTable extends React.Component<Props, State> {
           />
         );
       case CellType.TOTAL_DELTA:
-      case CellType.DELTA:
+      case CellType.DELTA: {
         // $FlowFixMe
-        return this._renderDeltaCell(cell, cellIndex, cellStyles);
-      case CellType.TOTAL:
-      default:
-        // $FlowFixMe
-        return this._renderValueCell(cell, cellIndex, undefined, false, cellStyles);
-    }
-  };
-
-  _renderBodyCell = (cell: BT$BodyCellType, cellIndex: number, artifactName: string, isHovered: boolean) => {
-    const { activeArtifactNames, artifactNames, colorScale } = this.props;
-    const color = colorScale(artifactNames.length - artifactNames.indexOf(artifactName));
-    const hoverColor = hsl(color);
-    hoverColor.s = 0.7;
-    hoverColor.l = 0.95;
-
-    switch (cell && cell.type) {
-      case CellType.ARTIFACT:
+        const deltaCell = (cell: BT$DeltaCellType);
         return (
-          <ArtifactCell
-            active={activeArtifactNames.indexOf(artifactName) !== -1}
-            artifactName={artifactName}
-            color={color}
-            hoverColor={hoverColor.toString()}
-            isHovered={isHovered}
+          <DeltaCell
+            gzip={deltaCell.gzip}
+            gzipPercent={deltaCell.gzipPercent}
+            hashChanged={deltaCell.hashChanged}
             key={cellIndex}
-            linked
-            onToggle={this._handleToggleArtifact}
+            stat={deltaCell.stat}
+            statPercent={deltaCell.statPercent}
+            style={cellStyles}
+            valueType={valueType}
           />
         );
-      case CellType.DELTA:
+      }
+      case CellType.TOTAL: {
         // $FlowFixMe
-        return this._renderDeltaCell(cell, cellIndex);
-      case CellType.TOTAL:
+        const totalCell = (cell: BT$TotalCellType);
+        return (
+          <ValueCell
+            gzip={totalCell.gzip}
+            key={cellIndex}
+            onClick={this._handleCellClick(cellIndex)}
+            stat={totalCell.stat}
+            style={cellStyles}
+            valueType={valueType}
+          />
+        );
+      }
       default:
-        // $FlowFixMe
-        return this._renderValueCell(cell, cellIndex, hoverColor.toString(), isHovered);
+        return null;
     }
   };
-
-  _renderDeltaCell(cell: BT$DeltaCellType, cellIndex: number, style?: mixed) {
-    const { valueType } = this.props;
-    return (
-      <DeltaCell
-        gzip={cell.gzip}
-        gzipPercent={cell.gzipPercent}
-        hashChanged={cell.hashChanged}
-        key={cellIndex}
-        stat={cell.stat}
-        statPercent={cell.statPercent}
-        style={style}
-        valueType={valueType}
-      />
-    );
-  }
-
-  _renderValueCell(cell: BT$TotalCellType, cellIndex: number, hoverColor: string, isHovered: boolean, style?: mixed) {
-    const { valueType } = this.props;
-    return (
-      <ValueCell
-        gzip={cell.gzip}
-        hoverColor={hoverColor}
-        isHovered={isHovered}
-        key={cellIndex}
-        onClick={this._handleCellClick(cellIndex)}
-        stat={cell.stat}
-        style={style}
-        valueType={valueType}
-      />
-    );
-  }
 
   _handleCellClick = (cellIndex: number) => () => {
     const { builds, onShowBuildInfo } = this.props;

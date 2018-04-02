@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1522627857000,
+    "revision": {
+      "value": "742bebd6ebade83873b5ff586d832cdc734d32c7",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/742bebd6ebade83873b5ff586d832cdc734d32c7"
+    },
+    "branch": { "value": "master" },
+    "commit": "[app] fix table row updating on switch change, perf"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "26aa6b2f76b3bfbe443e26f04ee4f053",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1351
+    },
+    "main": { "hash": "cacb993fd89e173b68ce7064a427ace8", "name": "main", "stat": 81654, "gzip": 17988 },
+    "runtime": { "hash": "e9565913ca6c410f0abbeb11b8e90ba6", "name": "runtime", "stat": 1476, "gzip": 832 },
+    "vendor": { "hash": "f3d4cabc2144fedd2ec96ff11cd6395d", "name": "vendor", "stat": 415228, "gzip": 120536 }
+  }
+}

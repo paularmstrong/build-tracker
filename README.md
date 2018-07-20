@@ -21,9 +21,18 @@ Package-specific information and documentation can be found here:
 1.  `yarn` to install all dependencies. This will also install pre-commit hooks to help you ensure lint, test, and type checking pass before committing.
 2.  `yarn lerna bootstrap` to ensure sub-projects are linked together. This is a [lerna](https://lernajs.io) monorepo. All projects are located under the `<root>/packages/` directory.
 
+### Starting a static server
+
+```bash
+# in packages/server
+yarn start:static
+# in packages/app
+yarn start
+```
+
 ### Other commands
 
-```
+```bash
 # Run lint and auto-format using prettier
 yarn lint
 

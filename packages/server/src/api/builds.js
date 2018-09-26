@@ -88,7 +88,7 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildI
       return onBuildInserted ? onBuildInserted(comparator) : Promise.resolve({});
     })
     .then((data: Object) => {
-      res.write(JSON.stringify({ success: true, ...data }));
+      res.write(JSON.stringify({ success: true, data }));
       res.end();
     })
     .catch(err => {

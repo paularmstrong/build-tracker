@@ -64,7 +64,7 @@ export type BuildPostOptions = {
 };
 
 export type BuildPostCallbacks = {
-  onBuildInserted?: (comparator: BuildComparator) => Promise<string>
+  onBuildInserted?: (comparator: BuildComparator) => Promise<any>
 };
 
 export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildInserted }: BuildPostCallbacks = {}) => (

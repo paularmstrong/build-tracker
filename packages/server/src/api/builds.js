@@ -64,7 +64,7 @@ export type BuildPostOptions = {
 };
 
 export type BuildPostCallbacks = {
-  onBuildInserted?: (comparator: BuildComparator) => Promise<Object>
+  onBuildInserted?: (comparator: BuildComparator) => Promise<any>
 };
 
 export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildInserted }: BuildPostCallbacks = {}) => (
@@ -85,9 +85,9 @@ export const handlePost = ({ getPrevious, insert }: BuildPostOptions, { onBuildI
     .then(() => getPrevious(build.meta))
     .then((parentBuild: BT$Build) => {
       const comparator = new BuildComparator({ builds: [parentBuild, build].filter(Boolean) });
-      return onBuildInserted ? onBuildInserted(comparator) : Promise.resolve({});
+      return onBuildInserted ? onBuildInserted(comparator) : Promise.resolve();
     })
-    .then((data: Object) => {
+    .then(data => {
       res.write(JSON.stringify({ success: true, data }));
       res.end();
     })

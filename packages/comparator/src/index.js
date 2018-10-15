@@ -321,6 +321,9 @@ export default class BuildComparator {
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
+    if (rows.length === 0) {
+      return '';
+    }
 
     const table = new AsciiTable('');
     table

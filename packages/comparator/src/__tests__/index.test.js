@@ -13,7 +13,7 @@ const build2 = {
   meta: { revision: '8901234', timestamp: 8901234 },
   artifacts: {
     burritos: { name: 'burritos', hash: 'def', stat: 469, gzip: 93 },
-    tacos: { name: 'tacos', hash: 'abc', stat: 123, gzip: 45 }
+    tacos: { name: 'tacos', hash: 'abc', stat: 123, gzip: 43 }
   }
 };
 

@@ -12,15 +12,15 @@ Array [
     "type": "total",
   },
   Object {
-    "gzip": 45,
+    "gzip": 43,
     "stat": 123,
     "type": "total",
   },
   Object {
-    "gzip": 0,
-    "gzipPercent": 1,
+    "gzip": -2,
+    "gzipPercent": -0.044444444444444446,
     "stat": 0,
-    "statPercent": 1,
+    "statPercent": 0,
     "type": "totalDelta",
   },
 ]
@@ -49,28 +49,28 @@ Array [
         },
         "churros": Object {
           "gzip": -90,
-          "gzipPercent": 1,
+          "gzipPercent": -1,
           "hashChanged": true,
           "stat": -456,
-          "statPercent": 1,
+          "statPercent": -1,
           "type": "delta",
         },
         "tacos": Object {
-          "gzip": 0,
-          "gzipPercent": 1,
+          "gzip": -2,
+          "gzipPercent": -0.044444444444444446,
           "hashChanged": false,
           "stat": 0,
-          "statPercent": 1,
+          "statPercent": 0,
           "type": "delta",
         },
       },
     ],
     "deltas": Array [
       Object {
-        "gzip": 3,
-        "gzipPercent": 1.0222222222222221,
+        "gzip": 1,
+        "gzipPercent": 0.007407407407407408,
         "stat": 13,
-        "statPercent": 1.0224525043177892,
+        "statPercent": 0.022452504317789293,
         "type": "totalDelta",
       },
     ],
@@ -83,46 +83,46 @@ Array [
 `;
 
 exports[`BuildComparator getAscii can filter rows 1`] = `
-".----------------------------------------.
-|          | 1234567 | 8901234 |   Δ0    |
-|----------|---------|---------|---------|
-| burritos | 0       | 93      | 93 (1%) |
-'----------------------------------------'"
+".--------------------------------------------.
+|          | 1234567 | 8901234 |     Δ0      |
+|----------|---------|---------|-------------|
+| burritos | 0       | 93      | 93 (100.0%) |
+'--------------------------------------------'"
 `;
 
 exports[`BuildComparator getAscii does not include filtered artifacts 1`] = `
-".------------------------------------.
-|       | 1234567 | 8901234 |   Δ0   |
-|-------|---------|---------|--------|
-| tacos | 45      | 45      | 0 (1%) |
-'------------------------------------'"
+".----------------------------------------.
+|       | 1234567 | 8901234 |     Δ0     |
+|-------|---------|---------|------------|
+| tacos | 45      | 43      | -2 (-4.4%) |
+'----------------------------------------'"
 `;
 
 exports[`BuildComparator getAscii gets an ASCII table 1`] = `
-".-----------------------------------------.
-|          | 1234567 | 8901234 |    Δ0    |
-|----------|---------|---------|----------|
-| burritos | 0       | 93      | 93 (1%)  |
-| churros  | 90      | 0       | -90 (1%) |
-| tacos    | 45      | 45      | 0 (1%)   |
-'-----------------------------------------'"
+".----------------------------------------------.
+|          | 1234567 | 8901234 |      Δ0       |
+|----------|---------|---------|---------------|
+| burritos | 0       | 93      | 93 (100.0%)   |
+| churros  | 90      | 0       | -90 (-100.0%) |
+| tacos    | 45      | 43      | -2 (-4.4%)    |
+'----------------------------------------------'"
 `;
 
 exports[`BuildComparator getCsv can filter rows 1`] = `
 ",1234567,8901234,Δ0
-burritos,0,93,93 (1%)"
+burritos,0,93,93 (100.0%)"
 `;
 
 exports[`BuildComparator getCsv does not include filtered artifacts 1`] = `
 ",1234567,8901234,Δ0
-tacos,45,45,0 (1%)"
+tacos,45,43,-2 (-4.4%)"
 `;
 
 exports[`BuildComparator getCsv gets a CSV formatted table 1`] = `
 ",1234567,8901234,Δ0
-burritos,0,93,93 (1%)
-churros,90,0,-90 (1%)
-tacos,45,45,0 (1%)"
+burritos,0,93,93 (100.0%)
+churros,90,0,-90 (-100.0%)
+tacos,45,43,-2 (-4.4%)"
 `;
 
 exports[`BuildComparator getSum gets a row of sums 1`] = `
@@ -137,15 +137,15 @@ Array [
     "type": "total",
   },
   Object {
-    "gzip": 138,
+    "gzip": 136,
     "stat": 592,
     "type": "total",
   },
   Object {
-    "gzip": 3,
-    "gzipPercent": 1.0222222222222221,
+    "gzip": 1,
+    "gzipPercent": 0.007407407407407408,
     "stat": 13,
-    "statPercent": 1.0224525043177892,
+    "statPercent": 0.022452504317789293,
     "type": "totalDelta",
   },
 ]
@@ -194,10 +194,10 @@ Array [
     },
     Object {
       "gzip": -90,
-      "gzipPercent": 1,
+      "gzipPercent": -1,
       "hashChanged": true,
       "stat": -456,
-      "statPercent": 1,
+      "statPercent": -1,
       "type": "delta",
     },
   ],
@@ -212,16 +212,16 @@ Array [
       "type": "total",
     },
     Object {
-      "gzip": 45,
+      "gzip": 43,
       "stat": 123,
       "type": "total",
     },
     Object {
-      "gzip": 0,
-      "gzipPercent": 1,
+      "gzip": -2,
+      "gzipPercent": -0.044444444444444446,
       "hashChanged": false,
       "stat": 0,
-      "statPercent": 1,
+      "statPercent": 0,
       "type": "delta",
     },
   ],
@@ -263,15 +263,15 @@ Array [
     "type": "total",
   },
   Object {
-    "gzip": 138,
+    "gzip": 136,
     "stat": 592,
     "type": "total",
   },
   Object {
-    "gzip": 3,
-    "gzipPercent": 1.0222222222222221,
+    "gzip": 1,
+    "gzipPercent": 0.007407407407407408,
     "stat": 13,
-    "statPercent": 1.0224525043177892,
+    "statPercent": 0.022452504317789293,
     "type": "totalDelta",
   },
 ]

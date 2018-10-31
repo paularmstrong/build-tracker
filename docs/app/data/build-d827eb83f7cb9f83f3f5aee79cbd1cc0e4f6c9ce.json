@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1541025891000,
+    "revision": {
+      "value": "d827eb83f7cb9f83f3f5aee79cbd1cc0e4f6c9ce",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/d827eb83f7cb9f83f3f5aee79cbd1cc0e4f6c9ce"
+    },
+    "branch": { "value": "master" },
+    "commit": "Merge branch 'parmstrong/fix-percent-deltas'"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "e19fc9d9dc40c64ac92c7044b99554f9",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1352
+    },
+    "main": { "hash": "335568ccceb920cb9bf45c06e9ba9389", "name": "main", "stat": 81846, "gzip": 18061 },
+    "runtime": { "hash": "6ccb3f53cc907a4a2fd3890fc5c81290", "name": "runtime", "stat": 1476, "gzip": 832 },
+    "vendor": { "hash": "f3d4cabc2144fedd2ec96ff11cd6395d", "name": "vendor", "stat": 415228, "gzip": 120536 }
+  }
+}

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@build-tracker/builds": "^0.1.0",
-    "@build-tracker/comparator": "^0.2.1",
+    "@build-tracker/comparator": "^0.2.2",
     "@build-tracker/types": "^0.1.0",
     "ascii-table": "^0.0.9",
     "d3-array": "^1.2.0",
@@ -45,10 +45,7 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "proxy": "http://localhost:3000/",
-  "files": [
-    "dist/",
-    "README.md"
-  ],
+  "files": ["dist/", "README.md"],
   "devDependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",

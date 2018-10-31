@@ -32,5 +32,8 @@
     "babel-watch": "^2.0.7",
     "flow-copy-source": "^1.2.1"
   },
-  "files": ["dist/*", "README.md"]
+  "files": [
+    "dist/*",
+    "README.md"
+  ]
 }

@@ -48,9 +48,11 @@ const getDelta = (key: 'stat' | 'gzip', baseArtifact: BT$Artifact, changeArtifac
       return 0;
     }
     return -baseArtifact[key];
+  } else if (!baseArtifact) {
+    return changeArtifact[key];
   }
 
-  return changeArtifact[key] - (baseArtifact ? baseArtifact[key] : 0);
+  return changeArtifact[key] - baseArtifact[key];
 };
 
 const getPercentDelta = (key: 'stat' | 'gzip', baseArtifact: BT$Artifact, changeArtifact: BT$Artifact): number => {
@@ -58,10 +60,23 @@ const getPercentDelta = (key: 'stat' | 'gzip', baseArtifact: BT$Artifact, change
     if (!baseArtifact) {
       return 0;
     }
+    return -1;
+  }
+
+  if (!baseArtifact) {
     return 1;
   }
 
-  return !baseArtifact ? 1 : changeArtifact[key] / baseArtifact[key];
+  const base = baseArtifact[key];
+  const changed = changeArtifact[key];
+  if (changed > base) {
+    const delta = changed - base;
+    return delta / base;
+  } else if (changed < base) {
+    const delta = base - changed;
+    return -(delta / base);
+  }
+  return 0;
 };
 
 const getSizeDeltas = (baseArtifact: BT$Artifact, changeArtifact: BT$Artifact) => {
@@ -95,13 +110,18 @@ const getTotalSizeDeltas = (
 ): BT$TotalDeltaCellType => {
   const baseSize = getTotalArtifactSizes(baseBuild, artifactFilters);
   const changeSize = getTotalArtifactSizes(changeBuild, artifactFilters);
+  const hash = '';
+  const name = 'total';
+
+  const baseFauxArtifact = { ...baseSize, hash, name };
+  const changeFauxArtifact = { ...changeSize, hash, name };
 
   return {
     type: CellType.TOTAL_DELTA,
-    stat: baseSize.stat - changeSize.stat,
-    statPercent: baseSize.stat / changeSize.stat,
-    gzip: baseSize.gzip - changeSize.gzip,
-    gzipPercent: baseSize.gzip / changeSize.gzip
+    stat: getDelta('stat', baseFauxArtifact, changeFauxArtifact),
+    statPercent: getPercentDelta('stat', baseFauxArtifact, changeFauxArtifact),
+    gzip: getDelta('gzip', baseFauxArtifact, changeFauxArtifact),
+    gzipPercent: getPercentDelta('gzip', baseFauxArtifact, changeFauxArtifact)
   };
 };
 
@@ -114,7 +134,7 @@ const defaultArtifactSorter = (rowA, rowB): number => {
 const defaultFormatRevision = (cell: BT$RevisionCellType): string => cell.revision;
 const defaultFormatRevisionDelta = (cell: BT$RevisionDeltaCellType): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: BT$TotalCellType): string => `${cell.gzip}`;
-const defaultFormatDelta = (cell: BT$DeltaCellType): string => `${cell.gzip} (${cell.gzipPercent}%)`;
+const defaultFormatDelta = (cell: BT$DeltaCellType): string => `${cell.gzip} (${(cell.gzipPercent * 100).toFixed(1)}%)`;
 const defaultRowFilter = (row: Array<BT$BodyCellType>): boolean => true;
 
 const emptyArray = [];
@@ -153,25 +173,25 @@ export default class BuildComparator {
 
   get buildDeltas(): Array<BT$BuildDelta> {
     if (!this._buildDeltas) {
-      this._buildDeltas = this.builds.map((build, i) => {
+      this._buildDeltas = this.builds.map((changeBuild, i) => {
         const totalDeltas = [];
         const artifactDeltas = this.builds
-          .map((compareBuild, j) => {
+          .map((baseBuild, j) => {
             if (j >= i) {
               return null;
             }
 
-            totalDeltas[j] = getTotalSizeDeltas(build, compareBuild, this._artifactFilters);
+            totalDeltas[j] = getTotalSizeDeltas(baseBuild, changeBuild, this._artifactFilters);
 
             return this.artifactNames.reduce((memo, name) => {
-              const buildArtifact = build.artifacts[name];
-              const compareArtifact = compareBuild.artifacts[name];
-              const sizeDeltas = getSizeDeltas(compareArtifact, buildArtifact);
+              const baseArtifact = baseBuild.artifacts[name];
+              const changeArtifact = changeBuild.artifacts[name];
+              const sizeDeltas = getSizeDeltas(baseArtifact, changeArtifact);
               return {
                 ...memo,
                 [name]: {
                   ...sizeDeltas,
-                  hashChanged: !compareArtifact || !buildArtifact || compareArtifact.hash !== buildArtifact.hash
+                  hashChanged: !baseArtifact || !changeArtifact || baseArtifact.hash !== changeArtifact.hash
                 }
               };
             }, {});
@@ -179,7 +199,7 @@ export default class BuildComparator {
           .filter(Boolean);
 
         return {
-          meta: build.meta,
+          meta: changeBuild.meta,
           artifactDeltas,
           deltas: totalDeltas
         };
@@ -257,16 +277,16 @@ export default class BuildComparator {
     return [
       { type: CellType.TEXT, text: 'Sum' },
       ...flatten(
-        this.builds.map((build, i) => [
-          getTotalArtifactSizes(build, filters),
+        this.builds.map((changeBuild, i) => [
+          getTotalArtifactSizes(changeBuild, filters),
           ...flatten(
             this.builds
-              .map((compareBuild, j) => {
+              .map((baseBuild, j) => {
                 if (j >= i) {
                   return null;
                 }
 
-                return getTotalSizeDeltas(build, compareBuild, filters);
+                return getTotalSizeDeltas(baseBuild, changeBuild, filters);
               })
               .filter(Boolean)
           )

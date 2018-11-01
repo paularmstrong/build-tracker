@@ -19,11 +19,11 @@ type Props = {
 };
 
 const greenScale = scaleLinear()
-  .domain([-1, 0])
+  .domain([0, -1])
   .interpolate(interpolateHcl)
   .range([rgb('#d0f8d7'), rgb('#55e86e')]);
 const redScale = scaleLinear()
-  .domain([1, 0])
+  .domain([0, 1])
   .interpolate(interpolateHcl)
   .range([rgb('#fde2e1'), rgb('#f7635b')]);
 

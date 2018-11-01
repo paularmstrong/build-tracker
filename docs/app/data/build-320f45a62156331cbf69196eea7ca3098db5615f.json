@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1541031311000,
+    "revision": {
+      "value": "320f45a62156331cbf69196eea7ca3098db5615f",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/320f45a62156331cbf69196eea7ca3098db5615f"
+    },
+    "branch": { "value": "master" },
+    "commit": "Merge branch 'parmstrong/fixes'"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "dda16ad8c315388ea5f3e3b100a90fa9",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1354
+    },
+    "main": { "hash": "7d1813f905154a834f6360f5181d94b9", "name": "main", "stat": 82910, "gzip": 18063 },
+    "runtime": { "hash": "16701dd4c973311ee53103b576b3abfa", "name": "runtime", "stat": 1476, "gzip": 830 },
+    "vendor": { "hash": "4123ea6b517a338707f8f431658ecd02", "name": "vendor", "stat": 415230, "gzip": 120532 }
+  }
+}

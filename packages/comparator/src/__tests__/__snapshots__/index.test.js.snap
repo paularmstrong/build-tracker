@@ -137,15 +137,15 @@ Array [
     "type": "total",
   },
   Object {
-    "gzip": 136,
-    "stat": 592,
+    "gzip": 43,
+    "stat": 123,
     "type": "total",
   },
   Object {
-    "gzip": 1,
-    "gzipPercent": 0.007407407407407408,
-    "stat": 13,
-    "statPercent": 0.022452504317789293,
+    "gzip": -92,
+    "gzipPercent": -0.6814814814814815,
+    "stat": -456,
+    "statPercent": -0.7875647668393783,
     "type": "totalDelta",
   },
 ]

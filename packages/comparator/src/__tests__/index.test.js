@@ -89,6 +89,22 @@ describe('BuildComparator', () => {
       const sum = comparator.getSum(['churros', 'tacos']);
       expect(sum).toMatchSnapshot();
     });
+
+    test('filters on exact names', () => {
+      const comparator = new BuildComparator({
+        builds: [
+          {
+            meta: { revision: '1234567', timestamp: 1234567 },
+            artifacts: {
+              'i18n/en': { name: 'i18n/en', hash: 'abc', stat: 456, gzip: 90 },
+              'i18n/en-GB': { name: 'i18n/en-GB', hash: 'abc', stat: 123, gzip: 45 }
+            }
+          }
+        ]
+      });
+      const sum = comparator.getSum(['i18n/en']);
+      expect(sum).toMatchSnapshot();
+    });
   });
 
   describe('getAscii', () => {

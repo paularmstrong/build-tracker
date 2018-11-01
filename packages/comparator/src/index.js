@@ -273,7 +273,7 @@ export default class BuildComparator {
   }
 
   getSum(artifactNames: Array<string>): Array<BT$BodyCellType> {
-    const filters = [new RegExp(`^((?!(${artifactNames.join('|')})).)*$`)];
+    const filters = [new RegExp(`^(?!(${artifactNames.join('|')})$).*$`)];
     return [
       { type: CellType.TEXT, text: 'Sum' },
       ...flatten(

@@ -125,6 +125,20 @@ churros,90,0,-90 (-100.0%)
 tacos,45,43,-2 (-4.4%)"
 `;
 
+exports[`BuildComparator getSum filters on exact names 1`] = `
+Array [
+  Object {
+    "text": "Sum",
+    "type": "text",
+  },
+  Object {
+    "gzip": 90,
+    "stat": 456,
+    "type": "total",
+  },
+]
+`;
+
 exports[`BuildComparator getSum gets a row of sums 1`] = `
 Array [
   Object {

@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "timestamp": 1541095201000,
+    "revision": {
+      "value": "1d27840a2f1c5f8619393071f3e62cbcc7b0c2f2",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/1d27840a2f1c5f8619393071f3e62cbcc7b0c2f2"
+    },
+    "branch": { "value": "master" },
+    "commit": "v0.2.4"
+  },
+  "artifacts": {
+    "service-worker": {
+      "hash": "812f480a30926f6bd83dc187b054f1c7",
+      "name": "service-worker",
+      "stat": 3234,
+      "gzip": 1352
+    },
+    "main": { "hash": "6b0a11bd26825b3012971b376bf3938d", "name": "main", "stat": 82909, "gzip": 18060 },
+    "runtime": { "hash": "e03e38aa1581509c1f491c669ae671c5", "name": "runtime", "stat": 1476, "gzip": 830 },
+    "vendor": { "hash": "4123ea6b517a338707f8f431658ecd02", "name": "vendor", "stat": 415230, "gzip": 120532 }
+  }
+}

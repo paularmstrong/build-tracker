@@ -3,11 +3,9 @@
   "version": "0.2.4",
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "commands": {
+  "command": {
     "publish": {
-      "ignore": [
-        "*.md"
-      ]
+      "ignoreChanges": ["*.md"]
     }
   }
 }

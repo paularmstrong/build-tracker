@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   monthHeader: {
     flexGrow: 1,
     flexShrink: 0,
-    flexBasis: `${5 / 7 * 100}%`
+    flexBasis: `${(5 / 7) * 100}%`
   },
   monthText: {
     textAlign: 'center'
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   day: {
     flexGrow: 1,
-    flexBasis: `${1 / 7 * 100}%`,
+    flexBasis: `${(1 / 7) * 100}%`,
     cursor: 'pointer',
     paddingHorizontal: theme.spaceXXSmall,
     paddingVertical: theme.spaceXXSmall

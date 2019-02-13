@@ -54,9 +54,8 @@ const getMouseInformation = (
     xValue = domain.reduce((prev, curr, i) => {
       return Math.abs(xScale(curr) - xPos) > Math.abs(xScale(prev) - xPos) ? prev : curr;
     }, domain[0]);
-    xIndex = builds.findIndex(
-      build =>
-        typeof xValue === 'string' ? BuildMeta.getRevision(build) === xValue : BuildMeta.getTimestamp(build) === xValue
+    xIndex = builds.findIndex(build =>
+      typeof xValue === 'string' ? BuildMeta.getRevision(build) === xValue : BuildMeta.getTimestamp(build) === xValue
     );
     hoveredBuild = builds[xIndex];
   }
@@ -380,7 +379,11 @@ export default class Chart extends React.Component<Props, State> {
   }
 
   _handleLayout = (event: Object) => {
-    const { nativeEvent: { layout: { width, height } } } = event;
+    const {
+      nativeEvent: {
+        layout: { width, height }
+      }
+    } = event;
     if (width !== this.state.width) {
       this.setState({ height: Math.min(height, MAX_HEIGHT), width });
     }

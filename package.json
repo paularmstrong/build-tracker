@@ -3,22 +3,24 @@
   "private": true,
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "babel-eslint": "^8.2.2",
     "babel-jest": "^22.4.1",
-    "eslint": "^4.18.1",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-flowtype": "^2.46.1",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-jest": "^21.12.2",
-    "eslint-plugin-json": "^1.2.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-markdown": "^1.0.0-beta.6",
-    "eslint-plugin-prettier": "^2.6.0",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-react": "^7.7.0",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-flowtype": "^3.4.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.2.2",
+    "eslint-plugin-json": "^1.4.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-markdown": "^1.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.12.4",
     "flow-bin": "^0.68.0",
     "flow-typed": "^2.4.0",
     "gh-pages": "^1.1.0",
@@ -27,7 +29,7 @@
     "jest-environment-jsdom": "^22.4.1",
     "lerna": "^3.4.3",
     "lint-staged": "^6.0.1",
-    "prettier": "^1.10.2",
+    "prettier": "^1.16.4",
     "rimraf": "^2.6.2"
   },
   "scripts": {
@@ -45,8 +47,15 @@
     "test:ci": "jest --ci"
   },
   "lint-staged": {
-    "*.js": ["lint", "jest", "git add"],
-    "*.{js,json,css,md}": ["prettier --write", "git add"]
+    "*.js": [
+      "lint",
+      "jest",
+      "git add"
+    ],
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "dependencies": {}
 }

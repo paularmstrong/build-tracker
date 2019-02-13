@@ -23,7 +23,9 @@ const emptyArray = [];
 const emptyObject = {};
 
 const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames: Array<string>): Array<string> => {
-  const { match: { params } } = props;
+  const {
+    match: { params }
+  } = props;
   const { artifactNames } = params;
   if (!artifactNames) {
     return allArtifactNames;
@@ -39,7 +41,9 @@ const _getActiveArtifactNames = (props: { match: Match }, allArtifactNames: Arra
 };
 
 const _getCompareBuilds = (props: { match: Match }, builds: Array<BT$Build>): Array<BT$Build> => {
-  const { match: { params } } = props;
+  const {
+    match: { params }
+  } = props;
   const { compareRevisions = '' } = params;
 
   const buildRevisions = compareRevisions ? compareRevisions.split('+') : emptyArray;
@@ -214,7 +218,11 @@ class App extends Component<Props, State> {
   }
 
   _fetchData(options: {} = {}) {
-    const { match: { params: { revisions } } } = this.props;
+    const {
+      match: {
+        params: { revisions }
+      }
+    } = this.props;
     const opts = { ...options };
     if (revisions) {
       opts.revisions = revisions.split(',');
@@ -320,11 +328,18 @@ class App extends Component<Props, State> {
   };
 
   _updateUrl = () => {
-    const { location: { pathname }, match: { params: { revisions } } } = this.props;
+    const {
+      location: { pathname },
+      match: {
+        params: { revisions }
+      }
+    } = this.props;
     const { activeArtifactNames, compareBuilds, filteredArtifactNames } = this.state;
     const urlArtifacts =
       activeArtifactNames.length !== filteredArtifactNames.length
-        ? activeArtifactNames.length === 0 ? ['None'] : activeArtifactNames
+        ? activeArtifactNames.length === 0
+          ? ['None']
+          : activeArtifactNames
         : ['All'];
     const safeUrlArtifacts = urlArtifacts.map(name => window.encodeURIComponent(name));
     const urlRevisions = compareBuilds.map((b: BT$Build) => formatSha(BuildMeta.getRevision(b))).sort();

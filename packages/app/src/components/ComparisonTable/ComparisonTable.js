@@ -358,7 +358,9 @@ export default class ComparisonTable extends React.Component<Props, State> {
   };
 
   _getFilteredData() {
-    const { config: { thresholds } } = this.context;
+    const {
+      config: { thresholds }
+    } = this.context;
     const { comparator } = this.state;
 
     if (!thresholds) {
@@ -412,7 +414,9 @@ export default class ComparisonTable extends React.Component<Props, State> {
   };
 
   _handleCopyToAscii = () => {
-    const { config: { thresholds } } = this.context;
+    const {
+      config: { thresholds }
+    } = this.context;
     const { activeArtifactNames, artifactNames, valueType } = this.props;
     const { comparator, showAboveThresholdOnly, showDeselectedArtifacts } = this.state;
 

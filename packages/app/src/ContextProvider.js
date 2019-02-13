@@ -25,7 +25,9 @@ export default class ContextProvider extends React.Component<ContextProps> {
   };
 
   getChildContext() {
-    const { config: { artifactFilters, ...config } } = this.props;
+    const {
+      config: { artifactFilters, ...config }
+    } = this.props;
     const regexFilters = artifactFilters
       ? artifactFilters.map(filter => {
           if (typeof filter === 'string') {

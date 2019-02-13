@@ -34,7 +34,11 @@ export default class DeltaCell extends PureComponent<Props> {
     const backgroundColor =
       gzipPercent > 0
         ? redScale(gzipPercent)
-        : gzipPercent === 0 ? (hashChanged ? '#fff9d6' : 'transparent') : greenScale(gzipPercent);
+        : gzipPercent === 0
+        ? hashChanged
+          ? '#fff9d6'
+          : 'transparent'
+        : greenScale(gzipPercent);
     const percentChange = (valueType === 'gzip' ? gzipPercent : statPercent) * 100;
     return (
       <Td

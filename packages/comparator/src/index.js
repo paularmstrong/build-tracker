@@ -218,15 +218,17 @@ export default class BuildComparator {
           const revisionIndex = this.builds.findIndex(build => BuildMeta.getRevision(build) === revision);
           return [
             { type: CellType.REVISION_HEADER, revision },
-            ...buildDelta.artifactDeltas.map((delta, i): BT$RevisionDeltaCellType => {
-              const deltaIndex = buildDelta.artifactDeltas.length - 1 - i;
-              return {
-                type: CellType.REVISION_DELTA_HEADER,
-                deltaIndex,
-                againstRevision: BuildMeta.getRevision(this.builds[revisionIndex - deltaIndex - 1]),
-                revision
-              };
-            })
+            ...buildDelta.artifactDeltas.map(
+              (delta, i): BT$RevisionDeltaCellType => {
+                const deltaIndex = buildDelta.artifactDeltas.length - 1 - i;
+                return {
+                  type: CellType.REVISION_DELTA_HEADER,
+                  deltaIndex,
+                  againstRevision: BuildMeta.getRevision(this.builds[revisionIndex - deltaIndex - 1]),
+                  revision
+                };
+              }
+            )
           ];
         })
       )
@@ -247,19 +249,19 @@ export default class BuildComparator {
 
   get matrixBody(): Array<Array<BT$BodyCellType>> {
     return this.artifactNames.sort(this._artifactSorter).map(artifactName => {
-      const cells = this.buildDeltas.map(({ artifactDeltas }, i): Array<
-        BT$TextCellType | BT$TotalCellType | BT$DeltaCellType
-      > => {
-        const artifact = this.builds[i].artifacts[artifactName];
-        return [
-          {
-            type: CellType.TOTAL,
-            stat: artifact ? artifact.stat : 0,
-            gzip: artifact ? artifact.gzip : 0
-          },
-          ...artifactDeltas.map(delta => delta[artifactName])
-        ];
-      });
+      const cells = this.buildDeltas.map(
+        ({ artifactDeltas }, i): Array<BT$TextCellType | BT$TotalCellType | BT$DeltaCellType> => {
+          const artifact = this.builds[i].artifacts[artifactName];
+          return [
+            {
+              type: CellType.TOTAL,
+              stat: artifact ? artifact.stat : 0,
+              gzip: artifact ? artifact.gzip : 0
+            },
+            ...artifactDeltas.map(delta => delta[artifactName])
+          ];
+        }
+      );
       return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
     });
   }
@@ -316,20 +318,24 @@ export default class BuildComparator {
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
     rowFilter: RowFilter = defaultRowFilter
   ): Array<Array<string>> {
-    return this.matrixBody.filter(rowFilter).map((row): Array<string> => {
-      return row.map((cell): string => {
-        switch (cell.type) {
-          case CellType.ARTIFACT:
-            return cell.text || '';
-          case CellType.DELTA:
-            return formatDelta(cell);
-          case CellType.TOTAL:
-            return formatTotal(cell);
-          default:
-            return '';
-        }
-      });
-    });
+    return this.matrixBody.filter(rowFilter).map(
+      (row): Array<string> => {
+        return row.map(
+          (cell): string => {
+            switch (cell.type) {
+              case CellType.ARTIFACT:
+                return cell.text || '';
+              case CellType.DELTA:
+                return formatDelta(cell);
+              case CellType.TOTAL:
+                return formatTotal(cell);
+              default:
+                return '';
+            }
+          }
+        );
+      }
+    );
   }
 
   getAscii({

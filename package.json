@@ -6,5 +6,33 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": ["src/*"]
+  "workspaces": [
+    "src/*"
+  ],
+  "scripts": {
+    "lint": "eslint . --cache --ext=js,json,md"
+  },
+  "husky": {
+    "hooks": {
+      "post-merge": "yarn",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": [
+      "yarn lint",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.13.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-json": "^1.4.0",
+    "eslint-plugin-markdown": "^1.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.3"
+  }
 }

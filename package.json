@@ -10,7 +10,10 @@
     "src/*"
   ],
   "scripts": {
-    "lint": "eslint . --cache --ext=js,json,md"
+    "lint": "yarn lint:cmd --fix",
+    "lint:cmd": "eslint . --ext '.ts,.tsx,.js,.json,.md' --cache",
+    "lint:ci": "yarn lint:cmd",
+    "tsc": "tsc"
   },
   "husky": {
     "hooks": {
@@ -26,13 +29,17 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
-    "babel-eslint": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^1.3.0",
+    "@typescript-eslint/parser": "^1.3.0",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-json": "^1.4.0",
     "eslint-plugin-markdown": "^1.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "husky": "^1.3.1",
-    "lint-staged": "^8.1.3"
+    "lerna": "^3.11.1",
+    "lint-staged": "^8.1.3",
+    "prettier": "^1.16.4",
+    "typescript": "^3.3.3"
   }
 }

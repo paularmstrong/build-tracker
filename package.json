@@ -1,0 +1,10 @@
+{
+  "name": "build-tracker",
+  "version": "1.0.0",
+  "description": "Monorepo for @build-tracker/* packages",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": ["src/*"]
+}

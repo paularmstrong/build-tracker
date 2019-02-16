@@ -1,0 +1,13 @@
+{
+  "name": "@build-tracker/types",
+  "version": "1.0.0",
+  "description": "Build Tracker typescript types",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "license": "MIT",
+  "module": "index.ts",
+  "types": "index.ts",
+  "dependencies": {
+    "ascii-table": "^0.0.9"
+  }
+}

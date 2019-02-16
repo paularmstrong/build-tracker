@@ -1,0 +1,15 @@
+{
+  "name": "@build-tracker/build",
+  "version": "1.0.0",
+  "description": "Build Tracker tools for interacting with individual Builds",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "license": "MIT",
+  "main": "lib",
+  "module": "index.ts",
+  "types": "index.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@build-tracker/types": "1.0.0"
+  }
+}

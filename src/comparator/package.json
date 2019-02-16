@@ -1,0 +1,17 @@
+{
+  "name": "comparator",
+  "version": "1.0.0",
+  "description": "Build Tracker tool for comparing two or more builds",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "license": "MIT",
+  "main": "lib",
+  "module": "index.ts",
+  "dependencies": {
+    "ascii-table": "^0.0.9"
+  },
+  "devDependencies": {
+    "@build-tracker/build": "1.0.0",
+    "@build-tracker/types": "1.0.0"
+  }
+}

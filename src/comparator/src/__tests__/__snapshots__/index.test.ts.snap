@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildComparator artifactFilters filters artifact sizes from the totals 1`] = `
+Array [
+  Object {
+    "text": "All",
+    "type": "artifact",
+  },
+  Object {
+    "gzip": 45,
+    "stat": 123,
+    "type": "total",
+  },
+  Object {
+    "gzip": 43,
+    "stat": 123,
+    "type": "total",
+  },
+  Object {
+    "againstRevision": "1234567",
+    "sizes": Object {
+      "gzip": -2,
+      "gzipPercent": -0.044444444444444446,
+      "stat": 0,
+      "statPercent": 0,
+    },
+    "type": "totalDelta",
+  },
+]
+`;
+
+exports[`BuildComparator getAscii can filter rows 1`] = `
+".----------------------------------------------.
+|          | 1234567 | 8901234 |      Δ1       |
+|----------|---------|---------|---------------|
+| burritos | 0       | 93      | 93 (100.0%)   |
+| churros  | 90      | 0       | -90 (-100.0%) |
+'----------------------------------------------'"
+`;
+
+exports[`BuildComparator getAscii does not include filtered artifacts 1`] = `
+".----------------------------------------.
+|       | 1234567 | 8901234 |     Δ1     |
+|-------|---------|---------|------------|
+| tacos | 45      | 43      | -2 (-4.4%) |
+'----------------------------------------'"
+`;
+
+exports[`BuildComparator getAscii gets an ASCII table 1`] = `
+".----------------------------------------------.
+|          | 1234567 | 8901234 |      Δ1       |
+|----------|---------|---------|---------------|
+| burritos | 0       | 93      | 93 (100.0%)   |
+| churros  | 90      | 0       | -90 (-100.0%) |
+| tacos    | 45      | 43      | -2 (-4.4%)    |
+'----------------------------------------------'"
+`;
+
+exports[`BuildComparator getCsv can filter rows 1`] = `
+",1234567,8901234,Δ1
+burritos,0,93,93 (100.0%)
+churros,90,0,-90 (-100.0%)"
+`;
+
+exports[`BuildComparator getCsv does not include filtered artifacts 1`] = `
+",1234567,8901234,Δ1
+tacos,45,43,-2 (-4.4%)"
+`;
+
+exports[`BuildComparator getCsv gets a CSV formatted table 1`] = `
+",1234567,8901234,Δ1
+burritos,0,93,93 (100.0%)
+churros,90,0,-90 (-100.0%)
+tacos,45,43,-2 (-4.4%)"
+`;
+
+exports[`BuildComparator getSum filters on exact names 1`] = `
+Array [
+  Object {
+    "text": "Sum",
+    "type": "text",
+  },
+  Object {
+    "sizes": Object {
+      "gzip": 90,
+      "stat": 456,
+    },
+    "type": "total",
+  },
+]
+`;
+
+exports[`BuildComparator getSum gets a row of sums 1`] = `
+Array [
+  Object {
+    "text": "Sum",
+    "type": "text",
+  },
+  Object {
+    "sizes": Object {
+      "gzip": 135,
+      "stat": 579,
+    },
+    "type": "total",
+  },
+  Object {
+    "againstRevision": "1234567",
+    "sizes": Object {
+      "gzip": -2,
+      "gzipPercent": -0.044444444444444446,
+      "stat": 0,
+      "statPercent": 0,
+    },
+  },
+  Object {
+    "sizes": Object {
+      "gzip": 43,
+      "stat": 123,
+    },
+    "type": "total",
+  },
+  Object {
+    "againstRevision": "1234567",
+    "sizes": Object {
+      "gzip": -2,
+      "gzipPercent": -0.044444444444444446,
+      "stat": 0,
+      "statPercent": 0,
+    },
+  },
+]
+`;
+
+exports[`BuildComparator matrix includes a body of all artifacts 1`] = `
+Array [
+  Array [
+    Object {
+      "text": "burritos",
+      "type": "artifact",
+    },
+    Object {
+      "hash": "",
+      "name": "",
+      "sizes": Object {},
+      "type": "total",
+    },
+    Object {
+      "hash": "def",
+      "name": "burritos",
+      "sizes": Object {
+        "gzip": 93,
+        "stat": 469,
+      },
+      "type": "total",
+    },
+    Object {
+      "hashChanged": true,
+      "name": "burritos",
+      "sizes": Object {
+        "gzip": 93,
+        "stat": 469,
+      },
+      "type": "delta",
+    },
+  ],
+  Array [
+    Object {
+      "text": "churros",
+      "type": "artifact",
+    },
+    Object {
+      "hash": "abc",
+      "name": "churros",
+      "sizes": Object {
+        "gzip": 90,
+        "stat": 456,
+      },
+      "type": "total",
+    },
+    Object {
+      "hash": "",
+      "name": "",
+      "sizes": Object {},
+      "type": "total",
+    },
+    Object {
+      "hashChanged": true,
+      "name": "churros",
+      "sizes": Object {
+        "gzip": -90,
+        "gzipPercent": -1,
+        "stat": -456,
+        "statPercent": -1,
+      },
+      "type": "delta",
+    },
+  ],
+  Array [
+    Object {
+      "text": "tacos",
+      "type": "artifact",
+    },
+    Object {
+      "hash": "abc",
+      "name": "tacos",
+      "sizes": Object {
+        "gzip": 45,
+        "stat": 123,
+      },
+      "type": "total",
+    },
+    Object {
+      "hash": "abc",
+      "name": "tacos",
+      "sizes": Object {
+        "gzip": 43,
+        "stat": 123,
+      },
+      "type": "total",
+    },
+    Object {
+      "hashChanged": false,
+      "name": "tacos",
+      "sizes": Object {
+        "gzip": -2,
+        "gzipPercent": -0.044444444444444446,
+        "stat": 0,
+        "statPercent": 0,
+      },
+      "type": "delta",
+    },
+  ],
+]
+`;
+
+exports[`BuildComparator matrix includes a header 1`] = `
+Array [
+  Object {
+    "text": "",
+    "type": "text",
+  },
+  Object {
+    "revision": "1234567",
+    "type": "revision",
+  },
+  Object {
+    "revision": "8901234",
+    "type": "revision",
+  },
+  Object {
+    "againstRevision": "8901234",
+    "deltaIndex": 1,
+    "revision": "8901234",
+    "type": "revisionDelta",
+  },
+]
+`;
+
+exports[`BuildComparator matrix includes a total 1`] = `
+Array [
+  Object {
+    "text": "All",
+    "type": "artifact",
+  },
+  Object {
+    "gzip": 135,
+    "stat": 579,
+    "type": "total",
+  },
+  Object {
+    "gzip": 136,
+    "stat": 592,
+    "type": "total",
+  },
+  Object {
+    "againstRevision": "1234567",
+    "sizes": Object {
+      "gzip": 1,
+      "gzipPercent": 0.007407407407407408,
+      "stat": 13,
+      "statPercent": 0.022452504317789293,
+    },
+    "type": "totalDelta",
+  },
+]
+`;

@@ -7,7 +7,8 @@ module.exports = {
         targets: { safari: '12', chrome: '70', firefox: '64', edge: '17', node: '8' },
         useBuiltIns: false
       }
-    ]
+    ],
+    '@babel/preset-typescript'
   ],
   babelrcRoots: ['.', './src/*']
 };

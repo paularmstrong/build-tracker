@@ -43,27 +43,27 @@ describe('BuildComparator', () => {
   describe('matrix', () => {
     test('includes a header', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrix.header).toEqual(comparator.matrixHeader);
-      expect(comparator.matrix.header).toMatchSnapshot();
+      expect(comparator.matrixHeader).toEqual(comparator.matrixHeader);
+      expect(comparator.matrixHeader).toMatchSnapshot();
     });
 
     test('includes a total', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrix.total).toEqual(comparator.matrixTotal);
-      expect(comparator.matrix.total).toMatchSnapshot();
+      expect(comparator.matrixTotal).toEqual(comparator.matrixTotal);
+      expect(comparator.matrixTotal).toMatchSnapshot();
     });
 
     test('includes a body of all artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrix.body).toEqual(comparator.matrixBody);
-      expect(comparator.matrix.body).toMatchSnapshot();
+      expect(comparator.matrixBody).toEqual(comparator.matrixBody);
+      expect(comparator.matrixBody).toMatchSnapshot();
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.matrix.body).toHaveLength(1);
+      expect(comparator.matrixBody).toHaveLength(1);
       // @ts-ignore
-      expect(comparator.matrix.body[0][0].text).toEqual('tacos');
+      expect(comparator.matrixBody[0][0].text).toEqual('tacos');
     });
   });
 
@@ -88,35 +88,17 @@ describe('BuildComparator', () => {
     });
   });
 
-  describe('getAscii', () => {
-    test('gets an ASCII table', () => {
+  describe('toJSON', () => {
+    test('gets a JSON-formatted representation', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.getAscii()).toMatchSnapshot();
-    });
-
-    test('can filter rows', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      const rowFilter = (row): boolean => {
-        return row.some(cell => {
-          if (cell.sizes && 'gzip' in cell.sizes) {
-            return cell.sizes.gzip > 50;
-          }
-          return false;
-        });
-      };
-      expect(comparator.getAscii({ rowFilter })).toMatchSnapshot();
-    });
-
-    test('does not include filtered artifacts', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.getAscii()).toMatchSnapshot();
+      expect(comparator.toJSON()).toMatchSnapshot();
     });
   });
 
-  describe('getCsv', () => {
-    test('gets a CSV formatted table', () => {
+  describe('toMarkdown', () => {
+    test('gets a markdown-formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.getCsv()).toMatchSnapshot();
+      expect(comparator.toMarkdown()).toMatchSnapshot();
     });
 
     test('can filter rows', () => {
@@ -129,12 +111,37 @@ describe('BuildComparator', () => {
           return false;
         });
       };
-      expect(comparator.getCsv({ rowFilter })).toMatchSnapshot();
+      expect(comparator.toMarkdown({ rowFilter })).toMatchSnapshot();
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.getCsv()).toMatchSnapshot();
+      expect(comparator.toMarkdown()).toMatchSnapshot();
+    });
+  });
+
+  describe('toCsv', () => {
+    test('gets a CSV formatted table', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toCsv()).toMatchSnapshot();
+    });
+
+    test('can filter rows', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      const rowFilter = (row): boolean => {
+        return row.some(cell => {
+          if (cell.sizes && 'gzip' in cell.sizes) {
+            return cell.sizes.gzip > 50;
+          }
+          return false;
+        });
+      };
+      expect(comparator.toCsv({ rowFilter })).toMatchSnapshot();
+    });
+
+    test('does not include filtered artifacts', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
+      expect(comparator.toCsv()).toMatchSnapshot();
     });
   });
 });

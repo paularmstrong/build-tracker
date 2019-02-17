@@ -1,5 +1,5 @@
 {
-  "name": "comparator",
+  "name": "@build-tracker/comparator",
   "version": "1.0.0",
   "description": "Build Tracker tool for comparing two or more builds",
   "author": "Paul Armstrong <paul@spaceyak.com>",
@@ -8,7 +8,7 @@
   "main": "lib",
   "module": "index.ts",
   "dependencies": {
-    "ascii-table": "^0.0.9"
+    "markdown-table": "^1.1.2"
   },
   "devDependencies": {
     "@build-tracker/build": "1.0.0",

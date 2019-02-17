@@ -1,20 +1,69 @@
-import * as AsciiTable from 'ascii-table';
+import { ArtifactFilters } from '@build-tracker/types';
 import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
+import markdownTable from 'markdown-table';
 
-import {
-  ArtifactCell,
-  ArtifactFilters,
-  BodyCell,
-  CellType,
-  ComparisonMatrix,
-  DeltaCell,
-  HeaderCell,
-  RevisionCell,
-  RevisionDeltaCell,
-  TextCell,
-  TotalCell
-} from '@build-tracker/types';
+export interface ArtifactSizes {
+  [key: string]: number;
+}
+
+export enum CellType {
+  TEXT = 'text',
+  DELTA = 'delta',
+  TOTAL = 'total',
+  TOTAL_DELTA = 'totalDelta',
+  REVISION = 'revision',
+  REVISION_DELTA = 'revisionDelta',
+  ARTIFACT = 'artifact'
+}
+
+export interface TextCell {
+  type: CellType.TEXT;
+  text: string;
+}
+
+export interface DeltaCell {
+  type: CellType.DELTA;
+  sizes: ArtifactSizes;
+  name?: string;
+  hashChanged: boolean;
+}
+
+export interface TotalCell {
+  type: CellType.TOTAL;
+  sizes: ArtifactSizes;
+}
+
+export interface TotalDeltaCell {
+  type: CellType.TOTAL_DELTA;
+  sizes: ArtifactSizes;
+}
+
+export interface RevisionCell {
+  type: CellType.REVISION;
+  revision: string;
+}
+
+export interface RevisionDeltaCell {
+  type: CellType.REVISION_DELTA;
+  revision: string;
+  deltaIndex: number;
+  againstRevision: string;
+}
+
+export interface ArtifactCell {
+  type: CellType.ARTIFACT;
+  text: string;
+}
+
+export type BodyCell = ArtifactCell | DeltaCell | TotalCell | TextCell;
+export type HeaderCell = TextCell | RevisionCell | RevisionDeltaCell;
+
+export interface ComparisonMatrix {
+  header: Array<HeaderCell>;
+  total: Array<BodyCell>;
+  body: Array<Array<BodyCell>>;
+}
 
 type RevisionStringFormatter = (cell: RevisionCell) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
@@ -183,14 +232,6 @@ export default class BuildComparator {
     });
   }
 
-  public get matrix(): ComparisonMatrix {
-    return {
-      header: this.matrixHeader,
-      total: this.matrixTotal,
-      body: this.matrixBody
-    };
-  }
-
   public getSum(artifactNames: Array<string>): Array<BodyCell> {
     const filters = [new RegExp(`^(?!(${artifactNames.join('|')})$).*$`)];
     return [
@@ -244,7 +285,15 @@ export default class BuildComparator {
     );
   }
 
-  public getAscii({
+  public toJSON(): ComparisonMatrix {
+    return {
+      header: this.matrixHeader,
+      total: this.matrixTotal,
+      body: this.matrixBody
+    };
+  }
+
+  public toMarkdown({
     formatRevision,
     formatRevisionDelta,
     formatTotal,
@@ -257,16 +306,10 @@ export default class BuildComparator {
       return '';
     }
 
-    const table = new AsciiTable('');
-    table
-      .setBorder('|', '-', '', '')
-      .setHeading(...header)
-      .addRowMatrix(rows);
-
-    return table.toString();
+    return markdownTable([header, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
   }
 
-  public getCsv({
+  public toCsv({
     formatRevision,
     formatRevisionDelta,
     formatTotal,

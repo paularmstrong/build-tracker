@@ -1,79 +1,40 @@
-export interface ArtifactSizes {
-  [key: string]: number;
+export interface SizeBudget {
+  delta?: number;
+  percent?: number;
 }
 
-export enum CellType {
-  TEXT = 'text',
-  DELTA = 'delta',
-  TOTAL = 'total',
-  TOTAL_DELTA = 'totalDelta',
-  REVISION = 'revision',
-  REVISION_DELTA = 'revisionDelta',
-  ARTIFACT = 'artifact'
+export interface Budget {
+  warn?: {
+    [key: string]: SizeBudget;
+  };
+  error?: {
+    [key: string]: SizeBudget;
+  };
+  good?: {
+    [key: string]: SizeBudget;
+  };
 }
 
-export interface TextCell {
-  type: CellType.TEXT;
-  text: string;
+export interface Group {
+  artifactNames: Array<string>;
+  budget?: Budget;
+  name: string;
 }
 
-export interface DeltaCell {
-  type: CellType.DELTA;
-  sizes: ArtifactSizes;
-  name?: string;
-  hashChanged: boolean;
-}
-
-export interface TotalCell {
-  type: CellType.TOTAL;
-  sizes: ArtifactSizes;
-}
-
-export interface TotalDeltaCell {
-  type: CellType.TOTAL_DELTA;
-  sizes: ArtifactSizes;
-}
-
-export interface RevisionCell {
-  type: CellType.REVISION;
-  revision: string;
-}
-
-export interface RevisionDeltaCell {
-  type: CellType.REVISION_DELTA;
-  revision: string;
-  deltaIndex: number;
-  againstRevision: string;
-}
-
-export interface ArtifactCell {
-  type: CellType.ARTIFACT;
-  text: string;
-}
-
-export type BodyCell = ArtifactCell | DeltaCell | TotalCell | TextCell;
-export type HeaderCell = TextCell | RevisionCell | RevisionDeltaCell;
-
-export interface ComparisonMatrix {
-  header: Array<HeaderCell>;
-  total: Array<BodyCell>;
-  body: Array<Array<BodyCell>>;
-}
-
-/**
- * Application
- */
-
-export interface Thresholds {
-  [key: string]: number;
+export interface ArtifactBudget {
+  budget: Budget;
+  name: string;
 }
 
 export type ArtifactFilters = Array<RegExp>;
 
 export interface AppConfig {
-  artifactFilters?: ArtifactFilters;
+  artifacts?: {
+    budgets: Array<ArtifactBudget>;
+    filters: ArtifactFilters;
+  };
+  budgets?: Budget;
+  groups?: Array<Group>;
   root: string;
   routing?: 'hash' | 'history';
-  thresholds?: Thresholds;
-  toggleGroups?: { [key: string]: Array<string> };
 }

@@ -4,18 +4,48 @@ export type BuildMetaItem = string | { value: string; url: string };
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface BuildMeta {
-  branch?: BuildMetaItem;
+  /**
+   * Unique revision identifier. Usually a git SHA
+   * @type {BuildMetaItem}
+   */
   revision: BuildMetaItem;
+  /**
+   * Unique parent revision identifier. Usually a git SHA from `git merge-base $revision`
+   * This is used for default comparisons
+   * @type {BuildMetaItem}
+   */
+  parentRevision: BuildMetaItem;
+  /**
+   * DateTime value representing when this build was created
+   * @type {number}
+   */
   timestamp: number;
 }
 
 export interface Artifact {
+  /**
+   * Unique hash of the contents of this artifact.
+   * @type {string}
+   */
   hash: string;
+  /**
+   * Name of this build artifact
+   * @type {string}
+   */
   name: string;
+  /**
+   * Computed sizes of the build artifact
+   * @type {ArtifactSizes}
+   */
   sizes: ArtifactSizes;
 }
 
 export interface ArtifactSizes {
+  /**
+   * Create your own size calculations, in bytes
+   * `stat` and `gzip` sizes are most commonly used for web applications
+   * @type {[type]}
+   */
   [key: string]: number;
 }
 

@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'comparator',
+  displayName: 'server',
   testEnvironment: 'node',
   rootDir: './',
   roots: ['<rootDir>/src'],

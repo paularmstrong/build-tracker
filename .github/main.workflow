@@ -1,17 +1,11 @@
-workflow "On Push" {
-  on = "push"
-  resolves = ["test", "lint", "tsc"]
-}
-
-action "Filters for GitHub Actions" {
-  uses = "actions/bin/filter@46ffca7632504e61db2d4cb16be1e80f333cb859"
-  args = "branch next"
+workflow "On PR" {
+  on = "pull_request"
+  resolves = ["test", "lint", "tsc", "set status"]
 }
 
 action "yarn" {
   uses = "nuxt/actions-yarn@master"
-  needs = ["Filters for GitHub Actions"]
-  args = "install"
+  args = "install --frozen-lockfile"
 }
 
 action "lint" {
@@ -30,4 +24,9 @@ action "tsc" {
   uses = "nuxt/actions-yarn@master"
   needs = ["yarn"]
   args = "tsc:ci"
+}
+
+action "set status" {
+  uses = "wip/action@master"
+  secrets = ["GITHUB_TOKEN"]
 }

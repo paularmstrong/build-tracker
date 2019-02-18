@@ -9,6 +9,23 @@ const parentBuild = new Build({ revision: 'def', parentRevision: '123', timestam
 
 describe('insert build handler', () => {
   describe('onInsert', () => {
+    test('responds with ...something TODO', () => {
+      const getParent = jest.fn(() => Promise.resolve(parentBuild));
+      const handler = createInsertBuildHandler(getParent);
+      const app = express();
+      app.use(bodyParser.json());
+      app.post('/test', handler);
+
+      return request(app)
+        .post('/test')
+        .send({ meta: build.meta, artifacts: build.artifacts })
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .then(res => {
+          expect(res.body).toEqual({ foo: 'bar' });
+        });
+    });
+
     test('called with a comparator of the inserted branch against its parentRevision', () => {
       const handleInsert = jest.fn(() => Promise.resolve());
       const getParent = jest.fn(() => Promise.resolve(parentBuild));
@@ -22,7 +39,7 @@ describe('insert build handler', () => {
         .send({ meta: build.meta, artifacts: build.artifacts })
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .then(res => {
+        .then(() => {
           expect(handleInsert).toHaveBeenCalled();
           // @ts-ignore
           const [comparator] = handleInsert.mock.calls[0];
@@ -31,7 +48,6 @@ describe('insert build handler', () => {
             build.getMetaValue('revision'),
             parentBuild.getMetaValue('revision')
           ]);
-          expect(res.body).toEqual({ foo: 'bar' });
         });
     });
   });

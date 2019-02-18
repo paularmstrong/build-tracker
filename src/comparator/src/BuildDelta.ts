@@ -4,34 +4,36 @@ import { delta, percentDelta } from './artifact-math';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-interface ArtifactDelta {
+interface ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
   hashChanged: boolean;
   name: string;
-  sizes: ArtifactSizes;
+  sizes: AS;
+  percents: AS;
 }
 
-interface BuildSizeDelta {
-  againstRevision: BuildMeta['revision'];
-  sizes: ArtifactSizes;
+interface BuildSizeDelta<M extends BuildMeta = BuildMeta, AS extends ArtifactSizes = ArtifactSizes> {
+  againstRevision: M['revision'];
+  sizes: AS;
+  percents: AS;
 }
 
-export default class BuildDelta {
-  private _baseBuild: Build;
-  private _prevBuild: Build;
-  private _meta: BuildMeta;
-  private _artifactDeltas: Map<string, ArtifactDelta>;
+export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes> {
+  private _baseBuild: Build<M, A>;
+  private _prevBuild: Build<M, A>;
+  private _meta: M;
+  private _artifactDeltas: Map<string, ArtifactDelta<A>>;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Set<string>;
-  private _totalDelta: BuildSizeDelta;
+  private _totalDelta: BuildSizeDelta<M, A>;
 
-  public constructor(baseBuild: Build, prevBuild: Build, artifactFilters?: ArtifactFilters) {
+  public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, artifactFilters?: ArtifactFilters) {
     this._meta = Object.freeze(baseBuild.meta);
     this._baseBuild = baseBuild;
     this._prevBuild = prevBuild;
     this._artifactFilters = artifactFilters || [];
   }
 
-  public get meta(): BuildMeta {
+  public get meta(): M {
     return this._meta;
   }
 
@@ -39,9 +41,16 @@ export default class BuildDelta {
     return new Date(this._meta.timestamp);
   }
 
-  public getMetaValue(key: keyof Omit<BuildMeta, 'timestamp'>): string {
+  public getMetaValue(key: keyof Omit<M, 'timestamp'>): string {
     const val = this._meta[key];
-    return typeof val === 'object' ? val.value : val;
+    // @ts-ignore
+    return typeof val === 'object' && val.hasOwnProperty('value') ? val.value : val;
+  }
+
+  public getMetaUrl(key: keyof Omit<M, 'timestamp'>): string | undefined {
+    const val = this._meta[key];
+    // @ts-ignore
+    return typeof val === 'object' && val.hasOwnProperty('url') ? val.url : undefined;
   }
 
   public getArtifactDelta(name: string): ArtifactDelta {
@@ -65,27 +74,41 @@ export default class BuildDelta {
     return this._artifactNames;
   }
 
-  public get artifactDeltas(): Array<ArtifactDelta> {
+  public get artifactDeltas(): Array<ArtifactDelta<A>> {
     if (!this._artifactDeltas) {
       this._artifactDeltas = new Map();
       this.artifactNames.forEach(artifactName => {
         const baseArtifact = this._baseBuild.getArtifact(artifactName);
         const prevArtifact = this._prevBuild.getArtifact(artifactName);
+
         const sizeDeltas = prevArtifact
           ? Object.keys(prevArtifact.sizes).reduce((memo, sizeKey) => {
               memo[sizeKey] = delta(sizeKey, baseArtifact && baseArtifact.sizes, prevArtifact && prevArtifact.sizes);
-              memo[`${sizeKey}Percent`] = percentDelta(
+              return memo;
+            }, {})
+          : { ...baseArtifact.sizes };
+
+        const percentDeltas = prevArtifact
+          ? Object.keys(prevArtifact.sizes).reduce((memo, sizeKey) => {
+              memo[sizeKey] = percentDelta(
                 sizeKey,
                 baseArtifact && baseArtifact.sizes,
                 prevArtifact && prevArtifact.sizes
               );
               return memo;
             }, {})
-          : { ...baseArtifact.sizes };
+          : Object.keys(baseArtifact.sizes).reduce((memo, sizeKey) => {
+              memo[sizeKey] = 0;
+              return memo;
+            }, {});
+
         this._artifactDeltas.set(artifactName, {
           name: artifactName,
           hashChanged: !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash,
-          sizes: sizeDeltas
+          // @ts-ignore constructed above
+          sizes: sizeDeltas,
+          // @ts-ignore constructed above
+          percents: percentDeltas
         });
       });
     }
@@ -93,17 +116,25 @@ export default class BuildDelta {
     return Array.from(this._artifactDeltas.values());
   }
 
-  public get totalDelta(): BuildSizeDelta {
+  public get totalDelta(): BuildSizeDelta<M, A> {
     if (!this._totalDelta) {
       const baseTotals = this._baseBuild.getTotals(this._artifactFilters);
       const prevTotals = this._prevBuild.getTotals(this._artifactFilters);
+
+      const sizes = {};
+      const percents = {};
+      Object.keys(baseTotals).forEach(sizeKey => {
+        sizes[sizeKey] = delta(sizeKey, baseTotals, prevTotals);
+        percents[sizeKey] = percentDelta(sizeKey, baseTotals, prevTotals);
+      });
+
       this._totalDelta = {
+        // @ts-ignore TODO
         againstRevision: this._prevBuild.getMetaValue('revision'),
-        sizes: Object.keys(baseTotals).reduce((memo, sizeKey) => {
-          memo[sizeKey] = delta(sizeKey, baseTotals, prevTotals);
-          memo[`${sizeKey}Percent`] = percentDelta(sizeKey, baseTotals, prevTotals);
-          return memo;
-        }, {})
+        // @ts-ignore constructed above
+        sizes,
+        // @ts-ignore constructed above
+        percents
       };
     }
 

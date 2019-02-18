@@ -4,22 +4,81 @@ const tacoArtifact = { name: 'tacos', hash: '123', sizes: { stat: 2, gzip: 1 } }
 const burritoArtifact = { name: 'burritos', hash: '123', sizes: { stat: 3, gzip: 2 } };
 
 describe('Build', () => {
+  let baseMeta;
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(1550528708828);
+    baseMeta = {
+      revision: '123',
+      parentRevision: { value: 'abc', url: 'https://build-tracker.local' },
+      timestamp: Date.now()
+    };
+  });
+
+  describe('meta', () => {
+    test('gets the full meta object', () => {
+      const build = new Build(baseMeta, []);
+      expect(build.meta).toEqual(baseMeta);
+    });
+  });
+
+  describe('timestamp', () => {
+    test('gets the timestamp as a Date', () => {
+      const build = new Build(baseMeta, []);
+      expect(build.timestamp).toBeInstanceOf(Date);
+      expect(build.timestamp).toEqual(new Date(Date.now()));
+    });
+  });
+
+  describe('getMetaValue', () => {
+    test('gets the value as a string, from a string', () => {
+      const build = new Build(baseMeta, []);
+      expect(build.getMetaValue('revision')).toBe('123');
+      expect(build.getMetaValue('parentRevision')).toBe('abc');
+    });
+  });
+
+  describe('getMetaUrl', () => {
+    test("when available, gets the meta key's URL", () => {
+      const build = new Build(baseMeta, []);
+      expect(build.getMetaUrl('parentRevision')).toBe('https://build-tracker.local');
+    });
+
+    test('when unavailable, returns undefined', () => {
+      const build = new Build(baseMeta, []);
+      expect(build.getMetaUrl('revision')).toBeUndefined();
+    });
+  });
+
   describe('artifacts', () => {
+    test('gets all of the artifacts', () => {
+      const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
+      expect(build.artifacts).toEqual([tacoArtifact, burritoArtifact]);
+    });
+  });
+
+  describe('getArtfact', () => {
     test('can get by name', () => {
-      const build = new Build({ revision: '123', timestamp: Date.now() }, [tacoArtifact, burritoArtifact]);
+      const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
       expect(build.getArtifact('tacos')).toBe(tacoArtifact);
       expect(build.getArtifact('burritos')).toBe(burritoArtifact);
     });
   });
 
+  describe('artifactNames', () => {
+    test('returns a list of all artifact names', () => {
+      const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
+      expect(build.artifactNames).toEqual(['tacos', 'burritos']);
+    });
+  });
+
   describe('getTotals', () => {
     test('gets the computed totals for all sizes', () => {
-      const build = new Build({ revision: '123', timestamp: Date.now() }, [tacoArtifact, burritoArtifact]);
+      const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
       expect(build.getTotals()).toEqual({ stat: 5, gzip: 3 });
     });
 
     test('gets the computed totals without filtered artifacts', () => {
-      const build = new Build({ revision: '123', timestamp: Date.now() }, [tacoArtifact, burritoArtifact]);
+      const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
       expect(build.getTotals([/tacos/])).toEqual({ stat: 3, gzip: 2 });
     });
   });

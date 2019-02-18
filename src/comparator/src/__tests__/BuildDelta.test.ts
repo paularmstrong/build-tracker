@@ -1,26 +1,64 @@
 import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
 
-const buildA = new Build({ revision: '123', timestamp: Date.now() }, [
-  { name: 'tacos', hash: '123', sizes: { stat: 2, gzip: 1 } },
-  { name: 'burritos', hash: '123', sizes: { stat: 3, gzip: 2 } }
-]);
-const buildB = new Build({ revision: { value: '456', url: 'https://google.com' }, timestamp: Date.now() }, [
-  { name: 'tacos', hash: '123', sizes: { stat: 1, gzip: 1 } },
-  { name: 'burritos', hash: '123', sizes: { stat: 6, gzip: 4 } },
-  { name: 'churros', hash: '123', sizes: { stat: 6, gzip: 4 } }
-]);
-
 describe('BuildDelta', () => {
-  describe('getMetaValue', () => {
-    test('gets the string value of a string meta from the base build', () => {
+  let buildA, buildB;
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(1550528708828);
+
+    buildA = new Build(
+      { revision: { value: '123', url: 'https://build-tracker.local' }, parentRevision: 'abc', timestamp: Date.now() },
+      [
+        { name: 'tacos', hash: '123', sizes: { stat: 2, gzip: 1 } },
+        { name: 'burritos', hash: '123', sizes: { stat: 3, gzip: 2 } }
+      ]
+    );
+    buildB = new Build(
+      { revision: { value: '456', url: 'https://build-tracker.local' }, parentRevision: 'abc', timestamp: Date.now() },
+      [
+        { name: 'tacos', hash: '123', sizes: { stat: 1, gzip: 1 } },
+        { name: 'burritos', hash: '123', sizes: { stat: 6, gzip: 4 } },
+        { name: 'churros', hash: '123', sizes: { stat: 6, gzip: 4 } }
+      ]
+    );
+  });
+
+  describe('meta', () => {
+    test('gets the full meta object', () => {
       const bd = new BuildDelta(buildA, buildB);
-      expect(bd.getMetaValue('revision')).toEqual('123');
+      expect(bd.meta).toEqual({
+        revision: { value: '123', url: 'https://build-tracker.local' },
+        parentRevision: 'abc',
+        timestamp: Date.now()
+      });
+    });
+  });
+
+  describe('timestamp', () => {
+    test('gets the timestamp as a Date', () => {
+      const bd = new BuildDelta(buildA, buildB);
+      expect(bd.timestamp).toBeInstanceOf(Date);
+      expect(bd.timestamp).toEqual(new Date(Date.now()));
+    });
+  });
+
+  describe('getMetaValue', () => {
+    test('gets the value as a string, from a string', () => {
+      const bd = new BuildDelta(buildA, buildB);
+      expect(bd.getMetaValue('revision')).toBe('123');
+      expect(bd.getMetaValue('parentRevision')).toBe('abc');
+    });
+  });
+
+  describe('getMetaUrl', () => {
+    test("when available, gets the meta key's URL", () => {
+      const bd = new BuildDelta(buildA, buildB);
+      expect(bd.getMetaUrl('revision')).toBe('https://build-tracker.local');
     });
 
-    test('gets the string value of an object meta from the base build', () => {
-      const bd = new BuildDelta(buildB, buildA);
-      expect(bd.getMetaValue('revision')).toEqual('456');
+    test('when unavailable, returns undefined', () => {
+      const bd = new BuildDelta(buildA, buildB);
+      expect(bd.getMetaUrl('parentRevision')).toBeUndefined();
     });
   });
 
@@ -45,9 +83,11 @@ describe('BuildDelta', () => {
           name: 'tacos',
           sizes: {
             gzip: 0,
-            gzipPercent: 0,
-            stat: 1,
-            statPercent: 1
+            stat: 1
+          },
+          percents: {
+            gzip: 0,
+            stat: 1
           }
         },
         {
@@ -55,9 +95,11 @@ describe('BuildDelta', () => {
           name: 'burritos',
           sizes: {
             gzip: -2,
-            gzipPercent: -0.5,
-            stat: -3,
-            statPercent: -0.5
+            stat: -3
+          },
+          percents: {
+            gzip: -0.5,
+            stat: -0.5
           }
         },
         {
@@ -65,9 +107,11 @@ describe('BuildDelta', () => {
           name: 'churros',
           sizes: {
             gzip: -4,
-            gzipPercent: -1,
-            stat: -6,
-            statPercent: -1
+            stat: -6
+          },
+          percents: {
+            gzip: -1,
+            stat: -1
           }
         }
       ]);
@@ -81,9 +125,11 @@ describe('BuildDelta', () => {
           name: 'tacos',
           sizes: {
             gzip: 0,
-            gzipPercent: 0,
-            stat: 1,
-            statPercent: 1
+            stat: 1
+          },
+          percents: {
+            gzip: 0,
+            stat: 1
           }
         }
       ]);
@@ -98,9 +144,11 @@ describe('BuildDelta', () => {
         name: 'tacos',
         sizes: {
           gzip: 0,
-          gzipPercent: 0,
-          stat: 1,
-          statPercent: 1
+          stat: 1
+        },
+        percents: {
+          gzip: 0,
+          stat: 1
         }
       });
     });
@@ -113,9 +161,11 @@ describe('BuildDelta', () => {
         againstRevision: '456',
         sizes: {
           gzip: -6,
-          gzipPercent: -(6 / 9),
-          stat: -8,
-          statPercent: -(8 / 13)
+          stat: -8
+        },
+        percents: {
+          gzip: -(6 / 9),
+          stat: -(8 / 13)
         }
       });
     });
@@ -126,9 +176,11 @@ describe('BuildDelta', () => {
         againstRevision: '456',
         sizes: {
           gzip: -4,
-          gzipPercent: -(4 / 5),
-          stat: -5,
-          statPercent: -(5 / 7)
+          stat: -5
+        },
+        percents: {
+          gzip: -(4 / 5),
+          stat: -(5 / 7)
         }
       });
     });

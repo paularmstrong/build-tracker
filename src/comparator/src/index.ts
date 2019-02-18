@@ -25,6 +25,7 @@ export interface TextCell {
 export interface DeltaCell {
   type: CellType.DELTA;
   sizes: ArtifactSizes;
+  percents: ArtifactSizes;
   name?: string;
   hashChanged: boolean;
 }
@@ -37,6 +38,7 @@ export interface TotalCell {
 export interface TotalDeltaCell {
   type: CellType.TOTAL_DELTA;
   sizes: ArtifactSizes;
+  percents: ArtifactSizes;
 }
 
 export interface RevisionCell {
@@ -117,7 +119,7 @@ const defaultFormatRevision = (cell: RevisionCell): string => cell.revision;
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell): string => `${cell.sizes.gzip || 0}`;
 const defaultFormatDelta = (cell: DeltaCell): string =>
-  `${cell.sizes.gzip || 0} (${((cell.sizes.gzipPercent || 1) * 100).toFixed(1)}%)`;
+  `${cell.sizes.gzip || 0} (${((cell.percents.gzip || 1) * 100).toFixed(1)}%)`;
 const defaultRowFilter = (): boolean => true;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -270,7 +272,7 @@ export default class BuildComparator {
         return row.map(
           (cell): string => {
             if (instanceOfCell<ArtifactCell>(cell, CellType.ARTIFACT)) {
-              return cell.text || '';
+              return cell.text;
             }
             if (instanceOfCell<DeltaCell>(cell, CellType.DELTA)) {
               return formatDelta(cell);

@@ -2,14 +2,14 @@ import BuildComparator from '..';
 import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
 
-const build1 = new Build({ revision: '1234567', timestamp: 1234567 }, [
+const build1 = new Build({ revision: '1234567', parentRevision: 'abcdef', timestamp: 1234567 }, [
   { name: 'churros', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
   { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
 ]);
 
-const build2 = new Build({ revision: '8901234', timestamp: 8901234 }, [
-  { name: 'burritos', hash: 'def', sizes: { stat: 469, gzip: 93 } },
-  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } }
+const build2 = new Build({ revision: '8901234', parentRevision: 'abcdef', timestamp: 8901234 }, [
+  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
+  { name: 'burritos', hash: 'def', sizes: { stat: 469, gzip: 93 } }
 ]);
 
 const artifactFilters = [/burritos/, /churros/];
@@ -23,7 +23,13 @@ describe('BuildComparator', () => {
       expect(build1Total).toMatchObject(expect.objectContaining({ sizes: { gzip: 45, stat: 123 } }));
       expect(build2Total).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
       expect(deltaTotal).toMatchObject(
-        expect.objectContaining({ sizes: { gzip: -2, gzipPercent: -0.044444444444444446, stat: 0, statPercent: 0 } })
+        expect.objectContaining({
+          sizes: { gzip: -2, stat: 0 },
+          percents: {
+            gzip: -0.044444444444444446,
+            stat: 0
+          }
+        })
       );
     });
 
@@ -67,14 +73,20 @@ describe('BuildComparator', () => {
       expect(build1Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 135, stat: 579 } }));
       expect(build2Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
       expect(deltaSum).toMatchObject(
-        expect.objectContaining({ sizes: { gzip: -2, gzipPercent: -0.044444444444444446, stat: 0, statPercent: 0 } })
+        expect.objectContaining({
+          sizes: { gzip: -2, stat: 0 },
+          percents: {
+            gzip: -0.044444444444444446,
+            stat: 0
+          }
+        })
       );
     });
 
     test('filters on exact names', () => {
       const comparator = new BuildComparator({
         builds: [
-          new Build({ revision: '1234567', timestamp: 1234567 }, [
+          new Build({ revision: '1234567', parentRevision: 'abcdef', timestamp: 1234567 }, [
             { name: 'i18n/en', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
             { name: 'i18n/en-GB', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
           ])

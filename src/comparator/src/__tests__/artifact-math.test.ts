@@ -28,6 +28,10 @@ describe('delta', () => {
     const baseArtifact = { stat: 100 };
     expect(artifactMath.delta('stat', baseArtifact, undefined)).toBe(100);
   });
+
+  test('when both base and previous artifacts are undefined', () => {
+    expect(artifactMath.delta('stat')).toBe(0);
+  });
 });
 
 describe('percentDelta', () => {
@@ -57,5 +61,9 @@ describe('percentDelta', () => {
   test('when the previousArtifact is undefined, gets a positive of the baseArtifact', () => {
     const baseArtifact = { stat: 100 };
     expect(artifactMath.percentDelta('stat', baseArtifact, undefined)).toBe(1);
+  });
+
+  test('when both base and previous artifacts are undefined', () => {
+    expect(artifactMath.percentDelta('stat')).toBe(0);
   });
 });

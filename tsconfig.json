@@ -3,6 +3,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
+    "esModuleInterop": true,
     "jsx": "react",
     "lib": ["dom", "es2017"],
     "module": "commonjs",

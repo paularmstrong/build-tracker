@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import * as pino from 'pino';
 import * as expressPino from 'express-pino-logger';
 import bodyParser from 'body-parser';

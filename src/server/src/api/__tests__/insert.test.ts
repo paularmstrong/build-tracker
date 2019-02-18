@@ -23,7 +23,10 @@ describe('insert build handler', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .then(res => {
-          const comparator = handleInsert.mock.calls[0][0];
+          expect(handleInsert).toHaveBeenCalled();
+          // @ts-ignore
+          const [comparator] = handleInsert.mock.calls[0];
+          // @ts-ignore
           expect(comparator.builds.map(build => build.getMetaValue('revision'))).toEqual([
             build.getMetaValue('revision'),
             parentBuild.getMetaValue('revision')

@@ -1,5 +1,6 @@
 import BuildComparator from '..';
 import Build from '@build-tracker/build';
+import BuildDelta from '../BuildDelta';
 
 const build1 = new Build({ revision: '1234567', timestamp: 1234567 }, [
   { name: 'churros', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
@@ -18,11 +19,22 @@ describe('BuildComparator', () => {
     const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
 
     test('filters artifact sizes from the totals', () => {
-      expect(comparator.matrixTotal).toMatchSnapshot();
+      const [, build1Total, build2Total, deltaTotal] = comparator.matrixTotal;
+      expect(build1Total).toMatchObject(expect.objectContaining({ sizes: { gzip: 45, stat: 123 } }));
+      expect(build2Total).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
+      expect(deltaTotal).toMatchObject(
+        expect.objectContaining({ sizes: { gzip: -2, gzipPercent: -0.044444444444444446, stat: 0, statPercent: 0 } })
+      );
     });
 
     test('filters artifacts from artifactNames', () => {
       expect(comparator.artifactNames).toEqual(['tacos']);
+    });
+
+    test('filters artifacts from the matrixBody', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
+      expect(comparator.matrixBody).toHaveLength(1);
+      expect(comparator.matrixBody[0][0]).toMatchObject({ text: 'tacos' });
     });
   });
 
@@ -38,40 +50,25 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.buildDeltas).toBe(comparator.buildDeltas);
     });
-  });
 
-  describe('matrix', () => {
-    test('includes a header', () => {
+    test('is an array of arrays of deltas', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixHeader).toEqual(comparator.matrixHeader);
-      expect(comparator.matrixHeader).toMatchSnapshot();
-    });
-
-    test('includes a total', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixTotal).toEqual(comparator.matrixTotal);
-      expect(comparator.matrixTotal).toMatchSnapshot();
-    });
-
-    test('includes a body of all artifacts', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixBody).toEqual(comparator.matrixBody);
-      expect(comparator.matrixBody).toMatchSnapshot();
-    });
-
-    test('does not include filtered artifacts', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.matrixBody).toHaveLength(1);
-      // @ts-ignore
-      expect(comparator.matrixBody[0][0].text).toEqual('tacos');
+      expect(comparator.buildDeltas).toHaveLength(2);
+      expect(comparator.buildDeltas[0]).toHaveLength(0);
+      expect(comparator.buildDeltas[1]).toHaveLength(1);
+      expect(comparator.buildDeltas[1][0]).toBeInstanceOf(BuildDelta);
     });
   });
 
   describe('getSum', () => {
     test('gets a row of sums', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      const sum = comparator.getSum(['churros', 'tacos']);
-      expect(sum).toMatchSnapshot();
+      const [, build1Sum, build2Sum, deltaSum] = comparator.getSum(['churros', 'tacos']);
+      expect(build1Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 135, stat: 579 } }));
+      expect(build2Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
+      expect(deltaSum).toMatchObject(
+        expect.objectContaining({ sizes: { gzip: -2, gzipPercent: -0.044444444444444446, stat: 0, statPercent: 0 } })
+      );
     });
 
     test('filters on exact names', () => {
@@ -83,22 +80,41 @@ describe('BuildComparator', () => {
           ])
         ]
       });
-      const sum = comparator.getSum(['i18n/en']);
-      expect(sum).toMatchSnapshot();
+      const [, sum] = comparator.getSum(['i18n/en']);
+      expect(sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 90, stat: 456 } }));
     });
   });
 
   describe('toJSON', () => {
-    test('gets a JSON-formatted representation', () => {
+    test('includes the header', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toJSON()).toMatchSnapshot();
+      expect(comparator.toJSON().header).toEqual(comparator.matrixHeader);
+    });
+
+    test('includes the total', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toJSON().total).toEqual(comparator.matrixTotal);
+    });
+
+    test('includes the body', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toJSON().body).toEqual(comparator.matrixBody);
     });
   });
 
   describe('toMarkdown', () => {
     test('gets a markdown-formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toMarkdown()).toMatchSnapshot();
+      expect(comparator.toMarkdown()).toEqual(
+        `
+|          | 1234567 | 8901234 |            Δ1 |
+| :------- | ------: | ------: | ------------: |
+| burritos |       0 |      93 |   93 (100.0%) |
+| churros  |      90 |       0 | -90 (-100.0%) |
+| tacos    |      45 |      43 |    -2 (-4.4%) |`
+          .replace(/^\n/, '')
+          .replace(/\n$/, '')
+      );
     });
 
     test('can filter rows', () => {
@@ -111,19 +127,37 @@ describe('BuildComparator', () => {
           return false;
         });
       };
-      expect(comparator.toMarkdown({ rowFilter })).toMatchSnapshot();
+      expect(comparator.toMarkdown({ rowFilter })).toEqual(
+        `
+|          | 1234567 | 8901234 |            Δ1 |
+| :------- | ------: | ------: | ------------: |
+| burritos |       0 |      93 |   93 (100.0%) |
+| churros  |      90 |       0 | -90 (-100.0%) |
+`
+          .replace(/^\n/, '')
+          .replace(/\n$/, '')
+      );
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.toMarkdown()).toMatchSnapshot();
+      expect(comparator.toMarkdown()).toEqual(
+        `
+|       | 1234567 | 8901234 |         Δ1 |
+| :---- | ------: | ------: | ---------: |
+| tacos |      45 |      43 | -2 (-4.4%) |`
+          .replace(/^\n/, '')
+          .replace(/\n$/, '')
+      );
     });
   });
 
   describe('toCsv', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toCsv()).toMatchSnapshot();
+      expect(comparator.toCsv()).toEqual(
+        ',1234567,8901234,Δ1\r\nburritos,0,93,93 (100.0%)\r\nchurros,90,0,-90 (-100.0%)\r\ntacos,45,43,-2 (-4.4%)'
+      );
     });
 
     test('can filter rows', () => {
@@ -136,12 +170,14 @@ describe('BuildComparator', () => {
           return false;
         });
       };
-      expect(comparator.toCsv({ rowFilter })).toMatchSnapshot();
+      expect(comparator.toCsv({ rowFilter })).toEqual(
+        ',1234567,8901234,Δ1\r\nburritos,0,93,93 (100.0%)\r\nchurros,90,0,-90 (-100.0%)'
+      );
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.toCsv()).toMatchSnapshot();
+      expect(comparator.toCsv()).toEqual(',1234567,8901234,Δ1\r\ntacos,45,43,-2 (-4.4%)');
     });
   });
 });

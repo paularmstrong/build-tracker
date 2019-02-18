@@ -55,7 +55,7 @@ module.exports = {
     '@typescript-eslint/type-annotation-spacing': 'error',
 
     'jest/consistent-test-it': ['error', { fn: 'test' }],
-    'jest/no-large-snapshots': ['warn', { maxSize: 0 }],
+    'jest/no-large-snapshots': ['error', { maxSize: 0 }],
     'jest/no-test-prefixes': 'error',
     'jest/valid-describe': 'error',
     'jest/valid-expect-in-promise': 'error',

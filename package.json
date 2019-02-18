@@ -12,22 +12,26 @@
   "scripts": {
     "lint": "yarn lint:cmd --fix",
     "lint:ci": "yarn lint:cmd",
-    "lint:cmd": "eslint . --ext '.ts,.tsx,.js,.json,.md' --cache",
+    "lint:cmd": "eslint . --ext '.ts,.tsx,.js,.json,.md,.snap' --cache",
     "test": "yarn test:cmd",
     "test:ci": "yarn test:cmd --ci",
     "test:cmd": "jest",
-    "tsc": "lerna run tsc"
+    "tsc": "lerna run tsc",
+    "tsc:ci": "tsc --noEmit"
   },
   "husky": {
     "hooks": {
       "post-merge": "yarn",
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn tsc:ci && lint-staged"
     }
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,md}": [
       "yarn lint",
       "git add"
+    ],
+    "*.{ts,tsx}": [
+      "jest --bail --findRelatedTests"
     ]
   },
   "devDependencies": {
@@ -37,7 +41,6 @@
     "@types/jest": "^24.0.4",
     "@typescript-eslint/eslint-plugin": "^1.3.0",
     "@typescript-eslint/parser": "^1.3.0",
-    "babel-jest": "^24.1.0",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-jest": "^22.3.0",
@@ -50,6 +53,7 @@
     "lerna": "^3.11.1",
     "lint-staged": "^8.1.3",
     "prettier": "^1.16.4",
+    "ts-jest": "^23.10.5",
     "typescript": "^3.3.3"
   }
 }

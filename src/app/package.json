@@ -9,6 +9,7 @@
   "module": "index.ts",
   "types": "index.ts",
   "scripts": {
+    "build": "tsc --outDir ./dist",
     "start": "webpack-dev-server --hot --config config/webpack.config.js",
     "tsc": "tsc"
   },

@@ -198,7 +198,7 @@ export default class BuildComparator {
       ...flatten(
         this.buildDeltas.map((buildDeltas, i) => [
           {
-            ...this.builds[i].getTotals(this._artifactFilters),
+            sizes: this.builds[i].getTotals(this._artifactFilters),
             type: CellType.TOTAL
           },
           ...buildDeltas.map(buildDelta => ({
@@ -237,9 +237,9 @@ export default class BuildComparator {
     return [
       { type: CellType.TEXT, text: 'Sum' },
       ...flatten(
-        this.builds.map(changeBuild => [
+        this.builds.map((changeBuild, buildIndex) => [
           getTotalArtifactSizes(changeBuild, filters),
-          ...flatten(this.buildDeltas.map(buildDeltas => buildDeltas.map(buildDelta => buildDelta.totalDelta)))
+          ...flatten(this.buildDeltas[buildIndex].map(buildDelta => buildDelta.totalDelta))
         ])
       ).filter(cell => !cell.length)
     ];

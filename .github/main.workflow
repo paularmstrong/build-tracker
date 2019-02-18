@@ -33,6 +33,6 @@ action "tsc" {
 }
 
 action "audit" {
-  uses = "JasonEtco/npm-audit-fix-action"
+  uses = "JasonEtco/npm-audit-fix-action@master"
   needs = ["Filters for GitHub Actions"]
 }

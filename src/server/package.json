@@ -8,6 +8,9 @@
   "main": "lib",
   "module": "index.ts",
   "types": "index.ts",
+  "scripts": {
+    "tsc": "tsc"
+  },
   "dependencies": {
     "@build-tracker/build": "1.0.0",
     "@build-tracker/comparator": "1.0.0",

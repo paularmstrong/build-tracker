@@ -8,6 +8,9 @@
   "main": "lib",
   "module": "index.ts",
   "types": "index.ts",
+  "scripts": {
+    "tsc": "tsc"
+  },
   "dependencies": {},
   "devDependencies": {
     "@build-tracker/types": "1.0.0"

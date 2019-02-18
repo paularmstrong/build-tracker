@@ -3,11 +3,8 @@ module.exports = {
   parserOptions: {
     sourceType: 'module'
   },
-  extends: [
-    'prettier',
-    'prettier/@typescript-eslint'
-  ],
-  plugins: ['@typescript-eslint', 'markdown', 'json', 'prettier'],
+  extends: ['prettier', 'prettier/@typescript-eslint', 'plugin:react/recommended', 'plugin:jest/recommended'],
+  plugins: ['@typescript-eslint', 'markdown', 'json', 'prettier', 'react', 'jest'],
   env: {
     es6: true,
     node: true,
@@ -17,6 +14,11 @@ module.exports = {
     document: false,
     navigator: false,
     window: false
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
   },
   rules: {
     'no-console': 'error',
@@ -51,5 +53,15 @@ module.exports = {
     '@typescript-eslint/prefer-interface': 'error',
     '@typescript-eslint/prefer-namespace-keyword': 'error',
     '@typescript-eslint/type-annotation-spacing': 'error',
+
+    'jest/consistent-test-it': ['error', { fn: 'test' }],
+    'jest/no-large-snapshots': ['warn', { maxSize: 0 }],
+    'jest/no-test-prefixes': 'error',
+    'jest/valid-describe': 'error',
+    'jest/valid-expect-in-promise': 'error',
+
+    'react/display-name': 'off',
+    'react/no-find-dom-node': 'warn',
+    'react/react-in-jsx-scope': 'off'
   }
 };

@@ -1,0 +1,36 @@
+{
+  "name": "@build-tracker/app",
+  "version": "1.0.0",
+  "description": "Build Tracker client side application for tracking builds over time",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "license": "MIT",
+  "main": "lib",
+  "module": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "start": "webpack-dev-server --hot --config config/webpack.config.js",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "react-native-web": "^0.10.0"
+  },
+  "devDependencies": {
+    "@build-tracker/build": "1.0.0",
+    "@build-tracker/comparator": "1.0.0",
+    "@build-tracker/types": "1.0.0",
+    "@types/react": "^16.8.3",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-native": "^0.57.37",
+    "chalk": "^2.4.2",
+    "html-webpack-plugin": "^3.2.0",
+    "react-art": "^16.8.2",
+    "ts-loader": "^5.3.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14",
+    "webpackbar": "^3.1.5"
+  }
+}

@@ -7,6 +7,9 @@
   "license": "MIT",
   "main": "lib",
   "module": "index.ts",
+  "scripts": {
+    "tsc": "tsc"
+  },
   "dependencies": {
     "markdown-table": "^1.1.2"
   },

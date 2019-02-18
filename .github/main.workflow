@@ -9,25 +9,25 @@ action "Filters for GitHub Actions" {
 }
 
 action "yarn" {
-  uses = "Borales/actions-yarn"
+  uses = "nuxt/actions-yarn@master"
   needs = ["Filters for GitHub Actions"]
   args = "install"
 }
 
 action "lint" {
-  uses = "Borales/actions-yarn"
+  uses = "nuxt/actions-yarn@master"
   needs = ["yarn"]
   args = "lint:ci"
 }
 
 action "test" {
-  uses = "Borales/actions-yarn"
+  uses = "nuxt/actions-yarn@master"
   needs = ["yarn"]
   args = "test:ci"
 }
 
 action "tsc" {
-  uses = "Borales/actions-yarn"
+  uses = "nuxt/actions-yarn@master"
   needs = ["yarn"]
   args = "tsc:ci"
 }

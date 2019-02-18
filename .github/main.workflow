@@ -1,6 +1,6 @@
 workflow "On Push" {
   on = "push"
-  resolves = ["test", "audit", "lint", "tsc"]
+  resolves = ["test", "lint", "tsc"]
 }
 
 action "Filters for GitHub Actions" {
@@ -30,9 +30,4 @@ action "tsc" {
   uses = "nuxt/actions-yarn@master"
   needs = ["yarn"]
   args = "tsc:ci"
-}
-
-action "audit" {
-  uses = "JasonEtco/npm-audit-fix-action@master"
-  needs = ["Filters for GitHub Actions"]
 }

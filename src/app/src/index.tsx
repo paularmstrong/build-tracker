@@ -1,11 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Text, View } from 'react-native';
+import { AppRegistry } from 'react-native';
+import Main from './screens/Main';
 
-const App = (): React.ReactElement => (
-  <View>
-    <Text>Build Tracker</Text>
-  </View>
-);
-
-ReactDOM.render(<App />, document.getElementById('root'));
+AppRegistry.registerComponent('App', () => Main);
+AppRegistry.runApplication('App', {
+  rootTag: document.getElementById('root')
+});

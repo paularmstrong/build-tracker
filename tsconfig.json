@@ -5,8 +5,8 @@
     "checkJs": false,
     "esModuleInterop": true,
     "jsx": "react",
-    "lib": ["dom", "es2017"],
-    "module": "commonjs",
+    "lib": ["es6", "dom"],
+    "module": "esnext",
     "moduleResolution": "node",
     "noEmit": false,
     "noImplicitReturns": true,
@@ -18,7 +18,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "esnext"
+    "target": "es5"
   },
   "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/**/dist/**"]
 }

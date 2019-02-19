@@ -64,7 +64,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: `[name]${IS_PROD ? '.chunkhash:8' : ''}.js`,
+    filename: `[name]${IS_PROD ? '.[hash:8]' : ''}.js`,
     path: DIST_ROOT
   },
   plugins: [

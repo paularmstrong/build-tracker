@@ -1,8 +1,16 @@
+const path = require('path');
+
 module.exports = {
-  displayName: 'build',
+  displayName: 'app',
+  moduleNameMapper: {
+    'react-art': '<rootDir>/src/app/config/jest/react-art-stub.js'
+  },
+  preset: 'react-native-web',
+  rootDir: path.join(__dirname, '../..'),
+  roots: ['<rootDir>/src/app'],
+  setupFiles: ['<rootDir>/src/app/config/jest/setup-enzyme.js'],
   testEnvironment: 'jsdom',
-  rootDir: './',
-  roots: ['<rootDir>/src'],
+  timers: 'fake',
   transform: {
     '^.+\\.tsx?$': 'ts-jest'
   }

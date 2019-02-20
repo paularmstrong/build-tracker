@@ -1,0 +1,410 @@
+{
+  "meta": {
+    "branch": "foobar",
+    "revision": "298dfe16af18f420dfbb192d2f38b1ac6022abb8",
+    "timestamp": 1501948672000,
+    "parentRevision": "f915ee2df9a9d3db4a8fb1a8b8c0e82f30338e13"
+  },
+  "artifacts": [
+    {
+      "hash": "beb1c8c458ff8e00c31b31b9ba51edf2",
+      "name": "bundle.AccessInterstitial",
+      "sizes": {
+        "stat": 22889,
+        "gzip": 2277
+      }
+    },
+    {
+      "hash": "03e8a73af26fca5da9a0ff57d0c4556c",
+      "name": "bundle.Account",
+      "sizes": {
+        "stat": 26157,
+        "gzip": 2474
+      }
+    },
+    {
+      "hash": "f0ed92f7b42def02f1a21f6227600491",
+      "name": "bundle.App",
+      "sizes": {
+        "stat": 46109,
+        "gzip": 4307
+      }
+    },
+    {
+      "hash": "18dfbf809058336dcf40e30d96a45794",
+      "name": "bundle.Collection",
+      "sizes": {
+        "stat": 32755,
+        "gzip": 3067
+      }
+    },
+    {
+      "hash": "27f7b830da65f4b67c3de66fcf95fe0d",
+      "name": "bundle.Compose",
+      "sizes": {
+        "stat": 262554,
+        "gzip": 26602
+      }
+    },
+    {
+      "hash": "008fb11e4291c90e939cc6303bdf482a",
+      "name": "bundle.Conversation",
+      "sizes": {
+        "stat": 81501,
+        "gzip": 8314
+      }
+    },
+    {
+      "hash": "89a86f75327348182769ae3d8def760b",
+      "name": "bundle.ConversationParticipants",
+      "sizes": {
+        "stat": 17559,
+        "gzip": 1338
+      }
+    },
+    {
+      "hash": "2bb13bed88bd6f34dbc4b2357d500a47",
+      "name": "bundle.DirectMessages",
+      "sizes": {
+        "stat": 515589,
+        "gzip": 48838
+      }
+    },
+    {
+      "hash": "92d3e8b7e041c3b85de75cb5cdcf3bcd",
+      "name": "bundle.FollowerRequests",
+      "sizes": {
+        "stat": 17694,
+        "gzip": 1413
+      }
+    },
+    {
+      "hash": "95787d3411915bf1897d73e8439e2078",
+      "name": "bundle.FoundMedia",
+      "sizes": {
+        "stat": 52590,
+        "gzip": 4527
+      }
+    },
+    {
+      "hash": "9f64e0f6259ad45a65f2de0bf4360ac3",
+      "name": "bundle.GenericTimeline",
+      "sizes": {
+        "stat": 15805,
+        "gzip": 1102
+      }
+    },
+    {
+      "hash": "de36dc21b91f0faf63bd044a1a0e06d6",
+      "name": "bundle.HomeTimeline",
+      "sizes": {
+        "stat": 59547,
+        "gzip": 6026
+      }
+    },
+    {
+      "hash": "0c613511d595730a18247c2f813f13bf",
+      "name": "bundle.Keyboard",
+      "sizes": {
+        "stat": 44819,
+        "gzip": 2643
+      }
+    },
+    {
+      "hash": "2bd189cdc0308ccd552a5072860ad46a",
+      "name": "bundle.LiveEvent",
+      "sizes": {
+        "stat": 139435,
+        "gzip": 11970
+      }
+    },
+    {
+      "hash": "be09a4be0718e041c0b3a6d618138d7e",
+      "name": "bundle.LoggedOutHome",
+      "sizes": {
+        "stat": 21503,
+        "gzip": 2106
+      }
+    },
+    {
+      "hash": "7f3baed093c88d2c7283b3dde9d2adc9",
+      "name": "bundle.Login",
+      "sizes": {
+        "stat": 24189,
+        "gzip": 2532
+      }
+    },
+    {
+      "hash": "deb63131b9738201a0c34dead61907d4",
+      "name": "bundle.Moment",
+      "sizes": {
+        "stat": 48761,
+        "gzip": 4656
+      }
+    },
+    {
+      "hash": "e3ba6737e438d1dd5804497d05fbe797",
+      "name": "bundle.NotificationDetail",
+      "sizes": {
+        "stat": 40332,
+        "gzip": 3743
+      }
+    },
+    {
+      "hash": "100e476ecc806269f64f7d4baf6e2607",
+      "name": "bundle.Notifications",
+      "sizes": {
+        "stat": 130710,
+        "gzip": 12311
+      }
+    },
+    {
+      "hash": "c6d7ba780f7151dbb3a05164dcfa4a40",
+      "name": "bundle.Report",
+      "sizes": {
+        "stat": 30058,
+        "gzip": 2912
+      }
+    },
+    {
+      "hash": "7984752677b575c6e3f6c6e5a6ce5b80",
+      "name": "bundle.Search",
+      "sizes": {
+        "stat": 60171,
+        "gzip": 5806
+      }
+    },
+    {
+      "hash": "b8c3d8380d9faf0f7b53f5332a70aba7",
+      "name": "bundle.SearchTimelines",
+      "sizes": {
+        "stat": 52930,
+        "gzip": 4762
+      }
+    },
+    {
+      "hash": "af36d142a6083b89dc464962435acb20",
+      "name": "bundle.SearchUsers",
+      "sizes": {
+        "stat": 33625,
+        "gzip": 3042
+      }
+    },
+    {
+      "hash": "468268cb1e53d5474a8ff534f36fb0d2",
+      "name": "bundle.Settings",
+      "sizes": {
+        "stat": 213076,
+        "gzip": 19723
+      }
+    },
+    {
+      "hash": "199cbd80a1f212747b853bd4aed97f33",
+      "name": "bundle.SettingsInternals",
+      "sizes": {
+        "stat": 395722,
+        "gzip": 34141
+      }
+    },
+    {
+      "hash": "7de3f6c87abf6f2b7e6a3e694f79fa94",
+      "name": "bundle.Stickers",
+      "sizes": {
+        "stat": 30192,
+        "gzip": 2825
+      }
+    },
+    {
+      "hash": "cd57169235079b7218b616ce6c05a512",
+      "name": "bundle.StickersTimelines",
+      "sizes": {
+        "stat": 39908,
+        "gzip": 3455
+      }
+    },
+    {
+      "hash": "b44e42387072c91f406044cdc32a0c48",
+      "name": "bundle.TweetActivity",
+      "sizes": {
+        "stat": 15752,
+        "gzip": 983
+      }
+    },
+    {
+      "hash": "80860a3c08065c215959362506446849",
+      "name": "bundle.TweetMediaDetail",
+      "sizes": {
+        "stat": 78164,
+        "gzip": 7852
+      }
+    },
+    {
+      "hash": "d19409bb3aabdea53e1b3d7dced0c80b",
+      "name": "bundle.TweetMediaTags",
+      "sizes": {
+        "stat": 17170,
+        "gzip": 1401
+      }
+    },
+    {
+      "hash": "2cd6ea0fb7e6e014c4a76a9fa64547a4",
+      "name": "bundle.UserAvatar",
+      "sizes": {
+        "stat": 17676,
+        "gzip": 1373
+      }
+    },
+    {
+      "hash": "343db7f4de23a0718ff2c656b8f43256",
+      "name": "bundle.UserFollowLists",
+      "sizes": {
+        "stat": 52041,
+        "gzip": 3997
+      }
+    },
+    {
+      "hash": "b55ab2152fdbb993ba1cf3611962a1dd",
+      "name": "bundle.UserLists",
+      "sizes": {
+        "stat": 123305,
+        "gzip": 8477
+      }
+    },
+    {
+      "hash": "8656b137c0b10d39a2cce44341e78b71",
+      "name": "bundle.UserOnboarding",
+      "sizes": {
+        "stat": 97869,
+        "gzip": 8843
+      }
+    },
+    {
+      "hash": "0632d4658b05405de84a1ba49a21da31",
+      "name": "bundle.UserProfile",
+      "sizes": {
+        "stat": 133158,
+        "gzip": 13819
+      }
+    },
+    {
+      "hash": "18cbe6309fb37a036994a3aff587d14c",
+      "name": "bundle.UserProfileSuspended",
+      "sizes": {
+        "stat": 15730,
+        "gzip": 1231
+      }
+    },
+    {
+      "hash": "476102c9180ae479f7a2576e53351095",
+      "name": "bundle.UserProfileTimelines",
+      "sizes": {
+        "stat": 55777,
+        "gzip": 4509
+      }
+    },
+    {
+      "hash": "7a9fca23ccc429623fde2e91236f9193",
+      "name": "loader.BroadcastPlayer",
+      "sizes": {
+        "stat": 896460,
+        "gzip": 87868
+      }
+    },
+    {
+      "hash": "f50c0703fd5295ff93c8548be7d65bb4",
+      "name": "loader.EntryTombstone",
+      "sizes": {
+        "stat": 19026,
+        "gzip": 1617
+      }
+    },
+    {
+      "hash": "8197a38def91664270de5fab75a7eb7b",
+      "name": "loader.FeedbackSheet",
+      "sizes": {
+        "stat": 16343,
+        "gzip": 1084
+      }
+    },
+    {
+      "hash": "71da7485a2b5db2a2bb4a3a7fddd76be",
+      "name": "loader.PushNotificationsPrompt",
+      "sizes": {
+        "stat": 23723,
+        "gzip": 2123
+      }
+    },
+    {
+      "hash": "1287eda8c069a39467b8e9ab4126fdeb",
+      "name": "loader.SearchBox",
+      "sizes": {
+        "stat": 126855,
+        "gzip": 12100
+      }
+    },
+    {
+      "hash": "edf3df909345a819c316ea368d48bb6a",
+      "name": "loader.TimelineGap",
+      "sizes": {
+        "stat": 14853,
+        "gzip": 913
+      }
+    },
+    {
+      "hash": "9c550a21f7c1dc50235bd600dab5e0e4",
+      "name": "loader.TweetCurationActionSheet",
+      "sizes": {
+        "stat": 41578,
+        "gzip": 4762
+      }
+    },
+    {
+      "hash": "1460119fc69366927b4c982277c9b45d",
+      "name": "loader.UMFPrompt",
+      "sizes": {
+        "stat": 32261,
+        "gzip": 2977
+      }
+    },
+    {
+      "hash": "2a9747ef169b06cabb01d69d10fe4e46",
+      "name": "loader.notificationsData",
+      "sizes": {
+        "stat": 28858,
+        "gzip": 2521
+      }
+    },
+    {
+      "hash": "8f901311ca60452049192a6d97193569",
+      "name": "main",
+      "sizes": {
+        "stat": 11357000,
+        "gzip": 131895
+      }
+    },
+    {
+      "hash": "6ba0e03987464225c5919db794cbbad0",
+      "name": "runtime",
+      "sizes": {
+        "stat": 10000,
+        "gzip": 823
+      }
+    },
+    {
+      "hash": "ac3fac9b161c9d84abb91934812850b9",
+      "name": "shared",
+      "sizes": {
+        "stat": 1107991,
+        "gzip": 112065
+      }
+    },
+    {
+      "hash": "3b3f460646a992ae690ccfd2724dab7b",
+      "name": "vendor",
+      "sizes": {
+        "stat": 15755540,
+        "gzip": 148022
+      }
+    }
+  ]
+}

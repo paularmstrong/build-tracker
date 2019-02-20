@@ -1,7 +1,8 @@
 import * as Theme from '../theme';
-import MenuIcon from '../icons/Menu';
 import AppBar from '../components/AppBar';
+import ComparisonTable from '../components/ComparisonTable';
 import Drawer from '../components/Drawer';
+import MenuIcon from '../icons/Menu';
 import React from 'react';
 import Subtitle from '../components/Subtitle';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -28,8 +29,10 @@ const Main = (): React.ReactElement => {
           <View key="chart" />
         </View>
         <View key="table" style={[styles.column, styles.table]}>
-          <ScrollView style={styles.tableScroll}>
-            <Text>Placeholder: Chart</Text>
+          <ScrollView horizontal style={styles.tableScroll}>
+            <ScrollView>
+              <ComparisonTable builds={[]} />
+            </ScrollView>
           </ScrollView>
           <View style={styles.buildInfo}>
             <Text>Placeholder: Build Info</Text>

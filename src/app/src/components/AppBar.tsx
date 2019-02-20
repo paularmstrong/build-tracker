@@ -93,6 +93,8 @@ const styles = StyleSheet.create({
   root: {
     // @ts-ignore
     position: 'sticky',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Theme.Color.Gray10,
     top: 0,
     minHeight: '4rem',
     backgroundColor: Theme.Color.White,
@@ -104,7 +106,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
     transitionProperty: 'top, box-shadow',
     transitionDuration: '0.2s',
-    transitionTimingFunction: Theme.MotionTiming.Standard
+    transitionTimingFunction: Theme.MotionTiming.Standard,
+    width: '100%'
   },
 
   hidden: {

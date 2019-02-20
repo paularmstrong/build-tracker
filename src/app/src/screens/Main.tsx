@@ -1,23 +1,13 @@
+import * as Theme from '../theme';
 import MenuIcon from '../icons/Menu';
 import AppBar from '../components/AppBar';
 import Drawer from '../components/Drawer';
 import React from 'react';
 import Subtitle from '../components/Subtitle';
-import { NativeSyntheticEvent, NativeScrollEvent, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const Main = (): React.ReactElement => {
-  const appBarRef: React.RefObject<AppBar> = React.useRef(null);
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
-
-  const handleScrollContent = (event: NativeSyntheticEvent<NativeScrollEvent>): void => {
-    const {
-      nativeEvent: {
-        contentOffset: { y }
-      }
-    } = event;
-
-    appBarRef.current && appBarRef.current.setYScrollPosition(y);
-  };
 
   const showDrawer = (): void => {
     drawerRef.current && drawerRef.current.show();
@@ -28,13 +18,24 @@ const Main = (): React.ReactElement => {
       <Drawer hidden ref={drawerRef}>
         <Subtitle title="Build Tracker" />
       </Drawer>
-      <ScrollView onScroll={handleScrollContent} scrollEventThrottle={100} scrollEnabled style={styles.content}>
-        <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" ref={appBarRef} />
-        <View
-          // @ts-ignore
-          accessibilityRole="main"
-        />
-      </ScrollView>
+      <View
+        // @ts-ignore
+        accessibilityRole="main"
+        style={styles.main}
+      >
+        <View style={[styles.column, styles.chart]}>
+          <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
+          <View key="chart" />
+        </View>
+        <View key="table" style={[styles.column, styles.table]}>
+          <ScrollView style={styles.tableScroll}>
+            <Text>Placeholder: Chart</Text>
+          </ScrollView>
+          <View style={styles.buildInfo}>
+            <Text>Placeholder: Build Info</Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 };
@@ -45,10 +46,36 @@ const styles = StyleSheet.create({
     height: '100vh',
     overflow: 'hidden'
   },
-  content: {
+  main: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    height: '100vh',
+    width: '100vw'
+  },
+  column: {
+    flexGrow: 3,
+    flexShrink: 1,
+    height: '100vh',
+    alignItems: 'flex-start'
+  },
+  chart: {
+    flexDirection: 'column'
+  },
+  table: {
     flexGrow: 1,
     flexShrink: 1,
-    maxWidth: '100%'
+    flexDirection: 'column',
+    maxWidth: '40vw',
+    borderLeftColor: Theme.Color.Gray10,
+    borderLeftWidth: StyleSheet.hairlineWidth
+  },
+  tableScroll: {
+    width: '100%'
+  },
+  buildInfo: {
+    width: '100%',
+    borderTopColor: Theme.Color.Gray10,
+    borderTopWidth: StyleSheet.hairlineWidth
   }
 });
 

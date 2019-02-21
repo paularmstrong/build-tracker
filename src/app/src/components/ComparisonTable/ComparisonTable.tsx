@@ -1,35 +1,37 @@
 import ArtifactCell from './ArtifactCell';
-import Build from '@build-tracker/build';
 import DeltaCell from './DeltaCell';
 import React from 'react';
 import RevisionCell from './RevisionCell';
 import RevisionDeltaCell from './RevisionDeltaCell';
 import TextCell from './TextCell';
 import TotalCell from './TotalCell';
-import Comparator, { BodyCell, CellType } from '@build-tracker/comparator';
 import { StyleSheet } from 'react-native';
+import Build, { BuildMeta, ArtifactSizes } from '@build-tracker/build';
+import Comparator, { BodyCell, CellType } from '@build-tracker/comparator';
 import { Table, Thead, Tbody, Tr } from './Table';
 
-interface Props {
-  builds: Array<Build>;
+interface Props<M extends BuildMeta, A extends ArtifactSizes> {
+  builds: Array<Build<M, A>>;
+  sizeKey: string;
 }
 
-const mapBodyCell = (cell: BodyCell, i: number): React.ReactElement => {
-  switch (cell.type) {
-    case CellType.TEXT:
-      return <TextCell cell={cell} key={i} />;
-    case CellType.ARTIFACT:
-      return <ArtifactCell cell={cell} key={i} />;
-    case CellType.DELTA:
-      return <DeltaCell cell={cell} key={i} />;
-    case CellType.TOTAL:
-      return <TotalCell cell={cell} key={i} />;
-  }
-};
-
-const ComparisonTable = (props: Props): React.ReactElement => {
-  const comparator = React.useMemo((): Comparator => new Comparator({ builds: props.builds }), [props.builds]);
+const ComparisonTable = <M extends BuildMeta, A extends ArtifactSizes>(props: Props<M, A>): React.ReactElement => {
+  const { builds, sizeKey } = props;
+  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), [builds]);
   const matrix = comparator.toJSON();
+
+  const mapBodyCell = (cell: BodyCell, i: number): React.ReactElement => {
+    switch (cell.type) {
+      case CellType.TEXT:
+        return <TextCell cell={cell} key={i} />;
+      case CellType.ARTIFACT:
+        return <ArtifactCell cell={cell} key={i} />;
+      case CellType.DELTA:
+        return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
+      case CellType.TOTAL:
+        return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
+    }
+  };
 
   return (
     <Table style={styles.table}>

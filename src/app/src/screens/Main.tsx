@@ -42,7 +42,7 @@ const Main = (): React.ReactElement => {
         <View key="table" style={[styles.column, styles.table]}>
           <ScrollView horizontal style={styles.tableScroll}>
             <ScrollView>
-              <ComparisonTable builds={builds} />
+              <ComparisonTable builds={builds} sizeKey="gzip" />
             </ScrollView>
           </ScrollView>
           <View style={styles.buildInfo}>

@@ -1,3 +1,4 @@
+import { formatSha } from '@build-tracker/formatting';
 import React from 'react';
 import { RevisionCell } from '@build-tracker/comparator';
 import { Th } from './Table';
@@ -11,7 +12,7 @@ interface Props {
 const RevisionCell = (props: Props): React.ReactElement => {
   return (
     <Th style={props.style}>
-      <Text>{props.cell.revision}</Text>
+      <Text>{formatSha(props.cell.revision)}</Text>
     </Th>
   );
 };

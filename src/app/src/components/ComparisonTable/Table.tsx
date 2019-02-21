@@ -4,6 +4,7 @@ import { createElement, StyleProp, StyleSheet, ViewProps, ViewStyle } from 'reac
 interface TableProps extends ViewProps {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  title?: string;
 }
 
 export const Table = (props: TableProps): React.ReactElement =>

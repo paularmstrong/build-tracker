@@ -120,7 +120,7 @@ const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.rev
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell): string => formatBytes(cell.sizes.gzip || 0);
 const defaultFormatDelta = (cell: DeltaCell): string =>
-  `${formatBytes(cell.sizes.gzip || 0)} (${((cell.percents.gzip || 1) * 100).toFixed(1)}%)`;
+  `${formatBytes(cell.sizes.gzip || 0)} (${(cell.percents.gzip * 100).toFixed(1)}%)`;
 const defaultRowFilter = (): boolean => true;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

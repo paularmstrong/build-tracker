@@ -12,9 +12,10 @@ interface Props {
 
 const TotalCell = (props: Props): React.ReactElement => {
   const { cell, sizeKey, style } = props;
+  const value = cell.sizes[sizeKey];
   return (
     <Td style={style}>
-      <Text>{formatBytes(cell.sizes[sizeKey])}</Text>
+      <Text>{value === 0 ? '' : formatBytes(value)}</Text>
     </Td>
   );
 };

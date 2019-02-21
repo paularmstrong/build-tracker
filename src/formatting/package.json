@@ -1,0 +1,12 @@
+{
+  "name": "@build-tracker/formatting",
+  "version": "1.0.0",
+  "description": "Build Tracker number and string formatting tools",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "license": "MIT",
+  "main": "lib",
+  "module": "index.ts",
+  "types": "index.ts",
+  "dependencies": {}
+}

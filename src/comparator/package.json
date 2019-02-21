@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@build-tracker/build": "1.0.0",
+    "@build-tracker/formatting": "1.0.0",
     "@build-tracker/types": "1.0.0"
   }
 }

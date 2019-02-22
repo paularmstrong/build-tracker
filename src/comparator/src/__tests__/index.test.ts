@@ -126,6 +126,7 @@ describe('BuildComparator', () => {
         `
 |          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
+| All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
 | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
 | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
 | tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |`
@@ -148,6 +149,7 @@ describe('BuildComparator', () => {
         `
 |          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
+| All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
 | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
 | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
 `
@@ -162,6 +164,7 @@ describe('BuildComparator', () => {
         `
 |       |  1234567 |  8901234 |            Δ1 |
 | :---- | -------: | -------: | ------------: |
+| All   | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |
 | tacos | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |`
           .replace(/^\n/, '')
           .replace(/\n$/, '')
@@ -173,7 +176,7 @@ describe('BuildComparator', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toCsv()).toEqual(
-        ',1234567,8901234,Δ1\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
+        ',1234567,8901234,Δ1\r\nAll,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
       );
     });
 
@@ -188,13 +191,15 @@ describe('BuildComparator', () => {
         });
       };
       expect(comparator.toCsv({ rowFilter })).toEqual(
-        ',1234567,8901234,Δ1\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)'
+        ',1234567,8901234,Δ1\r\nAll,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)'
       );
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.toCsv()).toEqual(',1234567,8901234,Δ1\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)');
+      expect(comparator.toCsv()).toEqual(
+        ',1234567,8901234,Δ1\r\nAll,0.04 KiB,0.04 KiB,0 KiB (-4.4%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
+      );
     });
   });
 });

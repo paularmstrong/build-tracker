@@ -71,7 +71,7 @@ export interface ComparisonMatrix {
 type RevisionStringFormatter = (cell: RevisionCell) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
 type TotalStringFormatter = (cell: TotalCell) => string;
-type DeltaStringFormatter = (cell: DeltaCell) => string;
+type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell) => string;
 type RowFilter = (row: Array<BodyCell>) => boolean;
 
 interface FormattingOptions {
@@ -115,7 +115,7 @@ const flatten = (arrays: Array<any>): Array<any> => arrays.reduce((memo: Array<a
 const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.revision);
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell): string => formatBytes(cell.sizes.gzip || 0);
-const defaultFormatDelta = (cell: DeltaCell): string =>
+const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell): string =>
   `${formatBytes(cell.sizes.gzip || 0)} (${(cell.percents.gzip * 100).toFixed(1)}%)`;
 const defaultRowFilter = (): boolean => true;
 
@@ -203,7 +203,8 @@ export default class BuildComparator {
             type: CellType.TOTAL
           },
           ...buildDeltas.map(buildDelta => ({
-            ...buildDelta.totalDelta,
+            percents: buildDelta.totalDelta.percents,
+            sizes: buildDelta.totalDelta.sizes,
             type: CellType.TOTAL_DELTA
           }))
         ])
@@ -261,6 +262,26 @@ export default class BuildComparator {
     });
   }
 
+  public getStringFormattedTotals(
+    formatTotal: TotalStringFormatter = defaultFormatTotal,
+    formatDelta: DeltaStringFormatter = defaultFormatDelta
+  ): Array<string> {
+    return this.matrixTotal.map(
+      (cell): string => {
+        if (instanceOfCell<ArtifactCell>(cell, CellType.ARTIFACT)) {
+          return cell.text;
+        }
+        if (instanceOfCell<TotalDeltaCell>(cell, CellType.TOTAL_DELTA)) {
+          return formatDelta(cell);
+        }
+        if (instanceOfCell<TotalCell>(cell, CellType.TOTAL)) {
+          return formatTotal(cell);
+        }
+        return '';
+      }
+    );
+  }
+
   public getStringFormattedRows(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
@@ -302,12 +323,13 @@ export default class BuildComparator {
     rowFilter
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
+    const total = this.getStringFormattedTotals(formatTotal, formatDelta);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
     if (rows.length === 0) {
       return '';
     }
 
-    return markdownTable([header, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
+    return markdownTable([header, total, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
   }
 
   public toCsv({
@@ -318,8 +340,9 @@ export default class BuildComparator {
     rowFilter
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
+    const total = this.getStringFormattedTotals(formatTotal, formatDelta);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
 
-    return [header, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
+    return [header, total, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }
 }

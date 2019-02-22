@@ -3,11 +3,11 @@ import DeltaCell from './DeltaCell';
 import React from 'react';
 import RevisionCell from './RevisionCell';
 import RevisionDeltaCell from './RevisionDeltaCell';
+import { StyleSheet } from 'react-native';
 import TextCell from './TextCell';
 import TotalCell from './TotalCell';
-import { StyleSheet } from 'react-native';
 import Comparator, { BodyCell, CellType } from '@build-tracker/comparator';
-import { Table, Thead, Tbody, Tr } from './Table';
+import { Table, Tbody, Thead, Tr } from './Table';
 
 interface Props {
   comparator: Comparator;

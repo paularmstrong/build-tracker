@@ -1,6 +1,6 @@
 import Hoverable from '../Hoverable';
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
 
 describe('Hoverable', () => {
   describe('when hover is supported', () => {

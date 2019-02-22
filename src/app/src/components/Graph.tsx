@@ -1,14 +1,14 @@
 import 'd3-transition';
 import Build from '@build-tracker/build';
-import React from 'react';
 import Comparator from '@build-tracker/comparator';
+import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import { area, stack } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
-import { select, Selection } from 'd3-selection';
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
+import { select, Selection } from 'd3-selection';
 
 interface Props {
   colorScale: ScaleSequential<string>;

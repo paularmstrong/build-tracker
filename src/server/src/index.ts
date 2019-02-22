@@ -1,10 +1,10 @@
-import express from 'express';
-import * as pino from 'pino';
 import * as expressPino from 'express-pino-logger';
+import * as pino from 'pino';
 import bodyParser from 'body-parser';
 import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
 import createInsertBuildHandler from './api/insert';
+import express from 'express';
 
 export interface ServerConfig {
   getParentBuild: (build: Build) => Promise<Build>;

@@ -1,5 +1,5 @@
-import BuildComparator from '..';
 import Build from '@build-tracker/build';
+import BuildComparator from '..';
 import BuildDelta from '../BuildDelta';
 
 const build1 = new Build({ revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 }, [

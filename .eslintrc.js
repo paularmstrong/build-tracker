@@ -22,6 +22,7 @@ module.exports = {
   },
   rules: {
     'no-console': 'error',
+    'sort-imports': ['error', { memberSyntaxSortOrder: ['none', 'all', 'single', 'multiple'], ignoreCase: true }],
     quotes: 'off',
 
     'prettier/prettier': ['error', { singleQuote: true, printWidth: 120 }],

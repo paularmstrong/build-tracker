@@ -1,5 +1,5 @@
-import React from 'react';
 import { ArtifactCell as Cell } from '@build-tracker/comparator';
+import React from 'react';
 import { Th } from './Table';
 import { StyleProp, Text, ViewStyle } from 'react-native';
 

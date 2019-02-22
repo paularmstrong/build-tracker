@@ -4,8 +4,10 @@ import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../components/ComparisonTable';
 import Drawer from '../components/Drawer';
 import Graph from '../components/Graph';
+import { interpolateRainbow } from 'd3-scale-chromatic';
 import MenuIcon from '../icons/Menu';
 import React from 'react';
+import { scaleSequential, ScaleSequential } from 'd3-scale';
 import Subtitle from '../components/Subtitle';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -29,6 +31,11 @@ const Main = (): React.ReactElement => {
 
   const comparator = React.useMemo((): Comparator => new Comparator({ builds }), [builds]);
 
+  const colorScale = React.useMemo(
+    (): ScaleSequential<string> => scaleSequential(interpolateRainbow).domain([0, comparator.artifactNames.length]),
+    [comparator.artifactNames.length]
+  );
+
   return (
     <View style={styles.layout}>
       <Drawer hidden ref={drawerRef}>
@@ -41,7 +48,7 @@ const Main = (): React.ReactElement => {
       >
         <View style={[styles.column, styles.chart]}>
           <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-          <Graph comparator={comparator} sizeKey="gzip" />
+          <Graph colorScale={colorScale} comparator={comparator} sizeKey="gzip" />
         </View>
         <View key="table" style={[styles.column, styles.table]}>
           <ScrollView horizontal style={styles.tableScroll}>

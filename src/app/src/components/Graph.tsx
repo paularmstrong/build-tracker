@@ -2,6 +2,7 @@ import 'd3-transition';
 import Build from '@build-tracker/build';
 import React from 'react';
 import Comparator from '@build-tracker/comparator';
+import { ScaleSequential } from 'd3-scale';
 import { area, stack } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
@@ -10,15 +11,20 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
 interface Props {
+  colorScale: ScaleSequential<string>;
   comparator: Comparator;
   sizeKey: string;
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { comparator, sizeKey } = props;
+  const { colorScale, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
   const [svg, setSvg] = React.useState<Selection<SVGGElement, {}, SVGElement, null>>(null);
+
+  const graphColorScale = React.useMemo(() => {
+    return d => colorScale(comparator.artifactNames.length - comparator.artifactNames.indexOf(d.key));
+  }, [colorScale, comparator.artifactNames]);
 
   const xScale = React.useMemo(() => {
     const domain = comparator.builds
@@ -26,7 +32,7 @@ const Graph = (props: Props): React.ReactElement => {
       .map(build => build.getMetaValue('revision'));
     return scalePoint()
       .range([0, width - 100])
-      .padding(0.25)
+      .padding(0.05)
       .round(true)
       .domain(domain);
   }, [comparator, width]);
@@ -119,9 +125,7 @@ const Graph = (props: Props): React.ReactElement => {
       .merge(artifact)
       .transition()
       .duration(100)
-      // .style('fill', d => {
-
-      // })
+      .style('fill', graphColorScale)
       .attr('d', areaChart);
   });
 

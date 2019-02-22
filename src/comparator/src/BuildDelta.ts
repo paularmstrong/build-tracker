@@ -24,6 +24,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
   private _artifactDeltas: Map<string, ArtifactDelta<A>>;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Set<string>;
+  private _sizeKeys: Set<string>;
   private _totalDelta: BuildSizeDelta<M, A>;
 
   public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, artifactFilters?: ArtifactFilters) {
@@ -51,6 +52,26 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     const val = this._meta[key];
     // @ts-ignore
     return typeof val === 'object' && val.hasOwnProperty('url') ? val.url : undefined;
+  }
+
+  public get artifactSizes(): Array<string> {
+    if (!this._sizeKeys) {
+      this._sizeKeys = new Set();
+      this._baseBuild.artifactSizes.forEach(key => {
+        this._sizeKeys.add(key);
+      });
+      this._prevBuild.artifactSizes.forEach(key => {
+        this._sizeKeys.add(key);
+      });
+      if (
+        this._sizeKeys.size !== this._baseBuild.artifactSizes.length ||
+        this._sizeKeys.size !== this._prevBuild.artifactSizes.length
+      ) {
+        throw new Error('Size keys do not match between builds');
+      }
+    }
+
+    return Array.from(this._sizeKeys);
   }
 
   public getArtifactDelta(name: string): ArtifactDelta {
@@ -82,25 +103,16 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
         const prevArtifact = this._prevBuild.getArtifact(artifactName);
 
         const sizeDeltas = prevArtifact
-          ? Object.keys(prevArtifact.sizes).reduce((memo, sizeKey) => {
+          ? this.artifactSizes.reduce((memo, sizeKey) => {
               memo[sizeKey] = delta(sizeKey, baseArtifact && baseArtifact.sizes, prevArtifact && prevArtifact.sizes);
               return memo;
             }, {})
           : { ...baseArtifact.sizes };
 
-        const percentDeltas = prevArtifact
-          ? Object.keys(prevArtifact.sizes).reduce((memo, sizeKey) => {
-              memo[sizeKey] = percentDelta(
-                sizeKey,
-                baseArtifact && baseArtifact.sizes,
-                prevArtifact && prevArtifact.sizes
-              );
-              return memo;
-            }, {})
-          : Object.keys(baseArtifact.sizes).reduce((memo, sizeKey) => {
-              memo[sizeKey] = 0;
-              return memo;
-            }, {});
+        const percentDeltas = this.artifactSizes.reduce((memo, sizeKey) => {
+          memo[sizeKey] = percentDelta(sizeKey, baseArtifact && baseArtifact.sizes, prevArtifact && prevArtifact.sizes);
+          return memo;
+        }, {});
 
         this._artifactDeltas.set(artifactName, {
           name: artifactName,

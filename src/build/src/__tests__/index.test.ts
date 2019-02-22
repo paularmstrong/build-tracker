@@ -56,6 +56,13 @@ describe('Build', () => {
     });
   });
 
+  describe('artifactSizes', () => {
+    test('gets a lits of available size keys', () => {
+      const build = new Build(baseMeta, [tacoArtifact]);
+      expect(build.artifactSizes).toEqual(['stat', 'gzip']);
+    });
+  });
+
   describe('getArtfact', () => {
     test('can get by name', () => {
       const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);

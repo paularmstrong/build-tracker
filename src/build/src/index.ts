@@ -53,6 +53,7 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
   private _meta: M;
   private _artifacts: Map<string, Artifact<A>>;
   private _totals: A;
+  private _sizeKeys: Set<string>;
 
   public constructor(meta: M, artifacts: Array<Artifact<A>>) {
     this._meta = Object.freeze(meta);
@@ -84,6 +85,18 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
 
   public get artifacts(): Array<Artifact<A>> {
     return Array.from(this._artifacts.values());
+  }
+
+  public get artifactSizes(): Array<string> {
+    if (!this._sizeKeys) {
+      this._sizeKeys = new Set();
+      this._artifacts.forEach(artifact => {
+        Object.keys(artifact.sizes).forEach(k => {
+          this._sizeKeys.add(k);
+        });
+      });
+    }
+    return Array.from(this._sizeKeys);
   }
 
   public getArtifact(name: string): Artifact<A> {

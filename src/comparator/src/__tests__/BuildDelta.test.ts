@@ -62,6 +62,28 @@ describe('BuildDelta', () => {
     });
   });
 
+  describe('artifactSizes', () => {
+    test('gets a list of size keys available', () => {
+      const bd = new BuildDelta(buildA, buildB);
+      expect(bd.artifactSizes).toEqual(['stat', 'gzip']);
+    });
+
+    test('throws an error if builds do not have same artifact size keys', () => {
+      const bd = new BuildDelta(
+        buildA,
+        new Build(
+          {
+            revision: { value: '123', url: 'https://build-tracker.local' },
+            parentRevision: 'abc',
+            timestamp: Date.now()
+          },
+          [{ name: 'tacos', hash: 'abc', sizes: {} }]
+        )
+      );
+      expect(() => bd.artifactSizes).toThrow();
+    });
+  });
+
   describe('artifactNames', () => {
     test('gets a set of artifact names', () => {
       const bd = new BuildDelta(buildA, buildB);
@@ -112,6 +134,48 @@ describe('BuildDelta', () => {
           percents: {
             gzip: -1,
             stat: -1
+          }
+        }
+      ]);
+    });
+
+    test('artifact deltas when adding artifacts', () => {
+      const bd = new BuildDelta(buildB, buildA);
+      expect(bd.artifactDeltas).toEqual([
+        {
+          hashChanged: false,
+          name: 'tacos',
+          sizes: {
+            gzip: 0,
+            stat: -1
+          },
+          percents: {
+            gzip: 0,
+            stat: -0.5
+          }
+        },
+        {
+          hashChanged: false,
+          name: 'burritos',
+          sizes: {
+            gzip: 2,
+            stat: 3
+          },
+          percents: {
+            gzip: 1,
+            stat: 1
+          }
+        },
+        {
+          hashChanged: true,
+          name: 'churros',
+          sizes: {
+            gzip: 4,
+            stat: 6
+          },
+          percents: {
+            gzip: 1,
+            stat: 1
           }
         }
       ]);

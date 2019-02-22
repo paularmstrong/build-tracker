@@ -3,12 +3,12 @@ import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
+import { select } from 'd3-selection';
 import { area, stack } from 'd3-shape';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
-import { select, Selection } from 'd3-selection';
 
 interface Props {
   colorScale: ScaleSequential<string>;
@@ -16,13 +16,10 @@ interface Props {
   sizeKey: string;
 }
 
-const noop = (): void => {};
-
 const Graph = (props: Props): React.ReactElement => {
   const { colorScale, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
-  const [svg, setSvg] = React.useState<Selection<SVGGElement, {}, SVGElement, null>>(null);
 
   const graphColorScale = React.useMemo(() => {
     return d => colorScale(comparator.artifactNames.length - comparator.artifactNames.indexOf(d.key));
@@ -47,35 +44,12 @@ const Graph = (props: Props): React.ReactElement => {
       .domain([0, maxTotal]);
   }, [comparator, height, sizeKey]);
 
-  const drawAxes = React.useMemo((): (() => void) => {
-    if (
-      !svgRef.current ||
-      !select(svgRef.current)
-        .select('g')
-        .empty()
-    ) {
-      return noop;
-    }
-    return () => {
-      const svg = select(svgRef.current)
-        .append('g')
-        .attr('transform', 'translate(80,20)');
-      svg.append('g').attr('class', 'xAxis');
-      svg.append('g').attr('class', 'yAxis');
-      svg.append('g').attr('class', 'contents');
-      setSvg(svg);
-    };
-  }, []);
-
   React.useEffect(() => {
     if (!svgRef.current || !height || !width) {
       return;
     }
-    drawAxes();
 
-    if (!svg) {
-      return;
-    }
+    const svg = select(svgRef.current).select('g.main');
 
     const xAxis = axisBottom(xScale).tickFormat(d => formatSha(d));
     svg
@@ -140,7 +114,13 @@ const Graph = (props: Props): React.ReactElement => {
 
   return (
     <View onLayout={handleLayout} style={styles.root}>
-      <svg height={height} ref={svgRef} width={width} />
+      <svg height={height} ref={svgRef} width={width}>
+        <g className="main" transform="translate(80,20)">
+          <g className="xAxis" />
+          <g className="yAxis" />
+          <g className="contents" />
+        </g>
+      </svg>
     </View>
   );
 };

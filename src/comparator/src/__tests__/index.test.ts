@@ -3,13 +3,13 @@ import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
 
 const build1 = new Build({ revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 }, [
-  { name: 'churros', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
+  { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
   { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
 ]);
 
 const build2 = new Build({ revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 }, [
   { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
-  { name: 'burritos', hash: 'def', sizes: { stat: 469, gzip: 93 } }
+  { name: 'churros', hash: 'def', sizes: { stat: 469, gzip: 120 } }
 ]);
 
 const artifactFilters = [/burritos/, /churros/];
@@ -49,6 +49,11 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.artifactNames).toEqual(expect.arrayContaining(['burritos', 'churros', 'tacos']));
     });
+
+    test('sorts artifacts by average size', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.artifactNames).toEqual(['churros', 'burritos', 'tacos']);
+    });
   });
 
   describe('buildDeltas', () => {
@@ -69,7 +74,7 @@ describe('BuildComparator', () => {
   describe('getSum', () => {
     test('gets a row of sums', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      const [, build1Sum, build2Sum, deltaSum] = comparator.getSum(['churros', 'tacos']);
+      const [, build1Sum, build2Sum, deltaSum] = comparator.getSum(['burritos', 'tacos']);
       expect(build1Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 135, stat: 579 } }));
       expect(build2Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
       expect(deltaSum).toMatchObject(
@@ -121,8 +126,8 @@ describe('BuildComparator', () => {
         `
 |          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
-| burritos |    0 KiB | 0.09 KiB |   0.09 KiB (100.0%) |
-| churros  | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
+| churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
+| burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
 | tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |`
           .replace(/^\n/, '')
           .replace(/\n$/, '')
@@ -143,8 +148,8 @@ describe('BuildComparator', () => {
         `
 |          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
-| burritos |    0 KiB | 0.09 KiB |   0.09 KiB (100.0%) |
-| churros  | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
+| churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
+| burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
 `
           .replace(/^\n/, '')
           .replace(/\n$/, '')
@@ -168,7 +173,7 @@ describe('BuildComparator', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toCsv()).toEqual(
-        ',1234567,8901234,Δ1\r\nburritos,0 KiB,0.09 KiB,0.09 KiB (100.0%)\r\nchurros,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
+        ',1234567,8901234,Δ1\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
       );
     });
 
@@ -183,7 +188,7 @@ describe('BuildComparator', () => {
         });
       };
       expect(comparator.toCsv({ rowFilter })).toEqual(
-        ',1234567,8901234,Δ1\r\nburritos,0 KiB,0.09 KiB,0.09 KiB (100.0%)\r\nchurros,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)'
+        ',1234567,8901234,Δ1\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)'
       );
     });
 

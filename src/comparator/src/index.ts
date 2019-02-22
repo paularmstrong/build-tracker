@@ -112,10 +112,6 @@ const getTotalArtifactSizes = (build: Build, artifactFilters: ArtifactFilters): 
 const flatten = (arrays: Array<any>): Array<any> => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-const defaultArtifactSorter = (rowA, rowB): number => {
-  return rowA > rowB ? 1 : rowB > rowA ? -1 : 0;
-};
-
 const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.revision);
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell): string => formatBytes(cell.sizes.gzip || 0);
@@ -133,7 +129,6 @@ const emptyArray = [];
 
 interface ComparatorOptions {
   artifactFilters?: ArtifactFilters;
-  artifactSorter?: (a: string, b: string) => number;
   builds: Array<Build>;
 }
 
@@ -142,19 +137,22 @@ export default class BuildComparator {
 
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Array<string>;
-  private _artifactSorter: (a, b) => number;
   private _buildDeltas: Array<Array<BuildDelta>>;
 
-  public constructor({ artifactFilters, artifactSorter, builds }: ComparatorOptions) {
+  public constructor({ artifactFilters, builds }: ComparatorOptions) {
     this.builds = builds;
-    this._artifactSorter = artifactSorter || defaultArtifactSorter;
     this._artifactFilters = artifactFilters || emptyArray;
   }
 
   public get artifactNames(): Array<string> {
     if (!this._artifactNames) {
       this._artifactNames = Array.prototype.concat
-        .apply([], this.builds.map(build => build.artifactNames))
+        .apply([], this.builds.map(build => build.artifacts))
+        .sort((a, b) => {
+          const sizeKey = Object.keys(a.sizes)[0];
+          return b.sizes[sizeKey] - a.sizes[sizeKey];
+        })
+        .map(artifact => artifact.name)
         .filter(
           (value, index, self) =>
             self.indexOf(value) === index && !this._artifactFilters.some(filter => filter.test(value))
@@ -214,7 +212,7 @@ export default class BuildComparator {
   }
 
   public get matrixBody(): Array<Array<BodyCell>> {
-    return this.artifactNames.sort(this._artifactSorter).map(artifactName => {
+    return this.artifactNames.map(artifactName => {
       const cells = this.buildDeltas.map(
         (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
           const artifact = this.builds[i].getArtifact(artifactName);

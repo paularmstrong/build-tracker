@@ -16,6 +16,8 @@ interface Props {
   sizeKey: string;
 }
 
+const noop = (): void => {};
+
 const Graph = (props: Props): React.ReactElement => {
   const { colorScale, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
@@ -43,19 +45,18 @@ const Graph = (props: Props): React.ReactElement => {
     return scaleLinear()
       .range([height - 100, 0])
       .domain([0, maxTotal]);
-  }, [comparator, height]);
+  }, [comparator, height, sizeKey]);
 
-  const drawAxes = React.useMemo(
-    () => () => {
-      if (
-        !svgRef.current ||
-        !select(svgRef.current)
-          .select('g')
-          .empty()
-      ) {
-        return;
-      }
-
+  const drawAxes = React.useMemo((): (() => void) => {
+    if (
+      !svgRef.current ||
+      !select(svgRef.current)
+        .select('g')
+        .empty()
+    ) {
+      return noop;
+    }
+    return () => {
       const svg = select(svgRef.current)
         .append('g')
         .attr('transform', 'translate(80,20)');
@@ -63,9 +64,8 @@ const Graph = (props: Props): React.ReactElement => {
       svg.append('g').attr('class', 'yAxis');
       svg.append('g').attr('class', 'contents');
       setSvg(svg);
-    },
-    [svgRef.current]
-  );
+    };
+  }, []);
 
   React.useEffect(() => {
     if (!svgRef.current || !height || !width) {

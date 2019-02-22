@@ -29,11 +29,11 @@ const Main = (): React.ReactElement => {
     drawerRef.current && drawerRef.current.show();
   };
 
-  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), [builds]);
+  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
 
   const colorScale = React.useMemo(
     (): ScaleSequential<string> => scaleSequential(interpolateRainbow).domain([0, comparator.artifactNames.length]),
-    [comparator.artifactNames.length]
+    [comparator.artifactNames]
   );
 
   return (

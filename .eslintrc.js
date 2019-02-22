@@ -4,7 +4,7 @@ module.exports = {
     sourceType: 'module'
   },
   extends: ['prettier', 'prettier/@typescript-eslint', 'plugin:react/recommended', 'plugin:jest/recommended'],
-  plugins: ['@typescript-eslint', 'markdown', 'json', 'prettier', 'react', 'jest'],
+  plugins: ['@typescript-eslint', 'markdown', 'json', 'prettier', 'react', 'react-hooks', 'jest'],
   env: {
     es6: true,
     node: true,
@@ -62,6 +62,9 @@ module.exports = {
 
     'react/display-name': 'off',
     'react/no-find-dom-node': 'warn',
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error'
   }
 };

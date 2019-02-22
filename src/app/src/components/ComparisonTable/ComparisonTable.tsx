@@ -6,18 +6,16 @@ import RevisionDeltaCell from './RevisionDeltaCell';
 import TextCell from './TextCell';
 import TotalCell from './TotalCell';
 import { StyleSheet } from 'react-native';
-import Build, { BuildMeta, ArtifactSizes } from '@build-tracker/build';
 import Comparator, { BodyCell, CellType } from '@build-tracker/comparator';
 import { Table, Thead, Tbody, Tr } from './Table';
 
-interface Props<M extends BuildMeta, A extends ArtifactSizes> {
-  builds: Array<Build<M, A>>;
+interface Props {
+  comparator: Comparator;
   sizeKey: string;
 }
 
-const ComparisonTable = <M extends BuildMeta, A extends ArtifactSizes>(props: Props<M, A>): React.ReactElement => {
-  const { builds, sizeKey } = props;
-  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), [builds]);
+const ComparisonTable = (props: Props): React.ReactElement => {
+  const { comparator, sizeKey } = props;
   const matrix = comparator.toJSON();
 
   const mapBodyCell = (cell: BodyCell, i: number): React.ReactElement => {

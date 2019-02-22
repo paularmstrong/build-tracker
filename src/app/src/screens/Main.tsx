@@ -1,7 +1,9 @@
 import * as Theme from '../theme';
 import AppBar from '../components/AppBar';
+import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../components/ComparisonTable';
 import Drawer from '../components/Drawer';
+import Graph from '../components/Graph';
 import MenuIcon from '../icons/Menu';
 import React from 'react';
 import Subtitle from '../components/Subtitle';
@@ -25,6 +27,8 @@ const Main = (): React.ReactElement => {
     drawerRef.current && drawerRef.current.show();
   };
 
+  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), [builds]);
+
   return (
     <View style={styles.layout}>
       <Drawer hidden ref={drawerRef}>
@@ -37,12 +41,12 @@ const Main = (): React.ReactElement => {
       >
         <View style={[styles.column, styles.chart]}>
           <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-          <View key="chart" />
+          <Graph comparator={comparator} sizeKey="gzip" />
         </View>
         <View key="table" style={[styles.column, styles.table]}>
           <ScrollView horizontal style={styles.tableScroll}>
             <ScrollView>
-              <ComparisonTable builds={builds} sizeKey="gzip" />
+              <ComparisonTable comparator={comparator} sizeKey="gzip" />
             </ScrollView>
           </ScrollView>
           <View style={styles.buildInfo}>

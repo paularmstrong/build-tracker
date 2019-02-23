@@ -1,6 +1,7 @@
 import 'd3-transition';
 import Area from './Area';
 import Comparator from '@build-tracker/comparator';
+import HoverOverlay from './HoverOverlay';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import XAxis from './XAxis';
@@ -14,6 +15,13 @@ interface Props {
   sizeKey: string;
 }
 
+enum Margin {
+  TOP = 0,
+  RIGHT = 20,
+  BOTTOM = 100,
+  LEFT = 80
+}
+
 const Graph = (props: Props): React.ReactElement => {
   const { colorScale, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
@@ -24,7 +32,7 @@ const Graph = (props: Props): React.ReactElement => {
       .sort((a, b) => a.timestamp.valueOf() - b.timestamp.valueOf())
       .map(build => build.getMetaValue('revision'));
     return scalePoint()
-      .range([0, width - 100])
+      .range([0, width - Margin.LEFT - Margin.RIGHT])
       .padding(0.05)
       .round(true)
       .domain(domain);
@@ -34,7 +42,7 @@ const Graph = (props: Props): React.ReactElement => {
     const totals = comparator.builds.map(build => build.getTotals()[sizeKey]);
     const maxTotal = Math.max(...totals);
     return scaleLinear()
-      .range([height - 100, 0])
+      .range([height - Margin.TOP - Margin.BOTTOM, 0])
       .domain([0, maxTotal]);
   }, [comparator, height, sizeKey]);
 
@@ -53,9 +61,14 @@ const Graph = (props: Props): React.ReactElement => {
         <g className="main" transform="translate(80,20)">
           {height && width ? (
             <>
-              <XAxis height={height} scale={xScale} />
+              <XAxis height={height - Margin.TOP - Margin.BOTTOM} scale={xScale} />
               <YAxis scale={yScale} />
               <Area colorScale={colorScale} comparator={comparator} sizeKey={sizeKey} xScale={xScale} yScale={yScale} />
+              <HoverOverlay
+                height={height - Margin.TOP - Margin.BOTTOM}
+                width={width - Margin.LEFT - Margin.RIGHT}
+                xScale={xScale}
+              />
             </>
           ) : null}
         </g>

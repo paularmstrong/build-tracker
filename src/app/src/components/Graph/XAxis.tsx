@@ -21,7 +21,7 @@ const XAxis = (props: Props): React.ReactElement => {
     const axis = axisBottom(scale).tickFormat(d => formatSha(d));
     select(ref.current)
       .call(axis)
-      .attr('transform', `translate(0, ${height - 100})`)
+      .attr('transform', `translate(0, ${height})`)
       .selectAll('text')
       .attr('y', 3)
       .attr('x', 6)

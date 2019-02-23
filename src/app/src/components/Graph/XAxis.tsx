@@ -21,7 +21,6 @@ const XAxis = (props: Props): React.ReactElement => {
     const axis = axisBottom(scale).tickFormat(d => formatSha(d));
     select(ref.current)
       .call(axis)
-      .attr('transform', `translate(0, ${height})`)
       .selectAll('text')
       .attr('y', 3)
       .attr('x', 6)
@@ -29,7 +28,7 @@ const XAxis = (props: Props): React.ReactElement => {
       .style('text-anchor', 'start');
   });
 
-  return <g ref={ref} />;
+  return <g ref={ref} transform={`translate(0, ${height})`} />;
 };
 
 export default XAxis;

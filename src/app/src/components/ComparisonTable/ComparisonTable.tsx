@@ -6,7 +6,8 @@ import RevisionDeltaCell from './RevisionDeltaCell';
 import { StyleSheet } from 'react-native';
 import TextCell from './TextCell';
 import TotalCell from './TotalCell';
-import Comparator, { BodyCell, CellType } from '@build-tracker/comparator';
+import TotalDeltaCell from './TotalDeltaCell';
+import Comparator, { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
 import { Table, Tbody, Thead, Tr } from './Table';
 
 interface Props {
@@ -18,7 +19,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
   const { comparator, sizeKey } = props;
   const matrix = comparator.toJSON();
 
-  const mapBodyCell = (cell: BodyCell, i: number): React.ReactElement => {
+  const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement => {
     switch (cell.type) {
       case CellType.TEXT:
         return <TextCell cell={cell} key={i} />;
@@ -28,6 +29,8 @@ const ComparisonTable = (props: Props): React.ReactElement => {
         return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
       case CellType.TOTAL:
         return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
+      case CellType.TOTAL_DELTA:
+        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
     }
   };
 

@@ -5,8 +5,8 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  // TODO: Add Destination child type
-  children: React.ReactElement;
+  // @ts-ignore TODO: Add Destination child type
+  children: React.ReactElement | Array<React.ReactElement>;
   header?: React.ReactElement<typeof View>;
   hidden?: boolean;
 }
@@ -45,7 +45,7 @@ class Drawer extends React.Component<Props, State> {
           style={[styles.root, hidden && styles.hidden, forceShow && styles.forceShow]}
         >
           {header || null}
-          {children}
+          <>{children}</>
         </ScrollView>
       </React.Fragment>
     );

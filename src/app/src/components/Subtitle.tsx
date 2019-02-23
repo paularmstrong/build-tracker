@@ -21,11 +21,10 @@ const Subtitle = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   // @ts-ignore
   subtitle: {
-    color: Theme.Color.Gray40,
+    color: Theme.Color.Gray50,
     fontSize: Theme.FontSize.Normal,
     marginHorizontal: Theme.Spacing.Normal,
-    marginBottom: Theme.Spacing.Xsmall,
-    paddingHorizontal: Theme.Spacing.Small
+    marginBottom: Theme.Spacing.Xsmall
   }
 });
 

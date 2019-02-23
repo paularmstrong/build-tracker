@@ -4,15 +4,16 @@ import Build from '@build-tracker/build';
 import buildDataA from '@build-tracker/fixtures/builds/30af629d1d4c9f2f199cec5f572a019d4198004c.json';
 import buildDataB from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
 import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
+import ColorScaleContext from '../context/ColorScale';
+import ColorScalePicker from '../components/ColorScalePicker';
 import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../components/ComparisonTable';
 import Drawer from '../components/Drawer';
 import Graph from '../components/Graph';
-import { interpolateRainbow } from 'd3-scale-chromatic';
 import MenuIcon from '../icons/Menu';
 import React from 'react';
+import { ScaleSequential } from 'd3-scale';
 import Subtitle from '../components/Subtitle';
-import { scaleSequential, ScaleSequential } from 'd3-scale';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const builds = [
@@ -23,6 +24,8 @@ const builds = [
 
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
+  const colorScaleContext = React.useContext(ColorScaleContext);
+  const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => colorScaleContext);
 
   const showDrawer = (): void => {
     drawerRef.current && drawerRef.current.show();
@@ -30,36 +33,38 @@ const Main = (): React.ReactElement => {
 
   const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
 
-  const colorScale = React.useMemo(
-    (): ScaleSequential<string> => scaleSequential(interpolateRainbow).domain([0, comparator.artifactNames.length]),
-    [comparator.artifactNames]
-  );
+  const handleSelectColorScale = (scale): void => {
+    setColorScale(() => scale);
+  };
 
   return (
     <View style={styles.layout}>
-      <Drawer hidden ref={drawerRef}>
-        <Subtitle title="Build Tracker" />
-      </Drawer>
-      <View
-        // @ts-ignore
-        accessibilityRole="main"
-        style={styles.main}
-      >
-        <View style={[styles.column, styles.chart]}>
-          <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-          <Graph colorScale={colorScale} comparator={comparator} sizeKey="gzip" />
-        </View>
-        <View key="table" style={[styles.column, styles.table]}>
-          <ScrollView horizontal style={styles.tableScroll}>
-            <ScrollView>
-              <ComparisonTable comparator={comparator} sizeKey="gzip" />
+      <ColorScaleContext.Provider value={colorScale}>
+        <Drawer hidden ref={drawerRef}>
+          <Subtitle title="Color Scale" />
+          <ColorScalePicker onSelect={handleSelectColorScale} />
+        </Drawer>
+        <View
+          // @ts-ignore
+          accessibilityRole="main"
+          style={styles.main}
+        >
+          <View style={[styles.column, styles.chart]}>
+            <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
+            <Graph comparator={comparator} sizeKey="gzip" />
+          </View>
+          <View key="table" style={[styles.column, styles.table]}>
+            <ScrollView horizontal style={styles.tableScroll}>
+              <ScrollView>
+                <ComparisonTable comparator={comparator} sizeKey="gzip" />
+              </ScrollView>
             </ScrollView>
-          </ScrollView>
-          <View style={styles.buildInfo}>
-            <Text>Placeholder: Build Info</Text>
+            <View style={styles.buildInfo}>
+              <Text>Placeholder: Build Info</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </ColorScaleContext.Provider>
     </View>
   );
 };

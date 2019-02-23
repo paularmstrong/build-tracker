@@ -3,14 +3,12 @@ import Area from './Area';
 import Comparator from '@build-tracker/comparator';
 import HoverOverlay from './HoverOverlay';
 import React from 'react';
-import { ScaleSequential } from 'd3-scale';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
 interface Props {
-  colorScale: ScaleSequential<string>;
   comparator: Comparator;
   sizeKey: string;
 }
@@ -23,7 +21,7 @@ enum Margin {
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { colorScale, comparator, sizeKey } = props;
+  const { comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
@@ -63,7 +61,7 @@ const Graph = (props: Props): React.ReactElement => {
             <>
               <XAxis height={height - Margin.TOP - Margin.BOTTOM} scale={xScale} />
               <YAxis scale={yScale} />
-              <Area colorScale={colorScale} comparator={comparator} sizeKey={sizeKey} xScale={xScale} yScale={yScale} />
+              <Area comparator={comparator} sizeKey={sizeKey} xScale={xScale} yScale={yScale} />
               <HoverOverlay
                 height={height - Margin.TOP - Margin.BOTTOM}
                 width={width - Margin.LEFT - Margin.RIGHT}

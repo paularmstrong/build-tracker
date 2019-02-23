@@ -51,10 +51,12 @@ const Graph = (props: Props): React.ReactElement => {
     <View onLayout={handleLayout} style={styles.root}>
       <svg height={height} ref={svgRef} width={width}>
         <g className="main" transform="translate(80,20)">
-          <XAxis height={height} scale={xScale} />
-          <YAxis height={height} scale={yScale} />
           {height && width ? (
-            <Area colorScale={colorScale} comparator={comparator} sizeKey={sizeKey} xScale={xScale} yScale={yScale} />
+            <>
+              <XAxis height={height} scale={xScale} />
+              <YAxis scale={yScale} />
+              <Area colorScale={colorScale} comparator={comparator} sizeKey={sizeKey} xScale={xScale} yScale={yScale} />
+            </>
           ) : null}
         </g>
       </svg>

@@ -13,18 +13,18 @@ const tickFormat = (d): string =>
 
 const YAxis = (props: Props): React.ReactElement => {
   const { scale } = props;
-  const gRef = React.useRef(null);
+  const ref = React.useRef(null);
 
   React.useEffect(() => {
-    if (!gRef.current) {
+    if (!ref.current) {
       return;
     }
 
     const axis = axisLeft(scale).tickFormat(tickFormat);
-    select(gRef.current).call(axis);
+    select(ref.current).call(axis);
   });
 
-  return <g ref={gRef} />;
+  return <g ref={ref} />;
 };
 
 export default YAxis;

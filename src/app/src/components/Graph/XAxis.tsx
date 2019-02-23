@@ -11,15 +11,15 @@ interface Props {
 
 const XAxis = (props: Props): React.ReactElement => {
   const { height, scale } = props;
-  const gRef = React.useRef(null);
+  const ref = React.useRef(null);
 
   React.useEffect(() => {
-    if (!gRef.current || !height) {
+    if (!ref.current || !height) {
       return;
     }
 
     const axis = axisBottom(scale).tickFormat(d => formatSha(d));
-    select(gRef.current)
+    select(ref.current)
       .call(axis)
       .attr('transform', `translate(0, ${height - 100})`)
       .selectAll('text')
@@ -29,7 +29,7 @@ const XAxis = (props: Props): React.ReactElement => {
       .style('text-anchor', 'start');
   });
 
-  return <g ref={gRef} />;
+  return <g ref={ref} />;
 };
 
 export default XAxis;

@@ -16,48 +16,54 @@ const builds = [
 describe('ComparisonTable', () => {
   describe('artifact toggling', () => {
     test('artifact off', () => {
-      const handleSetArtifacts = jest.fn();
+      const handleDisableArtifact = jest.fn();
+      const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
       const wrapper = shallow(
         <ComparisonTable
-          activeArtifactNames={['vendor', 'main']}
+          activeArtifacts={{ vendor: true, main: true }}
           comparator={comparator}
-          onSetActiveArtifacts={handleSetArtifacts}
+          onDisableArtifact={handleDisableArtifact}
+          onEnableArtifact={handleEnableArtifact}
           sizeKey="stat"
         />
       );
-      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'vendor' } }).simulate('toggle', 'vendor', false);
-      expect(handleSetArtifacts).toHaveBeenCalledWith(['main']);
+      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'main' } }).simulate('disable', 'main');
+      expect(handleDisableArtifact).toHaveBeenCalledWith('main');
     });
 
     test('artifact on', () => {
-      const handleSetArtifacts = jest.fn();
+      const handleDisableArtifact = jest.fn();
+      const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
       const wrapper = shallow(
         <ComparisonTable
-          activeArtifactNames={['main']}
+          activeArtifacts={{ vendor: true, main: false }}
           comparator={comparator}
-          onSetActiveArtifacts={handleSetArtifacts}
+          onDisableArtifact={handleDisableArtifact}
+          onEnableArtifact={handleEnableArtifact}
           sizeKey="stat"
         />
       );
-      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'vendor' } }).simulate('toggle', 'vendor', true);
-      expect(handleSetArtifacts).toHaveBeenCalledWith(expect.arrayContaining(['main', 'vendor']));
+      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'vendor' } }).simulate('enable', 'vendor');
+      expect(handleEnableArtifact).toHaveBeenCalledWith('vendor');
     });
 
     test('all on', () => {
-      const handleSetArtifacts = jest.fn();
+      const handleDisableArtifact = jest.fn();
+      const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
       const wrapper = shallow(
         <ComparisonTable
-          activeArtifactNames={['vendor', 'main']}
+          activeArtifacts={{ vendor: false, main: false }}
           comparator={comparator}
-          onSetActiveArtifacts={handleSetArtifacts}
+          onDisableArtifact={handleDisableArtifact}
+          onEnableArtifact={handleEnableArtifact}
           sizeKey="stat"
         />
       );
-      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'All' } }).simulate('toggle', 'All', true);
-      expect(handleSetArtifacts).toHaveBeenCalledWith(comparator.artifactNames);
+      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'All' } }).simulate('enable', 'All');
+      expect(handleEnableArtifact).toHaveBeenCalledWith('All');
     });
   });
 });

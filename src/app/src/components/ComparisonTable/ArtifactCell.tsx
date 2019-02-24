@@ -6,29 +6,38 @@ import { Th } from './Table';
 import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
-  color: string;
   cell: Cell;
+  color: string;
   disabled?: boolean;
   isActive: boolean;
-  onToggle: (artifactName: string, toggled: boolean) => void;
+  onDisable: (artifactName: string) => void;
+  onEnable: (artifactName: string) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-const ArtifactCell = (props: Props): React.ReactElement => {
-  const { cell, color, disabled, isActive, onToggle, style } = props;
+export const ArtifactCell = (props: Props): React.ReactElement => {
+  const {
+    cell: { text },
+    color,
+    disabled,
+    isActive,
+    onDisable,
+    onEnable,
+    style
+  } = props;
   const brighterColor = hsl(color);
   brighterColor.s = 0.2;
   brighterColor.l = 0.8;
 
   const handleValueChange = (toggled: boolean): void => {
-    onToggle(cell.text, toggled);
+    toggled ? onEnable(text) : onDisable(text);
   };
 
   return (
     <Th style={style}>
       <View style={styles.artifact}>
         <View style={styles.name}>
-          <Text>{cell.text}</Text>
+          <Text>{text}</Text>
         </View>
         <View style={styles.switch}>
           {
@@ -63,4 +72,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ArtifactCell;
+export default React.memo(ArtifactCell);

@@ -18,7 +18,7 @@ const builds = [
 describe('Graph', () => {
   test('resizes the SVG after layout', () => {
     const comparator = new Comparator({ builds: builds });
-    const wrapper = mount(<Graph activeArtifactNames={['main']} comparator={comparator} sizeKey="stat" />);
+    const wrapper = mount(<Graph activeArtifacts={{ main: true }} comparator={comparator} sizeKey="stat" />);
     act(() => {
       wrapper.find(View).prop('onLayout')({ nativeEvent: { layout: { width: 400, height: 300 } } });
     });

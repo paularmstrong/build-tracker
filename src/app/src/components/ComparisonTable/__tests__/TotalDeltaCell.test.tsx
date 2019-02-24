@@ -2,7 +2,7 @@ import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Td } from '../Table';
-import TotalDeltaCell from '../TotalDeltaCell';
+import { TotalDeltaCell } from '../TotalDeltaCell';
 import { StyleSheet, Text } from 'react-native';
 
 describe('TotalDeltaCell', () => {

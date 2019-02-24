@@ -9,7 +9,7 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
 interface Props {
-  activeArtifactNames: Array<string>;
+  activeArtifacts: { [key: string]: boolean };
   comparator: Comparator;
   sizeKey: string;
 }
@@ -22,9 +22,11 @@ enum Margin {
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { activeArtifactNames, comparator, sizeKey } = props;
+  const { activeArtifacts, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
+
+  const activeArtifactNames = Object.keys(activeArtifacts).filter(name => activeArtifacts[name]);
 
   const xScale = React.useMemo(() => {
     const domain = comparator.builds

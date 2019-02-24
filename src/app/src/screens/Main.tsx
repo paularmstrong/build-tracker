@@ -29,19 +29,39 @@ const Main = (): React.ReactElement => {
   const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
 
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => colorScaleContext);
-  const [activeArtifacts, setActiveArtifacts] = React.useState<Array<string>>(comparator.artifactNames);
+  const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
+    comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
+      memo[name] = true;
+      return memo;
+    }, {})
+  );
+  const [, forceUpdate] = React.useState(0);
 
-  const showDrawer = (): void => {
+  const showDrawer = React.useCallback((): void => {
     drawerRef.current && drawerRef.current.show();
-  };
+  }, []);
 
-  const handleSelectColorScale = (scale): void => {
+  const handleSelectColorScale = React.useCallback((scale): void => {
     setColorScale(() => scale);
-  };
+  }, []);
 
-  const handleSetActiveArtifacts = (artifactNames: Array<string>): void => {
-    setActiveArtifacts(artifactNames);
-  };
+  const handleDisableArtifact = React.useCallback(
+    (name: string): void => {
+      activeArtifacts[name] = false;
+      setActiveArtifacts(activeArtifacts);
+      forceUpdate(Date.now());
+    },
+    [activeArtifacts]
+  );
+
+  const handleEnableArtifact = React.useCallback(
+    (name: string): void => {
+      activeArtifacts[name] = true;
+      setActiveArtifacts(activeArtifacts);
+      forceUpdate(Date.now());
+    },
+    [activeArtifacts]
+  );
 
   return (
     <View style={styles.layout}>
@@ -57,15 +77,16 @@ const Main = (): React.ReactElement => {
         >
           <View style={[styles.column, styles.chart]}>
             <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-            <Graph activeArtifactNames={activeArtifacts} comparator={comparator} sizeKey="gzip" />
+            <Graph activeArtifacts={activeArtifacts} comparator={comparator} sizeKey="gzip" />
           </View>
           <View key="table" style={[styles.column, styles.table]}>
             <ScrollView horizontal style={styles.tableScroll}>
               <ScrollView>
                 <ComparisonTable
-                  activeArtifactNames={activeArtifacts}
+                  activeArtifacts={activeArtifacts}
                   comparator={comparator}
-                  onSetActiveArtifacts={handleSetActiveArtifacts}
+                  onDisableArtifact={handleDisableArtifact}
+                  onEnableArtifact={handleEnableArtifact}
                   sizeKey="gzip"
                 />
               </ScrollView>

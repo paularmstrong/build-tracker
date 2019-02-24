@@ -1,6 +1,12 @@
 workflow "On PR" {
   on = "pull_request"
-  resolves = ["test", "lint", "tsc", "set status"]
+  resolves = [
+    "test",
+    "lint",
+    "tsc",
+    "set status",
+    "set labels",
+  ]
 }
 
 action "yarn" {
@@ -28,5 +34,13 @@ action "tsc" {
 
 action "set status" {
   uses = "wip/action@master"
+  secrets = ["GITHUB_TOKEN"]
+}
+
+action "set labels" {
+  uses = "adamzolyak/monorepo-pr-labeler-action@1.1.1"
+  env = {
+    BASE_DIRS = "src"
+  }
   secrets = ["GITHUB_TOKEN"]
 }

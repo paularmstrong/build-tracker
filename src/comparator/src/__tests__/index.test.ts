@@ -105,17 +105,17 @@ describe('BuildComparator', () => {
   describe('toJSON', () => {
     test('includes the header', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toJSON().header).toEqual(comparator.matrixHeader);
+      expect(comparator.toJSON().header).toBe(comparator.matrixHeader);
     });
 
     test('includes the total', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toJSON().total).toEqual(comparator.matrixTotal);
+      expect(comparator.toJSON().total).toBe(comparator.matrixTotal);
     });
 
     test('includes the body', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toJSON().body).toEqual(comparator.matrixBody);
+      expect(comparator.toJSON().body).toBe(comparator.matrixBody);
     });
   });
 

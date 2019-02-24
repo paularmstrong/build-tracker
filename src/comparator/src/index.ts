@@ -139,6 +139,10 @@ export default class BuildComparator {
   private _artifactNames: Array<string>;
   private _buildDeltas: Array<Array<BuildDelta>>;
 
+  private _matrixHeader: Array<HeaderCell>;
+  private _matrixTotal: Array<BodyCell>;
+  private _matrixBody: Array<Array<BodyCell>>;
+
   public constructor({ artifactFilters, builds }: ComparatorOptions) {
     this.builds = builds;
     this._artifactFilters = artifactFilters || emptyArray;
@@ -174,64 +178,73 @@ export default class BuildComparator {
   }
 
   public get matrixHeader(): Array<HeaderCell> {
-    return [
-      { type: CellType.TEXT, text: '' },
-      ...flatten(
-        this.buildDeltas.map((buildDeltas, buildIndex) => {
-          const revision = this.builds[buildIndex].getMetaValue('revision');
-          return [
-            { type: CellType.REVISION, revision },
-            ...buildDeltas.map((buildDelta, deltaIndex) => ({
-              type: CellType.REVISION_DELTA,
-              deltaIndex: deltaIndex + 1,
-              againstRevision: buildDelta.getMetaValue('revision'),
-              revision
-            }))
-          ];
-        })
-      )
-    ];
+    if (!this._matrixHeader) {
+      this._matrixHeader = [
+        { type: CellType.TEXT, text: '' },
+        ...flatten(
+          this.buildDeltas.map((buildDeltas, buildIndex) => {
+            const revision = this.builds[buildIndex].getMetaValue('revision');
+            return [
+              { type: CellType.REVISION, revision },
+              ...buildDeltas.map((buildDelta, deltaIndex) => ({
+                type: CellType.REVISION_DELTA,
+                deltaIndex: deltaIndex + 1,
+                againstRevision: buildDelta.getMetaValue('revision'),
+                revision
+              }))
+            ];
+          })
+        )
+      ];
+    }
+    return this._matrixHeader;
   }
 
   public get matrixTotal(): Array<BodyCell> {
-    return [
-      { type: CellType.ARTIFACT, text: 'All' },
-      ...flatten(
-        this.buildDeltas.map((buildDeltas, i) => [
-          {
-            sizes: this.builds[i].getTotals(this._artifactFilters),
-            type: CellType.TOTAL
-          },
-          ...buildDeltas.map(buildDelta => ({
-            percents: buildDelta.totalDelta.percents,
-            sizes: buildDelta.totalDelta.sizes,
-            type: CellType.TOTAL_DELTA
-          }))
-        ])
-      )
-    ];
+    if (!this._matrixTotal) {
+      this._matrixTotal = [
+        { type: CellType.ARTIFACT, text: 'All' },
+        ...flatten(
+          this.buildDeltas.map((buildDeltas, i) => [
+            {
+              sizes: this.builds[i].getTotals(this._artifactFilters),
+              type: CellType.TOTAL
+            },
+            ...buildDeltas.map(buildDelta => ({
+              percents: buildDelta.totalDelta.percents,
+              sizes: buildDelta.totalDelta.sizes,
+              type: CellType.TOTAL_DELTA
+            }))
+          ])
+        )
+      ];
+    }
+    return this._matrixTotal;
   }
 
   public get matrixBody(): Array<Array<BodyCell>> {
-    return this.artifactNames.map(artifactName => {
-      const cells = this.buildDeltas.map(
-        (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
-          const artifact = this.builds[i].getArtifact(artifactName);
-          return [
-            {
-              ...(artifact ? artifact : emptyArtifact),
-              type: CellType.TOTAL
-            },
-            // @ts-ignore
-            ...buildDeltas.map(buildDelta => ({
-              ...buildDelta.getArtifactDelta(artifactName),
-              type: CellType.DELTA
-            }))
-          ];
-        }
-      );
-      return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
-    });
+    if (!this._matrixBody) {
+      this._matrixBody = this.artifactNames.map(artifactName => {
+        const cells = this.buildDeltas.map(
+          (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
+            const artifact = this.builds[i].getArtifact(artifactName);
+            return [
+              {
+                ...(artifact ? artifact : emptyArtifact),
+                type: CellType.TOTAL
+              },
+              // @ts-ignore
+              ...buildDeltas.map(buildDelta => ({
+                ...buildDelta.getArtifactDelta(artifactName),
+                type: CellType.DELTA
+              }))
+            ];
+          }
+        );
+        return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
+      });
+    }
+    return this._matrixBody;
   }
 
   public getSum(artifactNames: Array<string>): Array<BodyCell> {

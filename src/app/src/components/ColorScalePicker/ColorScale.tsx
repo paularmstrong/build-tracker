@@ -19,7 +19,7 @@ export const ColorScale = (props: Props): React.ReactElement => {
   const selectedScale = React.useContext(ColorScaleContext);
   const isSelected = selectedScale === scale;
 
-  const colorScale = scale.domain([boxes, 0]);
+  const colorScale = scale.domain([0, boxes]);
   const handlePress = (): void => {
     onSelect(scale);
   };
@@ -39,7 +39,7 @@ export const ColorScale = (props: Props): React.ReactElement => {
           <View style={[styles.scale, isHovered && styles.scaleHovered]}>
             {new Array(boxes).fill(0).map(
               (_, i): React.ReactElement => (
-                <View key={i} pointerEvents="none" style={[styles.box, { backgroundColor: colorScale(boxes - i) }]} />
+                <View key={i} pointerEvents="none" style={[styles.box, { backgroundColor: colorScale(i) }]} />
               )
             )}
           </View>

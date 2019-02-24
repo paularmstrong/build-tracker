@@ -17,11 +17,11 @@ interface Props {
 const Area = (props: Props): React.ReactElement => {
   const { comparator, sizeKey, xScale, yScale } = props;
   const scaleFromContext = React.useContext(ColorScaleContext);
-  const colorScale = scaleFromContext.domain([comparator.artifactNames.length, 0]);
+  const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
   const gRef = React.useRef(null);
 
   const graphColorScale = React.useMemo(() => {
-    return d => colorScale(comparator.artifactNames.length - comparator.artifactNames.indexOf(d.key));
+    return d => colorScale(comparator.artifactNames.indexOf(d.key));
   }, [colorScale, comparator.artifactNames]);
 
   React.useEffect(() => {

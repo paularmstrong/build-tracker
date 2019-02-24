@@ -1,4 +1,5 @@
 import ArtifactCell from './ArtifactCell';
+import ColorScaleContext from '../../context/ColorScale';
 import DeltaCell from './DeltaCell';
 import React from 'react';
 import RevisionCell from './RevisionCell';
@@ -17,6 +18,8 @@ interface Props {
 
 const ComparisonTable = (props: Props): React.ReactElement => {
   const { comparator, sizeKey } = props;
+  const scaleFromContext = React.useContext(ColorScaleContext);
+  const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
 
   const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement => {
@@ -24,7 +27,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
       case CellType.TEXT:
         return <TextCell cell={cell} key={i} />;
       case CellType.ARTIFACT:
-        return <ArtifactCell cell={cell} key={i} />;
+        return <ArtifactCell cell={cell} color={colorScale(comparator.artifactNames.indexOf(cell.text))} key={i} />;
       case CellType.DELTA:
         return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
       case CellType.TOTAL:

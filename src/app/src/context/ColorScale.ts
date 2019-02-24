@@ -1,5 +1,5 @@
 import React from 'react';
-import { interpolateMagma, interpolateRainbow, interpolateRdYlBu, interpolateRdYlGn } from 'd3-scale-chromatic';
+import { interpolateMagma, interpolateRainbow, interpolateRdYlGn } from 'd3-scale-chromatic';
 import { scaleSequential, ScaleSequential } from 'd3-scale';
 
 interface Scales {
@@ -8,7 +8,6 @@ interface Scales {
 
 export const scales: Scales = {
   Rainbow: scaleSequential(interpolateRainbow),
-  'Red to blue': scaleSequential(interpolateRdYlBu),
   'Red to green': scaleSequential(interpolateRdYlGn),
   Magma: scaleSequential(interpolateMagma)
 };

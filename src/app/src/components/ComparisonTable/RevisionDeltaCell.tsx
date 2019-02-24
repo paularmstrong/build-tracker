@@ -17,4 +17,4 @@ const RevisionDeltaCell = (props: Props): React.ReactElement => {
   );
 };
 
-export default RevisionDeltaCell;
+export default React.memo(RevisionDeltaCell);

@@ -10,7 +10,7 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-const TotalCell = (props: Props): React.ReactElement => {
+export const TotalCell = (props: Props): React.ReactElement => {
   const { cell, sizeKey, style } = props;
   const value = cell.sizes[sizeKey];
   return (
@@ -20,4 +20,4 @@ const TotalCell = (props: Props): React.ReactElement => {
   );
 };
 
-export default TotalCell;
+export default React.memo(TotalCell);

@@ -9,7 +9,7 @@ interface Props {
   onSelect: (scale: ScaleSequential<string>) => void;
 }
 
-const ColorScalePicker = (props: Props): React.ReactElement => {
+export const ColorScalePicker = (props: Props): React.ReactElement => {
   const { onSelect } = props;
   return (
     <View style={styles.root}>
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ColorScalePicker;
+export default React.memo(ColorScalePicker);

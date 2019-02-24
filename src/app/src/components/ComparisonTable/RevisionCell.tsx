@@ -17,4 +17,4 @@ const RevisionCell = (props: Props): React.ReactElement => {
   );
 };
 
-export default RevisionCell;
+export default React.memo(RevisionCell);

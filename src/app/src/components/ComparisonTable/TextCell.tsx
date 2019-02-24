@@ -9,7 +9,7 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-const TextCell = (props: Props): React.ReactElement => {
+export const TextCell = (props: Props): React.ReactElement => {
   const El = props.header ? Th : Td;
   return (
     <El style={props.style}>
@@ -18,4 +18,4 @@ const TextCell = (props: Props): React.ReactElement => {
   );
 };
 
-export default TextCell;
+export default React.memo(TextCell);

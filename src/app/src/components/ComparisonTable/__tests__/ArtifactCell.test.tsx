@@ -1,4 +1,4 @@
-import ArtifactCell from '../ArtifactCell';
+import { ArtifactCell } from '../ArtifactCell';
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { shallow } from 'enzyme';
@@ -7,26 +7,35 @@ import { Switch } from 'react-native';
 describe('ArtifactCell', () => {
   describe('switch', () => {
     test('toggles with the name and on', () => {
-      const handleToggle = jest.fn();
+      const handleDisable = jest.fn();
+      const handleEnable = jest.fn();
       const wrapper = shallow(
         <ArtifactCell
           cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
           color="red"
           isActive={false}
-          onToggle={handleToggle}
+          onDisable={handleDisable}
+          onEnable={handleEnable}
         />
       );
       wrapper.find(Switch).simulate('valueChange', true);
-      expect(handleToggle).toHaveBeenCalledWith('tacos', true);
+      expect(handleEnable).toHaveBeenCalledWith('tacos');
     });
 
     test('toggles with the name and off', () => {
-      const handleToggle = jest.fn();
+      const handleDisable = jest.fn();
+      const handleEnable = jest.fn();
       const wrapper = shallow(
-        <ArtifactCell cell={{ type: CellType.ARTIFACT, text: 'tacos' }} color="red" isActive onToggle={handleToggle} />
+        <ArtifactCell
+          cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
+          color="red"
+          isActive
+          onDisable={handleDisable}
+          onEnable={handleEnable}
+        />
       );
-      wrapper.find(Switch).simulate('valueChange', true);
-      expect(handleToggle).toHaveBeenCalledWith('tacos', true);
+      wrapper.find(Switch).simulate('valueChange', false);
+      expect(handleDisable).toHaveBeenCalledWith('tacos');
     });
   });
 });

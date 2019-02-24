@@ -1,7 +1,7 @@
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { shallow } from 'enzyme';
-import TextCell from '../TextCell';
+import { TextCell } from '../TextCell';
 import { Td, Th } from '../Table';
 
 describe('TextCell', () => {

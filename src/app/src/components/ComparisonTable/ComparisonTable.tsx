@@ -12,41 +12,25 @@ import Comparator, { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build
 import { Table, Tbody, Thead, Tr } from './Table';
 
 interface Props {
-  activeArtifactNames: Array<string>;
+  activeArtifacts: { [key: string]: boolean };
   comparator: Comparator;
-  onSetActiveArtifacts: (artifactNames: Array<string>) => void;
+  onDisableArtifact: (artifactName: string) => void;
+  onEnableArtifact: (artifactName: string) => void;
   sizeKey: string;
 }
 
 const ComparisonTable = (props: Props): React.ReactElement => {
-  const { activeArtifactNames, comparator, onSetActiveArtifacts, sizeKey } = props;
+  const { activeArtifacts, comparator, onDisableArtifact, onEnableArtifact, sizeKey } = props;
   const scaleFromContext = React.useContext(ColorScaleContext);
   const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
-
-  const handleToggleArtifact = (artifactName: string, toggled: boolean): void => {
-    let nextArtifacts;
-    if (!toggled) {
-      nextArtifacts = activeArtifactNames.filter(name => name !== artifactName);
-    } else {
-      nextArtifacts =
-        artifactName === 'All'
-          ? comparator.artifactNames
-          : comparator.artifactNames.filter(name => name === artifactName || activeArtifactNames.indexOf(name) !== -1);
-    }
-
-    onSetActiveArtifacts(nextArtifacts);
-  };
 
   const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement => {
     switch (cell.type) {
       case CellType.TEXT:
         return <TextCell cell={cell} key={i} />;
       case CellType.ARTIFACT: {
-        const isActive =
-          cell.text === 'All'
-            ? activeArtifactNames.length === comparator.artifactNames.length
-            : activeArtifactNames.indexOf(cell.text) !== -1;
+        const isActive = activeArtifacts[cell.text];
         return (
           <ArtifactCell
             cell={cell}
@@ -54,7 +38,8 @@ const ComparisonTable = (props: Props): React.ReactElement => {
             disabled={cell.text === 'All' && isActive}
             key={i}
             isActive={isActive}
-            onToggle={handleToggleArtifact}
+            onDisable={onDisableArtifact}
+            onEnable={onEnableArtifact}
           />
         );
       }

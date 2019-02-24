@@ -31,7 +31,7 @@ const red: Color = {
 const scale = ({ red, blue, green }: Color, percentDelta: number): string =>
   `rgba(${red},${green},${blue},${Math.max(Math.min(Math.abs(percentDelta), 1), 0)})`;
 
-const DeltaCell = (props: Props): React.ReactElement => {
+export const DeltaCell = (props: Props): React.ReactElement => {
   const { cell, sizeKey, style } = props;
   const sizeDelta = cell.sizes[sizeKey];
   const percentDelta = cell.percents[sizeKey];
@@ -55,4 +55,4 @@ const DeltaCell = (props: Props): React.ReactElement => {
   );
 };
 
-export default DeltaCell;
+export default React.memo(DeltaCell);

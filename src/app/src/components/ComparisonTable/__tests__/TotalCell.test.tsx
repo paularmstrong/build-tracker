@@ -2,7 +2,7 @@ import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Text } from 'react-native';
-import TotalCell from '../TotalCell';
+import { TotalCell } from '../TotalCell';
 
 describe('TotalCell', () => {
   test('Displays a formatted value', () => {

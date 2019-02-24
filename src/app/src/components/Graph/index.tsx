@@ -9,6 +9,7 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
 interface Props {
+  activeArtifactNames: Array<string>;
   comparator: Comparator;
   sizeKey: string;
 }
@@ -21,7 +22,7 @@ enum Margin {
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { comparator, sizeKey } = props;
+  const { activeArtifactNames, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
@@ -37,12 +38,12 @@ const Graph = (props: Props): React.ReactElement => {
   }, [comparator, width]);
 
   const yScale = React.useMemo(() => {
-    const totals = comparator.builds.map(build => build.getTotals()[sizeKey]);
+    const totals = comparator.builds.map(build => build.getSum(activeArtifactNames)[sizeKey]);
     const maxTotal = Math.max(...totals);
     return scaleLinear()
       .range([height - Margin.TOP - Margin.BOTTOM, 0])
       .domain([0, maxTotal]);
-  }, [comparator, height, sizeKey]);
+  }, [activeArtifactNames, comparator, height, sizeKey]);
 
   const handleLayout = (event: LayoutChangeEvent): void => {
     const {
@@ -61,7 +62,13 @@ const Graph = (props: Props): React.ReactElement => {
             <>
               <XAxis height={height - Margin.TOP - Margin.BOTTOM} scale={xScale} />
               <YAxis scale={yScale} />
-              <Area comparator={comparator} sizeKey={sizeKey} xScale={xScale} yScale={yScale} />
+              <Area
+                activeArtifactNames={activeArtifactNames}
+                comparator={comparator}
+                sizeKey={sizeKey}
+                xScale={xScale}
+                yScale={yScale}
+              />
               <HoverOverlay
                 height={height - Margin.TOP - Margin.BOTTOM}
                 width={width - Margin.LEFT - Margin.RIGHT}

@@ -31,7 +31,6 @@ describe('Main', () => {
 
   test('sets color scale context when scale is selected', () => {
     const wrapper = shallow(<Main />);
-    expect(wrapper.find('Subtitle').exists()).toBe(true);
     act(() => {
       wrapper.find(ColorScalePicker).prop('onSelect')(scales.Rainbow);
     });

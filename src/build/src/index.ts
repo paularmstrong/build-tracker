@@ -107,6 +107,19 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     return Array.from(this._artifacts.keys());
   }
 
+  public getSum(artifactNames: Array<string>): ArtifactSizes {
+    return artifactNames.reduce((sum: ArtifactSizes, artifactName: string) => {
+      const artifact = this._artifacts.get(artifactName);
+      Object.entries(artifact.sizes).forEach(([key, value]) => {
+        if (!sum[key]) {
+          sum[key] = 0;
+        }
+        sum[key] += value;
+      });
+      return sum;
+    }, {});
+  }
+
   public getTotals(artifactFilters?: ArtifactFilters): ArtifactSizes {
     if (!this._totals) {
       // @ts-ignore we'll build this below

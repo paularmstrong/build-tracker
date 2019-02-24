@@ -8,18 +8,20 @@ import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from 'react-nati
 interface Props {
   color: string;
   cell: Cell;
+  disabled?: boolean;
+  isActive: boolean;
+  onToggle: (artifactName: string, toggled: boolean) => void;
   style?: StyleProp<ViewStyle>;
 }
 
 const ArtifactCell = (props: Props): React.ReactElement => {
-  const { cell, color, style } = props;
+  const { cell, color, disabled, isActive, onToggle, style } = props;
   const brighterColor = hsl(color);
   brighterColor.s = 0.2;
   brighterColor.l = 0.8;
 
   const handleValueChange = (toggled: boolean): void => {
-    // TODO: handle toggling
-    toggled;
+    onToggle(cell.text, toggled);
   };
 
   return (
@@ -34,8 +36,9 @@ const ArtifactCell = (props: Props): React.ReactElement => {
             <Switch
               activeThumbColor={color}
               activeTrackColor={brighterColor.toString()}
+              disabled={disabled}
               onValueChange={handleValueChange}
-              value
+              value={isActive}
             />
           }
         </View>

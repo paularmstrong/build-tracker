@@ -8,6 +8,7 @@ import { area, stack } from 'd3-shape';
 import { ScaleLinear, ScalePoint } from 'd3-scale';
 
 interface Props {
+  activeArtifactNames: Array<string>;
   comparator: Comparator;
   sizeKey: string;
   xScale: ScalePoint<string>;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const Area = (props: Props): React.ReactElement => {
-  const { comparator, sizeKey, xScale, yScale } = props;
+  const { activeArtifactNames, comparator, sizeKey, xScale, yScale } = props;
   const scaleFromContext = React.useContext(ColorScaleContext);
   const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
   const gRef = React.useRef(null);
@@ -30,7 +31,7 @@ const Area = (props: Props): React.ReactElement => {
     }
 
     const dataStack = stack();
-    dataStack.keys(comparator.artifactNames);
+    dataStack.keys(activeArtifactNames);
     // @ts-ignore
     dataStack.value((build: Build, key) => {
       const artifact = build.getArtifact(key);

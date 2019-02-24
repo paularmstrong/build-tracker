@@ -12,22 +12,52 @@ import Comparator, { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build
 import { Table, Tbody, Thead, Tr } from './Table';
 
 interface Props {
+  activeArtifactNames: Array<string>;
   comparator: Comparator;
+  onSetActiveArtifacts: (artifactNames: Array<string>) => void;
   sizeKey: string;
 }
 
 const ComparisonTable = (props: Props): React.ReactElement => {
-  const { comparator, sizeKey } = props;
+  const { activeArtifactNames, comparator, onSetActiveArtifacts, sizeKey } = props;
   const scaleFromContext = React.useContext(ColorScaleContext);
   const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
+
+  const handleToggleArtifact = (artifactName: string, toggled: boolean): void => {
+    let nextArtifacts;
+    if (!toggled) {
+      nextArtifacts = activeArtifactNames.filter(name => name !== artifactName);
+    } else {
+      nextArtifacts =
+        artifactName === 'All'
+          ? comparator.artifactNames
+          : comparator.artifactNames.filter(name => name === artifactName || activeArtifactNames.indexOf(name) !== -1);
+    }
+
+    onSetActiveArtifacts(nextArtifacts);
+  };
 
   const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement => {
     switch (cell.type) {
       case CellType.TEXT:
         return <TextCell cell={cell} key={i} />;
-      case CellType.ARTIFACT:
-        return <ArtifactCell cell={cell} color={colorScale(comparator.artifactNames.indexOf(cell.text))} key={i} />;
+      case CellType.ARTIFACT: {
+        const isActive =
+          cell.text === 'All'
+            ? activeArtifactNames.length === comparator.artifactNames.length
+            : activeArtifactNames.indexOf(cell.text) !== -1;
+        return (
+          <ArtifactCell
+            cell={cell}
+            color={colorScale(comparator.artifactNames.indexOf(cell.text))}
+            disabled={cell.text === 'All' && isActive}
+            key={i}
+            isActive={isActive}
+            onToggle={handleToggleArtifact}
+          />
+        );
+      }
       case CellType.DELTA:
         return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
       case CellType.TOTAL:

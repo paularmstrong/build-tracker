@@ -25,16 +25,22 @@ const builds = [
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
   const colorScaleContext = React.useContext(ColorScaleContext);
+
+  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
+
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => colorScaleContext);
+  const [activeArtifacts, setActiveArtifacts] = React.useState<Array<string>>(comparator.artifactNames);
 
   const showDrawer = (): void => {
     drawerRef.current && drawerRef.current.show();
   };
 
-  const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
-
   const handleSelectColorScale = (scale): void => {
     setColorScale(() => scale);
+  };
+
+  const handleSetActiveArtifacts = (artifactNames: Array<string>): void => {
+    setActiveArtifacts(artifactNames);
   };
 
   return (
@@ -51,12 +57,17 @@ const Main = (): React.ReactElement => {
         >
           <View style={[styles.column, styles.chart]}>
             <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-            <Graph comparator={comparator} sizeKey="gzip" />
+            <Graph activeArtifactNames={activeArtifacts} comparator={comparator} sizeKey="gzip" />
           </View>
           <View key="table" style={[styles.column, styles.table]}>
             <ScrollView horizontal style={styles.tableScroll}>
               <ScrollView>
-                <ComparisonTable comparator={comparator} sizeKey="gzip" />
+                <ComparisonTable
+                  activeArtifactNames={activeArtifacts}
+                  comparator={comparator}
+                  onSetActiveArtifacts={handleSetActiveArtifacts}
+                  sizeKey="gzip"
+                />
               </ScrollView>
             </ScrollView>
             <View style={styles.buildInfo}>

@@ -21,6 +21,12 @@ class Drawer extends React.Component<Props, State> {
   };
   public state = { forceShow: false };
 
+  public shouldComponentUpdate(_: Props, prevState: State): boolean {
+    const { hidden } = this.props;
+    const { forceShow } = this.state;
+    return !hidden || forceShow !== prevState.forceShow;
+  }
+
   // TODO: on route change, hide the drawer
 
   public render(): React.ReactNode {

@@ -1,5 +1,5 @@
 import ColorScale from '../ColorScale';
-import ColorScalePicker from '../';
+import { ColorScalePicker } from '../';
 import React from 'react';
 import { scales } from '../../../context/ColorScale';
 import { shallow } from 'enzyme';

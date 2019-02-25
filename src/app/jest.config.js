@@ -8,7 +8,7 @@ module.exports = {
   preset: 'react-native-web',
   rootDir: path.join(__dirname, '../..'),
   roots: ['<rootDir>/src/app'],
-  setupFiles: ['<rootDir>/src/app/config/jest/setup-enzyme.js'],
+  setupFiles: ['<rootDir>/src/app/config/jest/setup.js'],
   testEnvironment: 'jsdom',
   timers: 'fake',
   transform: {

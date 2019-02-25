@@ -40,10 +40,11 @@ export const TotalDeltaCell = (props: Props): React.ReactElement => {
     percentDelta > 0 ? scale(red, percentDelta) : sizeDelta === 0 ? 'white' : scale(green, percentDelta);
 
   const stringChange = `${sizeDelta} bytes (${(percentDelta * 100).toFixed(3)}%)`;
+  const text = sizeDelta === 0 ? '' : formatBytes(sizeDelta);
 
   return (
     <Td style={[style, { backgroundColor }]} title={stringChange}>
-      <Text>{sizeDelta === 0 ? '' : formatBytes(sizeDelta)}</Text>
+      {text ? <Text>{text}</Text> : null}
     </Td>
   );
 };

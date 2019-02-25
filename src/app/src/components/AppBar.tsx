@@ -12,7 +12,7 @@ interface Props {
   actionItems?: Array<React.ReactNode>;
 }
 
-const AppBar = (props: Props): React.ReactElement => {
+export const AppBar = (props: Props): React.ReactElement => {
   const { actionItems, navigationIcon, onPressNavigationIcon, style, title } = props;
   return (
     <View style={[styles.root, style]}>

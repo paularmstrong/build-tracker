@@ -48,9 +48,11 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   const stringChange = `${sizeDelta} bytes (${(percentDelta * 100).toFixed(3)}%)`;
   const title = cell.hashChanged && sizeDelta === 0 ? `Unexpected hash change! ${stringChange}` : stringChange;
 
+  const text = sizeDelta === 0 ? (cell.hashChanged ? '⚠️' : '') : formatBytes(sizeDelta);
+
   return (
     <Td style={[style, { backgroundColor }]} title={title}>
-      <Text>{sizeDelta === 0 ? (cell.hashChanged ? '⚠️' : '') : formatBytes(sizeDelta)}</Text>
+      {text ? <Text>{text}</Text> : null}
     </Td>
   );
 };

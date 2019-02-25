@@ -5,7 +5,7 @@ import HoverOverlay from './HoverOverlay';
 import React from 'react';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
-import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { createElement, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint, ScaleSequential } from 'd3-scale';
 
 interface Props {
@@ -20,6 +20,12 @@ enum Margin {
   RIGHT = 20,
   BOTTOM = 100,
   LEFT = 80
+}
+
+export class SVG extends React.Component<{ height: number; width: number }> {
+  public render(): React.ReactElement {
+    return createElement('svg', this.props);
+  }
 }
 
 const Graph = (props: Props): React.ReactElement => {
@@ -59,7 +65,7 @@ const Graph = (props: Props): React.ReactElement => {
 
   return (
     <View onLayout={handleLayout} style={styles.root}>
-      <svg height={height} ref={svgRef} width={width}>
+      <SVG height={height} ref={svgRef} width={width}>
         <g className="main" transform="translate(80,20)">
           {height && width ? (
             <>
@@ -81,7 +87,7 @@ const Graph = (props: Props): React.ReactElement => {
             </>
           ) : null}
         </g>
-      </svg>
+      </SVG>
     </View>
   );
 };

@@ -119,16 +119,10 @@ class Button extends React.Component<Props, State> {
   };
 
   private _handlePressIn = () => {
-    if (this.props.disabled) {
-      return;
-    }
     this.setState({ isActive: true });
   };
 
   private _handlePressOut = () => {
-    if (this.props.disabled) {
-      return;
-    }
     this.setState({ isActive: false });
   };
 }

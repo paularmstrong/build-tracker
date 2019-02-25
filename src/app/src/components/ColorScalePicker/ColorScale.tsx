@@ -18,9 +18,9 @@ export const ColorScale = (props: Props): React.ReactElement => {
   const { boxes, isSelected, name, onSelect, scale, style } = props;
 
   const colorScale = scale.domain([0, boxes]);
-  const handlePress = (): void => {
+  const handlePress = React.useCallback((): void => {
     onSelect(scale);
-  };
+  }, [onSelect, scale]);
 
   return (
     <Hoverable>

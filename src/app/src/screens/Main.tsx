@@ -13,6 +13,7 @@ import Graph from '../components/Graph';
 import MenuIcon from '../icons/Menu';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
+import SizeKeyPicker from '../components/SizeKeyPicker';
 import Subtitle from '../components/Subtitle';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -27,6 +28,7 @@ const Main = (): React.ReactElement => {
   const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
 
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
+  const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
       memo[name] = true;
@@ -73,10 +75,20 @@ const Main = (): React.ReactElement => {
     [activeArtifacts]
   );
 
+  const handleSelectSizeKey = React.useCallback(
+    (name: string): void => {
+      setSizeKey(name);
+      forceUpdate(Date.now());
+    },
+    [setSizeKey]
+  );
+
   return (
     <View style={styles.layout}>
       <Drawer hidden ref={drawerRef}>
-        <Subtitle title="Color Scale" />
+        <Subtitle title="Compare artifacts by" />
+        <SizeKeyPicker keys={comparator.sizeKeys} onSelect={handleSelectSizeKey} selected={sizeKey} />
+        <Subtitle title="Color scale" />
         <ColorScalePicker activeColorScale={colorScale} onSelect={handleSelectColorScale} />
       </Drawer>
       <View
@@ -86,7 +98,7 @@ const Main = (): React.ReactElement => {
       >
         <View style={[styles.column, styles.chart]}>
           <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-          <Graph activeArtifacts={activeArtifacts} colorScale={colorScale} comparator={comparator} sizeKey="gzip" />
+          <Graph activeArtifacts={activeArtifacts} colorScale={colorScale} comparator={comparator} sizeKey={sizeKey} />
         </View>
         <View key="table" style={[styles.column, styles.table]}>
           <ScrollView horizontal style={styles.tableScroll}>
@@ -97,7 +109,7 @@ const Main = (): React.ReactElement => {
                 comparator={comparator}
                 onDisableArtifact={handleDisableArtifact}
                 onEnableArtifact={handleEnableArtifact}
-                sizeKey="gzip"
+                sizeKey={sizeKey}
               />
             </ScrollView>
           </ScrollView>

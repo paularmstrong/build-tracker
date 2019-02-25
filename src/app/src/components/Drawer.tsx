@@ -22,7 +22,7 @@ class Drawer extends React.Component<Props, State> {
   public shouldComponentUpdate(_: Props, prevState: State): boolean {
     const { hidden } = this.props;
     const { forceShow } = this.state;
-    return !hidden || forceShow !== prevState.forceShow;
+    return !hidden || forceShow || forceShow !== prevState.forceShow;
   }
 
   // TODO: on route change, hide the drawer

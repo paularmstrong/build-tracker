@@ -137,6 +137,7 @@ export default class BuildComparator {
 
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Array<string>;
+  private _sizeKeys: Array<string>;
   private _buildDeltas: Array<Array<BuildDelta>>;
 
   private _matrixHeader: Array<HeaderCell>;
@@ -163,6 +164,25 @@ export default class BuildComparator {
         );
     }
     return this._artifactNames;
+  }
+
+  public get sizeKeys(): Array<string> {
+    if (!this._sizeKeys) {
+      this._sizeKeys = Object.keys(this.builds[0].artifacts[0].sizes);
+      const allSizeKeys = new Set();
+      this.builds.forEach(build => {
+        build.artifacts.forEach(artifact => {
+          Object.keys(artifact.sizes).forEach(key => {
+            allSizeKeys.add(key);
+          });
+        });
+      });
+
+      if (allSizeKeys.size !== this._sizeKeys.length) {
+        throw new Error();
+      }
+    }
+    return this._sizeKeys;
   }
 
   public get buildDeltas(): Array<Array<BuildDelta>> {

@@ -168,7 +168,7 @@ export default class BuildComparator {
 
   public get sizeKeys(): Array<string> {
     if (!this._sizeKeys) {
-      this._sizeKeys = Object.keys(this.builds[0].artifacts[0].sizes);
+      this._sizeKeys = Object.keys(this.builds[0].artifacts[0].sizes).sort();
       const allSizeKeys = new Set();
       this.builds.forEach(build => {
         build.artifacts.forEach(artifact => {

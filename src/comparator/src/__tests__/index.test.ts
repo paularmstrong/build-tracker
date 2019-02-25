@@ -59,7 +59,7 @@ describe('BuildComparator', () => {
   describe('sizeKeys', () => {
     test('gets a list of size keys available', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.sizeKeys).toEqual(['stat', 'gzip']);
+      expect(comparator.sizeKeys).toEqual(['gzip', 'stat']);
     });
 
     test('throws an error if some builds have size keys that others do not', () => {

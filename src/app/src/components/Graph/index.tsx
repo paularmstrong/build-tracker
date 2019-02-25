@@ -6,10 +6,11 @@ import React from 'react';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
-import { scaleLinear, scalePoint } from 'd3-scale';
+import { scaleLinear, scalePoint, ScaleSequential } from 'd3-scale';
 
 interface Props {
   activeArtifacts: { [key: string]: boolean };
+  colorScale: ScaleSequential<string>;
   comparator: Comparator;
   sizeKey: string;
 }
@@ -22,7 +23,7 @@ enum Margin {
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { activeArtifacts, comparator, sizeKey } = props;
+  const { activeArtifacts, colorScale, comparator, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
@@ -66,6 +67,7 @@ const Graph = (props: Props): React.ReactElement => {
               <YAxis scale={yScale} />
               <Area
                 activeArtifactNames={activeArtifactNames}
+                colorScale={colorScale}
                 comparator={comparator}
                 sizeKey={sizeKey}
                 xScale={xScale}

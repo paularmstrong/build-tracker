@@ -1,5 +1,4 @@
 import * as Theme from '../../theme';
-import ColorScaleContext from '../../context/ColorScale';
 import Hoverable from '../Hoverable';
 import React from 'react';
 import Ripple from '../Ripple';
@@ -8,6 +7,7 @@ import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
   boxes: number;
+  isSelected: boolean;
   name: string;
   onSelect: (scale: ScaleSequential<string>) => void;
   scale: ScaleSequential<string>;
@@ -15,9 +15,7 @@ interface Props {
 }
 
 export const ColorScale = (props: Props): React.ReactElement => {
-  const { boxes, name, onSelect, scale, style } = props;
-  const selectedScale = React.useContext(ColorScaleContext);
-  const isSelected = selectedScale === scale;
+  const { boxes, isSelected, name, onSelect, scale, style } = props;
 
   const colorScale = scale.domain([0, boxes]);
   const handlePress = (): void => {

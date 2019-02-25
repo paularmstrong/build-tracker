@@ -1,14 +1,14 @@
 import 'd3-transition';
 import Build from '@build-tracker/build';
-import ColorScaleContext from '../../context/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import React from 'react';
 import { select } from 'd3-selection';
 import { area, stack } from 'd3-shape';
-import { ScaleLinear, ScalePoint } from 'd3-scale';
+import { ScaleLinear, ScalePoint, ScaleSequential } from 'd3-scale';
 
 interface Props {
   activeArtifactNames: Array<string>;
+  colorScale: ScaleSequential<string>;
   comparator: Comparator;
   sizeKey: string;
   xScale: ScalePoint<string>;
@@ -17,8 +17,7 @@ interface Props {
 
 const Area = (props: Props): React.ReactElement => {
   const { activeArtifactNames, comparator, sizeKey, xScale, yScale } = props;
-  const scaleFromContext = React.useContext(ColorScaleContext);
-  const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
+  const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const gRef = React.useRef(null);
 
   const graphColorScale = React.useMemo(() => {

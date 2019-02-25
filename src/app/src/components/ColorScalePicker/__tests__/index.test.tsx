@@ -1,17 +1,17 @@
-import ColorScale from '../ColorScale';
+import ColorScale from '../../../modules/ColorScale';
+import ColorScaleComponent from '../ColorScale';
 import { ColorScalePicker } from '../';
 import React from 'react';
-import { scales } from '../../../context/ColorScale';
 import { shallow } from 'enzyme';
 
 describe('ColorScalePicker', () => {
   test('passes onSelect through', () => {
     const handleSelect = jest.fn();
-    const wrapper = shallow(<ColorScalePicker onSelect={handleSelect} />);
+    const wrapper = shallow(<ColorScalePicker activeColorScale={ColorScale.Magma} onSelect={handleSelect} />);
     wrapper
-      .find(ColorScale)
+      .find(ColorScaleComponent)
       .first()
-      .simulate('select', scales.Rainbow);
-    expect(handleSelect).toHaveBeenCalledWith(scales.Rainbow);
+      .simulate('select', ColorScale.Rainbow);
+    expect(handleSelect).toHaveBeenCalledWith(ColorScale.Rainbow);
   });
 });

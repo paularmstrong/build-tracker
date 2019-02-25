@@ -1,9 +1,9 @@
 import ArtifactCell from './ArtifactCell';
-import ColorScaleContext from '../../context/ColorScale';
 import DeltaCell from './DeltaCell';
 import React from 'react';
 import RevisionCell from './RevisionCell';
 import RevisionDeltaCell from './RevisionDeltaCell';
+import { ScaleSequential } from 'd3-scale';
 import { StyleSheet } from 'react-native';
 import TextCell from './TextCell';
 import TotalCell from './TotalCell';
@@ -13,6 +13,7 @@ import { Table, Tbody, Thead, Tr } from './Table';
 
 interface Props {
   activeArtifacts: { [key: string]: boolean };
+  colorScale: ScaleSequential<string>;
   comparator: Comparator;
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
@@ -21,8 +22,7 @@ interface Props {
 
 const ComparisonTable = (props: Props): React.ReactElement => {
   const { activeArtifacts, comparator, onDisableArtifact, onEnableArtifact, sizeKey } = props;
-  const scaleFromContext = React.useContext(ColorScaleContext);
-  const colorScale = scaleFromContext.domain([0, comparator.artifactNames.length]);
+  const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
 
   const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement => {

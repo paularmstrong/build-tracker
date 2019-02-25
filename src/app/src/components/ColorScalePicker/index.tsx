@@ -6,15 +6,26 @@ import { ScaleSequential } from 'd3-scale';
 import { StyleSheet, View } from 'react-native';
 
 interface Props {
+  activeColorScale: ScaleSequential<string>;
   onSelect: (scale: ScaleSequential<string>) => void;
 }
 
 export const ColorScalePicker = (props: Props): React.ReactElement => {
-  const { onSelect } = props;
+  const { activeColorScale, onSelect } = props;
   return (
     <View style={styles.root}>
       {Object.entries(scales).map(([name, scale]) => {
-        return <ColorScale boxes={40} key={name} name={name} onSelect={onSelect} scale={scale} style={styles.scale} />;
+        return (
+          <ColorScale
+            boxes={40}
+            isSelected={activeColorScale === scale}
+            key={name}
+            name={name}
+            onSelect={onSelect}
+            scale={scale}
+            style={styles.scale}
+          />
+        );
       })}
     </View>
   );

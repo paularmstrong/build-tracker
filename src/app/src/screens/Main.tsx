@@ -4,7 +4,7 @@ import Build from '@build-tracker/build';
 import buildDataA from '@build-tracker/fixtures/builds/30af629d1d4c9f2f199cec5f572a019d4198004c.json';
 import buildDataB from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
 import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
-import ColorScaleContext from '../context/ColorScale';
+import ColorScale from '../modules/ColorScale';
 import ColorScalePicker from '../components/ColorScalePicker';
 import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../components/ComparisonTable';
@@ -24,11 +24,9 @@ const builds = [
 
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
-  const colorScaleContext = React.useContext(ColorScaleContext);
-
   const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
 
-  const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => colorScaleContext);
+  const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
       memo[name] = true;
@@ -65,38 +63,37 @@ const Main = (): React.ReactElement => {
 
   return (
     <View style={styles.layout}>
-      <ColorScaleContext.Provider value={colorScale}>
-        <Drawer hidden ref={drawerRef}>
-          <Subtitle title="Color Scale" />
-          <ColorScalePicker onSelect={handleSelectColorScale} />
-        </Drawer>
-        <View
-          // @ts-ignore
-          accessibilityRole="main"
-          style={styles.main}
-        >
-          <View style={[styles.column, styles.chart]}>
-            <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-            <Graph activeArtifacts={activeArtifacts} comparator={comparator} sizeKey="gzip" />
-          </View>
-          <View key="table" style={[styles.column, styles.table]}>
-            <ScrollView horizontal style={styles.tableScroll}>
-              <ScrollView>
-                <ComparisonTable
-                  activeArtifacts={activeArtifacts}
-                  comparator={comparator}
-                  onDisableArtifact={handleDisableArtifact}
-                  onEnableArtifact={handleEnableArtifact}
-                  sizeKey="gzip"
-                />
-              </ScrollView>
+      <Drawer hidden ref={drawerRef}>
+        <Subtitle title="Color Scale" />
+        <ColorScalePicker activeColorScale={colorScale} onSelect={handleSelectColorScale} />
+      </Drawer>
+      <View
+        // @ts-ignore
+        accessibilityRole="main"
+        style={styles.main}
+      >
+        <View style={[styles.column, styles.chart]}>
+          <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
+          <Graph activeArtifacts={activeArtifacts} colorScale={colorScale} comparator={comparator} sizeKey="gzip" />
+        </View>
+        <View key="table" style={[styles.column, styles.table]}>
+          <ScrollView horizontal style={styles.tableScroll}>
+            <ScrollView>
+              <ComparisonTable
+                activeArtifacts={activeArtifacts}
+                colorScale={colorScale}
+                comparator={comparator}
+                onDisableArtifact={handleDisableArtifact}
+                onEnableArtifact={handleEnableArtifact}
+                sizeKey="gzip"
+              />
             </ScrollView>
-            <View style={styles.buildInfo}>
-              <Text>Placeholder: Build Info</Text>
-            </View>
+          </ScrollView>
+          <View style={styles.buildInfo}>
+            <Text>Placeholder: Build Info</Text>
           </View>
         </View>
-      </ColorScaleContext.Provider>
+      </View>
     </View>
   );
 };

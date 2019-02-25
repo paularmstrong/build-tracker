@@ -1,8 +1,8 @@
 import { ColorScale } from '../ColorScale';
+import ColorScales from '../../../modules/ColorScale';
 import { mount } from 'enzyme';
 import React from 'react';
 import Ripple from '../../Ripple';
-import ColorScaleContext, { scales } from '../../../context/ColorScale';
 import { StyleSheet, View } from 'react-native';
 
 jest.mock('../../Ripple', () => {
@@ -13,28 +13,26 @@ describe('ColorScale', () => {
   describe('onSelect', () => {
     test('passes the scale to the callback', () => {
       const handleSelect = jest.fn();
-      const wrapper = mount(<ColorScale boxes={10} name="tacos" onSelect={handleSelect} scale={scales.Magma} />);
+      const wrapper = mount(
+        <ColorScale boxes={10} isSelected={false} name="tacos" onSelect={handleSelect} scale={ColorScales.Magma} />
+      );
       wrapper.find(Ripple).prop('onPress')();
-      expect(handleSelect).toHaveBeenCalledWith(scales.Magma);
+      expect(handleSelect).toHaveBeenCalledWith(ColorScales.Magma);
     });
   });
 
-  describe('selected', () => {
-    test('is true when context scale matches', () => {
+  describe('isSelected', () => {
+    test('sets aria-selected', () => {
       const wrapper = mount(
-        <ColorScaleContext.Provider value={scales.Rainbow}>
-          <ColorScale boxes={10} name="tacos" onSelect={jest.fn()} scale={scales.Rainbow} />
-        </ColorScaleContext.Provider>
+        <ColorScale boxes={10} isSelected name="tacos" onSelect={jest.fn()} scale={ColorScales.Rainbow} />
       );
 
       expect(wrapper.find(Ripple).prop('aria-selected')).toBe(true);
     });
 
-    test('is false when not the same as context scale', () => {
+    test('unsets aria-selected', () => {
       const wrapper = mount(
-        <ColorScaleContext.Provider value={scales.Magma}>
-          <ColorScale boxes={10} name="tacos" onSelect={jest.fn()} scale={scales.Rainbow} />
-        </ColorScaleContext.Provider>
+        <ColorScale boxes={10} isSelected={false} name="tacos" onSelect={jest.fn()} scale={ColorScales.Rainbow} />
       );
 
       expect(wrapper.find(Ripple).prop('aria-selected')).toBe(false);
@@ -47,7 +45,9 @@ describe('ColorScale', () => {
     });
 
     test('increases the visibility of the scale', () => {
-      const wrapper = mount(<ColorScale boxes={10} name="tacos" onSelect={jest.fn()} scale={scales.Rainbow} />);
+      const wrapper = mount(
+        <ColorScale boxes={10} name="tacos" isSelected onSelect={jest.fn()} scale={ColorScales.Rainbow} />
+      );
 
       expect(
         StyleSheet.flatten(

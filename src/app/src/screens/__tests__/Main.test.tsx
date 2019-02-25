@@ -1,10 +1,12 @@
 import { act } from 'react-dom/test-utils';
 import AppBar from '../../components/AppBar';
+import ColorScale from '../../modules/ColorScale';
 import ColorScalePicker from '../../components/ColorScalePicker';
+import ComparisonTable from '../../components/ComparisonTable';
 import Drawer from '../../components/Drawer';
+import Graph from '../../components/Graph';
 import Main from '../Main';
 import React from 'react';
-import { scales } from '../../context/ColorScale';
 import { shallow } from 'enzyme';
 
 jest.mock('../../components/Drawer', () => {
@@ -36,9 +38,11 @@ describe('Main', () => {
   test('sets color scale context when scale is selected', () => {
     const wrapper = shallow(<Main />);
     act(() => {
-      wrapper.find(ColorScalePicker).prop('onSelect')(scales.Rainbow);
+      wrapper.find(ColorScalePicker).prop('onSelect')(ColorScale.Rainbow);
     });
     wrapper.update();
-    expect(wrapper.childAt(0).prop('value')).toBe(scales.Rainbow);
+    expect(wrapper.find(ColorScalePicker).prop('activeColorScale')).toBe(ColorScale.Rainbow);
+    expect(wrapper.find(ComparisonTable).prop('colorScale')).toBe(ColorScale.Rainbow);
+    expect(wrapper.find(Graph).prop('colorScale')).toBe(ColorScale.Rainbow);
   });
 });

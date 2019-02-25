@@ -1,15 +1,15 @@
 import { ArtifactCell } from '../ArtifactCell';
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
-import { shallow } from 'enzyme';
 import { Switch } from 'react-native';
+import { fireEvent, render } from 'react-native-testing-library';
 
 describe('ArtifactCell', () => {
   describe('switch', () => {
     test('toggles with the name and on', () => {
       const handleDisable = jest.fn();
       const handleEnable = jest.fn();
-      const wrapper = shallow(
+      const { getByType } = render(
         <ArtifactCell
           cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
           color="red"
@@ -18,14 +18,14 @@ describe('ArtifactCell', () => {
           onEnable={handleEnable}
         />
       );
-      wrapper.find(Switch).simulate('valueChange', true);
+      fireEvent(getByType(Switch), 'valueChange', true);
       expect(handleEnable).toHaveBeenCalledWith('tacos');
     });
 
     test('toggles with the name and off', () => {
       const handleDisable = jest.fn();
       const handleEnable = jest.fn();
-      const wrapper = shallow(
+      const { getByType } = render(
         <ArtifactCell
           cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
           color="red"
@@ -34,7 +34,7 @@ describe('ArtifactCell', () => {
           onEnable={handleEnable}
         />
       );
-      wrapper.find(Switch).simulate('valueChange', false);
+      fireEvent(getByType(Switch), 'valueChange', false);
       expect(handleDisable).toHaveBeenCalledWith('tacos');
     });
   });

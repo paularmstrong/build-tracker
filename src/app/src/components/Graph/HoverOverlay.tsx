@@ -57,6 +57,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
   return (
     <g>
       <rect
+        data-testid="hoveroverlay"
         height={height}
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
@@ -65,7 +66,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         style={styles.rect}
         width={width}
       />
-      <line ref={lineRef} style={styles.hoverLine} />
+      <line data-testid="hoverline" ref={lineRef} style={styles.hoverLine} />
     </g>
   );
 };

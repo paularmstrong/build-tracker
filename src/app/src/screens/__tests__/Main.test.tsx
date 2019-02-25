@@ -7,7 +7,18 @@ import Drawer from '../../components/Drawer';
 import Graph from '../../components/Graph';
 import Main from '../Main';
 import React from 'react';
-import { shallow } from 'enzyme';
+import { fireEvent, render } from 'react-native-testing-library';
+
+// React.memo components are not findable by type
+jest.mock('../../components/ColorScalePicker', () => {
+  const actual = jest.requireActual('../../components/ColorScalePicker');
+  return actual.ColorScalePicker;
+});
+
+jest.mock('../../components/AppBar', () => {
+  const actual = jest.requireActual('../../components/AppBar');
+  return actual.AppBar;
+});
 
 jest.mock('../../components/Drawer', () => {
   const React = jest.requireActual('react');
@@ -24,25 +35,22 @@ jest.mock('../../components/Drawer', () => {
 });
 
 describe('Main', () => {
-  // TODO: refs don't seem to get populated
-  test.skip('shows the drawer when AppBar pressNavigationIcon hit', () => {
+  test('shows the drawer when AppBar pressNavigationIcon hit', () => {
     const showSpy = jest.spyOn(Drawer.prototype, 'show');
-    const wrapper = shallow(<Main />);
+    const { getByType } = render(<Main />);
     act(() => {
-      wrapper.find(AppBar).simulate('pressNavigationIcon');
+      fireEvent(getByType(AppBar), 'pressNavigationIcon');
     });
-    wrapper.update();
     expect(showSpy).toHaveBeenCalled();
   });
 
   test('sets color scale context when scale is selected', () => {
-    const wrapper = shallow(<Main />);
+    const { getByType } = render(<Main />);
     act(() => {
-      wrapper.find(ColorScalePicker).prop('onSelect')(ColorScale.Rainbow);
+      fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Rainbow);
     });
-    wrapper.update();
-    expect(wrapper.find(ColorScalePicker).prop('activeColorScale')).toBe(ColorScale.Rainbow);
-    expect(wrapper.find(ComparisonTable).prop('colorScale')).toBe(ColorScale.Rainbow);
-    expect(wrapper.find(Graph).prop('colorScale')).toBe(ColorScale.Rainbow);
+    expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Rainbow);
+    expect(getByType(ComparisonTable).props.colorScale).toBe(ColorScale.Rainbow);
+    expect(getByType(Graph).props.colorScale).toBe(ColorScale.Rainbow);
   });
 });

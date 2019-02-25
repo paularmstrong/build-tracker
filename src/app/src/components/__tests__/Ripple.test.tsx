@@ -1,32 +1,29 @@
 import React from 'react';
 import Ripple from '../Ripple';
-import { shallow } from 'enzyme';
-import { StyleSheet, View } from 'react-native';
+import { fireEvent, render } from 'react-native-testing-library';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 describe('Ripple', () => {
   describe('layout', () => {
     test('gets the width and height via onLayou', () => {
-      const wrapper = shallow(
+      const { getByType, queryAllByType } = render(
         <Ripple>
           <div />
         </Ripple>
       );
 
+      const views = queryAllByType(View);
+
       const mockLayoutEvent = { nativeEvent: { layout: { width: 400, height: 300 } } };
-      wrapper
-        .find(View)
-        .first()
-        .simulate('layout', mockLayoutEvent);
-      wrapper.update();
+      fireEvent(views[1], 'layout', mockLayoutEvent);
 
       const mockEvent = { nativeEvent: { locationX: 0, locationY: 0 } };
-      wrapper.simulate('pressIn', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
 
-      const ripple = shallow(wrapper.find(View).get(1));
-      const styles = StyleSheet.flatten(ripple.prop('style'));
+      const styles = StyleSheet.flatten(views[2].props.style);
       expect(styles).toMatchObject({
-        height: '900px',
-        width: '900px'
+        height: 900,
+        width: 900
       });
     });
   });
@@ -34,50 +31,50 @@ describe('Ripple', () => {
   describe('onPressIn', () => {
     test('calls onPressIn prop', () => {
       const handlePressIn = jest.fn();
-      const wrapper = shallow(
+      const { getByType } = render(
         <Ripple onPressIn={handlePressIn}>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 0, locationY: 0 } };
-      wrapper.simulate('pressIn', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
       expect(handlePressIn).toHaveBeenCalledWith(mockEvent);
     });
 
     test('renders the ripple', () => {
       const handlePressIn = jest.fn();
-      const wrapper = shallow(
+      const { getByType, queryAllByType } = render(
         <Ripple onPressIn={handlePressIn}>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 40, locationY: 20 } };
-      wrapper.simulate('pressIn', mockEvent);
-      const ripple = shallow(wrapper.find(View).get(1));
-      const styles = StyleSheet.flatten(ripple.prop('style'));
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
+      const ripple = queryAllByType(View)[2];
+      const styles = StyleSheet.flatten(ripple.props.style);
       expect(styles).toMatchObject({
-        backgroundColor: 'rgba(0,0,0,0.20)',
-        left: '-10px',
-        top: '-30px',
-        width: '100px',
-        height: '100px'
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        left: -10,
+        top: -30,
+        width: 100,
+        height: 100
       });
     });
 
     test('does not run when disabled', () => {
       const handlePressIn = jest.fn();
-      const wrapper = shallow(
+      const { getByType, queryAllByType } = render(
         <Ripple disabled onPressIn={handlePressIn}>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 0, locationY: 0 } };
-      wrapper.simulate('pressIn', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
       expect(handlePressIn).not.toHaveBeenCalled();
-      const ripple = shallow(wrapper.find(View).get(1));
-      const styles = StyleSheet.flatten(ripple.prop('style'));
+      const ripple = queryAllByType(View)[2];
+      const styles = StyleSheet.flatten(ripple.props.style);
       expect(styles).toMatchObject({
-        height: '0px'
+        height: 0
       });
     });
   });
@@ -85,73 +82,71 @@ describe('Ripple', () => {
   describe('onPressOut', () => {
     test('calls onPressOut prop', () => {
       const handlePressOut = jest.fn();
-      const wrapper = shallow(
+      const { getByType } = render(
         <Ripple onPressOut={handlePressOut}>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 0, locationY: 0 } };
-      wrapper.simulate('pressOut', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressOut', mockEvent);
       expect(handlePressOut).toHaveBeenCalledWith(mockEvent);
     });
 
     test('un-renders the ripple after 400ms', () => {
       const handlePressOut = jest.fn();
-      const wrapper = shallow(
+      const { getByType, queryAllByType } = render(
         <Ripple onPressOut={handlePressOut}>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 40, locationY: 20 } };
-      wrapper.simulate('pressIn', mockEvent);
-      wrapper.simulate('pressOut', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressOut', mockEvent);
       jest.advanceTimersByTime(401);
-      wrapper.update();
 
-      const ripple = shallow(wrapper.find(View).get(1));
-      const styles = StyleSheet.flatten(ripple.prop('style'));
+      const ripple = queryAllByType(View)[2];
+      const styles = StyleSheet.flatten(ripple.props.style);
       expect(styles).toMatchObject({
-        backgroundColor: 'rgba(0,0,0,0.20)',
-        left: '-10px',
-        top: '-30px',
-        width: '0px',
-        height: '0px'
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        left: -10,
+        top: -30,
+        width: 0,
+        height: 0
       });
     });
 
     test('does not try rendering the pressOut if unmounted', () => {
-      const wrapper = shallow(
+      const { getByType, unmount } = render(
         <Ripple>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 40, locationY: 20 } };
-      wrapper.simulate('pressIn', mockEvent);
-      wrapper.simulate('pressOut', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressOut', mockEvent);
       expect(() => {
-        wrapper.unmount();
+        unmount();
         jest.advanceTimersByTime(401);
       }).not.toThrow();
     });
 
     test('does not run when disabled', () => {
       const handlePressOut = jest.fn();
-      const wrapper = shallow(
+      const { getByType, queryAllByType } = render(
         <Ripple disabled onPressIn={handlePressOut}>
           <div />
         </Ripple>
       );
       const mockEvent = { nativeEvent: { locationX: 0, locationY: 0 } };
-      wrapper.simulate('pressIn', mockEvent);
-      wrapper.simulate('pressOut', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressIn', mockEvent);
+      fireEvent(getByType(TouchableOpacity), 'pressOut', mockEvent);
       jest.advanceTimersByTime(401);
-      wrapper.update();
 
       expect(handlePressOut).not.toHaveBeenCalled();
-      const ripple = shallow(wrapper.find(View).get(1));
-      const styles = StyleSheet.flatten(ripple.prop('style'));
+      const ripple = queryAllByType(View)[2];
+      const styles = StyleSheet.flatten(ripple.props.style);
       expect(styles).toMatchObject({
-        height: '0px'
+        height: 0
       });
     });
   });

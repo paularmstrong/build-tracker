@@ -1,19 +1,17 @@
 import * as Theme from '../../theme';
 import Divider from '../Divider';
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from 'react-native-testing-library';
 import { StyleSheet, View } from 'react-native';
 
 describe('Divider', () => {
   test('renders a simple divider', () => {
-    const wrapper = shallow(<Divider />);
-    expect(wrapper.find(View).exists()).toBe(true);
-    expect(StyleSheet.flatten(wrapper.find(View).prop('style'))).toMatchObject({ backgroundColor: Theme.Color.Gray30 });
+    const { getByType } = render(<Divider />);
+    expect(StyleSheet.flatten(getByType(View).props.style)).toMatchObject({ backgroundColor: Theme.Color.Gray30 });
   });
 
   test('renders a divider with the given color', () => {
-    const wrapper = shallow(<Divider color="red" />);
-    expect(wrapper.find(View).exists()).toBe(true);
-    expect(StyleSheet.flatten(wrapper.find(View).prop('style'))).toMatchObject({ backgroundColor: 'red' });
+    const { getByType } = render(<Divider color="red" />);
+    expect(StyleSheet.flatten(getByType(View).props.style)).toMatchObject({ backgroundColor: 'red' });
   });
 });

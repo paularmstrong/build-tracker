@@ -1,8 +1,8 @@
 import { ColorScale } from '../ColorScale';
 import ColorScales from '../../../modules/ColorScale';
-import { mount } from 'enzyme';
 import React from 'react';
 import Ripple from '../../Ripple';
+import { fireEvent, render } from 'react-native-testing-library';
 import { StyleSheet, View } from 'react-native';
 
 jest.mock('../../Ripple', () => {
@@ -13,29 +13,29 @@ describe('ColorScale', () => {
   describe('onSelect', () => {
     test('passes the scale to the callback', () => {
       const handleSelect = jest.fn();
-      const wrapper = mount(
+      const { getByType } = render(
         <ColorScale boxes={10} isSelected={false} name="tacos" onSelect={handleSelect} scale={ColorScales.Magma} />
       );
-      wrapper.find(Ripple).prop('onPress')();
+      fireEvent.press(getByType(Ripple));
       expect(handleSelect).toHaveBeenCalledWith(ColorScales.Magma);
     });
   });
 
   describe('isSelected', () => {
     test('sets aria-selected', () => {
-      const wrapper = mount(
+      const { getByType } = render(
         <ColorScale boxes={10} isSelected name="tacos" onSelect={jest.fn()} scale={ColorScales.Rainbow} />
       );
 
-      expect(wrapper.find(Ripple).prop('aria-selected')).toBe(true);
+      expect(getByType(Ripple).props['aria-selected']).toBe(true);
     });
 
     test('unsets aria-selected', () => {
-      const wrapper = mount(
+      const { getByType } = render(
         <ColorScale boxes={10} isSelected={false} name="tacos" onSelect={jest.fn()} scale={ColorScales.Rainbow} />
       );
 
-      expect(wrapper.find(Ripple).prop('aria-selected')).toBe(false);
+      expect(getByType(Ripple).props['aria-selected']).toBe(false);
     });
   });
 
@@ -45,28 +45,13 @@ describe('ColorScale', () => {
     });
 
     test('increases the visibility of the scale', () => {
-      const wrapper = mount(
+      const { getByType, queryAllByType } = render(
         <ColorScale boxes={10} name="tacos" isSelected onSelect={jest.fn()} scale={ColorScales.Rainbow} />
       );
 
-      expect(
-        StyleSheet.flatten(
-          wrapper
-            .find(View)
-            .first()
-            .prop('style')
-        )
-      ).toMatchObject({ opacity: 0.6 });
-
-      wrapper.simulate('mouseEnter');
-      expect(
-        StyleSheet.flatten(
-          wrapper
-            .find(View)
-            .first()
-            .prop('style')
-        )
-      ).not.toMatchObject({ opacity: 1 });
+      expect(StyleSheet.flatten(queryAllByType(View)[0].props.style)).toMatchObject({ opacity: 0.6 });
+      fireEvent(getByType(Ripple), 'mouseEnter');
+      expect(StyleSheet.flatten(queryAllByType(View)[0].props.style)).toMatchObject({ opacity: 1 });
     });
   });
 });

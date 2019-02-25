@@ -25,10 +25,6 @@ const Area = (props: Props): React.ReactElement => {
   }, [colorScale, comparator.artifactNames]);
 
   React.useEffect(() => {
-    if (!gRef.current) {
-      return;
-    }
-
     const dataStack = stack();
     dataStack.keys(activeArtifactNames);
     // @ts-ignore
@@ -67,7 +63,7 @@ const Area = (props: Props): React.ReactElement => {
       .attr('d', areaChart);
   });
 
-  return <g ref={gRef} />;
+  return <g aria-label={`Stacked area chart for ${activeArtifactNames.join(', ')}`} ref={gRef} />;
 };
 
 export default Area;

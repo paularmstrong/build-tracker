@@ -30,12 +30,12 @@ const ComparisonTable = (props: Props): React.ReactElement => {
       case CellType.TEXT:
         return <TextCell cell={cell} key={i} />;
       case CellType.ARTIFACT: {
-        const isActive = activeArtifacts[cell.text];
+        const isActive =
+          cell.text === 'All' ? Object.values(activeArtifacts).every(Boolean) : activeArtifacts[cell.text];
         return (
           <ArtifactCell
             cell={cell}
             color={colorScale(comparator.artifactNames.indexOf(cell.text))}
-            disabled={cell.text === 'All' && isActive}
             key={i}
             isActive={isActive}
             onDisable={onDisableArtifact}

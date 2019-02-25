@@ -45,7 +45,13 @@ const Main = (): React.ReactElement => {
 
   const handleDisableArtifact = React.useCallback(
     (name: string): void => {
-      activeArtifacts[name] = false;
+      if (name === 'All') {
+        Object.keys(activeArtifacts).forEach(name => {
+          activeArtifacts[name] = false;
+        });
+      } else {
+        activeArtifacts[name] = false;
+      }
       setActiveArtifacts(activeArtifacts);
       forceUpdate(Date.now());
     },
@@ -54,7 +60,13 @@ const Main = (): React.ReactElement => {
 
   const handleEnableArtifact = React.useCallback(
     (name: string): void => {
-      activeArtifacts[name] = true;
+      if (name === 'All') {
+        Object.keys(activeArtifacts).forEach(name => {
+          activeArtifacts[name] = true;
+        });
+      } else {
+        activeArtifacts[name] = true;
+      }
       setActiveArtifacts(activeArtifacts);
       forceUpdate(Date.now());
     },

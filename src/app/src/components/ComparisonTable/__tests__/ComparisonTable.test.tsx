@@ -3,10 +3,10 @@ import buildDataA from '@build-tracker/fixtures/builds/30af629d1d4c9f2f199cec5f5
 import buildDataB from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
 import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
 import ColorScale from '../../../modules/ColorScale';
+import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../ComparisonTable';
 import React from 'react';
-import { shallow } from 'enzyme';
-import Comparator, { CellType } from '@build-tracker/comparator';
+import { fireEvent, render } from 'react-native-testing-library';
 
 const builds = [
   new Build(buildDataA.meta, buildDataA.artifacts),
@@ -20,7 +20,7 @@ describe('ComparisonTable', () => {
       const handleDisableArtifact = jest.fn();
       const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
-      const wrapper = shallow(
+      const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: true }}
           colorScale={ColorScale.Magma}
@@ -30,7 +30,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'main' } }).simulate('disable', 'main');
+      fireEvent(getByProps({ cell: comparator.matrixBody[2][0] }), 'disable', 'main');
       expect(handleDisableArtifact).toHaveBeenCalledWith('main');
     });
 
@@ -38,7 +38,7 @@ describe('ComparisonTable', () => {
       const handleDisableArtifact = jest.fn();
       const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
-      const wrapper = shallow(
+      const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: false }}
           colorScale={ColorScale.Magma}
@@ -48,7 +48,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'vendor' } }).simulate('enable', 'vendor');
+      fireEvent(getByProps({ cell: comparator.matrixBody[1][0] }), 'enable', 'vendor');
       expect(handleEnableArtifact).toHaveBeenCalledWith('vendor');
     });
 
@@ -56,7 +56,7 @@ describe('ComparisonTable', () => {
       const handleDisableArtifact = jest.fn();
       const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
-      const wrapper = shallow(
+      const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
           colorScale={ColorScale.Magma}
@@ -66,7 +66,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      wrapper.find({ cell: { type: CellType.ARTIFACT, text: 'All' } }).simulate('enable', 'All');
+      fireEvent(getByProps({ cell: comparator.matrixBody[0][0] }), 'enable', 'All');
       expect(handleEnableArtifact).toHaveBeenCalledWith('All');
     });
   });

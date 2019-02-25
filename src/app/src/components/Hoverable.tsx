@@ -48,36 +48,45 @@ interface Props {
   onHoverOut?: () => void;
 }
 
-const Hoverable = (props: Props): React.ReactElement => {
-  const [isHovered, setHovered] = React.useState(false);
+interface State {
+  isHovered: boolean;
+}
 
-  const { children } = props;
-  const child = typeof children === 'function' ? children(isHovered) : children;
+class Hoverable extends React.Component<Props, State> {
+  public state = { isHovered: false };
 
-  const _handleMouseEnter = (): void => {
+  public render(): React.ReactElement {
+    const { children } = this.props;
+    const { isHovered } = this.state;
+    const child = typeof children === 'function' ? children(isHovered) : children;
+
+    return React.cloneElement(React.Children.only(child), {
+      onMouseEnter: this._handleMouseEnter,
+      onMouseLeave: this._handleMouseLeave
+    });
+  }
+
+  private _handleMouseEnter = (): void => {
+    const { isHovered } = this.state;
     if (hover.isEnabled && !isHovered) {
-      const { onHoverIn } = props;
+      const { onHoverIn } = this.props;
       if (onHoverIn) {
         onHoverIn();
       }
-      setHovered(true);
+      this.setState({ isHovered: true });
     }
   };
 
-  const _handleMouseLeave = (): void => {
+  private _handleMouseLeave = (): void => {
+    const { isHovered } = this.state;
     if (isHovered) {
-      const { onHoverOut } = props;
+      const { onHoverOut } = this.props;
       if (onHoverOut) {
         onHoverOut();
       }
-      setHovered(false);
+      this.setState({ isHovered: false });
     }
   };
-
-  return React.cloneElement(React.Children.only(child), {
-    onMouseEnter: _handleMouseEnter,
-    onMouseLeave: _handleMouseLeave
-  });
-};
+}
 
 export default Hoverable;

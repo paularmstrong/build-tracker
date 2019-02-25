@@ -1,9 +1,9 @@
 import * as Selection from 'd3-selection';
 import { act } from 'react-dom/test-utils';
 import HoverOverlay from '../HoverOverlay';
-import { mount } from 'enzyme';
 import React from 'react';
 import { scalePoint } from 'd3-scale';
+import { fireEvent, render } from 'react-testing-library';
 
 const xScale = scalePoint()
   .range([0, 400])
@@ -12,12 +12,12 @@ const xScale = scalePoint()
 describe('HoverOverlay', () => {
   describe('default render', () => {
     test('does not display the line', () => {
-      const wrapper = mount(
+      const { getByTestId } = render(
         <svg>
           <HoverOverlay height={400} width={400} xScale={xScale} />
         </svg>
       );
-      expect(wrapper.find('line').prop('style')).toMatchObject({ opacity: 0 });
+      expect(getByTestId('hoverline').style).toMatchObject({ opacity: '0' });
     });
   });
 
@@ -26,13 +26,13 @@ describe('HoverOverlay', () => {
       const mockStyle = jest.fn();
       // @ts-ignore
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
-      const wrapper = mount(
+      const { getByTestId } = render(
         <svg>
           <HoverOverlay height={400} width={400} xScale={xScale} />
         </svg>
       );
       act(() => {
-        wrapper.find('rect').simulate('mouseover');
+        fireEvent.mouseOver(getByTestId('hoveroverlay'));
       });
 
       expect(mockStyle).toHaveBeenCalledWith('opacity', 1);
@@ -44,14 +44,14 @@ describe('HoverOverlay', () => {
       const mockStyle = jest.fn();
       // @ts-ignore
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
-      const wrapper = mount(
+      const { getByTestId } = render(
         <svg>
           <HoverOverlay height={400} width={400} xScale={xScale} />
         </svg>
       );
       act(() => {
-        wrapper.find('rect').simulate('mouseover');
-        wrapper.find('rect').simulate('mouseout');
+        fireEvent.mouseOver(getByTestId('hoveroverlay'));
+        fireEvent.mouseOut(getByTestId('hoveroverlay'));
       });
 
       expect(mockStyle).toHaveBeenCalledWith('opacity', 0);
@@ -66,21 +66,19 @@ describe('HoverOverlay', () => {
 
       // @ts-ignore
       jest.spyOn(Selection, 'select').mockReturnValue({ attr: mockAttr });
-      const wrapper = mount(
+      const { getByTestId } = render(
         <svg>
           <HoverOverlay height={400} width={400} xScale={xScale} />
         </svg>
       );
       act(() => {
-        wrapper.find('rect').simulate('mousemove', { nativeEvent: { offsetX: 200 } });
+        fireEvent.mouseMove(getByTestId('hoveroverlay'));
       });
 
       expect(mockAttr).toHaveBeenCalledWith('y2', 400);
       expect(mockAttr).toHaveBeenCalledWith('y1', 0);
-
-      // the second revision is at ~ 133px in a 400px wide area
-      expect(mockAttr).toHaveBeenCalledWith('x2', 400 / 3);
-      expect(mockAttr).toHaveBeenCalledWith('x1', 400 / 3);
+      expect(mockAttr).toHaveBeenCalledWith('x2', 400);
+      expect(mockAttr).toHaveBeenCalledWith('x1', 400);
     });
   });
 });

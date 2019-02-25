@@ -13,11 +13,8 @@ interface Props {
 export const TotalCell = (props: Props): React.ReactElement => {
   const { cell, sizeKey, style } = props;
   const value = cell.sizes[sizeKey];
-  return (
-    <Td style={style}>
-      <Text>{value === 0 ? '' : formatBytes(value)}</Text>
-    </Td>
-  );
+  const text = value === 0 ? '' : formatBytes(value);
+  return <Td style={style}>{text ? <Text>{text}</Text> : null}</Td>;
 };
 
 export default React.memo(TotalCell);

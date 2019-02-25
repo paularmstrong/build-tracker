@@ -1,7 +1,5 @@
 import * as Theme from '../theme';
 import React from 'react';
-// import Divider from './Divider';
-// import Subtitle from './Subtitle';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface Props {

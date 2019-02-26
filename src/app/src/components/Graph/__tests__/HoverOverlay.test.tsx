@@ -17,7 +17,7 @@ describe('HoverOverlay', () => {
     test('does not display the line', () => {
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
         </svg>
       );
       expect(getByTestId('hoverline').style).toMatchObject({ opacity: '0' });
@@ -31,7 +31,7 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
         </svg>
       );
       act(() => {
@@ -49,7 +49,7 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
         </svg>
       );
       act(() => {
@@ -71,7 +71,7 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ attr: mockAttr });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
         </svg>
       );
       act(() => {
@@ -82,6 +82,22 @@ describe('HoverOverlay', () => {
       expect(mockAttr).toHaveBeenCalledWith('y1', 0);
       expect(mockAttr).toHaveBeenCalledWith('x2', 400);
       expect(mockAttr).toHaveBeenCalledWith('x1', 400);
+    });
+  });
+
+  describe('onSelectRevision', () => {
+    test('passes the correct revision string', () => {
+      const handleSelectRevision = jest.fn();
+      const { getByTestId } = render(
+        <svg>
+          <HoverOverlay height={400} onSelectRevision={handleSelectRevision} width={400} xScale={xScale} />
+        </svg>
+      );
+      act(() => {
+        fireEvent.click(getByTestId('hoveroverlay'));
+      });
+
+      expect(handleSelectRevision).toHaveBeenCalledWith('1234');
     });
   });
 });

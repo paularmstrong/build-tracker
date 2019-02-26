@@ -28,7 +28,15 @@ const builds = [
 
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
+  const [compareRevisions, setCompareRevisions] = React.useState<Array<string>>([]);
   const comparator = React.useMemo((): Comparator => new Comparator({ builds }), []);
+  const activeComparator = React.useMemo(
+    (): Comparator =>
+      new Comparator({
+        builds: builds.filter(build => compareRevisions.indexOf(build.getMetaValue('revision')) !== -1)
+      }),
+    [compareRevisions]
+  );
 
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
   const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
@@ -86,6 +94,13 @@ const Main = (): React.ReactElement => {
     [setSizeKey]
   );
 
+  const handleSelectRevision = React.useCallback(
+    (revision: string): void => {
+      setCompareRevisions([...compareRevisions, revision]);
+    },
+    [compareRevisions, setCompareRevisions]
+  );
+
   return (
     <View style={styles.layout}>
       <Drawer hidden ref={drawerRef}>
@@ -101,7 +116,13 @@ const Main = (): React.ReactElement => {
       >
         <View style={[styles.column, styles.chart]}>
           <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
-          <Graph activeArtifacts={activeArtifacts} colorScale={colorScale} comparator={comparator} sizeKey={sizeKey} />
+          <Graph
+            activeArtifacts={activeArtifacts}
+            colorScale={colorScale}
+            comparator={comparator}
+            onSelectRevision={handleSelectRevision}
+            sizeKey={sizeKey}
+          />
         </View>
         <View key="table" style={[styles.column, styles.table]}>
           <ScrollView horizontal style={styles.tableScroll}>
@@ -109,7 +130,7 @@ const Main = (): React.ReactElement => {
               <ComparisonTable
                 activeArtifacts={activeArtifacts}
                 colorScale={colorScale}
-                comparator={comparator}
+                comparator={activeComparator}
                 onDisableArtifact={handleDisableArtifact}
                 onEnableArtifact={handleEnableArtifact}
                 sizeKey={sizeKey}

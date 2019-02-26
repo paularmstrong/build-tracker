@@ -38,22 +38,38 @@ jest.mock('../../components/Drawer', () => {
 });
 
 describe('Main', () => {
-  test('shows the drawer when AppBar pressNavigationIcon hit', () => {
-    const showSpy = jest.spyOn(Drawer.prototype, 'show');
-    const { getByType } = render(<Main />);
-    act(() => {
-      fireEvent(getByType(AppBar), 'pressNavigationIcon');
+  describe('drawer', () => {
+    test('shows the drawer when AppBar pressNavigationIcon hit', () => {
+      const showSpy = jest.spyOn(Drawer.prototype, 'show');
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(AppBar), 'pressNavigationIcon');
+      });
+      expect(showSpy).toHaveBeenCalled();
     });
-    expect(showSpy).toHaveBeenCalled();
   });
 
-  test('sets color scale context when scale is selected', () => {
-    const { getByType } = render(<Main />);
-    act(() => {
-      fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Rainbow);
+  describe('color scale', () => {
+    test('sets color scale context when scale is selected', () => {
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Magma);
+      });
+      expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Magma);
+      expect(getByType(ComparisonTable).props.colorScale).toBe(ColorScale.Magma);
+      expect(getByType(Graph).props.colorScale).toBe(ColorScale.Magma);
     });
-    expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Rainbow);
-    expect(getByType(ComparisonTable).props.colorScale).toBe(ColorScale.Rainbow);
-    expect(getByType(Graph).props.colorScale).toBe(ColorScale.Rainbow);
+  });
+
+  describe('on select revision', () => {
+    test('updates the comparison table', () => {
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      });
+      expect(getByType(ComparisonTable).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual([
+        '243024909db66ac3c3e48d2ffe4015f049609834'
+      ]);
+    });
   });
 });

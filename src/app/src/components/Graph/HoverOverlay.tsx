@@ -8,12 +8,13 @@ import { select } from 'd3-selection';
 
 interface Props {
   height: number;
+  onSelectRevision: (revision: string) => void;
   width: number;
   xScale: ScalePoint<string>;
 }
 
 const HoverOverlay = (props: Props): React.ReactElement => {
-  const { height, width, xScale } = props;
+  const { height, onSelectRevision, width, xScale } = props;
   const lineRef = React.useRef(null);
   const domain = xScale.domain();
 
@@ -24,16 +25,19 @@ const HoverOverlay = (props: Props): React.ReactElement => {
   };
 
   // TODO: handle clicks on revisions
-  // const handleClick = (event: React.MouseEvent<SVGRectElement>): void => {
-  //   const {
-  //     nativeEvent: { offsetX }
-  //   } = event;
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<SVGRectElement>): void => {
+      const {
+        nativeEvent: { offsetX }
+      } = event;
 
-  //   const xValue = buildRevisionFromX(offsetX);
+      const revision = buildRevisionFromX(offsetX);
 
-  //   // @ts-ignore TODO make clicking do things
-  //   console.log('clicked', xValue);
-  // };
+      // @ts-ignore TODO make clicking do things
+      onSelectRevision(revision);
+    },
+    [buildRevisionFromX, onSelectRevision]
+  );
 
   const handleMouseMove = (event: React.MouseEvent<SVGRectElement>): void => {
     const {
@@ -62,6 +66,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       <rect
         data-testid="hoveroverlay"
         height={height}
+        onClick={handleClick}
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
         onMouseOver={handleMouseOver}

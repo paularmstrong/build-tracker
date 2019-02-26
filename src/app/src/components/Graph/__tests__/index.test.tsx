@@ -20,10 +20,16 @@ const builds = [
 ];
 
 describe('Graph', () => {
-  test.skip('resizes the SVG after layout', () => {
+  test('resizes the SVG after layout', () => {
     const comparator = new Comparator({ builds: builds });
     const { getByType } = render(
-      <Graph activeArtifacts={{ main: true }} colorScale={ColorScale.Magma} comparator={comparator} sizeKey="stat" />
+      <Graph
+        activeArtifacts={{ main: true }}
+        colorScale={ColorScale.Magma}
+        comparator={comparator}
+        onSelectRevision={jest.fn()}
+        sizeKey="stat"
+      />
     );
     act(() => {
       fireEvent(getByType(View), 'layout', { nativeEvent: { layout: { width: 400, height: 300 } } });

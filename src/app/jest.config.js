@@ -12,6 +12,7 @@ module.exports = {
   rootDir: path.join(__dirname, '../..'),
   roots: ['<rootDir>/src/app'],
   setupFiles: ['<rootDir>/src/app/config/jest/setup.js'],
+  setupFilesAfterEnv: ['react-testing-library/cleanup-after-each'],
   testEnvironment: 'jsdom',
   timers: 'fake',
   transform: {

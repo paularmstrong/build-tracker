@@ -25,7 +25,7 @@ const Item = (props: Props): React.ReactElement => {
       {isHovered => (
         <Ripple
           // @ts-ignore
-          accessibilityRole="listitem"
+          accessibilityRole="menuitem"
           nativeID={nativeID}
           onPress={onPress}
           style={[styles.root, (isHighlighted || isHovered) && styles.rootHover]}

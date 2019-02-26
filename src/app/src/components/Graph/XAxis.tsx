@@ -17,10 +17,6 @@ const XAxis = (props: Props): React.ReactElement => {
   const ref = React.useRef(null);
 
   React.useEffect(() => {
-    if (!ref.current || !height) {
-      return;
-    }
-
     const axis = axisBottom(scale).tickFormat(d => formatSha(d));
     select(ref.current)
       .call(axis)

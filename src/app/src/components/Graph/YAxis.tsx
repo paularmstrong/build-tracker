@@ -19,10 +19,6 @@ const YAxis = (props: Props): React.ReactElement => {
   const ref = React.useRef(null);
 
   React.useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-
     const axis = axisLeft(scale).tickFormat(tickFormat);
     select(ref.current).call(axis);
   });

@@ -24,7 +24,8 @@
     "d3-transition": "^1.2.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-native-web": "^0.10.0"
+    "react-native-web": "^0.10.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@build-tracker/build": "1.0.0",

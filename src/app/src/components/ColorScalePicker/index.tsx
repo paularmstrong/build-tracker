@@ -3,8 +3,8 @@
  */
 import * as Theme from '../../theme';
 import ColorScale from './ColorScale';
+import ColorScales from '../../modules/ColorScale';
 import React from 'react';
-import { scales } from '../../context/ColorScale';
 import { ScaleSequential } from 'd3-scale';
 import { StyleSheet, View } from 'react-native';
 
@@ -17,7 +17,7 @@ export const ColorScalePicker = (props: Props): React.ReactElement => {
   const { activeColorScale, onSelect } = props;
   return (
     <View style={styles.root}>
-      {Object.entries(scales).map(([name, scale]) => {
+      {Object.entries(ColorScales).map(([name, scale]) => {
         return (
           <ColorScale
             boxes={40}

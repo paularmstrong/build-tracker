@@ -16,6 +16,7 @@ interface Props {
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
   onSelectRevision: (revision: string) => void;
+  selectedRevisions: Array<string>;
   sizeKey: string;
 }
 
@@ -33,7 +34,7 @@ export class SVG extends React.Component<{ height: number; width: number }> {
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { activeArtifacts, colorScale, comparator, onSelectRevision, sizeKey } = props;
+  const { activeArtifacts, colorScale, comparator, onSelectRevision, selectedRevisions, sizeKey } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
@@ -86,6 +87,7 @@ const Graph = (props: Props): React.ReactElement => {
               <HoverOverlay
                 height={height - Margin.TOP - Margin.BOTTOM}
                 onSelectRevision={onSelectRevision}
+                selectedRevisions={selectedRevisions}
                 width={width - Margin.LEFT - Margin.RIGHT}
                 xScale={xScale}
               />

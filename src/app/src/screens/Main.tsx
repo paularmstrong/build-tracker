@@ -132,6 +132,7 @@ const Main = (): React.ReactElement => {
             colorScale={colorScale}
             comparator={comparator}
             onSelectRevision={handleSelectRevision}
+            selectedRevisions={compareRevisions}
             sizeKey={sizeKey}
           />
         </View>

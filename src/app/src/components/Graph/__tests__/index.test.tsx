@@ -28,6 +28,7 @@ describe('Graph', () => {
         colorScale={ColorScale.Magma}
         comparator={comparator}
         onSelectRevision={jest.fn()}
+        selectedRevisions={[]}
         sizeKey="stat"
       />
     );

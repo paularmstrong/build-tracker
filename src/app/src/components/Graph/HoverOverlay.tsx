@@ -9,12 +9,13 @@ import { select } from 'd3-selection';
 interface Props {
   height: number;
   onSelectRevision: (revision: string) => void;
+  selectedRevisions: Array<string>;
   width: number;
   xScale: ScalePoint<string>;
 }
 
 const HoverOverlay = (props: Props): React.ReactElement => {
-  const { height, onSelectRevision, width, xScale } = props;
+  const { height, onSelectRevision, selectedRevisions, width, xScale } = props;
   const lineRef = React.useRef(null);
   const domain = xScale.domain();
 
@@ -32,11 +33,14 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       } = event;
 
       const revision = buildRevisionFromX(offsetX);
+      if (selectedRevisions.indexOf(revision) !== -1) {
+        return;
+      }
 
       // @ts-ignore TODO make clicking do things
       onSelectRevision(revision);
     },
-    [buildRevisionFromX, onSelectRevision]
+    [buildRevisionFromX, onSelectRevision, selectedRevisions]
   );
 
   const handleMouseMove = (event: React.MouseEvent<SVGRectElement>): void => {
@@ -74,6 +78,20 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         style={styles.rect}
         width={width}
       />
+      {selectedRevisions.map(revision => {
+        const x = xScale(revision);
+        return (
+          <line
+            data-testid="selectedline"
+            key={revision}
+            x1={x}
+            x2={x}
+            y1={0}
+            y2={height}
+            style={styles.selectedLine}
+          />
+        );
+      })}
       <line data-testid="hoverline" ref={lineRef} style={styles.hoverLine} />
     </g>
   );
@@ -87,6 +105,12 @@ const styles = {
     strokeWidth: '3px',
     strokeDasharray: '5 3',
     opacity: 0
+  },
+  selectedLine: {
+    stroke: Theme.Color.White,
+    fill: 'none',
+    strokeWidth: '1px',
+    strokeDasharray: '2 2'
   }
 };
 

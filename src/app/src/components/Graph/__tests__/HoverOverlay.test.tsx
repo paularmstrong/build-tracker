@@ -9,7 +9,7 @@ import { scalePoint } from 'd3-scale';
 import { fireEvent, render } from 'react-testing-library';
 
 const xScale = scalePoint()
-  .range([0, 400])
+  .range([0, 300])
   .domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
 
 describe('HoverOverlay', () => {
@@ -17,7 +17,7 @@ describe('HoverOverlay', () => {
     test('does not display the line', () => {
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
         </svg>
       );
       expect(getByTestId('hoverline').style).toMatchObject({ opacity: '0' });
@@ -31,7 +31,7 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
         </svg>
       );
       act(() => {
@@ -49,7 +49,7 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
         </svg>
       );
       act(() => {
@@ -71,7 +71,7 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ attr: mockAttr });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} width={400} xScale={xScale} />
+          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
         </svg>
       );
       act(() => {
@@ -80,8 +80,8 @@ describe('HoverOverlay', () => {
 
       expect(mockAttr).toHaveBeenCalledWith('y2', 400);
       expect(mockAttr).toHaveBeenCalledWith('y1', 0);
-      expect(mockAttr).toHaveBeenCalledWith('x2', 400);
-      expect(mockAttr).toHaveBeenCalledWith('x1', 400);
+      expect(mockAttr).toHaveBeenCalledWith('x2', 300);
+      expect(mockAttr).toHaveBeenCalledWith('x1', 300);
     });
   });
 
@@ -90,7 +90,13 @@ describe('HoverOverlay', () => {
       const handleSelectRevision = jest.fn();
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={handleSelectRevision} width={400} xScale={xScale} />
+          <HoverOverlay
+            height={400}
+            onSelectRevision={handleSelectRevision}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+          />
         </svg>
       );
       act(() => {
@@ -98,6 +104,53 @@ describe('HoverOverlay', () => {
       });
 
       expect(handleSelectRevision).toHaveBeenCalledWith('1234');
+    });
+
+    test('does nothing when selecting a currently selected revision', () => {
+      const handleSelectRevision = jest.fn();
+      const { getByTestId } = render(
+        <svg>
+          <HoverOverlay
+            height={400}
+            onSelectRevision={handleSelectRevision}
+            selectedRevisions={['1234']}
+            width={300}
+            xScale={xScale}
+          />
+        </svg>
+      );
+      act(() => {
+        fireEvent.click(getByTestId('hoveroverlay'));
+      });
+
+      expect(handleSelectRevision).not.toHaveBeenCalled();
+    });
+
+    test('draws a line for the selected revisions', () => {
+      const { queryAllByTestId } = render(
+        <svg>
+          <HoverOverlay
+            height={400}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={['abcdefg1234567', 'abcd']}
+            width={300}
+            xScale={xScale}
+          />
+        </svg>
+      );
+
+      expect(queryAllByTestId('selectedline')).toHaveLength(2);
+      const line1 = queryAllByTestId('selectedline')[0];
+      expect(line1.getAttribute('x1')).toBe('100');
+      expect(line1.getAttribute('x2')).toBe('100');
+      expect(line1.getAttribute('y1')).toBe('0');
+      expect(line1.getAttribute('y2')).toBe('400');
+
+      const line2 = queryAllByTestId('selectedline')[1];
+      expect(line2.getAttribute('x1')).toBe('200');
+      expect(line2.getAttribute('x2')).toBe('200');
+      expect(line2.getAttribute('y1')).toBe('0');
+      expect(line2.getAttribute('y2')).toBe('400');
     });
   });
 });

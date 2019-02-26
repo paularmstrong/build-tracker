@@ -60,7 +60,7 @@ class Button extends React.Component<Props, State> {
               style
             ]}
           >
-            <View style={[rootStyles.content, iconOnly && rootStyles.contentIconOnly]}>
+            <View pointerEvents="none" style={[rootStyles.content, iconOnly && rootStyles.contentIconOnly]}>
               <Text style={[textStyles.root, ...this._getTextStyles(isHovered)]}>
                 {Icon ? (
                   <Icon

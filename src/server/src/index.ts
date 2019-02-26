@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as expressPino from 'express-pino-logger';
 import * as pino from 'pino';
 import bodyParser from 'body-parser';

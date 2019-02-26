@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 export interface SizeBudget {
   delta?: number;
   percent?: number;

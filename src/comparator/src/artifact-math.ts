@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { ArtifactSizes } from '@build-tracker/build';
 
 export const delta = (key: string, baseArtifact?: ArtifactSizes, prevArtifact?: ArtifactSizes): number => {

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import ColorScale from '../../../modules/ColorScale';
 import ColorScaleComponent from '../ColorScale';
 import { ColorScalePicker } from '../';

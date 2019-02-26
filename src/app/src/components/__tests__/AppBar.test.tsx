@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import AppBar from '../AppBar';
 import Button from '../Button';
 import MenuIcon from '../../icons/Menu';

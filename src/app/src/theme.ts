@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 export enum Color {
   // https://www.colorbox.io/#steps=8#hue_start=340#hue_end=340#hue_curve=easeInQuad#sat_start=5#sat_end=100#sat_curve=easeInOutQuad#sat_rate=130#lum_start=100#lum_end=25#lum_curve=easeOutQuad#lock_hex=
   Primary00 = '#C7EBFF',

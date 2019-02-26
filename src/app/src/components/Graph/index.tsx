@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import 'd3-transition';
 import Area from './Area';
 import Comparator from '@build-tracker/comparator';

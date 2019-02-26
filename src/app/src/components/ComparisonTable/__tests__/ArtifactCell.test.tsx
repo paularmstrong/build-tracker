@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { ArtifactCell } from '../ArtifactCell';
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';

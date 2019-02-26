@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Build from '..';
 
 const tacoArtifact = { name: 'tacos', hash: '123', sizes: { stat: 2, gzip: 1 } };

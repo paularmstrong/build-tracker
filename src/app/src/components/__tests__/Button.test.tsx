@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Button from '../Button';
 import React from 'react';
 import Ripple from '../Ripple';

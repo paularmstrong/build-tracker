@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as React from 'react';
 import * as Theme from '../theme';
 import { StyleSheet, Text } from 'react-native';

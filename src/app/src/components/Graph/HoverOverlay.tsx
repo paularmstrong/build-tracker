@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as Theme from '../../theme';
 import React from 'react';
 import { ScalePoint } from 'd3-scale';

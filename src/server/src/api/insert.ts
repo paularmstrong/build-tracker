@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
 import { Request, Response } from 'express';

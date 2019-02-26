@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { formatSha } from '@build-tracker/formatting';
 import React from 'react';
 import { RevisionCell } from '@build-tracker/comparator';

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import React from 'react';
 import TextField from '../TextField';
 import { TextInput } from 'react-native';

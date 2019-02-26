@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import React from 'react';
 import { render } from 'react-native-testing-library';
 import Subtitle from '../Subtitle';

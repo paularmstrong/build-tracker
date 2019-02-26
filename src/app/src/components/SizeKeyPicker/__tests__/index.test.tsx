@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import React from 'react';
 import SizeKeyPicker from '../';
 import { fireEvent, render } from 'react-native-testing-library';

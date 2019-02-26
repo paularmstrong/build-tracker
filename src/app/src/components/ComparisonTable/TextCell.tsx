@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { TextCell as Cell } from '@build-tracker/comparator';
 import React from 'react';
 import { StyleProp, Text, ViewStyle } from 'react-native';

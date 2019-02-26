@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Area from '../Area';
 import Build from '@build-tracker/build';
 import ColorScale from '../../../modules/ColorScale';

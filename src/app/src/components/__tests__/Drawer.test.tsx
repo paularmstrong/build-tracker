@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Drawer from '../Drawer';
 import React from 'react';
 import { fireEvent, render } from 'react-native-testing-library';

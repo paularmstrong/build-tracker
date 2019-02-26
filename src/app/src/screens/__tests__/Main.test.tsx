@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { act } from 'react-dom/test-utils';
 import AppBar from '../../components/AppBar';
 import ColorScale from '../../modules/ColorScale';

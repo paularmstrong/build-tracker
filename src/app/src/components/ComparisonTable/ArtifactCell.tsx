@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as Theme from '../../theme';
 import { ArtifactCell as Cell } from '@build-tracker/comparator';
 import { hsl } from 'd3-color';

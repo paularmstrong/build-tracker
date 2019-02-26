@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import React from 'react';
 

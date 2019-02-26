@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as artifactMath from '../artifact-math';
 
 describe('delta', () => {

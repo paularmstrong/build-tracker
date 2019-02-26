@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Hoverable from '../Hoverable';
 import React from 'react';
 import { View } from 'react-native';

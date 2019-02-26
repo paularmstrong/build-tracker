@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { TotalDeltaCell as Cell } from '@build-tracker/comparator';
 import { formatBytes } from '@build-tracker/formatting';
 import React from 'react';

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as Selection from 'd3-selection';
 import { act } from 'react-dom/test-utils';
 import HoverOverlay from '../HoverOverlay';

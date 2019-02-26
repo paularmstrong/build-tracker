@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as Theme from '../../theme';
 import { createElement, StyleProp, StyleSheet, ViewProps, ViewStyle } from 'react-native';
 

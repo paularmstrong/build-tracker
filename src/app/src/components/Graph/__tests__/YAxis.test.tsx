@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import * as Axes from 'd3-axis';
 import * as Selection from 'd3-selection';
 import React from 'react';

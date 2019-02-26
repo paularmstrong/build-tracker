@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { axisLeft } from 'd3-axis';
 import { formatBytes } from '@build-tracker/formatting';
 import React from 'react';

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import React from 'react';
 import { interpolateMagma, interpolateRainbow, interpolateRdYlGn } from 'd3-scale-chromatic';
 import { scaleSequential, ScaleSequential } from 'd3-scale';

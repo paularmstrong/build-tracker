@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { RevisionDeltaCell as Cell } from '@build-tracker/comparator';
 import React from 'react';
 import { Th } from './Table';

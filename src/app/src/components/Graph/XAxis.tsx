@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { axisBottom } from 'd3-axis';
 import { formatSha } from '@build-tracker/formatting';
 import React from 'react';

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import bodyParser from 'body-parser';
 import Build from '@build-tracker/build';
 import createInsertBuildHandler from '../insert';

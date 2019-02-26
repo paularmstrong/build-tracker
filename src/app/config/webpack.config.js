@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 const chalk = require('chalk');
 const path = require('path');
 const webpack = require('webpack');

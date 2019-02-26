@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { ArtifactFilters } from '@build-tracker/types';
 import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';

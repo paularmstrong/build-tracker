@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { formatBytes, formatSha } from '../';
 
 describe('formatBytes', () => {

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { ArtifactFilters } from '@build-tracker/types';
 export type BuildMetaItem = string | { value: string; url: string };
 

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { CellType } from '@build-tracker/comparator';
 import { DeltaCell } from '../DeltaCell';
 import React from 'react';

@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import { ColorScale } from '../ColorScale';
 import ColorScales from '../../../modules/ColorScale';
 import React from 'react';

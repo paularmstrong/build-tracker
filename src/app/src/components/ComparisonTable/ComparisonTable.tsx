@@ -20,11 +20,12 @@ interface Props {
   comparator: Comparator;
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
+  onRemoveRevision: (revision: string) => void;
   sizeKey: string;
 }
 
 const ComparisonTable = (props: Props): React.ReactElement => {
-  const { activeArtifacts, comparator, onDisableArtifact, onEnableArtifact, sizeKey } = props;
+  const { activeArtifacts, comparator, onDisableArtifact, onEnableArtifact, onRemoveRevision, sizeKey } = props;
   const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
 
@@ -62,11 +63,19 @@ const ComparisonTable = (props: Props): React.ReactElement => {
           {matrix.header.map((cell, i) => {
             switch (cell.type) {
               case CellType.TEXT:
-                return <TextCell cell={cell} header key={i} style={styles.headerCell} />;
+                return <TextCell cell={cell} header key={cell.text} style={styles.headerCell} />;
               case CellType.REVISION:
-                return <RevisionCell cell={cell} key={i} style={styles.headerCell} />;
+                return (
+                  <RevisionCell cell={cell} key={cell.revision} onRemove={onRemoveRevision} style={styles.headerCell} />
+                );
               case CellType.REVISION_DELTA:
-                return <RevisionDeltaCell cell={cell} key={i} style={styles.headerCell} />;
+                return (
+                  <RevisionDeltaCell
+                    cell={cell}
+                    key={`${cell.revision}-${cell.againstRevision}-${i}`}
+                    style={styles.headerCell}
+                  />
+                );
             }
           })}
         </Tr>

@@ -105,6 +105,13 @@ const Main = (): React.ReactElement => {
     [compareRevisions, setCompareRevisions]
   );
 
+  const handleRemoveRevision = React.useCallback(
+    (revision: string): void => {
+      setCompareRevisions(compareRevisions.filter(r => r !== revision));
+    },
+    [compareRevisions, setCompareRevisions]
+  );
+
   return (
     <View style={styles.layout}>
       <Drawer hidden ref={drawerRef}>
@@ -137,6 +144,7 @@ const Main = (): React.ReactElement => {
                 comparator={activeComparator}
                 onDisableArtifact={handleDisableArtifact}
                 onEnableArtifact={handleEnableArtifact}
+                onRemoveRevision={handleRemoveRevision}
                 sizeKey={sizeKey}
               />
             </ScrollView>

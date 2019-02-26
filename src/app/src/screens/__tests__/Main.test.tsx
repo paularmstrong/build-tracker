@@ -10,6 +10,7 @@ import Drawer from '../../components/Drawer';
 import Graph from '../../components/Graph';
 import Main from '../Main';
 import React from 'react';
+import SizeKeyPicker from '../../components/SizeKeyPicker';
 import { fireEvent, render } from 'react-native-testing-library';
 
 // React.memo components are not findable by type
@@ -58,6 +59,70 @@ describe('Main', () => {
       expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Magma);
       expect(getByType(ComparisonTable).props.colorScale).toBe(ColorScale.Magma);
       expect(getByType(Graph).props.colorScale).toBe(ColorScale.Magma);
+    });
+  });
+
+  describe('artifacts', () => {
+    test('can disable all artifacts', () => {
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
+      });
+      expect(Object.values(getByType(ComparisonTable).props.activeArtifacts)).not.toEqual(
+        expect.arrayContaining([true])
+      );
+      expect(Object.values(getByType(Graph).props.activeArtifacts)).not.toEqual(expect.arrayContaining([true]));
+    });
+
+    test('can disable a single artifact', () => {
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'main');
+      });
+      expect(getByType(ComparisonTable).props.activeArtifacts).toMatchObject({
+        main: false,
+        vendor: true,
+        shared: true
+      });
+      expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: false, vendor: true, shared: true });
+    });
+
+    test('can enalble all artifacts', () => {
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
+        fireEvent(getByType(ComparisonTable), 'enableArtifact', 'All');
+      });
+      expect(Object.values(getByType(ComparisonTable).props.activeArtifacts)).not.toEqual(
+        expect.arrayContaining([false])
+      );
+      expect(Object.values(getByType(Graph).props.activeArtifacts)).not.toEqual(expect.arrayContaining([false]));
+    });
+
+    test('can enable a single artifact', () => {
+      const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
+        fireEvent(getByType(ComparisonTable), 'enableArtifact', 'main');
+      });
+      expect(getByType(ComparisonTable).props.activeArtifacts).toMatchObject({
+        main: true,
+        vendor: false,
+        shared: false
+      });
+      expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: true, vendor: false, shared: false });
+    });
+  });
+
+  describe('on select size key', () => {
+    test('passes the new size key to graph and table', () => {
+      const { getByType, queryAllByProps } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(SizeKeyPicker), 'select', 'stat');
+      });
+
+      expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(2);
+      expect(queryAllByProps({ sizeKey: 'gzip' })).toHaveLength(0);
     });
   });
 

@@ -45,7 +45,7 @@ const Main = (): React.ReactElement => {
 
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
   const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
-  const [focusedBuild, setFocusedBuild] = React.useState<string>(null);
+  const [focusedRevision, setFocusedRevision] = React.useState<string>(null);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
       memo[name] = true;
@@ -109,24 +109,23 @@ const Main = (): React.ReactElement => {
 
   const handleFocusRevision = React.useCallback(
     (revision: string): void => {
-      setFocusedBuild(revision);
+      setFocusedRevision(revision);
     },
-    [setFocusedBuild]
+    [setFocusedRevision]
   );
 
   const handleUnfocusRevision = React.useCallback((): void => {
-    setFocusedBuild(null);
-  }, [setFocusedBuild]);
+    setFocusedRevision(null);
+  }, [setFocusedRevision]);
 
   const handleRemoveRevision = React.useCallback(
     (revision: string): void => {
-      const newCompareRevisions = compareRevisions.filter(r => r !== revision);
-      setCompareRevisions(newCompareRevisions);
-      if (newCompareRevisions.length === 0) {
-        setFocusedBuild(null);
+      if (focusedRevision === revision) {
+        setFocusedRevision(null);
       }
+      setCompareRevisions(compareRevisions.filter(r => r !== revision));
     },
-    [compareRevisions, setCompareRevisions]
+    [compareRevisions, focusedRevision, setCompareRevisions]
   );
 
   return (
@@ -168,10 +167,10 @@ const Main = (): React.ReactElement => {
               />
             </ScrollView>
           </ScrollView>
-          {focusedBuild ? (
-            <View style={styles.buildInfo}>
+          {focusedRevision ? (
+            <View style={styles.buildInfo} testID="buildinfo">
               <BuildInfo
-                build={activeComparator.builds.find(build => build.getMetaValue('revision') === focusedBuild)}
+                build={activeComparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)}
                 onClose={handleUnfocusRevision}
               />
             </View>

@@ -3,6 +3,7 @@
  */
 import { act } from 'react-dom/test-utils';
 import AppBar from '../../components/AppBar';
+import BuildInfo from '../../components/BuildInfo';
 import ColorScale from '../../modules/ColorScale';
 import ColorScalePicker from '../../components/ColorScalePicker';
 import ComparisonTable from '../../components/ComparisonTable';
@@ -87,7 +88,7 @@ describe('Main', () => {
       expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: false, vendor: true, shared: true });
     });
 
-    test('can enalble all artifacts', () => {
+    test('can enable all artifacts', () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
@@ -135,6 +136,51 @@ describe('Main', () => {
       expect(getByType(ComparisonTable).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual([
         '243024909db66ac3c3e48d2ffe4015f049609834'
       ]);
+    });
+  });
+
+  describe('focused revisions', () => {
+    test('focusing a revision shows the build info', () => {
+      const { getByType, queryByTestId } = render(<Main />);
+      expect(queryByTestId('buildinfo')).toBeNull();
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(ComparisonTable), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+
+      expect(queryByTestId('buildinfo')).not.toBeNull();
+    });
+
+    test('removing a revision hides the build info', () => {
+      const { getByType, queryByTestId } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(ComparisonTable), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+
+      expect(queryByTestId('buildinfo')).toBeNull();
+    });
+
+    test('removing focused revision hides the build info', () => {
+      const { getByType, queryByTestId } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(ComparisonTable), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(ComparisonTable), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+
+      expect(queryByTestId('buildinfo')).toBeNull();
+    });
+
+    test('closing the build info removes the component', () => {
+      const { getByType, queryByTestId } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(ComparisonTable), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(BuildInfo), 'close');
+      });
+
+      expect(queryByTestId('buildinfo')).toBeNull();
     });
   });
 });

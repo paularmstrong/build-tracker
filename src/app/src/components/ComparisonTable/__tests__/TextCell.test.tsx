@@ -5,7 +5,7 @@ import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { render } from 'react-native-testing-library';
 import { TextCell } from '../TextCell';
-import { Td, Th } from '../Table';
+import { Td, Th } from '../../Table';
 
 describe('TextCell', () => {
   describe('header', () => {

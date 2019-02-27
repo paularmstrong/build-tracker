@@ -5,7 +5,7 @@ import * as Theme from '../../../theme';
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { RevisionCell } from '../RevisionCell';
-import { Th } from '../Table';
+import { Th } from '../../Table';
 import { fireEvent, render } from 'react-native-testing-library';
 import { StyleSheet, View } from 'react-native';
 

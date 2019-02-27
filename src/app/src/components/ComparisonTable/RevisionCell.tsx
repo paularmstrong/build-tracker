@@ -8,7 +8,7 @@ import Hoverable from '../Hoverable';
 import Menu from '../Menu';
 import MenuItem from '../Menu/Item';
 import React from 'react';
-import { Th } from './Table';
+import { Th } from './../Table';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Props {

@@ -12,7 +12,7 @@ import TextCell from './TextCell';
 import TotalCell from './TotalCell';
 import TotalDeltaCell from './TotalDeltaCell';
 import Comparator, { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
-import { Table, Tbody, Thead, Tr } from './Table';
+import { Table, Tbody, Thead, Tr } from './../Table';
 
 interface Props {
   activeArtifacts: { [key: string]: boolean };

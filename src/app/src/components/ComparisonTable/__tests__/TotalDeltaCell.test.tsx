@@ -4,7 +4,7 @@
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { render } from 'react-native-testing-library';
-import { Td } from '../Table';
+import { Td } from '../../Table';
 import { TotalDeltaCell } from '../TotalDeltaCell';
 import { StyleSheet, Text } from 'react-native';
 

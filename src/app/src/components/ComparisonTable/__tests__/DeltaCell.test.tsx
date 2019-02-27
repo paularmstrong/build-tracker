@@ -5,7 +5,7 @@ import { CellType } from '@build-tracker/comparator';
 import { DeltaCell } from '../DeltaCell';
 import React from 'react';
 import { render } from 'react-native-testing-library';
-import { Td } from '../Table';
+import { Td } from '../../Table';
 import { StyleSheet, Text } from 'react-native';
 
 describe('DeltaCell', () => {

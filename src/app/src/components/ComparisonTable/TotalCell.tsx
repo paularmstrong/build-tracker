@@ -4,7 +4,7 @@
 import { TotalCell as Cell } from '@build-tracker/comparator';
 import { formatBytes } from '@build-tracker/formatting';
 import React from 'react';
-import { Td } from './Table';
+import { Td } from './../Table';
 import { StyleProp, Text, ViewStyle } from 'react-native';
 
 interface Props {

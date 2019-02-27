@@ -4,7 +4,7 @@
 import { TextCell as Cell } from '@build-tracker/comparator';
 import React from 'react';
 import { StyleProp, Text, ViewStyle } from 'react-native';
-import { Td, Th } from './Table';
+import { Td, Th } from './../Table';
 
 interface Props {
   cell: Cell;

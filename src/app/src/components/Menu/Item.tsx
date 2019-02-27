@@ -6,10 +6,10 @@ import Hoverable from '../Hoverable';
 import React from 'react';
 import Ripple from '../Ripple';
 import { v4 as uuid } from 'uuid';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 
 interface Props {
-  icon?: React.ComponentType<{ style?: StyleProp<ViewStyle> }>;
+  icon?: React.ComponentType<{ style?: StyleProp<ViewStyle & TextStyle> }>;
   isHighlighted?: boolean;
   label: string;
   nativeID?: string;
@@ -31,7 +31,7 @@ const Item = (props: Props): React.ReactElement => {
           style={[styles.root, (isHighlighted || isHovered) && styles.rootHover]}
         >
           <View style={styles.content}>
-            {Icon ? <Icon aria-labeledby={textNativeID} style={styles.icon} /> : null}
+            {Icon ? <Icon aria-labelledby={textNativeID} style={[styles.icon, isHovered && styles.iconHover]} /> : null}
             <Text nativeID={textNativeID}>{label}</Text>
           </View>
         </Ripple>
@@ -64,10 +64,16 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    color: Theme.Color.Gray50,
+    color: Theme.Color.Gray30,
     flexGrow: 0,
     fontSize: Theme.FontSize.Medium,
-    marginEnd: Theme.Spacing.Normal
+    marginEnd: Theme.Spacing.Normal,
+    transitionProperty: 'color',
+    transitionDuration: '0.2s',
+    transitionTimingFunction: Theme.MotionTiming.Standard
+  },
+  iconHover: {
+    color: Theme.Color.Gray40
   }
 });
 

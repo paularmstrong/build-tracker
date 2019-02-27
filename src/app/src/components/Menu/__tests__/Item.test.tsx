@@ -15,13 +15,13 @@ describe('MenuItem', () => {
       jest.spyOn(uuid, 'v4').mockReturnValue('12345');
       const { queryAllByProps } = render(<MenuItem icon={MenuIcon} label="tacos" />);
       // This ends up as 2 because it spreads to the Icon and the SVG
-      expect(queryAllByProps({ 'aria-labeledby': '12345' })).toHaveLength(2);
+      expect(queryAllByProps({ 'aria-labelledby': '12345' })).toHaveLength(2);
     });
 
     test('does not render an icon', () => {
       jest.spyOn(uuid, 'v4').mockReturnValue('23456');
       const { queryAllByProps } = render(<MenuItem label="tacos" />);
-      expect(queryAllByProps({ 'aria-labeledby': '23456' })).toHaveLength(0);
+      expect(queryAllByProps({ 'aria-labelledby': '23456' })).toHaveLength(0);
     });
   });
 

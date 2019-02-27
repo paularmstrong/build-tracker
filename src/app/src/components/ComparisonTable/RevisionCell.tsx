@@ -5,10 +5,12 @@ import * as Theme from '../../theme';
 import { RevisionCell as Cell } from '@build-tracker/comparator';
 import { formatSha } from '@build-tracker/formatting';
 import Hoverable from '../Hoverable';
+import InfoIcon from '../../icons/Info';
 import Menu from '../Menu';
 import MenuItem from '../Menu/Item';
 import React from 'react';
-import { Th } from './../Table';
+import RemoveIcon from '../../icons/Remove';
+import { Th } from '../Table';
 import { StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Props {
@@ -53,8 +55,8 @@ export const RevisionCell = (props: Props): React.ReactElement => {
       </Hoverable>
       {showMenu ? (
         <Menu onDismiss={handleToggleMenu} relativeTo={contentRef}>
-          <MenuItem label="More info" onPress={handleFocus} />
-          <MenuItem label="Remove" onPress={handleRemove} />
+          <MenuItem icon={InfoIcon} label="More info" onPress={handleFocus} />
+          <MenuItem icon={RemoveIcon} label="Remove" onPress={handleRemove} />
         </Menu>
       ) : null}
     </>

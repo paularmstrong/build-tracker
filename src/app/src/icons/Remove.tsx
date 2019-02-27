@@ -6,7 +6,7 @@ interface Props {
   style?: StyleProp<ViewStyle & TextStyle>;
 }
 
-const Close = (props: Props): React.ReactElement<Props> =>
+const Remove = (props: Props): React.ReactElement<Props> =>
   createElement(
     'svg',
     {
@@ -15,11 +15,11 @@ const Close = (props: Props): React.ReactElement<Props> =>
       viewBox: '0 0 24 24'
     },
     <g>
-      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
       <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z" />
     </g>
   );
 
-Close.metadata = { height: 24, width: 24 };
+Remove.metadata = { height: 24, width: 24 };
 
-export default Close;
+export default Remove;

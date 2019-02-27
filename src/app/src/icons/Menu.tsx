@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './styles';
-import { createElement, StyleProp, ViewStyle } from 'react-native';
+import { createElement, StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 interface Props {
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & TextStyle>;
 }
 
 const Menu = (props: Props): React.ReactElement<Props> =>

@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopColor: Theme.Color.Gray10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    // @ts-ignore
     animationDuration: '0.1s',
     animationName: [
       {

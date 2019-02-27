@@ -15,7 +15,7 @@ interface Props {
 
 const Menu = (props: Props): React.ReactElement => {
   const { children, onDismiss, relativeTo } = props;
-  const [position, setPosition] = React.useState({ top: 0, left: 0 });
+  const [position, setPosition] = React.useState({ top: -999, left: 0 });
   const portalRoot = document.getElementById('menuPortal');
   const ref = React.useRef<ScrollView>(null);
   let mounted = true;

@@ -55,6 +55,9 @@ describe('Main', () => {
     test('sets color scale context when scale is selected', () => {
       const { getByType } = render(<Main />);
       act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+      act(() => {
         fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Magma);
       });
       expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Magma);
@@ -67,6 +70,9 @@ describe('Main', () => {
     test('can disable all artifacts', () => {
       const { getByType } = render(<Main />);
       act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+      act(() => {
         fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
       });
       expect(Object.values(getByType(ComparisonTable).props.activeArtifacts)).not.toEqual(
@@ -77,6 +83,9 @@ describe('Main', () => {
 
     test('can disable a single artifact', () => {
       const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
       act(() => {
         fireEvent(getByType(ComparisonTable), 'disableArtifact', 'main');
       });
@@ -91,6 +100,9 @@ describe('Main', () => {
     test('can enable all artifacts', () => {
       const { getByType } = render(<Main />);
       act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+      act(() => {
         fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
         fireEvent(getByType(ComparisonTable), 'enableArtifact', 'All');
       });
@@ -102,6 +114,9 @@ describe('Main', () => {
 
     test('can enable a single artifact', () => {
       const { getByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
       act(() => {
         fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
         fireEvent(getByType(ComparisonTable), 'enableArtifact', 'main');
@@ -116,13 +131,13 @@ describe('Main', () => {
   });
 
   describe('on select size key', () => {
-    test('passes the new size key to graph and table', () => {
+    test('passes the new size key to graph', () => {
       const { getByType, queryAllByProps } = render(<Main />);
       act(() => {
         fireEvent(getByType(SizeKeyPicker), 'select', 'stat');
       });
 
-      expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(2);
+      expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(1);
       expect(queryAllByProps({ sizeKey: 'gzip' })).toHaveLength(0);
     });
   });

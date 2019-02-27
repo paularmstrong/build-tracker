@@ -152,30 +152,32 @@ const Main = (): React.ReactElement => {
             sizeKey={sizeKey}
           />
         </View>
-        <View key="table" style={[styles.column, styles.table]}>
-          <ScrollView horizontal style={styles.tableScroll}>
-            <ScrollView>
-              <ComparisonTable
-                activeArtifacts={activeArtifacts}
-                colorScale={colorScale}
-                comparator={activeComparator}
-                onDisableArtifact={handleDisableArtifact}
-                onEnableArtifact={handleEnableArtifact}
-                onFocusRevision={handleFocusRevision}
-                onRemoveRevision={handleRemoveRevision}
-                sizeKey={sizeKey}
-              />
+        {compareRevisions.length ? (
+          <View key="table" style={[styles.column, styles.table]}>
+            <ScrollView horizontal style={styles.tableScroll}>
+              <ScrollView>
+                <ComparisonTable
+                  activeArtifacts={activeArtifacts}
+                  colorScale={colorScale}
+                  comparator={activeComparator}
+                  onDisableArtifact={handleDisableArtifact}
+                  onEnableArtifact={handleEnableArtifact}
+                  onFocusRevision={handleFocusRevision}
+                  onRemoveRevision={handleRemoveRevision}
+                  sizeKey={sizeKey}
+                />
+              </ScrollView>
             </ScrollView>
-          </ScrollView>
-          {focusedRevision ? (
-            <View style={styles.buildInfo} testID="buildinfo">
-              <BuildInfo
-                build={activeComparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)}
-                onClose={handleUnfocusRevision}
-              />
-            </View>
-          ) : null}
-        </View>
+            {focusedRevision ? (
+              <View style={styles.buildInfo} testID="buildinfo">
+                <BuildInfo
+                  build={activeComparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)}
+                  onClose={handleUnfocusRevision}
+                />
+              </View>
+            ) : null}
+          </View>
+        ) : null}
       </View>
     </View>
   );

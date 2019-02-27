@@ -26,7 +26,11 @@ describe('RevisionCell', () => {
   describe('menu', () => {
     test('shows a menu on press', () => {
       const { getByProps, queryAllByProps } = render(
-        <RevisionCell cell={{ type: CellType.REVISION, revision: '1234567' }} onRemove={jest.fn()} />
+        <RevisionCell
+          cell={{ type: CellType.REVISION, revision: '1234567' }}
+          onFocus={jest.fn()}
+          onRemove={jest.fn()}
+        />
       );
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
       fireEvent.press(getByProps({ accessibilityRole: 'button' }));
@@ -35,7 +39,11 @@ describe('RevisionCell', () => {
 
     test('dismisses the menu', () => {
       const { getByProps, queryAllByProps } = render(
-        <RevisionCell cell={{ type: CellType.REVISION, revision: '1234567' }} onRemove={jest.fn()} />
+        <RevisionCell
+          cell={{ type: CellType.REVISION, revision: '1234567' }}
+          onFocus={jest.fn()}
+          onRemove={jest.fn()}
+        />
       );
       fireEvent.press(getByProps({ accessibilityRole: 'button' }));
       fireEvent.press(getByProps({ accessibilityRole: 'menu' }));
@@ -45,11 +53,29 @@ describe('RevisionCell', () => {
     test('allows removing the revision', () => {
       const handleRemove = jest.fn();
       const { getByProps } = render(
-        <RevisionCell cell={{ type: CellType.REVISION, revision: '1234567' }} onRemove={handleRemove} />
+        <RevisionCell
+          cell={{ type: CellType.REVISION, revision: '1234567' }}
+          onFocus={jest.fn()}
+          onRemove={handleRemove}
+        />
       );
       fireEvent.press(getByProps({ accessibilityRole: 'button' }));
       fireEvent.press(getByProps({ label: 'Remove' }));
       expect(handleRemove).toHaveBeenCalledWith('1234567');
+    });
+
+    test('allows focusing the revision', () => {
+      const handleFocus = jest.fn();
+      const { getByProps } = render(
+        <RevisionCell
+          cell={{ type: CellType.REVISION, revision: '1234567' }}
+          onFocus={handleFocus}
+          onRemove={jest.fn()}
+        />
+      );
+      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
+      fireEvent.press(getByProps({ label: 'More info' }));
+      expect(handleFocus).toHaveBeenCalledWith('1234567');
     });
   });
 
@@ -61,7 +87,11 @@ describe('RevisionCell', () => {
 
     test('sets hover styles', () => {
       const { getByType } = render(
-        <RevisionCell cell={{ type: CellType.REVISION, revision: '1234567' }} onRemove={jest.fn()} />
+        <RevisionCell
+          cell={{ type: CellType.REVISION, revision: '1234567' }}
+          onFocus={jest.fn()}
+          onRemove={jest.fn()}
+        />
       );
       fireEvent(getByType(Th), 'mouseEnter');
       expect(StyleSheet.flatten(getByType(Th).props.style)).toMatchObject({

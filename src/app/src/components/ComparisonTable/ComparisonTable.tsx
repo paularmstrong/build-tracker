@@ -20,12 +20,21 @@ interface Props {
   comparator: Comparator;
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
+  onFocusRevision: (revision: string) => void;
   onRemoveRevision: (revision: string) => void;
   sizeKey: string;
 }
 
 const ComparisonTable = (props: Props): React.ReactElement => {
-  const { activeArtifacts, comparator, onDisableArtifact, onEnableArtifact, onRemoveRevision, sizeKey } = props;
+  const {
+    activeArtifacts,
+    comparator,
+    onDisableArtifact,
+    onEnableArtifact,
+    onFocusRevision,
+    onRemoveRevision,
+    sizeKey
+  } = props;
   const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
 
@@ -66,7 +75,13 @@ const ComparisonTable = (props: Props): React.ReactElement => {
                 return <TextCell cell={cell} header key={cell.text} style={styles.headerCell} />;
               case CellType.REVISION:
                 return (
-                  <RevisionCell cell={cell} key={cell.revision} onRemove={onRemoveRevision} style={styles.headerCell} />
+                  <RevisionCell
+                    cell={cell}
+                    key={cell.revision}
+                    onFocus={onFocusRevision}
+                    onRemove={onRemoveRevision}
+                    style={styles.headerCell}
+                  />
                 );
               case CellType.REVISION_DELTA:
                 return (

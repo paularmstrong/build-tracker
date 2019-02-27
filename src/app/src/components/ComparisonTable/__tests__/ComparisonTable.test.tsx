@@ -21,7 +21,6 @@ describe('ComparisonTable', () => {
   describe('artifact toggling', () => {
     test('artifact off', () => {
       const handleDisableArtifact = jest.fn();
-      const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
       const { getByProps } = render(
         <ComparisonTable
@@ -29,7 +28,9 @@ describe('ComparisonTable', () => {
           colorScale={ColorScale.Magma}
           comparator={comparator}
           onDisableArtifact={handleDisableArtifact}
-          onEnableArtifact={handleEnableArtifact}
+          onEnableArtifact={jest.fn()}
+          onFocusRevision={jest.fn()}
+          onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
       );
@@ -38,7 +39,6 @@ describe('ComparisonTable', () => {
     });
 
     test('artifact on', () => {
-      const handleDisableArtifact = jest.fn();
       const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
       const { getByProps } = render(
@@ -46,8 +46,10 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: true, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
-          onDisableArtifact={handleDisableArtifact}
+          onDisableArtifact={jest.fn()}
           onEnableArtifact={handleEnableArtifact}
+          onFocusRevision={jest.fn()}
+          onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
       );
@@ -56,7 +58,6 @@ describe('ComparisonTable', () => {
     });
 
     test('all on', () => {
-      const handleDisableArtifact = jest.fn();
       const handleEnableArtifact = jest.fn();
       const comparator = new Comparator({ builds });
       const { getByProps } = render(
@@ -64,8 +65,10 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: false, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
-          onDisableArtifact={handleDisableArtifact}
+          onDisableArtifact={jest.fn()}
           onEnableArtifact={handleEnableArtifact}
+          onFocusRevision={jest.fn()}
+          onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
       );

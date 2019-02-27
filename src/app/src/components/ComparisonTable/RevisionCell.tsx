@@ -13,12 +13,13 @@ import { StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-
 
 interface Props {
   cell: Cell;
+  onFocus: (revision: string) => void;
   onRemove: (revision: string) => void;
   style?: StyleProp<ViewStyle>;
 }
 
 export const RevisionCell = (props: Props): React.ReactElement => {
-  const { cell, onRemove, style } = props;
+  const { cell, onFocus, onRemove, style } = props;
   const contentRef = React.useRef(null);
   const [showMenu, toggleMenu] = React.useState(false);
 
@@ -29,6 +30,10 @@ export const RevisionCell = (props: Props): React.ReactElement => {
   const handleRemove = React.useCallback((): void => {
     onRemove(cell.revision);
   }, [cell.revision, onRemove]);
+
+  const handleFocus = React.useCallback((): void => {
+    onFocus(cell.revision);
+  }, [cell.revision, onFocus]);
 
   return (
     <>
@@ -48,6 +53,7 @@ export const RevisionCell = (props: Props): React.ReactElement => {
       </Hoverable>
       {showMenu ? (
         <Menu onDismiss={handleToggleMenu} relativeTo={contentRef}>
+          <MenuItem label="More info" onPress={handleFocus} />
           <MenuItem label="Remove" onPress={handleRemove} />
         </Menu>
       ) : null}

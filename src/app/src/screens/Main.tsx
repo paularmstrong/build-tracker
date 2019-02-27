@@ -9,6 +9,7 @@ import buildDataB from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deea
 import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
 import buildDataD from '@build-tracker/fixtures/builds/19868a0432f039d45783bca1845cede313fbfbe1.json';
 import buildDataE from '@build-tracker/fixtures/builds/4a8882483a664401a602f64a882d0ed7fb1763cb.json';
+import BuildInfo from '../components/BuildInfo';
 import ColorScale from '../modules/ColorScale';
 import ColorScalePicker from '../components/ColorScalePicker';
 import Comparator from '@build-tracker/comparator';
@@ -20,7 +21,7 @@ import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import SizeKeyPicker from '../components/SizeKeyPicker';
 import Subtitle from '../components/Subtitle';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 const builds = [
   new Build(buildDataA.meta, buildDataA.artifacts),
@@ -44,6 +45,7 @@ const Main = (): React.ReactElement => {
 
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
   const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
+  const [focusedBuild, setFocusedBuild] = React.useState<string>(null);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
       memo[name] = true;
@@ -105,9 +107,24 @@ const Main = (): React.ReactElement => {
     [compareRevisions, setCompareRevisions]
   );
 
+  const handleFocusRevision = React.useCallback(
+    (revision: string): void => {
+      setFocusedBuild(revision);
+    },
+    [setFocusedBuild]
+  );
+
+  const handleUnfocusRevision = React.useCallback((): void => {
+    setFocusedBuild(null);
+  }, [setFocusedBuild]);
+
   const handleRemoveRevision = React.useCallback(
     (revision: string): void => {
-      setCompareRevisions(compareRevisions.filter(r => r !== revision));
+      const newCompareRevisions = compareRevisions.filter(r => r !== revision);
+      setCompareRevisions(newCompareRevisions);
+      if (newCompareRevisions.length === 0) {
+        setFocusedBuild(null);
+      }
     },
     [compareRevisions, setCompareRevisions]
   );
@@ -145,14 +162,20 @@ const Main = (): React.ReactElement => {
                 comparator={activeComparator}
                 onDisableArtifact={handleDisableArtifact}
                 onEnableArtifact={handleEnableArtifact}
+                onFocusRevision={handleFocusRevision}
                 onRemoveRevision={handleRemoveRevision}
                 sizeKey={sizeKey}
               />
             </ScrollView>
           </ScrollView>
-          <View style={styles.buildInfo}>
-            <Text>Placeholder: Build Info</Text>
-          </View>
+          {focusedBuild ? (
+            <View style={styles.buildInfo}>
+              <BuildInfo
+                build={activeComparator.builds.find(build => build.getMetaValue('revision') === focusedBuild)}
+                onClose={handleUnfocusRevision}
+              />
+            </View>
+          ) : null}
         </View>
       </View>
     </View>
@@ -189,12 +212,24 @@ const styles = StyleSheet.create({
     borderLeftWidth: StyleSheet.hairlineWidth
   },
   tableScroll: {
-    width: '100%'
+    width: '100%',
+    transitionProperty: 'height',
+    transitionDuration: '0.1s'
   },
   buildInfo: {
     width: '100%',
     borderTopColor: Theme.Color.Gray10,
-    borderTopWidth: StyleSheet.hairlineWidth
+    borderTopWidth: StyleSheet.hairlineWidth,
+    // @ts-ignore
+    animationDuration: '0.1s',
+    animationName: [
+      {
+        '0%': { transform: [{ translateY: '100%' }] },
+        '100%': { transform: [{ translateY: '0%' }] }
+      }
+    ],
+    animationTimingFunction: 'ease-out',
+    animationIterationCount: 1
   }
 });
 

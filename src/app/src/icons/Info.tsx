@@ -1,3 +1,10 @@
+/**
+ * Material design redistributed from https://github.com/google/material-design-icons
+ *
+ * SVG contents redistributed under Apache License 2.0:
+ * https://github.com/google/material-design-icons/blob/master/LICENSE
+ * Copyright 2015 Google, Inc. All Rights Reserved.
+ */
 import React from 'react';
 import styles from './styles';
 import { createElement, StyleProp, TextStyle, ViewStyle } from 'react-native';

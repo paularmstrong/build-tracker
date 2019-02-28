@@ -175,6 +175,32 @@ describe('HoverOverlay', () => {
 
       expect(handleHoverArtifact).toHaveBeenCalledWith('vendor');
     });
+
+    test('calls back with null if no artifact', () => {
+      const handleHoverArtifact = jest.fn();
+      const yScale = scaleLinear()
+        .range([400, 0])
+        .domain([0, 200]);
+      const { getByTestId } = render(
+        <svg>
+          <HoverOverlay
+            data={data}
+            height={400}
+            onHoverArtifact={handleHoverArtifact}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+            yScale={yScale}
+          />
+        </svg>
+      );
+      act(() => {
+        fireEvent.mouseMove(getByTestId('hoveroverlay'));
+      });
+
+      expect(handleHoverArtifact).toHaveBeenCalledWith(null);
+    });
   });
 
   describe('onSelectRevision', () => {

@@ -82,7 +82,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       const hoveredArtifact = data.find(data => {
         return data[revision.index][0] <= yValue && data[revision.index][1] >= yValue;
       });
-      onHoverArtifact(hoveredArtifact.key);
+      onHoverArtifact(hoveredArtifact ? hoveredArtifact.key : null);
     },
     [buildRevisionFromX, data, onHoverArtifact, xScale, yScale]
   );

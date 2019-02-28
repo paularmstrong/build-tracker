@@ -7,6 +7,7 @@ import ColorScale from '../../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import React from 'react';
 import { render } from 'react-testing-library';
+import { stack } from 'd3-shape';
 import { timerFlush } from 'd3-timer';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
@@ -23,6 +24,15 @@ describe('Area', () => {
       ])
     ];
     const comparator = new Comparator({ builds });
+
+    const dataStack = stack<Build, string>();
+    dataStack.keys(['main']);
+    dataStack.value((build: Build, key) => {
+      const artifact = build.getArtifact(key);
+      return artifact ? artifact.sizes['gzip'] : 0;
+    });
+    const data = dataStack(comparator.builds);
+
     const xScale = scalePoint()
       .range([0, 100])
       .domain(['123', 'abc']);
@@ -35,7 +45,8 @@ describe('Area', () => {
           activeArtifactNames={['main']}
           colorScale={ColorScale.Rainbow}
           comparator={comparator}
-          sizeKey="gzip"
+          data={data}
+          hoveredArtifact={null}
           xScale={xScale}
           yScale={yScale}
         />
@@ -57,6 +68,15 @@ describe('Area', () => {
       ])
     ];
     const comparator = new Comparator({ builds });
+
+    const dataStack = stack<Build, string>();
+    dataStack.keys(['main', 'vendor']);
+    dataStack.value((build: Build, key) => {
+      const artifact = build.getArtifact(key);
+      return artifact ? artifact.sizes['stat'] : 0;
+    });
+    const data = dataStack(comparator.builds);
+
     const xScale = scalePoint()
       .range([0, 100])
       .domain(['123', 'abc']);
@@ -69,7 +89,8 @@ describe('Area', () => {
           activeArtifactNames={['main', 'vendor']}
           colorScale={ColorScale.Rainbow}
           comparator={comparator}
-          sizeKey="stat"
+          data={data}
+          hoveredArtifact={null}
           xScale={xScale}
           yScale={yScale}
         />

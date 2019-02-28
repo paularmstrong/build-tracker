@@ -9,6 +9,7 @@ import ColorScale from '../../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../ComparisonTable';
 import React from 'react';
+import { Table } from '../../Table';
 import { fireEvent, render } from 'react-native-testing-library';
 
 const builds = [
@@ -27,9 +28,11 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: true, main: true }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
+          hoveredArtifact={null}
           onDisableArtifact={handleDisableArtifact}
           onEnableArtifact={jest.fn()}
           onFocusRevision={jest.fn()}
+          onHoverArtifact={jest.fn()}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
@@ -46,9 +49,11 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: true, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
+          hoveredArtifact={null}
           onDisableArtifact={jest.fn()}
           onEnableArtifact={handleEnableArtifact}
           onFocusRevision={jest.fn()}
+          onHoverArtifact={jest.fn()}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
@@ -65,9 +70,11 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: false, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
+          hoveredArtifact={null}
           onDisableArtifact={jest.fn()}
           onEnableArtifact={handleEnableArtifact}
           onFocusRevision={jest.fn()}
+          onHoverArtifact={jest.fn()}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
@@ -75,5 +82,26 @@ describe('ComparisonTable', () => {
       fireEvent(getByProps({ cell: comparator.matrixBody[0][0] }), 'enable', 'All');
       expect(handleEnableArtifact).toHaveBeenCalledWith('All');
     });
+  });
+
+  test('disables hovered artifact on mouse out', () => {
+    const handleHoverArtifact = jest.fn();
+    const comparator = new Comparator({ builds });
+    const { getByType } = render(
+      <ComparisonTable
+        activeArtifacts={{ vendor: false, main: false }}
+        colorScale={ColorScale.Magma}
+        comparator={comparator}
+        hoveredArtifact={null}
+        onDisableArtifact={jest.fn()}
+        onEnableArtifact={jest.fn()}
+        onFocusRevision={jest.fn()}
+        onHoverArtifact={handleHoverArtifact}
+        onRemoveRevision={jest.fn()}
+        sizeKey="stat"
+      />
+    );
+    fireEvent(getByType(Table), 'mouseLeave');
+    expect(handleHoverArtifact).toHaveBeenCalledWith(null);
   });
 });

@@ -17,7 +17,7 @@
     "test:ci": "yarn test:cmd --ci",
     "test:cmd": "jest",
     "tsc": "lerna run tsc",
-    "tsc:ci": "tsc --noEmit"
+    "tsc:ci": "tsc -p ./tsconfig.test.json"
   },
   "husky": {
     "hooks": {

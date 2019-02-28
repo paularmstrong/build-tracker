@@ -1,26 +1,23 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import ArtifactCell from './ArtifactCell';
-import DeltaCell from './DeltaCell';
+import BodyRow from './BodyRow';
+import Comparator from '@build-tracker/comparator';
+import HeaderRow from './HeaderRow';
 import React from 'react';
-import RevisionCell from './RevisionCell';
-import RevisionDeltaCell from './RevisionDeltaCell';
 import { ScaleSequential } from 'd3-scale';
 import { StyleSheet } from 'react-native';
-import TextCell from './TextCell';
-import TotalCell from './TotalCell';
-import TotalDeltaCell from './TotalDeltaCell';
-import Comparator, { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
-import { Table, Tbody, Thead, Tr } from './../Table';
+import { Table, Tbody, Thead } from './../Table';
 
 interface Props {
   activeArtifacts: { [key: string]: boolean };
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
+  hoveredArtifact: string;
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
   onFocusRevision: (revision: string) => void;
+  onHoverArtifact: (revision: string) => void;
   onRemoveRevision: (revision: string) => void;
   sizeKey: string;
 }
@@ -29,77 +26,57 @@ const ComparisonTable = (props: Props): React.ReactElement => {
   const {
     activeArtifacts,
     comparator,
+    hoveredArtifact,
     onDisableArtifact,
     onEnableArtifact,
     onFocusRevision,
+    onHoverArtifact,
     onRemoveRevision,
     sizeKey
   } = props;
   const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const matrix = comparator.toJSON();
 
-  const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement => {
-    switch (cell.type) {
-      case CellType.TEXT:
-        return <TextCell cell={cell} key={i} />;
-      case CellType.ARTIFACT: {
-        const isActive =
-          cell.text === 'All' ? Object.values(activeArtifacts).every(Boolean) : activeArtifacts[cell.text];
-        return (
-          <ArtifactCell
-            cell={cell}
-            color={colorScale(comparator.artifactNames.indexOf(cell.text))}
-            key={i}
-            isActive={isActive}
-            onDisable={onDisableArtifact}
-            onEnable={onEnableArtifact}
-          />
-        );
-      }
-      case CellType.DELTA:
-        return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
-      case CellType.TOTAL:
-        return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
-      case CellType.TOTAL_DELTA:
-        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
-    }
-  };
+  const handleMouseOut = React.useCallback(() => {
+    onHoverArtifact(null);
+  }, [onHoverArtifact]);
 
   return (
-    <Table style={styles.table}>
+    <Table onMouseLeave={handleMouseOut} style={styles.table}>
       <Thead>
-        <Tr style={styles.headerRow}>
-          {matrix.header.map((cell, i) => {
-            switch (cell.type) {
-              case CellType.TEXT:
-                return <TextCell cell={cell} header key={cell.text} style={styles.headerCell} />;
-              case CellType.REVISION:
-                return (
-                  <RevisionCell
-                    cell={cell}
-                    key={cell.revision}
-                    onFocus={onFocusRevision}
-                    onRemove={onRemoveRevision}
-                    style={styles.headerCell}
-                  />
-                );
-              case CellType.REVISION_DELTA:
-                return (
-                  <RevisionDeltaCell
-                    cell={cell}
-                    key={`${cell.revision}-${cell.againstRevision}-${i}`}
-                    style={styles.headerCell}
-                  />
-                );
-            }
-          })}
-        </Tr>
-        <Tr>{matrix.total.map(mapBodyCell)}</Tr>
+        <HeaderRow onFocusRevision={onFocusRevision} onRemoveRevision={onRemoveRevision} row={matrix.header} />
+        <BodyRow
+          colorScale={colorScale}
+          isActive={Object.values(activeArtifacts).every(Boolean)}
+          isHovered={false}
+          key={'All'}
+          onDisableArtifact={onDisableArtifact}
+          onEnableArtifact={onEnableArtifact}
+          onHoverArtifact={onHoverArtifact}
+          row={matrix.total}
+          rowIndex={-1}
+          sizeKey={sizeKey}
+        />
       </Thead>
       <Tbody>
-        {matrix.body.map((row, i) => (
-          <Tr key={i}>{row.map(mapBodyCell)}</Tr>
-        ))}
+        {matrix.body.map((row, i) => {
+          // @ts-ignore
+          const artifactName = 'text' in row[0] && row[0].text;
+          return (
+            <BodyRow
+              colorScale={colorScale}
+              isActive={activeArtifacts[artifactName]}
+              isHovered={artifactName === hoveredArtifact}
+              key={artifactName}
+              onDisableArtifact={onDisableArtifact}
+              onEnableArtifact={onEnableArtifact}
+              onHoverArtifact={onHoverArtifact}
+              row={row}
+              rowIndex={i}
+              sizeKey={sizeKey}
+            />
+          );
+        })}
       </Tbody>
     </Table>
   );
@@ -108,13 +85,6 @@ const ComparisonTable = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   table: {
     position: 'relative'
-  },
-  headerCell: {
-    // @ts-ignore
-    position: 'sticky',
-    top: 0,
-    zIndex: 2,
-    height: 'calc(4rem - 1px)'
   }
 });
 

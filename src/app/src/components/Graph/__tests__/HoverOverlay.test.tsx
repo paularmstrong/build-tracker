@@ -3,21 +3,63 @@
  */
 import * as Selection from 'd3-selection';
 import { act } from 'react-dom/test-utils';
+import Build from '@build-tracker/build';
+import Comparator from '@build-tracker/comparator';
 import HoverOverlay from '../HoverOverlay';
 import React from 'react';
-import { scalePoint } from 'd3-scale';
+import { stack } from 'd3-shape';
 import { fireEvent, render } from 'react-testing-library';
+import { scaleLinear, scalePoint } from 'd3-scale';
 
 const xScale = scalePoint()
   .range([0, 300])
   .domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
+const yScale = scaleLinear()
+  .range([400, 0])
+  .domain([0, 168]);
+const builds = [
+  new Build({ revision: '1234567abcdef', parentRevision: '000', timestamp: 0 }, [
+    { name: 'main', hash: '123', sizes: { gzip: 123 } },
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+  ]),
+  new Build({ revision: 'abcdefg1234567', parentRevision: '123', timestamp: 1 }, [
+    { name: 'main', hash: '123', sizes: { gzip: 123 } },
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+  ]),
+  new Build({ revision: 'abcd', parentRevision: '123', timestamp: 2 }, [
+    { name: 'main', hash: '123', sizes: { gzip: 123 } },
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+  ]),
+  new Build({ revision: '1234', parentRevision: '123', timestamp: 3 }, [
+    { name: 'main', hash: '123', sizes: { gzip: 123 } },
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+  ])
+];
+const comparator = new Comparator({ builds });
+
+const dataStack = stack<Build, string>();
+dataStack.keys(['main', 'vendor']);
+dataStack.value((build: Build, key) => {
+  const artifact = build.getArtifact(key);
+  return artifact ? artifact.sizes['gzip'] : 0;
+});
+const data = dataStack(comparator.builds);
 
 describe('HoverOverlay', () => {
   describe('default render', () => {
     test('does not display the line', () => {
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
+          <HoverOverlay
+            data={data}
+            height={400}
+            onHoverArtifact={jest.fn()}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+            yScale={yScale}
+          />
         </svg>
       );
       expect(getByTestId('hoverline').style).toMatchObject({ opacity: '0' });
@@ -31,7 +73,16 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
+          <HoverOverlay
+            data={data}
+            height={400}
+            onHoverArtifact={jest.fn()}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+            yScale={yScale}
+          />
         </svg>
       );
       act(() => {
@@ -49,7 +100,16 @@ describe('HoverOverlay', () => {
       jest.spyOn(Selection, 'select').mockReturnValue({ style: mockStyle });
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
+          <HoverOverlay
+            data={data}
+            height={400}
+            onHoverArtifact={jest.fn()}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+            yScale={yScale}
+          />
         </svg>
       );
       act(() => {
@@ -63,25 +123,57 @@ describe('HoverOverlay', () => {
 
   describe('onMouseMove', () => {
     test('moves the line', () => {
-      const mockAttr = jest.fn(() => ({
-        attr: mockAttr
+      const mockD3Select = jest.fn(() => ({
+        attr: mockD3Select,
+        duration: mockD3Select,
+        transition: mockD3Select
       }));
 
       // @ts-ignore
-      jest.spyOn(Selection, 'select').mockReturnValue({ attr: mockAttr });
+      jest.spyOn(Selection, 'select').mockReturnValue(mockD3Select());
       const { getByTestId } = render(
         <svg>
-          <HoverOverlay height={400} onSelectRevision={jest.fn()} selectedRevisions={[]} width={300} xScale={xScale} />
+          <HoverOverlay
+            data={data}
+            height={400}
+            onHoverArtifact={jest.fn()}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+            yScale={yScale}
+          />
         </svg>
       );
       act(() => {
         fireEvent.mouseMove(getByTestId('hoveroverlay'));
       });
 
-      expect(mockAttr).toHaveBeenCalledWith('y2', 400);
-      expect(mockAttr).toHaveBeenCalledWith('y1', 0);
-      expect(mockAttr).toHaveBeenCalledWith('x2', 300);
-      expect(mockAttr).toHaveBeenCalledWith('x1', 300);
+      expect(mockD3Select).toHaveBeenCalledWith('x2', 300);
+      expect(mockD3Select).toHaveBeenCalledWith('x1', 300);
+    });
+
+    test('calls back with the hovered artifact', () => {
+      const handleHoverArtifact = jest.fn();
+      const { getByTestId } = render(
+        <svg>
+          <HoverOverlay
+            data={data}
+            height={400}
+            onHoverArtifact={handleHoverArtifact}
+            onSelectRevision={jest.fn()}
+            selectedRevisions={[]}
+            width={300}
+            xScale={xScale}
+            yScale={yScale}
+          />
+        </svg>
+      );
+      act(() => {
+        fireEvent.mouseMove(getByTestId('hoveroverlay'));
+      });
+
+      expect(handleHoverArtifact).toHaveBeenCalledWith('vendor');
     });
   });
 
@@ -91,11 +183,14 @@ describe('HoverOverlay', () => {
       const { getByTestId } = render(
         <svg>
           <HoverOverlay
+            data={data}
             height={400}
+            onHoverArtifact={jest.fn()}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={[]}
             width={300}
             xScale={xScale}
+            yScale={yScale}
           />
         </svg>
       );
@@ -111,11 +206,14 @@ describe('HoverOverlay', () => {
       const { getByTestId } = render(
         <svg>
           <HoverOverlay
+            data={data}
             height={400}
+            onHoverArtifact={jest.fn()}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={['1234']}
             width={300}
             xScale={xScale}
+            yScale={yScale}
           />
         </svg>
       );
@@ -130,11 +228,14 @@ describe('HoverOverlay', () => {
       const { queryAllByTestId } = render(
         <svg>
           <HoverOverlay
+            data={data}
             height={400}
+            onHoverArtifact={jest.fn()}
             onSelectRevision={jest.fn()}
             selectedRevisions={['abcdefg1234567', 'abcd']}
             width={300}
             xScale={xScale}
+            yScale={yScale}
           />
         </svg>
       );

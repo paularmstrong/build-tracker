@@ -4,41 +4,39 @@
 import 'd3-transition';
 import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
+import { hsl } from 'd3-color';
 import React from 'react';
 import { select } from 'd3-selection';
-import { area, stack } from 'd3-shape';
+import { area, Series } from 'd3-shape';
 import { ScaleLinear, ScalePoint, ScaleSequential } from 'd3-scale';
 
 interface Props {
   activeArtifactNames: Array<string>;
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
-  sizeKey: string;
+  data: Array<Series<Build, string>>;
+  hoveredArtifact: string;
   xScale: ScalePoint<string>;
   yScale: ScaleLinear<number, number>;
 }
 
 const Area = (props: Props): React.ReactElement => {
-  const { activeArtifactNames, comparator, sizeKey, xScale, yScale } = props;
+  const { activeArtifactNames, comparator, data, hoveredArtifact, xScale, yScale } = props;
   const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const gRef = React.useRef(null);
 
   const graphColorScale = React.useMemo(() => {
-    return d => colorScale(comparator.artifactNames.indexOf(d.key));
-  }, [colorScale, comparator.artifactNames]);
+    return d => {
+      const color = hsl(colorScale(comparator.artifactNames.indexOf(d.key)));
+      if (hoveredArtifact && d.key !== hoveredArtifact) {
+        color.l = 0.75;
+        color.s = 0.4;
+      }
+      return color.toString();
+    };
+  }, [colorScale, comparator.artifactNames, hoveredArtifact]);
 
   React.useEffect(() => {
-    const dataStack = stack();
-    dataStack.keys(activeArtifactNames);
-    // @ts-ignore
-    dataStack.value((build: Build, key) => {
-      const artifact = build.getArtifact(key);
-      return artifact ? artifact.sizes[sizeKey] : 0;
-    });
-
-    // @ts-ignore You can stack any data, as long as you apply the appropriate x/y transforms
-    const data = dataStack(comparator.builds);
-
     const contents = select(gRef.current);
 
     const areaChart = area()
@@ -57,7 +55,7 @@ const Area = (props: Props): React.ReactElement => {
       .enter()
       .append('path')
       .attr('class', 'artifact')
-      .style('fill', '#000000')
+      .style('fill', graphColorScale)
       // @ts-ignore Docs are very clear that this is allowed
       .merge(artifact)
       .transition()
@@ -66,7 +64,7 @@ const Area = (props: Props): React.ReactElement => {
       .attr('d', areaChart);
   });
 
-  return <g aria-label={`Stacked area chart for ${activeArtifactNames.join(', ')}`} ref={gRef} />;
+  return <g aria-label={`Stacked area chart for ${activeArtifactNames.join(', ')}`} pointerEvents="all" ref={gRef} />;
 };
 
 export default Area;

@@ -11,7 +11,7 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-const RevisionDeltaCell = (props: Props): React.ReactElement => {
+export const RevisionDeltaCell = (props: Props): React.ReactElement => {
   const { againstRevision, deltaIndex, revision } = props.cell;
   return (
     <Th accessibilityLabel={`Delta from ${againstRevision} to ${revision}`} style={props.style}>

@@ -3,9 +3,12 @@
  */
 import 'd3-transition';
 import Area from './Area';
+import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
 import HoverOverlay from './HoverOverlay';
+import { Offset } from './Offset';
 import React from 'react';
+import { stack } from 'd3-shape';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { createElement, LayoutChangeEvent, StyleSheet, View } from 'react-native';
@@ -15,16 +18,11 @@ interface Props {
   activeArtifacts: { [key: string]: boolean };
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
+  hoveredArtifact: string;
+  onHoverArtifact: (artifactName: string) => void;
   onSelectRevision: (revision: string) => void;
   selectedRevisions: Array<string>;
   sizeKey: string;
-}
-
-enum Margin {
-  TOP = 0,
-  RIGHT = 20,
-  BOTTOM = 100,
-  LEFT = 80
 }
 
 export class SVG extends React.Component<{ height: number; width: number }> {
@@ -34,7 +32,16 @@ export class SVG extends React.Component<{ height: number; width: number }> {
 }
 
 const Graph = (props: Props): React.ReactElement => {
-  const { activeArtifacts, colorScale, comparator, onSelectRevision, selectedRevisions, sizeKey } = props;
+  const {
+    activeArtifacts,
+    colorScale,
+    comparator,
+    hoveredArtifact,
+    onHoverArtifact,
+    onSelectRevision,
+    selectedRevisions,
+    sizeKey
+  } = props;
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
@@ -45,7 +52,7 @@ const Graph = (props: Props): React.ReactElement => {
       .sort((a, b) => a.timestamp.valueOf() - b.timestamp.valueOf())
       .map(build => build.getMetaValue('revision'));
     return scalePoint()
-      .range([0, width - Margin.LEFT - Margin.RIGHT])
+      .range([0, width - Offset.LEFT - Offset.RIGHT])
       .padding(0.05)
       .round(true)
       .domain(domain);
@@ -55,9 +62,20 @@ const Graph = (props: Props): React.ReactElement => {
     const totals = comparator.builds.map(build => build.getSum(activeArtifactNames)[sizeKey]);
     const maxTotal = Math.max(...totals);
     return scaleLinear()
-      .range([height - Margin.TOP - Margin.BOTTOM, 0])
+      .range([height - Offset.TOP - Offset.BOTTOM, 0])
       .domain([0, maxTotal]);
   }, [activeArtifactNames, comparator, height, sizeKey]);
+
+  const data = React.useMemo(() => {
+    const dataStack = stack<Build, string>();
+    dataStack.keys(activeArtifactNames);
+    dataStack.value((build: Build, key) => {
+      const artifact = build.getArtifact(key);
+      return artifact ? artifact.sizes[sizeKey] : 0;
+    });
+
+    return dataStack(comparator.builds);
+  }, [activeArtifactNames, comparator, sizeKey]);
 
   const handleLayout = (event: LayoutChangeEvent): void => {
     const {
@@ -71,25 +89,29 @@ const Graph = (props: Props): React.ReactElement => {
   return (
     <View onLayout={handleLayout} style={styles.root}>
       <SVG height={height} ref={svgRef} width={width}>
-        <g className="main" transform="translate(80,20)">
+        <g className="main" transform={`translate(${Offset.LEFT},${Offset.TOP})`}>
           {height && width ? (
             <>
-              <XAxis height={height - Margin.TOP - Margin.BOTTOM} scale={xScale} />
+              <XAxis height={height - Offset.TOP - Offset.BOTTOM} scale={xScale} />
               <YAxis scale={yScale} />
               <Area
                 activeArtifactNames={activeArtifactNames}
                 colorScale={colorScale}
                 comparator={comparator}
-                sizeKey={sizeKey}
+                data={data}
+                hoveredArtifact={hoveredArtifact}
                 xScale={xScale}
                 yScale={yScale}
               />
               <HoverOverlay
-                height={height - Margin.TOP - Margin.BOTTOM}
+                data={data}
+                height={height - Offset.TOP - Offset.BOTTOM}
+                onHoverArtifact={onHoverArtifact}
                 onSelectRevision={onSelectRevision}
                 selectedRevisions={selectedRevisions}
-                width={width - Margin.LEFT - Margin.RIGHT}
+                width={width - Offset.LEFT - Offset.RIGHT}
                 xScale={xScale}
+                yScale={yScale}
               />
             </>
           ) : null}

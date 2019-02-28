@@ -46,6 +46,7 @@ const Main = (): React.ReactElement => {
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
   const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
   const [focusedRevision, setFocusedRevision] = React.useState<string>(null);
+  const [hoveredArtifact, setHoveredArtifact] = React.useState<string>(null);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
       memo[name] = true;
@@ -107,13 +108,6 @@ const Main = (): React.ReactElement => {
     [compareRevisions, setCompareRevisions]
   );
 
-  const handleFocusRevision = React.useCallback(
-    (revision: string): void => {
-      setFocusedRevision(revision);
-    },
-    [setFocusedRevision]
-  );
-
   const handleUnfocusRevision = React.useCallback((): void => {
     setFocusedRevision(null);
   }, [setFocusedRevision]);
@@ -147,6 +141,8 @@ const Main = (): React.ReactElement => {
             activeArtifacts={activeArtifacts}
             colorScale={colorScale}
             comparator={comparator}
+            hoveredArtifact={hoveredArtifact}
+            onHoverArtifact={setHoveredArtifact}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={compareRevisions}
             sizeKey={sizeKey}
@@ -160,9 +156,11 @@ const Main = (): React.ReactElement => {
                   activeArtifacts={activeArtifacts}
                   colorScale={colorScale}
                   comparator={activeComparator}
+                  hoveredArtifact={hoveredArtifact}
                   onDisableArtifact={handleDisableArtifact}
                   onEnableArtifact={handleEnableArtifact}
-                  onFocusRevision={handleFocusRevision}
+                  onFocusRevision={setFocusedRevision}
+                  onHoverArtifact={setHoveredArtifact}
                   onRemoveRevision={handleRemoveRevision}
                   sizeKey={sizeKey}
                 />

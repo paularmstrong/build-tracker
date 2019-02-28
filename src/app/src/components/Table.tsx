@@ -6,6 +6,8 @@ import { createElement, StyleProp, StyleSheet, ViewProps, ViewStyle } from 'reac
 
 interface TableProps extends ViewProps {
   children?: React.ReactNode;
+  onMouseEnter?: (event: MouseEvent) => void;
+  onMouseLeave?: (event: MouseEvent) => void;
   style?: StyleProp<ViewStyle>;
   title?: string;
 }
@@ -47,7 +49,6 @@ const styles = StyleSheet.create({
   cell: {
     // @ts-ignore
     boxSizing: 'border-box',
-    backgroundColor: Theme.Color.White,
     borderWidth: StyleSheet.hairlineWidth,
     borderBottomStyle: 'solid',
     borderRightStyle: 'dotted',

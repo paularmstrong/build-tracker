@@ -2,30 +2,56 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../../theme';
+import Build from '@build-tracker/build';
+import memoize from 'memoize-one';
+import { Offset } from './Offset';
 import React from 'react';
-import { ScalePoint } from 'd3-scale';
 import { select } from 'd3-selection';
+import { Series } from 'd3-shape';
+import { ScaleLinear, ScalePoint } from 'd3-scale';
 
 interface Props {
+  data: Array<Series<Build, string>>;
   height: number;
+  onHoverArtifact: (artifactName: string) => void;
   onSelectRevision: (revision: string) => void;
   selectedRevisions: Array<string>;
   width: number;
   xScale: ScalePoint<string>;
+  yScale: ScaleLinear<number, number>;
 }
 
+const handleMoveLine = memoize(
+  (line, xPos): void => {
+    select(line)
+      .transition()
+      .duration(250)
+      .attr('x1', xPos)
+      .attr('x2', xPos);
+  }
+);
+
 const HoverOverlay = (props: Props): React.ReactElement => {
-  const { height, onSelectRevision, selectedRevisions, width, xScale } = props;
+  const { data, height, onHoverArtifact, onSelectRevision, selectedRevisions, width, xScale, yScale } = props;
   const lineRef = React.useRef(null);
   const domain = xScale.domain();
 
-  const buildRevisionFromX = (x: number): string => {
-    return domain.reduce((prev, curr) => {
-      return Math.abs(xScale(curr) - x + 80) > Math.abs(xScale(prev) - x + 80) ? prev : curr;
-    }, domain[0]);
-  };
+  const buildRevisionFromX = React.useCallback(
+    (x: number): { index: number; value: string } => {
+      return domain.reduce(
+        (prev, curr, index) => {
+          const isPrev = Math.abs(xScale(curr) - x) > Math.abs(xScale(prev.value) - x);
+          return {
+            index: isPrev ? prev.index : index,
+            value: isPrev ? prev.value : curr
+          };
+        },
+        { index: 0, value: domain[0] }
+      );
+    },
+    [domain, xScale]
+  );
 
-  // TODO: handle clicks on revisions
   const handleClick = React.useCallback(
     (event: React.MouseEvent<SVGRectElement>): void => {
       const {
@@ -33,37 +59,42 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       } = event;
 
       const revision = buildRevisionFromX(offsetX);
-      if (selectedRevisions.indexOf(revision) !== -1) {
+      if (selectedRevisions.indexOf(revision.value) !== -1) {
         return;
       }
 
-      // @ts-ignore TODO make clicking do things
-      onSelectRevision(revision);
+      onSelectRevision(revision.value);
     },
     [buildRevisionFromX, onSelectRevision, selectedRevisions]
   );
 
-  const handleMouseMove = (event: React.MouseEvent<SVGRectElement>): void => {
-    const {
-      nativeEvent: { offsetX }
-    } = event;
+  const handleMouseMove = React.useCallback(
+    (event: React.MouseEvent<SVGRectElement>): void => {
+      const {
+        nativeEvent: { offsetX, offsetY = Offset.TOP }
+      } = event;
 
-    const xValue = buildRevisionFromX(offsetX);
+      const revision = buildRevisionFromX(offsetX - Offset.LEFT);
+      const xPos = xScale(revision.value);
+      handleMoveLine(lineRef.current, xPos);
 
-    select(lineRef.current)
-      .attr('x1', xScale(xValue))
-      .attr('x2', xScale(xValue))
-      .attr('y1', 0)
-      .attr('y2', height);
-  };
+      const yValue = yScale.invert(offsetY - Offset.TOP);
+      const hoveredArtifact = data.find(data => {
+        return data[revision.index][0] <= yValue && data[revision.index][1] >= yValue;
+      });
+      onHoverArtifact(hoveredArtifact.key);
+    },
+    [buildRevisionFromX, data, onHoverArtifact, xScale, yScale]
+  );
 
-  const handleMouseOut = (): void => {
+  const handleMouseOut = React.useCallback((): void => {
     select(lineRef.current).style('opacity', 0);
-  };
+    onHoverArtifact(null);
+  }, [onHoverArtifact]);
 
-  const handleMouseOver = (): void => {
+  const handleMouseOver = React.useCallback((): void => {
     select(lineRef.current).style('opacity', 1);
-  };
+  }, []);
 
   return (
     <g>
@@ -74,7 +105,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
         onMouseOver={handleMouseOver}
-        pointerEvents="all"
+        pointerEvents="fill"
         style={styles.rect}
         width={width}
       />
@@ -84,6 +115,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
           <line
             data-testid="selectedline"
             key={revision}
+            pointerEvents="none"
             x1={x}
             x2={x}
             y1={0}
@@ -92,7 +124,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
           />
         );
       })}
-      <line data-testid="hoverline" ref={lineRef} style={styles.hoverLine} />
+      <line data-testid="hoverline" pointerEvents="none" ref={lineRef} style={styles.hoverLine} y1={0} y2={height} />
     </g>
   );
 };

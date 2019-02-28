@@ -90,14 +90,14 @@ describe('DeltaCell', () => {
       });
     });
 
-    test('is white for no change', () => {
+    test('is transparent for no change', () => {
       const { getByType } = render(
         <DeltaCell
           cell={{ type: CellType.DELTA, percents: { gzip: 0 }, hashChanged: false, sizes: { gzip: 0 } }}
           sizeKey="gzip"
         />
       );
-      expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({ backgroundColor: 'white' });
+      expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({ backgroundColor: 'transparent' });
     });
   });
 });

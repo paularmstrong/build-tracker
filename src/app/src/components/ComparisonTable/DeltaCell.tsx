@@ -45,7 +45,7 @@ export const DeltaCell = (props: Props): React.ReactElement => {
       : sizeDelta === 0
       ? cell.hashChanged
         ? scale(red, 1)
-        : 'white'
+        : 'transparent'
       : scale(green, percentDelta);
 
   const stringChange = `${sizeDelta} bytes (${(percentDelta * 100).toFixed(3)}%)`;

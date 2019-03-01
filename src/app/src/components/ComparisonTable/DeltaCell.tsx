@@ -14,25 +14,25 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-interface Color {
+export interface Color {
   red: number;
   green: number;
   blue: number;
 }
 
-const green: Color = {
+export const green: Color = {
   red: 6,
   green: 176,
   blue: 41
 };
 
-const red: Color = {
+export const red: Color = {
   red: 249,
   green: 84,
   blue: 84
 };
 
-const scale = ({ red, blue, green }: Color, percentDelta: number): string =>
+export const scale = ({ red, blue, green }: Color, percentDelta: number): string =>
   `rgba(${red},${green},${blue},${Math.max(Math.min(Math.abs(percentDelta), 1), 0)})`;
 
 export const DeltaCell = (props: Props): React.ReactElement => {

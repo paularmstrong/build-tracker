@@ -3,9 +3,9 @@
  */
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
-import { render } from 'react-native-testing-library';
 import { Td } from '../../Table';
 import { TotalDeltaCell } from '../TotalDeltaCell';
+import { fireEvent, render } from 'react-native-testing-library';
 import { StyleSheet, Text } from 'react-native';
 
 describe('TotalDeltaCell', () => {
@@ -38,7 +38,7 @@ describe('TotalDeltaCell', () => {
         />
       );
 
-      expect(getByType(Td).props.title).toEqual('-134 bytes (-50.000%)');
+      expect(getByType(Td).props.accessibilityLabel).toEqual('-134 bytes (-50.000%)');
     });
   });
 
@@ -87,6 +87,31 @@ describe('TotalDeltaCell', () => {
         />
       );
       expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({ backgroundColor: 'white' });
+    });
+  });
+
+  describe('tooltip', () => {
+    test('mouse enter shows a tooltip', () => {
+      const { getByTestId, queryAllByProps } = render(
+        <TotalDeltaCell
+          cell={{ type: CellType.TOTAL_DELTA, percents: { gzip: 1 }, sizes: { gzip: 1024 } }}
+          sizeKey="gzip"
+        />
+      );
+      fireEvent(getByTestId('delta'), 'mouseEnter');
+      expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(1);
+    });
+
+    test('mouse leave removes the tooltip', () => {
+      const { getByTestId, queryAllByProps } = render(
+        <TotalDeltaCell
+          cell={{ type: CellType.TOTAL_DELTA, percents: { gzip: 1 }, sizes: { gzip: 1024 } }}
+          sizeKey="gzip"
+        />
+      );
+      fireEvent(getByTestId('delta'), 'mouseEnter');
+      fireEvent(getByTestId('delta'), 'mouseLeave');
+      expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(0);
     });
   });
 });

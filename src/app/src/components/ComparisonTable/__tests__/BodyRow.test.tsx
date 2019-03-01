@@ -8,8 +8,9 @@ import { DeltaCell } from '../DeltaCell';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { TotalCell } from '../TotalCell';
+import { TotalDeltaCell } from '../TotalDeltaCell';
 import { Tr } from '../../Table';
-import { BodyCell, CellType } from '@build-tracker/comparator';
+import { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
 import { fireEvent, render } from 'react-native-testing-library';
 
 describe('BodyRow', () => {
@@ -79,6 +80,27 @@ describe('BodyRow', () => {
         />
       );
       expect(getByType(TotalCell).props).toMatchObject({
+        cell: row[0],
+        sizeKey: 'stat'
+      });
+    });
+
+    test('total delta cell', () => {
+      const row: Array<BodyCell | TDCell> = [{ type: CellType.TOTAL_DELTA, sizes: { stat: 4 }, percents: { stat: 4 } }];
+      const { getByType } = render(
+        <BodyRow
+          colorScale={ColorScale.Rainbow}
+          isActive
+          isHovered={false}
+          onDisableArtifact={jest.fn()}
+          onEnableArtifact={jest.fn()}
+          onHoverArtifact={jest.fn()}
+          row={row}
+          rowIndex={1}
+          sizeKey="stat"
+        />
+      );
+      expect(getByType(TotalDeltaCell).props).toMatchObject({
         cell: row[0],
         sizeKey: 'stat'
       });

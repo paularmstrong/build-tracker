@@ -8,6 +8,7 @@ import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import { StyleSheet } from 'react-native';
 import TotalCell from './TotalCell';
+import TotalDeltaCell from './TotalDeltaCell';
 import { Tr } from './../Table';
 import { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
 
@@ -18,7 +19,7 @@ interface Props {
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
   onHoverArtifact: (revision: string) => void;
-  row: Array<BodyCell>;
+  row: Array<BodyCell | TDCell>;
   rowIndex: number;
   sizeKey: string;
 }
@@ -54,6 +55,8 @@ export const BodyRow = (props: Props): React.ReactElement => {
         return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
       case CellType.TOTAL:
         return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
+      case CellType.TOTAL_DELTA:
+        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
     }
   };
 

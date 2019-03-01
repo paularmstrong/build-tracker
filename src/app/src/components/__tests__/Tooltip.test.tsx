@@ -4,7 +4,7 @@
 import React from 'react';
 import { render } from 'react-testing-library';
 import Tooltip from '../Tooltip';
-import { MeasureOnSuccessCallback, View } from 'react-native';
+import { Dimensions, MeasureOnSuccessCallback, View } from 'react-native';
 
 describe('Tooltip', () => {
   let viewRef;
@@ -59,5 +59,70 @@ describe('Tooltip', () => {
       left: '17.5px'
     });
     expect(queryAllByText('foobar')).toHaveLength(1);
+  });
+
+  describe('window edge avoidance', () => {
+    test('avoids the left edge', () => {
+      jest.spyOn(Dimensions, 'get').mockReturnValue({ width: 400, height: 400, scale: 1, fontScale: 1 });
+      jest.spyOn(View.prototype, 'measure').mockImplementation(
+        (fn: MeasureOnSuccessCallback): void => {
+          fn(0, 0, 45, 30, 0, 0);
+        }
+      );
+      jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+        (fn: (x: number, y: number, width: number, height: number) => void): void => {
+          fn(10, 200, 20, 10);
+        }
+      );
+
+      const { getByRole } = render(<Tooltip relativeTo={viewRef} text="foobar" />);
+
+      expect(getByRole('tooltip').style).toMatchObject({
+        top: '190px',
+        left: '36px'
+      });
+    });
+
+    test('avoids the right edge', () => {
+      jest.spyOn(Dimensions, 'get').mockReturnValue({ width: 400, height: 400, scale: 1, fontScale: 1 });
+      jest.spyOn(View.prototype, 'measure').mockImplementation(
+        (fn: MeasureOnSuccessCallback): void => {
+          fn(0, 0, 45, 30, 0, 0);
+        }
+      );
+      jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+        (fn: (x: number, y: number, width: number, height: number) => void): void => {
+          fn(380, 200, 50, 10);
+        }
+      );
+
+      const { getByRole } = render(<Tooltip relativeTo={viewRef} text="foobar" />);
+
+      expect(getByRole('tooltip').style).toMatchObject({
+        top: '190px',
+        left: '329px'
+      });
+    });
+
+    test('avoids the bottom edge', () => {
+      jest.spyOn(Dimensions, 'get').mockReturnValue({ width: 400, height: 400, scale: 1, fontScale: 1 });
+      jest.spyOn(View.prototype, 'measure').mockImplementation(
+        (fn: MeasureOnSuccessCallback): void => {
+          fn(0, 0, 45, 30, 0, 0);
+        }
+      );
+      jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+        (fn: (x: number, y: number, width: number, height: number) => void): void => {
+          fn(200, 380, 50, 10);
+        }
+      );
+
+      const { getByRole } = render(<Tooltip relativeTo={viewRef} text="foobar" />);
+
+      expect(getByRole('tooltip').style).toMatchObject({
+        top: '344px',
+        left: '202.5px'
+      });
+    });
   });
 });

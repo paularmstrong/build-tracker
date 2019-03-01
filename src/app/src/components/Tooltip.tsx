@@ -4,12 +4,14 @@
 import * as Theme from '../theme';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 interface Props {
   relativeTo: React.RefObject<View>;
   text: string;
 }
+
+const tipSpace = 6;
 
 const Tooltip = (props: Props): React.ReactElement => {
   const { relativeTo, text } = props;
@@ -19,11 +21,29 @@ const Tooltip = (props: Props): React.ReactElement => {
 
   React.useEffect(() => {
     if (relativeTo.current) {
+      const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
       ref.current.measure(
-        (_x: number, _y: number, tipWidth: number): void => {
+        (_x: number, _y: number, tipWidth: number, tipHeight: number): void => {
           relativeTo.current.measureInWindow(
             (x: number, y: number, width: number, height: number): void => {
-              setPosition({ top: y + height + 6, left: x + width / 2 - tipWidth / 2 });
+              let top = y + height + tipSpace;
+              let left = x + width / 2 - tipWidth / 2;
+              // too far right when underneath
+              if (left + tipWidth > windowWidth) {
+                left = x - tipWidth - tipSpace;
+                top = y + height / 2 - tipHeight / 2;
+              }
+              // too far left when underneath
+              else if (left < 0) {
+                left = x + width + tipSpace;
+                top = y + height / 2 - tipHeight / 2;
+              }
+              // too close to bottom
+              else if (top + tipHeight > windowHeight) {
+                top = y - tipHeight - tipSpace;
+              }
+
+              setPosition({ left, top });
             }
           );
         }
@@ -51,10 +71,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: Theme.Color.Gray50,
     borderRadius: Theme.BorderRadius.Normal,
-    paddingHorizontal: Theme.Spacing.Normal,
+    paddingHorizontal: Theme.Spacing.Small,
     paddingVertical: Theme.Spacing.Xsmall,
+    // @ts-ignore
     transitionProperty: 'transform, opacity',
-    transitionDuration: '0.15s',
+    transitionDuration: '0.1s',
     transitionTimingFunction: Theme.MotionTiming.Accelerate,
     transform: [{ scale: 0.75 }],
     opacity: 0
@@ -63,8 +84,10 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1 }],
     opacity: 1
   },
+  // @ts-ignore
   text: {
     color: Theme.TextColor.Gray50,
+    fontSize: Theme.FontSize.Xsmall,
     textAlign: 'center'
   }
 });

@@ -3,142 +3,99 @@
  */
 import * as Theme from '../theme';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-  ViewProps,
-  ViewStyle
-} from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from 'react-native';
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactElement;
   disabled?: boolean;
-  rippleColor: string | 'primary' | 'secondary';
+  rippleColor?: string | 'primary' | 'secondary';
   style?: StyleProp<ViewStyle>;
 }
 
-interface State {
-  locationX: number;
-  locationY: number;
-  showRipple: boolean;
-}
+const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
+  const [location, setLocation] = React.useState({ x: 0, y: 0 });
+  const [size, setSize] = React.useState({ width: 0, height: 0 });
+  const [showRipple, setRippleVisibility] = React.useState(false);
 
-class Ripple extends React.Component<Props & TouchableOpacityProps, State> {
-  public static defaultProps = {
-    disabled: false,
-    rippleColor: 'rgba(0,0,0,0.2)'
-  };
+  const rootRef: React.RefObject<View> = React.useRef(null);
 
-  public state = {
-    locationX: 0,
-    locationY: 0,
-    showRipple: false
-  };
+  const { children, disabled, rippleColor = 'rgba(0,0,0,0.2)', onPressIn, onPressOut, style, ...otherProps } = props;
 
-  private _width = 0;
-  private _height = 0;
-  private _unmounted = false;
+  const handleLayout = React.useCallback(
+    (event): void => {
+      const { width, height } = event.nativeEvent.layout;
+      setSize({ width, height });
+    },
+    [setSize]
+  );
 
-  public componentWillUnmount(): void {
-    this._unmounted = true;
-  }
+  const handlePressIn = React.useCallback(
+    (event): void => {
+      const { locationX, locationY } = event.nativeEvent;
+      if (!disabled) {
+        setRippleVisibility(true);
+        setLocation({
+          x: Math.floor(locationX - window.scrollX),
+          y: Math.floor(locationY - window.scrollY)
+        });
 
-  public render(): React.ReactNode {
-    const { children, rippleColor, style, ...props } = this.props;
-    const { locationX, locationY, showRipple } = this.state;
-    const size = Math.max(this._width, this._height);
-    const sizeMidpoint = size / 2;
-    const offset = Math.max(Math.abs(locationX - sizeMidpoint), Math.abs(locationY - sizeMidpoint));
-    const finalSize = size + offset * 2.5;
-    return (
-      // @ts-ignore annoying web-specific props
-      <TouchableOpacity
-        {...props}
-        activeOpacity={1}
-        // @ts-ignore
-        onPressIn={this._handlePressIn}
-        onPressOut={this._handlePressOut}
-        style={styles.wrapper}
-      >
-        <View
-          onLayout={this._handleLayout}
-          style={[styles.root, style]}
-          // @ts-ignore
-          ref={this._receiveRootRef}
-        >
-          {children}
-          <View
-            style={[
-              styles.ripple,
-              { backgroundColor: rippleColor },
-              showRipple ? { width: finalSize, height: finalSize } : null,
-              showRipple ? styles.animateIn : styles.animateOut,
-              {
-                left: locationX - finalSize / 2,
-                top: locationY - finalSize / 2
-              }
-            ]}
-          >
-            <View style={styles.adjuster} />
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  private _handleLayout = event => {
-    this._width = event.nativeEvent.layout.width;
-    this._height = event.nativeEvent.layout.height;
-  };
-
-  private _receiveRootRef = (ref: React.ReactElement<ViewProps>) => {
-    if (ref && ref instanceof TouchableOpacity) {
-      const element = ReactDOM.findDOMNode(ref);
-      if (element && element instanceof HTMLElement) {
-        /**
-         * NOTE: this removes the box shadow, if set
-         */
-        element.style.webkitMaskImage =
-          'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVQYV2P4DwABAQEAWk1v8QAAAABJRU5ErkJggg==)';
+        if (onPressIn) {
+          onPressIn(event);
+        }
       }
-    }
-  };
+    },
+    [disabled, onPressIn, setLocation, setRippleVisibility]
+  );
 
-  private _handlePressIn = event => {
-    const { disabled, onPressIn } = this.props;
-    const { locationX, locationY } = event.nativeEvent;
-    if (disabled) {
-      return;
-    }
+  const handlePressOut = React.useCallback(
+    (event): void => {
+      if (disabled) {
+        return;
+      }
+      setTimeout(() => {
+        rootRef.current && setRippleVisibility(false);
+      }, 400);
+      if (onPressOut) {
+        onPressOut(event);
+      }
+    },
+    [disabled, onPressOut, setRippleVisibility]
+  );
 
-    this.setState({
-      locationX: Math.floor(locationX - window.scrollX),
-      locationY: Math.floor(locationY - window.scrollY),
-      showRipple: true
-    });
+  const maxSide = Math.max(size.width, size.height);
+  const sizeMidpoint = maxSide / 2;
+  const offset = Math.max(Math.abs(location.x - sizeMidpoint), Math.abs(location.y - sizeMidpoint));
+  const finalSize = maxSide + offset * 2.5;
 
-    if (onPressIn) {
-      onPressIn(event);
-    }
-  };
-
-  private _handlePressOut = event => {
-    const { disabled, onPressOut } = this.props;
-    if (disabled) {
-      return;
-    }
-    setTimeout(() => {
-      !this._unmounted && this.setState({ showRipple: false });
-    }, 400);
-    if (onPressOut) {
-      onPressOut(event);
-    }
-  };
-}
+  return (
+    <TouchableOpacity
+      {...otherProps}
+      activeOpacity={1}
+      disabled={disabled}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={styles.wrapper}
+    >
+      <View onLayout={handleLayout} style={[styles.root, style]} ref={rootRef}>
+        {children}
+        <View
+          style={[
+            styles.ripple,
+            { backgroundColor: rippleColor },
+            showRipple ? { width: finalSize, height: finalSize } : null,
+            showRipple ? styles.animateIn : styles.animateOut,
+            {
+              left: location.x - finalSize / 2,
+              top: location.y - finalSize / 2
+            }
+          ]}
+        >
+          <View style={styles.adjuster} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   wrapper: {

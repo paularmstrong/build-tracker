@@ -66,6 +66,11 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js']
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'async'
+    }
+  },
   output: {
     filename: `[name]${IS_PROD ? '.[hash:8]' : ''}.js`,
     path: DIST_ROOT

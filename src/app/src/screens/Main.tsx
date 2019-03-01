@@ -9,11 +9,9 @@ import buildDataB from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deea
 import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
 import buildDataD from '@build-tracker/fixtures/builds/19868a0432f039d45783bca1845cede313fbfbe1.json';
 import buildDataE from '@build-tracker/fixtures/builds/4a8882483a664401a602f64a882d0ed7fb1763cb.json';
-import BuildInfo from '../components/BuildInfo';
 import ColorScale from '../modules/ColorScale';
 import ColorScalePicker from '../components/ColorScalePicker';
 import Comparator from '@build-tracker/comparator';
-import ComparisonTable from '../components/ComparisonTable';
 import Drawer from '../components/Drawer';
 import Graph from '../components/Graph';
 import MenuIcon from '../icons/Menu';
@@ -21,7 +19,9 @@ import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import SizeKeyPicker from '../components/SizeKeyPicker';
 import Subtitle from '../components/Subtitle';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
 
 const builds = [
   new Build(buildDataA.meta, buildDataA.artifacts),
@@ -149,32 +149,23 @@ const Main = (): React.ReactElement => {
           />
         </View>
         {compareRevisions.length ? (
-          <View key="table" style={[styles.column, styles.table]}>
-            <ScrollView horizontal style={styles.tableScroll}>
-              <ScrollView>
-                <ComparisonTable
-                  activeArtifacts={activeArtifacts}
-                  colorScale={colorScale}
-                  comparator={activeComparator}
-                  hoveredArtifact={hoveredArtifact}
-                  onDisableArtifact={handleDisableArtifact}
-                  onEnableArtifact={handleEnableArtifact}
-                  onFocusRevision={setFocusedRevision}
-                  onHoverArtifact={setHoveredArtifact}
-                  onRemoveRevision={handleRemoveRevision}
-                  sizeKey={sizeKey}
-                />
-              </ScrollView>
-            </ScrollView>
-            {focusedRevision ? (
-              <View style={styles.buildInfo} testID="buildinfo">
-                <BuildInfo
-                  build={activeComparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)}
-                  onClose={handleUnfocusRevision}
-                />
-              </View>
-            ) : null}
-          </View>
+          <React.Suspense fallback={null}>
+            <Comparison
+              activeArtifacts={activeArtifacts}
+              colorScale={colorScale}
+              comparator={activeComparator}
+              focusedRevision={focusedRevision}
+              hoveredArtifact={hoveredArtifact}
+              onDisableArtifact={handleDisableArtifact}
+              onEnableArtifact={handleEnableArtifact}
+              onFocusRevision={setFocusedRevision}
+              onUnfocusRevision={handleUnfocusRevision}
+              onHoverArtifact={setHoveredArtifact}
+              onRemoveRevision={handleRemoveRevision}
+              sizeKey={sizeKey}
+              style={[styles.column, styles.table]}
+            />
+          </React.Suspense>
         ) : null}
       </View>
     </View>
@@ -209,25 +200,6 @@ const styles = StyleSheet.create({
     maxWidth: '40vw',
     borderLeftColor: Theme.Color.Gray10,
     borderLeftWidth: StyleSheet.hairlineWidth
-  },
-  tableScroll: {
-    width: '100%',
-    transitionProperty: 'height',
-    transitionDuration: '0.1s'
-  },
-  buildInfo: {
-    width: '100%',
-    borderTopColor: Theme.Color.Gray10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    animationDuration: '0.1s',
-    animationName: [
-      {
-        '0%': { transform: [{ translateY: '100%' }] },
-        '100%': { transform: [{ translateY: '0%' }] }
-      }
-    ],
-    animationTimingFunction: 'ease-out',
-    animationIterationCount: 1
   }
 });
 

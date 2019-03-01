@@ -21,9 +21,6 @@ export const Thead = (props: TableProps): React.ReactElement =>
 export const Tbody = (props: TableProps): React.ReactElement =>
   createElement('tbody', { ...props, accessibilityRole: 'group', style: [styles.group, props.style] });
 
-export const Tfoot = (props: TableProps): React.ReactElement =>
-  createElement('tfoot', { ...props, accessibilityRole: 'group', style: [styles.group, props.style] });
-
 export const Tr = (props: TableProps): React.ReactElement =>
   createElement('tr', { ...props, accessibilityRole: 'row', style: [styles.row, props.style] });
 

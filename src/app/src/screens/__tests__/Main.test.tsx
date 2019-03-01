@@ -6,13 +6,13 @@ import AppBar from '../../components/AppBar';
 import BuildInfo from '../../components/BuildInfo';
 import ColorScale from '../../modules/ColorScale';
 import ColorScalePicker from '../../components/ColorScalePicker';
-import ComparisonTable from '../../components/ComparisonTable';
+import Comparison from '../../views/Comparison';
 import Drawer from '../../components/Drawer';
 import Graph from '../../components/Graph';
 import Main from '../Main';
 import React from 'react';
 import SizeKeyPicker from '../../components/SizeKeyPicker';
-import { fireEvent, render } from 'react-native-testing-library';
+import { fireEvent, flushMicrotasksQueue, render } from 'react-native-testing-library';
 
 // React.memo components are not findable by type
 jest.mock('../../components/ColorScalePicker', () => {
@@ -52,44 +52,43 @@ describe('Main', () => {
   });
 
   describe('color scale', () => {
-    test('sets color scale context when scale is selected', () => {
+    test('sets color scale context when scale is selected', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
-      act(() => {
         fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Magma);
       });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Magma);
-      expect(getByType(ComparisonTable).props.colorScale).toBe(ColorScale.Magma);
+      expect(getByType(Comparison).props.colorScale).toBe(ColorScale.Magma);
       expect(getByType(Graph).props.colorScale).toBe(ColorScale.Magma);
     });
   });
 
   describe('artifacts', () => {
-    test('can disable all artifacts', () => {
+    test('can disable all artifacts', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       act(() => {
-        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
+        fireEvent(getByType(Comparison), 'disableArtifact', 'All');
       });
-      expect(Object.values(getByType(ComparisonTable).props.activeArtifacts)).not.toEqual(
-        expect.arrayContaining([true])
-      );
+      expect(Object.values(getByType(Comparison).props.activeArtifacts)).not.toEqual(expect.arrayContaining([true]));
       expect(Object.values(getByType(Graph).props.activeArtifacts)).not.toEqual(expect.arrayContaining([true]));
     });
 
-    test('can disable a single artifact', () => {
+    test('can disable a single artifact', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       act(() => {
-        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'main');
+        fireEvent(getByType(Comparison), 'disableArtifact', 'main');
       });
-      expect(getByType(ComparisonTable).props.activeArtifacts).toMatchObject({
+      expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
         main: false,
         vendor: true,
         shared: true
@@ -97,31 +96,31 @@ describe('Main', () => {
       expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: false, vendor: true, shared: true });
     });
 
-    test('can enable all artifacts', () => {
+    test('can enable all artifacts', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       act(() => {
-        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
-        fireEvent(getByType(ComparisonTable), 'enableArtifact', 'All');
+        fireEvent(getByType(Comparison), 'disableArtifact', 'All');
+        fireEvent(getByType(Comparison), 'enableArtifact', 'All');
       });
-      expect(Object.values(getByType(ComparisonTable).props.activeArtifacts)).not.toEqual(
-        expect.arrayContaining([false])
-      );
+      expect(Object.values(getByType(Comparison).props.activeArtifacts)).not.toEqual(expect.arrayContaining([false]));
       expect(Object.values(getByType(Graph).props.activeArtifacts)).not.toEqual(expect.arrayContaining([false]));
     });
 
-    test('can enable a single artifact', () => {
+    test('can enable a single artifact', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       act(() => {
-        fireEvent(getByType(ComparisonTable), 'disableArtifact', 'All');
-        fireEvent(getByType(ComparisonTable), 'enableArtifact', 'main');
+        fireEvent(getByType(Comparison), 'disableArtifact', 'All');
+        fireEvent(getByType(Comparison), 'enableArtifact', 'main');
       });
-      expect(getByType(ComparisonTable).props.activeArtifacts).toMatchObject({
+      expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
         main: true,
         vendor: false,
         shared: false
@@ -148,7 +147,7 @@ describe('Main', () => {
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       });
-      expect(getByType(ComparisonTable).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual([
+      expect(getByType(Comparison).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual([
         '243024909db66ac3c3e48d2ffe4015f049609834'
       ]);
     });
@@ -160,7 +159,7 @@ describe('Main', () => {
       expect(queryByTestId('buildinfo')).toBeNull();
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(ComparisonTable), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
 
       expect(queryByTestId('buildinfo')).not.toBeNull();
@@ -170,7 +169,7 @@ describe('Main', () => {
       const { getByType, queryByTestId } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(ComparisonTable), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(Comparison), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
 
       expect(queryByTestId('buildinfo')).toBeNull();
@@ -180,8 +179,8 @@ describe('Main', () => {
       const { getByType, queryByTestId } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(ComparisonTable), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(ComparisonTable), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(Comparison), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
 
       expect(queryByTestId('buildinfo')).toBeNull();
@@ -191,7 +190,7 @@ describe('Main', () => {
       const { getByType, queryByTestId } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(ComparisonTable), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+        fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
         fireEvent(getByType(BuildInfo), 'close');
       });
 

@@ -76,9 +76,10 @@ module.exports = {
       template: path.join(SRC_ROOT, 'index.html'),
       minify: {}
     }),
-    new WebpackBar({
-      reporters: ['fancy', reporter]
-    }),
-    !!IS_PROD && new webpack.HotModuleReplacementPlugin()
+    !IS_PROD &&
+      new WebpackBar({
+        reporters: ['fancy', reporter]
+      }),
+    !IS_PROD && new webpack.HotModuleReplacementPlugin()
   ].filter(Boolean)
 };

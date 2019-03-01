@@ -29,7 +29,7 @@ action "test" {
 action "tsc" {
   uses = "nuxt/actions-yarn@master"
   needs = ["yarn"]
-  args = "tsc:ci"
+  args = "tsc"
 }
 
 action "set status" {

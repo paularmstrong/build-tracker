@@ -6,9 +6,11 @@
   "repository": "git@github.com:paularmstrong/build-tracker.git",
   "license": "MIT",
   "main": "lib",
-  "module": "index.ts",
+  "types": "index.ts",
   "scripts": {
-    "tsc": "tsc"
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "markdown-table": "^1.1.2"

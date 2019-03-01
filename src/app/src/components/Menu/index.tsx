@@ -28,7 +28,7 @@ const Menu = (props: Props): React.ReactElement => {
     if (relativeTo.current) {
       relativeTo.current.measureInWindow(
         (x: number, y: number, _: number, height: number): void => {
-          setPosition({ top: y + height, left: x });
+          ref.current && setPosition({ top: y + height, left: x });
         }
       );
     }

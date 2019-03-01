@@ -58,7 +58,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         nativeEvent: { offsetX }
       } = event;
 
-      const revision = buildRevisionFromX(offsetX);
+      const revision = buildRevisionFromX(offsetX - Offset.LEFT);
       if (selectedRevisions.indexOf(revision.value) !== -1) {
         return;
       }

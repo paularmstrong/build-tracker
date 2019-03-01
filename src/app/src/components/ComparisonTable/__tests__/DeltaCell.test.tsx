@@ -4,8 +4,8 @@
 import { CellType } from '@build-tracker/comparator';
 import { DeltaCell } from '../DeltaCell';
 import React from 'react';
-import { render } from 'react-native-testing-library';
 import { Td } from '../../Table';
+import { fireEvent, render } from 'react-native-testing-library';
 import { StyleSheet, Text } from 'react-native';
 
 describe('DeltaCell', () => {
@@ -38,7 +38,7 @@ describe('DeltaCell', () => {
         />
       );
 
-      expect(getByType(Td).props.title).toEqual('-134 bytes (-50.000%)');
+      expect(getByType(Td).props.accessibilityLabel).toEqual('-134 bytes (-50.000%)');
     });
 
     test('shows a warning label if no change, but hash changed', () => {
@@ -49,7 +49,7 @@ describe('DeltaCell', () => {
         />
       );
       expect(queryAllByText('⚠️')).toHaveLength(1);
-      expect(getByType(Td).props.title).toEqual('Unexpected hash change! 0 bytes (0.000%)');
+      expect(getByType(Td).props.accessibilityLabel).toEqual('Unexpected hash change! 0 bytes (0.000%)');
     });
   });
 
@@ -98,6 +98,31 @@ describe('DeltaCell', () => {
         />
       );
       expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({ backgroundColor: 'transparent' });
+    });
+  });
+
+  describe('tooltip', () => {
+    test('mouse enter shows a tooltip', () => {
+      const { getByTestId, queryAllByProps } = render(
+        <DeltaCell
+          cell={{ type: CellType.DELTA, percents: { gzip: 1 }, hashChanged: false, sizes: { gzip: 1024 } }}
+          sizeKey="gzip"
+        />
+      );
+      fireEvent(getByTestId('delta'), 'mouseEnter');
+      expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(1);
+    });
+
+    test('mouse leave removes the tooltip', () => {
+      const { getByTestId, queryAllByProps } = render(
+        <DeltaCell
+          cell={{ type: CellType.DELTA, percents: { gzip: 1 }, hashChanged: false, sizes: { gzip: 1024 } }}
+          sizeKey="gzip"
+        />
+      );
+      fireEvent(getByTestId('delta'), 'mouseEnter');
+      fireEvent(getByTestId('delta'), 'mouseLeave');
+      expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(0);
     });
   });
 });

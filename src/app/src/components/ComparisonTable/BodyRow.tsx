@@ -68,12 +68,12 @@ export const BodyRow = (props: Props): React.ReactElement => {
     color.l = 0.9;
     backgroundColor = color.toString();
   }
-  const handleMouseOut = React.useCallback(() => {
-    onHoverArtifact(artifactName);
-  }, [artifactName, onHoverArtifact]);
+  const handleMouseEnter = React.useCallback(() => {
+    onHoverArtifact(isActive && artifactName !== 'All' ? artifactName : null);
+  }, [artifactName, isActive, onHoverArtifact]);
 
   return (
-    <Tr onMouseEnter={handleMouseOut} style={[styles.row, { backgroundColor }]}>
+    <Tr onMouseEnter={handleMouseEnter} style={[styles.row, { backgroundColor }]}>
       {row.map(mapBodyCell)}
     </Tr>
   );

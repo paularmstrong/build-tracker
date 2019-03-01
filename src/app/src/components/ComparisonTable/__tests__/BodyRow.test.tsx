@@ -167,5 +167,45 @@ describe('BodyRow', () => {
       fireEvent(getByType(Tr), 'mouseEnter');
       expect(handleHoverArtifact).toHaveBeenCalledWith('tacos');
     });
+
+    test('calls onHoverArtifact with null if is not active', () => {
+      const row: Array<BodyCell> = [{ type: CellType.ARTIFACT, text: 'tacos' }];
+      const handleHoverArtifact = jest.fn();
+      const { getByType } = render(
+        <BodyRow
+          colorScale={ColorScale.Rainbow}
+          isActive={false}
+          isHovered={false}
+          onDisableArtifact={jest.fn()}
+          onEnableArtifact={jest.fn()}
+          onHoverArtifact={handleHoverArtifact}
+          row={row}
+          rowIndex={1}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(getByType(Tr), 'mouseEnter');
+      expect(handleHoverArtifact).toHaveBeenCalledWith(null);
+    });
+
+    test('calls onHoverArtifact with null if is All', () => {
+      const row: Array<BodyCell> = [{ type: CellType.ARTIFACT, text: 'All' }];
+      const handleHoverArtifact = jest.fn();
+      const { getByType } = render(
+        <BodyRow
+          colorScale={ColorScale.Rainbow}
+          isActive
+          isHovered={false}
+          onDisableArtifact={jest.fn()}
+          onEnableArtifact={jest.fn()}
+          onHoverArtifact={handleHoverArtifact}
+          row={row}
+          rowIndex={1}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(getByType(Tr), 'mouseEnter');
+      expect(handleHoverArtifact).toHaveBeenCalledWith(null);
+    });
   });
 });

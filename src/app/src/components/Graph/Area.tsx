@@ -56,6 +56,7 @@ const Area = (props: Props): React.ReactElement => {
       .append('path')
       .attr('class', 'artifact')
       .style('fill', graphColorScale)
+      .attr('aria-label', d => d.key)
       // @ts-ignore Docs are very clear that this is allowed
       .merge(artifact)
       .transition()

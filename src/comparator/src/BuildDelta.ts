@@ -5,8 +5,6 @@ import { ArtifactFilters } from '@build-tracker/types';
 import Build, { ArtifactSizes, BuildMeta } from '@build-tracker/build';
 import { delta, percentDelta } from './artifact-math';
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-
 interface ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
   hashChanged: boolean;
   name: string;
@@ -23,7 +21,6 @@ interface BuildSizeDelta<M extends BuildMeta = BuildMeta, AS extends ArtifactSiz
 export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes> {
   private _baseBuild: Build<M, A>;
   private _prevBuild: Build<M, A>;
-  private _meta: M;
   private _artifactDeltas: Map<string, ArtifactDelta<A>>;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Set<string>;
@@ -31,30 +28,17 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
   private _totalDelta: BuildSizeDelta<M, A>;
 
   public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, artifactFilters?: ArtifactFilters) {
-    this._meta = Object.freeze(baseBuild.meta);
     this._baseBuild = baseBuild;
     this._prevBuild = prevBuild;
     this._artifactFilters = artifactFilters || [];
   }
 
-  public get meta(): M {
-    return this._meta;
+  public get baseBuild(): Build<M, A> {
+    return this._baseBuild;
   }
 
-  public get timestamp(): Date {
-    return new Date(this._meta.timestamp);
-  }
-
-  public getMetaValue(key: keyof Omit<M, 'timestamp'>): string {
-    const val = this._meta[key];
-    // @ts-ignore
-    return typeof val === 'object' && val.hasOwnProperty('value') ? val.value : val;
-  }
-
-  public getMetaUrl(key: keyof Omit<M, 'timestamp'>): string | undefined {
-    const val = this._meta[key];
-    // @ts-ignore
-    return typeof val === 'object' && val.hasOwnProperty('url') ? val.url : undefined;
+  public get prevBuild(): Build<M, A> {
+    return this._prevBuild;
   }
 
   public get artifactSizes(): Array<string> {

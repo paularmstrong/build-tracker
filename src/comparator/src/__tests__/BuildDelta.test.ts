@@ -26,42 +26,17 @@ describe('BuildDelta', () => {
     );
   });
 
-  describe('meta', () => {
-    test('gets the full meta object', () => {
+  describe('baseBuild', () => {
+    test('gets the base build', () => {
       const bd = new BuildDelta(buildA, buildB);
-      expect(bd.meta).toEqual({
-        revision: { value: '123', url: 'https://build-tracker.local' },
-        parentRevision: 'abc',
-        timestamp: Date.now()
-      });
+      expect(bd.baseBuild).toBe(buildA);
     });
   });
 
-  describe('timestamp', () => {
-    test('gets the timestamp as a Date', () => {
+  describe('prevBuild', () => {
+    test('gets the prev build', () => {
       const bd = new BuildDelta(buildA, buildB);
-      expect(bd.timestamp).toBeInstanceOf(Date);
-      expect(bd.timestamp).toEqual(new Date(Date.now()));
-    });
-  });
-
-  describe('getMetaValue', () => {
-    test('gets the value as a string, from a string', () => {
-      const bd = new BuildDelta(buildA, buildB);
-      expect(bd.getMetaValue('revision')).toBe('123');
-      expect(bd.getMetaValue('parentRevision')).toBe('abc');
-    });
-  });
-
-  describe('getMetaUrl', () => {
-    test("when available, gets the meta key's URL", () => {
-      const bd = new BuildDelta(buildA, buildB);
-      expect(bd.getMetaUrl('revision')).toBe('https://build-tracker.local');
-    });
-
-    test('when unavailable, returns undefined', () => {
-      const bd = new BuildDelta(buildA, buildB);
-      expect(bd.getMetaUrl('parentRevision')).toBeUndefined();
+      expect(bd.prevBuild).toBe(buildB);
     });
   });
 

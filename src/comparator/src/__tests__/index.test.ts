@@ -119,6 +119,38 @@ describe('BuildComparator', () => {
     });
   });
 
+  describe('matrixHeader', () => {
+    test('starts with empty text cell', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.matrixHeader[0]).toEqual({
+        type: 'text',
+        text: ''
+      });
+    });
+
+    test('includes both revision cells', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.matrixHeader[1]).toEqual({
+        type: 'revision',
+        revision: build1.getMetaValue('revision')
+      });
+      expect(comparator.matrixHeader[2]).toEqual({
+        type: 'revision',
+        revision: build2.getMetaValue('revision')
+      });
+    });
+
+    test('includes a revision delta cell', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.matrixHeader[3]).toEqual({
+        type: 'revisionDelta',
+        deltaIndex: 1,
+        againstRevision: build1.getMetaValue('revision'),
+        revision: build2.getMetaValue('revision')
+      });
+    });
+  });
+
   describe('toJSON', () => {
     test('includes the header', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });

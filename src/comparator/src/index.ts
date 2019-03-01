@@ -212,7 +212,7 @@ export default class BuildComparator {
               ...buildDeltas.map((buildDelta, deltaIndex) => ({
                 type: CellType.REVISION_DELTA,
                 deltaIndex: deltaIndex + 1,
-                againstRevision: buildDelta.getMetaValue('revision'),
+                againstRevision: buildDelta.prevBuild.getMetaValue('revision'),
                 revision
               }))
             ];

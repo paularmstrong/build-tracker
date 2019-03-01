@@ -18,31 +18,24 @@ const Menu = (props: Props): React.ReactElement => {
   const [position, setPosition] = React.useState({ top: -999, left: 0 });
   const portalRoot = document.getElementById('menuPortal');
   const ref = React.useRef<ScrollView>(null);
-  let mounted = true;
 
   React.useEffect(() => {
     const handleClickOutside = (): void => {
       onDismiss && onDismiss();
     };
     document.body.addEventListener('click', handleClickOutside);
+
+    if (relativeTo.current) {
+      relativeTo.current.measureInWindow(
+        (x: number, y: number, _: number, height: number): void => {
+          setPosition({ top: y + height, left: x });
+        }
+      );
+    }
+
     return () => {
-      mounted = false;
       document.body.removeEventListener('click', handleClickOutside);
     };
-  });
-
-  React.useLayoutEffect(() => {
-    if (!mounted || !relativeTo.current) {
-      return;
-    }
-    relativeTo.current.measureInWindow(
-      (x: number, y: number, _: number, height: number): void => {
-        if (!mounted) {
-          return;
-        }
-        setPosition({ top: y + height, left: x });
-      }
-    );
   });
 
   const menu = (

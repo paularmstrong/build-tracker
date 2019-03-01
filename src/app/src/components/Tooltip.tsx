@@ -29,8 +29,6 @@ const Tooltip = (props: Props): React.ReactElement => {
         }
       );
     }
-
-    return () => {};
   });
 
   const tooltip = (

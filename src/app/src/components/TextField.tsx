@@ -7,98 +7,87 @@ import React from 'react';
 import { StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 
 interface Props extends React.ComponentProps<typeof TextInput> {
-  forwardedRef?: React.Ref<TextInput>;
   helpText?: string;
   label: string;
   leadingIcon?: React.ComponentType<{ style?: StyleProp<ViewStyle> }>;
   trailingIcon?: React.ComponentType<{ style?: StyleProp<ViewStyle> }>;
-  type?: 'filled' | 'shapedFilled' | 'outlined' | 'shapedOutlined' | 'textarea';
 }
 
-interface State {
-  isFocused: boolean;
-  value: string;
-}
+const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactElement => {
+  const {
+    helpText,
+    label,
+    leadingIcon: LeadingIcon,
+    onBlur,
+    onChangeText,
+    onFocus,
+    style,
+    trailingIcon: TrailingIcon,
+    ...textInputProps
+  } = props;
+  const [isFocused, setFocused] = React.useState(false);
+  const [value, setValue] = React.useState(props.value || '');
 
-class TextField extends React.PureComponent<Props, State> {
-  public static defaultProps = {
-    type: 'filled',
-    value: ''
-  };
+  const handleFocus = React.useCallback(
+    (event): void => {
+      setFocused(true);
+      onFocus && onFocus(event);
+    },
+    [onFocus, setFocused]
+  );
 
-  public state = {
-    isFocused: false,
-    value: ''
-  };
+  const handleBlur = React.useCallback(
+    (event): void => {
+      setFocused(false);
+      onBlur && onBlur(event);
+    },
+    [onBlur, setFocused]
+  );
 
-  public static getDerivedStateFromProps(props, state): Partial<State> {
-    return { value: props.value || state.value };
-  }
+  const handleChange = React.useCallback(
+    value => {
+      setValue(value);
+      onChangeText && onChangeText(value);
+    },
+    [onChangeText, setValue]
+  );
 
-  public render(): React.ReactElement {
-    const {
-      forwardedRef,
-      helpText,
-      label,
-      leadingIcon: LeadingIcon,
-      style,
-      trailingIcon: TrailingIcon,
-      type, // eslint-disable-line
-      ...textinputprops
-    } = this.props;
-    const { isFocused, value } = this.state;
-    const labelMoved = isFocused || value !== '';
+  const labelMoved = isFocused || value !== '';
 
-    return (
-      <Hoverable>
-        {isHovered => (
-          <View style={[styles.root, style]}>
-            <View style={[styles.content, isFocused && styles.contentFocused]}>
-              <View
-                // @ts-ignore
-                accessibilityRole="label"
-                style={[styles.labelBox, !isFocused && isHovered && styles.labelBoxHovered]}
-              >
-                {LeadingIcon ? <LeadingIcon style={[styles.icon, styles.leadingIcon]} /> : null}
-                <View style={styles.labelInput}>
-                  <View style={[styles.label, labelMoved && styles.labelMoved]}>
-                    <Text style={[styles.labelText, labelMoved && styles.labelTextMoved]}>{label}</Text>
-                  </View>
-                  <TextInput
-                    {...textinputprops}
-                    onBlur={this._handleBlur}
-                    onChangeText={this._handleChange}
-                    onFocus={this._handleFocus}
-                    ref={forwardedRef}
-                    style={styles.textInput}
-                    value={value}
-                  />
+  return (
+    <Hoverable>
+      {isHovered => (
+        <View style={[styles.root, style]}>
+          <View style={[styles.content, isFocused && styles.contentFocused]}>
+            <View
+              // @ts-ignore
+              accessibilityRole="label"
+              style={[styles.labelBox, !isFocused && isHovered && styles.labelBoxHovered]}
+            >
+              {LeadingIcon ? <LeadingIcon style={[styles.icon, styles.leadingIcon]} /> : null}
+              <View style={styles.labelInput}>
+                <View style={[styles.label, labelMoved && styles.labelMoved]}>
+                  <Text style={[styles.labelText, labelMoved && styles.labelTextMoved]}>{label}</Text>
                 </View>
-                {TrailingIcon ? <TrailingIcon style={[styles.icon, styles.trailingIcon]} /> : null}
+                <TextInput
+                  {...textInputProps}
+                  onBlur={handleBlur}
+                  onChangeText={handleChange}
+                  onFocus={handleFocus}
+                  ref={ref}
+                  style={styles.textInput}
+                  value={value}
+                />
               </View>
+              {TrailingIcon ? <TrailingIcon style={[styles.icon, styles.trailingIcon]} /> : null}
             </View>
-            {helpText ? <Text style={styles.helpText}>{helpText}</Text> : null}
           </View>
-        )}
-      </Hoverable>
-    );
-  }
-
-  private _handleFocus = event => {
-    this.setState({ isFocused: true });
-    this.props.onFocus && this.props.onFocus(event);
-  };
-
-  private _handleBlur = event => {
-    this.setState({ isFocused: false });
-    this.props.onBlur && this.props.onBlur(event);
-  };
-
-  private _handleChange = value => {
-    this.setState({ value });
-    this.props.onChangeText && this.props.onChangeText(value);
-  };
-}
+          {helpText ? <Text style={styles.helpText}>{helpText}</Text> : null}
+        </View>
+      )}
+    </Hoverable>
+  );
+};
 
 const styles = StyleSheet.create({
   root: {
@@ -118,7 +107,7 @@ const styles = StyleSheet.create({
   },
 
   labelBox: {
-    backgroundColor: Theme.Color.Gray20,
+    backgroundColor: Theme.Color.Gray10,
     borderTopLeftRadius: Theme.BorderRadius.Normal,
     borderTopRightRadius: Theme.BorderRadius.Normal,
     flexDirection: 'row',
@@ -131,7 +120,7 @@ const styles = StyleSheet.create({
   },
 
   labelBoxHovered: {
-    backgroundColor: Theme.Color.Gray30
+    backgroundColor: Theme.Color.Gray20
   },
 
   labelInput: {
@@ -196,6 +185,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.forwardRef<TextInput, Props>((props, ref) => (
-  <TextField {...props} forwardedRef={ref ? ref : undefined} />
-));
+export default React.forwardRef<TextInput, Props>(TextField);

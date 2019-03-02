@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: Theme.Color.Gray50,
     fontSize: Theme.FontSize.Normal,
-    marginHorizontal: Theme.Spacing.Normal,
     marginBottom: Theme.Spacing.Xsmall
   }
 });

@@ -10,7 +10,7 @@ import { StyleSheet, View } from 'react-native';
 describe('Divider', () => {
   test('renders a simple divider', () => {
     const { getByType } = render(<Divider />);
-    expect(StyleSheet.flatten(getByType(View).props.style)).toMatchObject({ backgroundColor: Theme.Color.Gray30 });
+    expect(StyleSheet.flatten(getByType(View).props.style)).toMatchObject({ backgroundColor: Theme.Color.Gray20 });
   });
 
   test('renders a divider with the given color', () => {

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Theme from '../../theme';
 import React from 'react';
-import SizeKeyButton from './SizeKeyButton';
+import SizeKey from './Key';
 import { StyleSheet, View } from 'react-native';
 
 interface Props {
@@ -17,21 +16,15 @@ const SizeKeyPicker = (props: Props): React.ReactElement => {
   return (
     <View style={styles.root}>
       {keys.map(key => (
-        <SizeKeyButton isSelected={selected === key} key={key} onSelect={onSelect} style={styles.button} value={key} />
+        <SizeKey isSelected={selected === key} key={key} onSelect={onSelect} style={styles.button} value={key} />
       ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flexDirection: 'row',
-    marginHorizontal: Theme.Spacing.Normal,
-    marginBottom: Theme.Spacing.Normal
-  },
-  button: {
-    marginEnd: Theme.Spacing.Normal
-  }
+  root: {},
+  button: {}
 });
 
 export default SizeKeyPicker;

@@ -136,7 +136,7 @@ describe('Main', () => {
         fireEvent(getByType(SizeKeyPicker), 'select', 'stat');
       });
 
-      expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(1);
+      expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(2);
       expect(queryAllByProps({ sizeKey: 'gzip' })).toHaveLength(0);
     });
   });

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   root: {
     height: StyleSheet.hairlineWidth,
     overflow: 'hidden',
-    backgroundColor: Theme.Color.Gray30,
+    backgroundColor: Theme.Color.Gray20,
     marginBottom: Theme.Spacing.Normal
   }
 });

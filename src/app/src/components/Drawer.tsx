@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     height: '100vh',
     width: 300,
     maxWidth: 300,
+    paddingHorizontal: Theme.Spacing.Normal,
     backgroundColor: Theme.Color.White,
     overflowY: 'scroll',
     overflowX: 'hidden',

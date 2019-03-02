@@ -10,15 +10,13 @@ import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ff
 import buildDataD from '@build-tracker/fixtures/builds/19868a0432f039d45783bca1845cede313fbfbe1.json';
 import buildDataE from '@build-tracker/fixtures/builds/4a8882483a664401a602f64a882d0ed7fb1763cb.json';
 import ColorScale from '../modules/ColorScale';
-import ColorScalePicker from '../components/ColorScalePicker';
 import Comparator from '@build-tracker/comparator';
 import Drawer from '../components/Drawer';
+import DrawerView from '../views/Drawer';
 import Graph from '../components/Graph';
 import MenuIcon from '../icons/Menu';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
-import SizeKeyPicker from '../components/SizeKeyPicker';
-import Subtitle from '../components/Subtitle';
 import { StyleSheet, View } from 'react-native';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
@@ -124,12 +122,14 @@ const Main = (): React.ReactElement => {
 
   return (
     <View style={styles.layout}>
-      <Drawer hidden ref={drawerRef}>
-        <Subtitle title="Compare artifacts by" />
-        <SizeKeyPicker keys={comparator.sizeKeys} onSelect={handleSelectSizeKey} selected={sizeKey} />
-        <Subtitle title="Color scale" />
-        <ColorScalePicker activeColorScale={colorScale} onSelect={handleSelectColorScale} />
-      </Drawer>
+      <DrawerView
+        colorScale={colorScale}
+        comparator={comparator}
+        onSelectColorScale={handleSelectColorScale}
+        onSelectSizeKey={handleSelectSizeKey}
+        ref={drawerRef}
+        sizeKey={sizeKey}
+      />
       <View
         // @ts-ignore
         accessibilityRole="main"

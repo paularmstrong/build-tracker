@@ -36,8 +36,7 @@ export const ColorScalePicker = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: 'column',
-    marginHorizontal: Theme.Spacing.Normal
+    flexDirection: 'column'
   },
   scale: {
     marginBottom: Theme.Spacing.Small

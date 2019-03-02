@@ -5,7 +5,7 @@ import * as Theme from '../theme';
 import MenuItem from './MenuItem';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
 interface Props {
   children: React.ReactElement<typeof MenuItem> | Array<React.ReactElement<typeof MenuItem>>;
@@ -17,7 +17,7 @@ const Menu = (props: Props): React.ReactElement => {
   const { children, onDismiss, relativeTo } = props;
   const [position, setPosition] = React.useState({ top: -999, left: 0 });
   const portalRoot = document.getElementById('menuPortal');
-  const ref = React.useRef<ScrollView>(null);
+  const ref = React.useRef<View>(null);
 
   React.useEffect(() => {
     const handleClickOutside = (): void => {
@@ -25,28 +25,45 @@ const Menu = (props: Props): React.ReactElement => {
     };
     document.body.addEventListener('click', handleClickOutside);
 
-    if (relativeTo.current) {
-      relativeTo.current.measureInWindow(
-        (x: number, y: number, _: number, height: number): void => {
-          ref.current && setPosition({ top: y + height, left: x });
-        }
-      );
-    }
-
     return () => {
       document.body.removeEventListener('click', handleClickOutside);
     };
   });
 
+  React.useEffect(() => {
+    if (ref.current && relativeTo.current) {
+      const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
+      ref.current.measure(
+        (_x: number, _y: number, menuWidth: number, menuHeight: number): void => {
+          relativeTo.current.measureInWindow(
+            (x: number, y: number, _width: number, height: number): void => {
+              let top = y + height;
+              let left = x;
+              // too far right
+              if (left + menuWidth > windowWidth) {
+                left = windowWidth - menuWidth;
+              }
+              // too far left
+              else if (left < 0) {
+                left = 0;
+              }
+              // too close to bottom
+              if (top + menuHeight > windowHeight) {
+                top = y - menuHeight;
+              }
+              ref.current && setPosition({ left, top });
+            }
+          );
+        }
+      );
+    }
+  }, [relativeTo]);
+
   const menu = (
-    <ScrollView
-      // @ts-ignore
-      accessibilityRole="menu"
-      ref={ref}
-      style={[styles.root, { top: position.top, left: position.left }]}
-    >
+    // @ts-ignore
+    <View accessibilityRole="menu" ref={ref} style={[styles.root, { top: position.top, left: position.left }]}>
       {React.Children.toArray(children)}
-    </ScrollView>
+    </View>
   );
 
   return portalRoot ? ReactDOM.createPortal(menu, portalRoot) : menu;

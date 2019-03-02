@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as Theme from '../../theme';
 import MenuIcon from '../../icons/Menu';
 import MenuItem from '../MenuItem';
 import React from 'react';
@@ -41,6 +42,19 @@ describe('MenuItem', () => {
       fireEvent(getByType(Ripple), 'mouseLeave');
       expect(StyleSheet.flatten(getByType(Ripple).props.style)).not.toMatchObject({
         backgroundColor: 'rgba(0,0,0,0.1)'
+      });
+    });
+
+    test('sets icon hover styles', () => {
+      const { getByType } = render(<MenuItem icon={MenuIcon} label="tacos" nativeID="tacos" />);
+      fireEvent(getByType(Ripple), 'mouseEnter');
+      expect(StyleSheet.flatten(getByType(MenuIcon).props.style)).toMatchObject({
+        color: Theme.Color.Gray40
+      });
+
+      fireEvent(getByType(Ripple), 'mouseLeave');
+      expect(StyleSheet.flatten(getByType(MenuIcon).props.style)).toMatchObject({
+        color: Theme.Color.Gray30
       });
     });
   });

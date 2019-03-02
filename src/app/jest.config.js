@@ -19,6 +19,7 @@ module.exports = {
   setupFiles: ['<rootDir>/src/app/config/jest/setup.js'],
   setupFilesAfterEnv: ['react-testing-library/cleanup-after-each'],
   testEnvironment: 'jsdom',
+  testURL: 'https://build-tracker.local',
   timers: 'fake',
   transform: {
     '^.+\\.tsx?$': 'ts-jest'

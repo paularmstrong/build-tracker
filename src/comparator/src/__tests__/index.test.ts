@@ -2,8 +2,8 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import Build from '@build-tracker/build';
-import BuildComparator from '..';
 import BuildDelta from '../BuildDelta';
+import BuildComparator, { BodyCell, DeltaCell, RevisionCell, RevisionDeltaCell, TotalCell, TotalDeltaCell } from '..';
 
 const build1 = new Build({ revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 }, [
   { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
@@ -288,13 +288,44 @@ describe('BuildComparator', () => {
           .replace(/\n$/, '')
       );
     });
+
+    test('accepts formatting and filtering options', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      const formatRevision = (cell: RevisionCell): string => cell.revision.substring(0, 2);
+      const formatRevisionDelta = (cell: RevisionDeltaCell): string => `d${cell.deltaIndex}`;
+      // @ts-ignore
+      const formatTotal = (cell: TotalCell): string => cell.sizes.stat;
+      // @ts-ignore
+      const formatDelta = (cell: DeltaCell | TotalDeltaCell): string => cell.percents.gzip.toFixed(2);
+      // @ts-ignore
+      const rowFilter = (row: Array<BodyCell>): boolean => row[0].text !== 'burritos';
+      expect(
+        comparator.toMarkdown({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter })
+      ).toEqual(
+        `
+|         |  12 |  89 |    d1 |
+| :------ | --: | --: | ----: |
+| All     | 579 | 592 |  0.21 |
+| churros |     | 469 |  1.00 |
+| tacos   | 123 | 123 | -0.04 |`
+          .replace(/^\n/, '')
+          .replace(/\n$/, '')
+      );
+    });
   });
 
   describe('toCsv', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toCsv()).toEqual(
-        ',1234567,8901234,Δ1\r\nAll,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
+        `
+,1234567,8901234,Δ1
+All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
+churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
+burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)
+tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)`
+          .replace(/^\n/, '')
+          .replace(/\n/g, '\r\n')
       );
     });
 
@@ -309,14 +340,46 @@ describe('BuildComparator', () => {
         });
       };
       expect(comparator.toCsv({ rowFilter })).toEqual(
-        ',1234567,8901234,Δ1\r\nAll,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)\r\nchurros,0 KiB,0.12 KiB,0.12 KiB (100.0%)\r\nburritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)'
+        `
+,1234567,8901234,Δ1
+All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
+churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
+burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)`
+          .replace(/^\n/, '')
+          .replace(/\n/g, '\r\n')
       );
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
       expect(comparator.toCsv()).toEqual(
-        ',1234567,8901234,Δ1\r\nAll,0.04 KiB,0.04 KiB,0 KiB (-4.4%)\r\ntacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)'
+        `
+,1234567,8901234,Δ1
+All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
+tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)`
+          .replace(/^\n/, '')
+          .replace(/\n/g, '\r\n')
+      );
+    });
+
+    test('accepts formatting and filtering options', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      const formatRevision = (cell: RevisionCell): string => cell.revision.substring(0, 2);
+      const formatRevisionDelta = (cell: RevisionDeltaCell): string => `d${cell.deltaIndex}`;
+      // @ts-ignore
+      const formatTotal = (cell: TotalCell): string => cell.sizes.stat;
+      // @ts-ignore
+      const formatDelta = (cell: DeltaCell | TotalDeltaCell): string => cell.percents.gzip.toFixed(2);
+      // @ts-ignore
+      const rowFilter = (row: Array<BodyCell>): boolean => row[0].text !== 'burritos';
+      expect(comparator.toCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter })).toEqual(
+        `
+,12,89,d1
+All,579,592,0.21
+churros,,469,1.00
+tacos,123,123,-0.04`
+          .replace(/^\n/, '')
+          .replace(/\n/g, '\r\n')
       );
     });
   });

@@ -62,12 +62,12 @@ export interface ArtifactCell {
   text: string;
 }
 
-export type BodyCell = ArtifactCell | DeltaCell | TotalCell | TextCell;
+export type BodyCell = ArtifactCell | DeltaCell | TotalCell;
 export type HeaderCell = TextCell | RevisionCell | RevisionDeltaCell;
 
 export interface ComparisonMatrix {
   header: Array<HeaderCell>;
-  total: Array<BodyCell>;
+  total: Array<BodyCell | TotalDeltaCell>;
   body: Array<Array<BodyCell>>;
 }
 
@@ -121,12 +121,6 @@ const defaultFormatTotal = (cell: TotalCell): string => formatBytes(cell.sizes.g
 const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell): string =>
   `${formatBytes(cell.sizes.gzip || 0)} (${(cell.percents.gzip * 100).toFixed(1)}%)`;
 const defaultRowFilter = (): boolean => true;
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const instanceOfCell = <C>(cell: any, type: CellType): cell is C => {
-  return cell.type === type;
-};
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 const emptyArray = [];
 
@@ -223,7 +217,7 @@ export default class BuildComparator {
     return this._matrixHeader;
   }
 
-  public get matrixTotal(): Array<BodyCell> {
+  public get matrixTotal(): Array<BodyCell | TotalDeltaCell> {
     if (!this._matrixTotal) {
       this._matrixTotal = [
         { type: CellType.ARTIFACT, text: 'All' },
@@ -288,13 +282,14 @@ export default class BuildComparator {
     formatRevisionDelta: RevisionDeltaStringFormatter = defaultFormatRevisionDelta
   ): Array<string> {
     return this.matrixHeader.map(cell => {
-      if (instanceOfCell<RevisionCell>(cell, CellType.REVISION)) {
-        return formatRevision(cell);
+      switch (cell.type) {
+        case CellType.REVISION:
+          return formatRevision(cell);
+        case CellType.REVISION_DELTA:
+          return formatRevisionDelta(cell);
+        case CellType.TEXT:
+          return cell.text;
       }
-      if (instanceOfCell<RevisionDeltaCell>(cell, CellType.REVISION_DELTA)) {
-        return formatRevisionDelta(cell);
-      }
-      return '';
     });
   }
 
@@ -304,16 +299,15 @@ export default class BuildComparator {
   ): Array<string> {
     return this.matrixTotal.map(
       (cell): string => {
-        if (instanceOfCell<ArtifactCell>(cell, CellType.ARTIFACT)) {
-          return cell.text;
+        switch (cell.type) {
+          case CellType.ARTIFACT:
+            return cell.text;
+          case CellType.DELTA:
+          case CellType.TOTAL_DELTA:
+            return formatDelta(cell as TotalDeltaCell);
+          case CellType.TOTAL:
+            return formatTotal(cell as TotalCell);
         }
-        if (instanceOfCell<TotalDeltaCell>(cell, CellType.TOTAL_DELTA)) {
-          return formatDelta(cell);
-        }
-        if (instanceOfCell<TotalCell>(cell, CellType.TOTAL)) {
-          return formatTotal(cell);
-        }
-        return '';
       }
     );
   }
@@ -327,16 +321,14 @@ export default class BuildComparator {
       (row): Array<string> => {
         return row.map(
           (cell): string => {
-            if (instanceOfCell<ArtifactCell>(cell, CellType.ARTIFACT)) {
-              return cell.text;
+            switch (cell.type) {
+              case CellType.ARTIFACT:
+                return cell.text;
+              case CellType.DELTA:
+                return formatDelta(cell as DeltaCell);
+              case CellType.TOTAL:
+                return formatTotal(cell as TotalCell);
             }
-            if (instanceOfCell<DeltaCell>(cell, CellType.DELTA)) {
-              return formatDelta(cell);
-            }
-            if (instanceOfCell<TotalCell>(cell, CellType.TOTAL)) {
-              return formatTotal(cell);
-            }
-            return '';
           }
         );
       }
@@ -361,9 +353,6 @@ export default class BuildComparator {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const total = this.getStringFormattedTotals(formatTotal, formatDelta);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
-    if (rows.length === 0) {
-      return '';
-    }
 
     return markdownTable([header, total, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
   }

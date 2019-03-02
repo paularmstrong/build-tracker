@@ -3,58 +3,45 @@
  */
 import { ColorScale } from '../ColorScale';
 import ColorScales from '../../../modules/ColorScale';
+import RadioSelect from '../../RadioSelect';
 import React from 'react';
-import Ripple from '../../Ripple';
 import { fireEvent, render } from 'react-native-testing-library';
-import { StyleSheet, View } from 'react-native';
-
-jest.mock('../../Ripple', () => {
-  return ({ children }) => children;
-});
 
 describe('ColorScale', () => {
-  describe('onSelect', () => {
-    test('passes the scale to the callback', () => {
-      const handleSelect = jest.fn();
-      const { getByType } = render(
-        <ColorScale boxes={10} isSelected={false} name="tacos" onSelect={handleSelect} scale={ColorScales.Magma} />
-      );
-      fireEvent.press(getByType(Ripple));
-      expect(handleSelect).toHaveBeenCalledWith(ColorScales.Magma);
+  describe('rendering', () => {
+    test('wraps the radio in a label', () => {
+      const { queryAllByProps } = render(<ColorScale name="tacos" onSelect={jest.fn()} scale={ColorScales.Magma} />);
+      expect(queryAllByProps({ accessibilityRole: 'label' })).toHaveLength(1);
     });
   });
 
   describe('isSelected', () => {
-    test('sets aria-selected', () => {
+    test('sets checkbox value when true', () => {
       const { getByType } = render(
-        <ColorScale boxes={10} isSelected name="tacos" onSelect={jest.fn()} scale={ColorScales.Rainbow} />
+        <ColorScale isSelected name="tacos" onSelect={jest.fn()} scale={ColorScales.Magma} />
       );
-
-      expect(getByType(Ripple).props['aria-selected']).toBe(true);
+      expect(getByType(RadioSelect).props.value).toBe(true);
     });
 
-    test('unsets aria-selected', () => {
-      const { getByType } = render(
-        <ColorScale boxes={10} isSelected={false} name="tacos" onSelect={jest.fn()} scale={ColorScales.Rainbow} />
-      );
-
-      expect(getByType(Ripple).props['aria-selected']).toBe(false);
+    test('does not set checkbox value when false', () => {
+      const { getByType } = render(<ColorScale name="tacos" onSelect={jest.fn()} scale={ColorScales.Magma} />);
+      expect(getByType(RadioSelect).props.value).toBeUndefined();
     });
   });
 
-  describe('hovering', () => {
-    beforeEach(() => {
-      document.dispatchEvent(new Event('mousemove'));
+  describe('onSelect', () => {
+    test('fires onSelect with the value', () => {
+      const handleOnSelect = jest.fn();
+      const { getByType } = render(<ColorScale onSelect={handleOnSelect} name="tacos" scale={ColorScales.Rainbow} />);
+      fireEvent(getByType(RadioSelect), 'valueChange', true);
+      expect(handleOnSelect).toHaveBeenCalledWith(ColorScales.Rainbow);
     });
 
-    test('increases the visibility of the scale', () => {
-      const { getByType, queryAllByType } = render(
-        <ColorScale boxes={10} name="tacos" isSelected onSelect={jest.fn()} scale={ColorScales.Rainbow} />
-      );
-
-      expect(StyleSheet.flatten(queryAllByType(View)[0].props.style)).toMatchObject({ opacity: 0.6 });
-      fireEvent(getByType(Ripple), 'mouseEnter');
-      expect(StyleSheet.flatten(queryAllByType(View)[0].props.style)).toMatchObject({ opacity: 1 });
+    test('does not fire onSelect when value changes to false', () => {
+      const handleOnSelect = jest.fn();
+      const { getByType } = render(<ColorScale onSelect={handleOnSelect} name="tacos" scale={ColorScales.Rainbow} />);
+      fireEvent(getByType(RadioSelect), 'valueChange', false);
+      expect(handleOnSelect).not.toHaveBeenCalled();
     });
   });
 });

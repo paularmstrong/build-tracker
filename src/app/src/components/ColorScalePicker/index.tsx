@@ -20,7 +20,6 @@ export const ColorScalePicker = (props: Props): React.ReactElement => {
       {Object.entries(ColorScales).map(([name, scale]) => {
         return (
           <ColorScale
-            boxes={40}
             isSelected={activeColorScale === scale}
             key={name}
             name={name}

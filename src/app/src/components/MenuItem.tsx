@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Theme from '../../theme';
-import Hoverable from '../Hoverable';
+import * as Theme from '../theme';
+import Hoverable from './Hoverable';
 import React from 'react';
-import Ripple from '../Ripple';
+import Ripple from './Ripple';
 import { v4 as uuid } from 'uuid';
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 

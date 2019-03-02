@@ -7,7 +7,7 @@ import { formatSha } from '@build-tracker/formatting';
 import Hoverable from '../Hoverable';
 import InfoIcon from '../../icons/Info';
 import Menu from '../Menu';
-import MenuItem from '../Menu/Item';
+import MenuItem from '../MenuItem';
 import React from 'react';
 import RemoveIcon from '../../icons/Remove';
 import { Th } from '../Table';

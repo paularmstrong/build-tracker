@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import Menu from '../';
-import MenuItem from '../Item';
+import Menu from '../Menu';
+import MenuItem from '../MenuItem';
 import React from 'react';
 import { View } from 'react-native';
 import { fireEvent, render } from 'react-testing-library';

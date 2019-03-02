@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Theme from '../../theme';
-import MenuItem from './Item';
+import * as Theme from '../theme';
+import MenuItem from './MenuItem';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ScrollView, StyleSheet, View } from 'react-native';

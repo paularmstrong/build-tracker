@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import MenuIcon from '../../../icons/Menu';
-import MenuItem from '../Item';
+import MenuIcon from '../../icons/Menu';
+import MenuItem from '../MenuItem';
 import React from 'react';
-import Ripple from '../../Ripple';
+import Ripple from '../Ripple';
 import { StyleSheet } from 'react-native';
 import uuid from 'uuid';
 import { fireEvent, render } from 'react-native-testing-library';

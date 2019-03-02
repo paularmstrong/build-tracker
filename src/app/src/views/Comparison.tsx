@@ -18,6 +18,7 @@ const Comparison = (props: Props): React.ReactElement => {
     activeArtifacts,
     colorScale,
     comparator,
+    disabledArtifactsVisible,
     focusedRevision,
     hoveredArtifact,
     onDisableArtifact,
@@ -37,6 +38,7 @@ const Comparison = (props: Props): React.ReactElement => {
             activeArtifacts={activeArtifacts}
             colorScale={colorScale}
             comparator={comparator}
+            disabledArtifactsVisible={disabledArtifactsVisible}
             hoveredArtifact={hoveredArtifact}
             onDisableArtifact={onDisableArtifact}
             onEnableArtifact={onEnableArtifact}

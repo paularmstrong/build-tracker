@@ -32,12 +32,12 @@ describe('RadioSelect', () => {
       const { getByRole, getByTestId } = render(<RadioSelect value={true} />);
       // @ts-ignore
       expect(getByTestId('fauxRadio').children[0].style).toMatchObject({
-        'background-color': 'rgb(130, 130, 130)'
+        'background-color': 'rgb(178, 178, 178)'
       });
       fireEvent.focus(getByRole('checkbox'));
       // @ts-ignore
       expect(getByTestId('fauxRadio').children[0].style).toMatchObject({
-        'background-color': 'rgb(18, 52, 108)'
+        'background-color': 'rgb(61, 109, 162)'
       });
     });
   });
@@ -56,7 +56,7 @@ describe('RadioSelect', () => {
       fireEvent.blur(getByRole('checkbox'));
       // @ts-ignore
       expect(getByTestId('fauxRadio').children[0].style).toMatchObject({
-        'background-color': 'rgb(130, 130, 130)'
+        'background-color': 'rgb(178, 178, 178)'
       });
     });
   });

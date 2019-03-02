@@ -45,6 +45,7 @@ const Main = (): React.ReactElement => {
   const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
   const [focusedRevision, setFocusedRevision] = React.useState<string>(null);
   const [hoveredArtifact, setHoveredArtifact] = React.useState<string>(null);
+  const [disabledArtifactsVisible, setDisabledArtifactsVisible] = React.useState<boolean>(true);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
       memo[name] = true;
@@ -120,13 +121,22 @@ const Main = (): React.ReactElement => {
     [compareRevisions, focusedRevision, setCompareRevisions]
   );
 
+  const handleToggleDisabledArtifacts = React.useCallback(
+    (showDisabled: boolean): void => {
+      setDisabledArtifactsVisible(showDisabled);
+    },
+    [setDisabledArtifactsVisible]
+  );
+
   return (
     <View style={styles.layout}>
       <DrawerView
         colorScale={colorScale}
         comparator={comparator}
+        disabledArtifactsVisible={disabledArtifactsVisible}
         onSelectColorScale={handleSelectColorScale}
         onSelectSizeKey={handleSelectSizeKey}
+        onToggleDisabledArtifacts={handleToggleDisabledArtifacts}
         ref={drawerRef}
         sizeKey={sizeKey}
       />
@@ -154,6 +164,7 @@ const Main = (): React.ReactElement => {
               activeArtifacts={activeArtifacts}
               colorScale={colorScale}
               comparator={activeComparator}
+              disabledArtifactsVisible={disabledArtifactsVisible}
               focusedRevision={focusedRevision}
               hoveredArtifact={hoveredArtifact}
               onDisableArtifact={handleDisableArtifact}

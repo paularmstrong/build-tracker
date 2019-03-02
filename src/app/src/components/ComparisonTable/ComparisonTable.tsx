@@ -13,6 +13,7 @@ interface Props {
   activeArtifacts: { [key: string]: boolean };
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
+  disabledArtifactsVisible: boolean;
   hoveredArtifact: string;
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
@@ -26,6 +27,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
   const {
     activeArtifacts,
     comparator,
+    disabledArtifactsVisible,
     hoveredArtifact,
     onDisableArtifact,
     onEnableArtifact,
@@ -62,10 +64,14 @@ const ComparisonTable = (props: Props): React.ReactElement => {
         {matrix.body.map((row, i) => {
           // @ts-ignore
           const artifactName = 'text' in row[0] && row[0].text;
+          const isActive = activeArtifacts[artifactName];
+          if (!isActive && !disabledArtifactsVisible) {
+            return null;
+          }
           return (
             <BodyRow
               colorScale={colorScale}
-              isActive={activeArtifacts[artifactName]}
+              isActive={isActive}
               isHovered={artifactName === hoveredArtifact}
               key={artifactName}
               onDisableArtifact={onDisableArtifact}

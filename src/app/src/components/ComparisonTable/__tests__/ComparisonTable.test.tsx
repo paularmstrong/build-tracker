@@ -2,9 +2,6 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import Build from '@build-tracker/build';
-import buildDataA from '@build-tracker/fixtures/builds/30af629d1d4c9f2f199cec5f572a019d4198004c.json';
-import buildDataB from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
-import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
 import ColorScale from '../../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import ComparisonTable from '../ComparisonTable';
@@ -13,12 +10,41 @@ import { Table } from '../../Table';
 import { fireEvent, render } from 'react-native-testing-library';
 
 const builds = [
-  new Build(buildDataA.meta, buildDataA.artifacts),
-  new Build(buildDataB.meta, buildDataB.artifacts),
-  new Build(buildDataC.meta, buildDataC.artifacts)
+  new Build({ revision: '123', parentRevision: '000', timestamp: 0 }, [
+    { name: 'main', hash: '123', sizes: { gzip: 123 } },
+    { name: 'vendor', hash: '123', sizes: { gzip: 123 } }
+  ]),
+  new Build({ revision: 'abc', parentRevision: '123', timestamp: 0 }, [
+    { name: 'main', hash: '123', sizes: { gzip: 123 } },
+    { name: 'vendor', hash: '123', sizes: { gzip: 123 } }
+  ])
 ];
 
 describe('ComparisonTable', () => {
+  describe('rendering', () => {
+    test('when disabledArtifactsVisible, does not render artifact rows that are disabled', () => {
+      const comparator = new Comparator({ builds });
+      const { queryAllByProps } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: false, main: true }}
+          colorScale={ColorScale.Magma}
+          comparator={comparator}
+          disabledArtifactsVisible={false}
+          hoveredArtifact={null}
+          onDisableArtifact={jest.fn()}
+          onEnableArtifact={jest.fn()}
+          onFocusRevision={jest.fn()}
+          onHoverArtifact={jest.fn()}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+
+      expect(queryAllByProps({ cell: comparator.matrixBody[0][0] })).toHaveLength(1);
+      expect(queryAllByProps({ cell: comparator.matrixBody[1][0] })).toHaveLength(0);
+    });
+  });
+
   describe('artifact toggling', () => {
     test('artifact off', () => {
       const handleDisableArtifact = jest.fn();
@@ -28,6 +54,7 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: true, main: true }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
+          disabledArtifactsVisible
           hoveredArtifact={null}
           onDisableArtifact={handleDisableArtifact}
           onEnableArtifact={jest.fn()}
@@ -37,7 +64,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      fireEvent(getByProps({ cell: comparator.matrixBody[2][0] }), 'disable', 'main');
+      fireEvent(getByProps({ cell: comparator.matrixBody[1][0] }), 'disable', 'main');
       expect(handleDisableArtifact).toHaveBeenCalledWith('main');
     });
 
@@ -49,6 +76,7 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: true, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
+          disabledArtifactsVisible
           hoveredArtifact={null}
           onDisableArtifact={jest.fn()}
           onEnableArtifact={handleEnableArtifact}
@@ -70,6 +98,7 @@ describe('ComparisonTable', () => {
           activeArtifacts={{ vendor: false, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
+          disabledArtifactsVisible
           hoveredArtifact={null}
           onDisableArtifact={jest.fn()}
           onEnableArtifact={handleEnableArtifact}
@@ -92,6 +121,7 @@ describe('ComparisonTable', () => {
         activeArtifacts={{ vendor: false, main: false }}
         colorScale={ColorScale.Magma}
         comparator={comparator}
+        disabledArtifactsVisible
         hoveredArtifact={null}
         onDisableArtifact={jest.fn()}
         onEnableArtifact={jest.fn()}

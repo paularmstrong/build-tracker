@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   radio: {
     borderRadius: Theme.BorderRadius.Infinite,
     borderWidth: 2,
-    borderColor: Theme.Color.Gray40,
+    borderColor: Theme.Color.Gray30,
     borderStyle: 'solid',
     width: Theme.FontSize.Medium,
     height: Theme.FontSize.Medium,
@@ -82,16 +82,16 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   focused: {
-    borderColor: Theme.Color.Primary40
+    borderColor: Theme.Color.Primary30
   },
   checked: {
     borderRadius: Theme.BorderRadius.Infinite,
-    backgroundColor: Theme.Color.Gray40,
+    backgroundColor: Theme.Color.Gray30,
     width: Theme.FontSize.Small,
     height: Theme.FontSize.Small
   },
   checkedFocused: {
-    backgroundColor: Theme.Color.Primary40
+    backgroundColor: Theme.Color.Primary30
   },
   native: {
     height: '100%',

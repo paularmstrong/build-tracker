@@ -127,10 +127,24 @@ describe('Main', () => {
       });
       expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: true, vendor: false, shared: false });
     });
+
+    test('can toggle visibility of disabled artifacts', async () => {
+      const { getByType, queryAllByProps } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      expect(queryAllByProps({ disabledArtifactsVisible: true })).toHaveLength(3);
+      act(() => {
+        fireEvent(getByType(Drawer), 'toggleDisabledArtifacts', false);
+      });
+
+      expect(queryAllByProps({ disabledArtifactsVisible: false })).toHaveLength(3);
+    });
   });
 
   describe('on select size key', () => {
-    test('passes the new size key to graph', () => {
+    test('passes the new size key to graph', async () => {
       const { getByType, queryAllByProps } = render(<Main />);
       act(() => {
         fireEvent(getByType(SizeKeyPicker), 'select', 'stat');

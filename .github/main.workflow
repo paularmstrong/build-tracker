@@ -1,4 +1,4 @@
-workflow "On PR" {
+workflow "On pull request" {
   on = "pull_request"
   resolves = [
     "test",
@@ -43,4 +43,9 @@ action "set labels" {
     BASE_DIRS = "src"
   }
   secrets = ["GITHUB_TOKEN"]
+}
+
+workflow "On push" {
+  on = "push"
+  resolves = ["test", "lint", "tsc"]
 }

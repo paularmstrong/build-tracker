@@ -240,17 +240,26 @@ describe('BuildComparator', () => {
   describe('toMarkdown', () => {
     test('gets a markdown-formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toMarkdown()).toEqual(
-        `
-|          |  1234567 |  8901234 |                  Δ1 |
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+"|          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
 | All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
 | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
 | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-| tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |`
-          .replace(/^\n/, '')
-          .replace(/\n$/, '')
-      );
+| tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+`);
+    });
+
+    test('can specify a different size key', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toMarkdown({ sizeKey: 'stat' })).toMatchInlineSnapshot(`
+"|          |  1234567 |  8901234 |                  Δ1 |
+| :------- | -------: | -------: | ------------------: |
+| All      | 0.57 KiB | 0.58 KiB |     0.01 KiB (2.2%) |
+| churros  |    0 KiB | 0.46 KiB |   0.46 KiB (100.0%) |
+| burritos | 0.45 KiB |    0 KiB | -0.45 KiB (-100.0%) |
+| tacos    | 0.12 KiB | 0.12 KiB |        0 KiB (0.0%) |"
+`);
     });
 
     test('can filter rows', () => {
@@ -263,30 +272,23 @@ describe('BuildComparator', () => {
           return false;
         });
       };
-      expect(comparator.toMarkdown({ rowFilter })).toEqual(
-        `
-|          |  1234567 |  8901234 |                  Δ1 |
+      expect(comparator.toMarkdown({ rowFilter })).toMatchInlineSnapshot(`
+"|          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
 | All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
 | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
-| burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-`
-          .replace(/^\n/, '')
-          .replace(/\n$/, '')
-      );
+| burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |"
+`);
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.toMarkdown()).toEqual(
-        `
-|       |  1234567 |  8901234 |            Δ1 |
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+"|       |  1234567 |  8901234 |            Δ1 |
 | :---- | -------: | -------: | ------------: |
 | All   | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |
-| tacos | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |`
-          .replace(/^\n/, '')
-          .replace(/\n$/, '')
-      );
+| tacos | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |"
+`);
     });
 
     test('accepts formatting and filtering options', () => {
@@ -299,34 +301,38 @@ describe('BuildComparator', () => {
       const formatDelta = (cell: DeltaCell | TotalDeltaCell): string => cell.percents.gzip.toFixed(2);
       // @ts-ignore
       const rowFilter = (row: Array<BodyCell>): boolean => row[0].text !== 'burritos';
-      expect(
-        comparator.toMarkdown({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter })
-      ).toEqual(
-        `
-|         |  12 |  89 |    d1 |
+      expect(comparator.toMarkdown({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }))
+        .toMatchInlineSnapshot(`
+"|         |  12 |  89 |    d1 |
 | :------ | --: | --: | ----: |
 | All     | 579 | 592 |  0.21 |
 | churros |     | 469 |  1.00 |
-| tacos   | 123 | 123 | -0.04 |`
-          .replace(/^\n/, '')
-          .replace(/\n$/, '')
-      );
+| tacos   | 123 | 123 | -0.04 |"
+`);
     });
   });
 
   describe('toCsv', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toCsv()).toEqual(
-        `
-,1234567,8901234,Δ1
+      expect(comparator.toCsv()).toMatchInlineSnapshot(`
+",1234567,8901234,Δ1
 All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
 churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
 burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)
-tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)`
-          .replace(/^\n/, '')
-          .replace(/\n/g, '\r\n')
-      );
+tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
+`);
+    });
+
+    test('can specify a different size key', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toCsv({ sizeKey: 'stat' })).toMatchInlineSnapshot(`
+",1234567,8901234,Δ1
+All,0.57 KiB,0.58 KiB,0.01 KiB (2.2%)
+churros,0 KiB,0.46 KiB,0.46 KiB (100.0%)
+burritos,0.45 KiB,0 KiB,-0.45 KiB (-100.0%)
+tacos,0.12 KiB,0.12 KiB,0 KiB (0.0%)"
+`);
     });
 
     test('can filter rows', () => {
@@ -339,27 +345,21 @@ tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)`
           return false;
         });
       };
-      expect(comparator.toCsv({ rowFilter })).toEqual(
-        `
-,1234567,8901234,Δ1
+      expect(comparator.toCsv({ rowFilter })).toMatchInlineSnapshot(`
+",1234567,8901234,Δ1
 All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
 churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
-burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)`
-          .replace(/^\n/, '')
-          .replace(/\n/g, '\r\n')
-      );
+burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)"
+`);
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.toCsv()).toEqual(
-        `
-,1234567,8901234,Δ1
+      expect(comparator.toCsv()).toMatchInlineSnapshot(`
+",1234567,8901234,Δ1
 All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
-tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)`
-          .replace(/^\n/, '')
-          .replace(/\n/g, '\r\n')
-      );
+tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
+`);
     });
 
     test('accepts formatting and filtering options', () => {
@@ -372,15 +372,13 @@ tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)`
       const formatDelta = (cell: DeltaCell | TotalDeltaCell): string => cell.percents.gzip.toFixed(2);
       // @ts-ignore
       const rowFilter = (row: Array<BodyCell>): boolean => row[0].text !== 'burritos';
-      expect(comparator.toCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter })).toEqual(
-        `
-,12,89,d1
+      expect(comparator.toCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }))
+        .toMatchInlineSnapshot(`
+",12,89,d1
 All,579,592,0.21
 churros,,469,1.00
-tacos,123,123,-0.04`
-          .replace(/^\n/, '')
-          .replace(/\n/g, '\r\n')
-      );
+tacos,123,123,-0.04"
+`);
     });
   });
 });

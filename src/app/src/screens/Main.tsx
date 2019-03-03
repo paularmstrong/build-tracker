@@ -10,7 +10,6 @@ import buildDataC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ff
 import buildDataD from '@build-tracker/fixtures/builds/19868a0432f039d45783bca1845cede313fbfbe1.json';
 import buildDataE from '@build-tracker/fixtures/builds/4a8882483a664401a602f64a882d0ed7fb1763cb.json';
 import ColorScale from '../modules/ColorScale';
-import Comparator from '@build-tracker/comparator';
 import Drawer from '../components/Drawer';
 import DrawerView from '../views/Drawer';
 import Graph from '../components/Graph';
@@ -19,6 +18,7 @@ import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import { Clipboard, StyleSheet, View } from 'react-native';
+import Comparator, { ArtifactCell, BodyCell } from '@build-tracker/comparator';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
 
@@ -122,13 +122,28 @@ const Main = (): React.ReactElement => {
     setDisabledArtifactsVisible(showDisabled);
   }, []);
 
+  const rowFilter = (row: Array<BodyCell>): boolean => {
+    const artifactCell = row[0] as ArtifactCell;
+    return activeArtifacts[artifactCell.text];
+  };
+
   const handleCopyAsMarkdown = React.useCallback((): void => {
-    Clipboard.setString(activeComparator.toMarkdown());
-  }, [activeComparator]);
+    Clipboard.setString(
+      activeComparator.toMarkdown({
+        rowFilter,
+        sizeKey
+      })
+    );
+  }, [activeComparator, rowFilter, sizeKey]);
 
   const handleCopyAsCsv = React.useCallback((): void => {
-    Clipboard.setString(activeComparator.toCsv());
-  }, [activeComparator]);
+    Clipboard.setString(
+      activeComparator.toCsv({
+        rowFilter,
+        sizeKey
+      })
+    );
+  }, [activeComparator, rowFilter, sizeKey]);
 
   const overflowItems = React.useMemo(
     () =>

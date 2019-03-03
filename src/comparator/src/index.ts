@@ -73,8 +73,8 @@ export interface ComparisonMatrix {
 
 type RevisionStringFormatter = (cell: RevisionCell) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
-type TotalStringFormatter = (cell: TotalCell) => string;
-type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell) => string;
+type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;
+type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell, sizeKey: string) => string;
 type RowFilter = (row: Array<BodyCell>) => boolean;
 
 interface FormattingOptions {
@@ -83,6 +83,7 @@ interface FormattingOptions {
   formatTotal?: TotalStringFormatter;
   formatDelta?: DeltaStringFormatter;
   rowFilter?: RowFilter;
+  sizeKey?: string;
 }
 
 const emptyArtifact = Object.freeze({
@@ -117,9 +118,9 @@ const flatten = (arrays: Array<any>): Array<any> => arrays.reduce((memo: Array<a
 
 const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.revision);
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
-const defaultFormatTotal = (cell: TotalCell): string => formatBytes(cell.sizes.gzip || 0);
-const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell): string =>
-  `${formatBytes(cell.sizes.gzip || 0)} (${(cell.percents.gzip * 100).toFixed(1)}%)`;
+const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatBytes(cell.sizes[sizeKey] || 0);
+const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string =>
+  `${formatBytes(cell.sizes[sizeKey] || 0)} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
 const defaultRowFilter = (): boolean => true;
 
 const emptyArray = [];
@@ -295,7 +296,8 @@ export default class BuildComparator {
 
   public getStringFormattedTotals(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
-    formatDelta: DeltaStringFormatter = defaultFormatDelta
+    formatDelta: DeltaStringFormatter = defaultFormatDelta,
+    sizeKey: string = 'gzip'
   ): Array<string> {
     return this.matrixTotal.map(
       (cell): string => {
@@ -304,9 +306,9 @@ export default class BuildComparator {
             return cell.text;
           case CellType.DELTA:
           case CellType.TOTAL_DELTA:
-            return formatDelta(cell as TotalDeltaCell);
+            return formatDelta(cell as TotalDeltaCell, sizeKey);
           case CellType.TOTAL:
-            return formatTotal(cell as TotalCell);
+            return formatTotal(cell as TotalCell, sizeKey);
         }
       }
     );
@@ -315,6 +317,7 @@ export default class BuildComparator {
   public getStringFormattedRows(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
+    sizeKey: string = 'gzip',
     rowFilter: RowFilter = defaultRowFilter
   ): Array<Array<string>> {
     return this.matrixBody.filter(rowFilter).map(
@@ -325,9 +328,9 @@ export default class BuildComparator {
               case CellType.ARTIFACT:
                 return cell.text;
               case CellType.DELTA:
-                return formatDelta(cell as DeltaCell);
+                return formatDelta(cell as DeltaCell, sizeKey);
               case CellType.TOTAL:
-                return formatTotal(cell as TotalCell);
+                return formatTotal(cell as TotalCell, sizeKey);
             }
           }
         );
@@ -348,11 +351,12 @@ export default class BuildComparator {
     formatRevisionDelta,
     formatTotal,
     formatDelta,
-    rowFilter
+    rowFilter,
+    sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const total = this.getStringFormattedTotals(formatTotal, formatDelta);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
+    const total = this.getStringFormattedTotals(formatTotal, formatDelta, sizeKey);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, rowFilter);
 
     return markdownTable([header, total, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
   }
@@ -362,11 +366,12 @@ export default class BuildComparator {
     formatRevisionDelta,
     formatTotal,
     formatDelta,
-    rowFilter
+    rowFilter,
+    sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const total = this.getStringFormattedTotals(formatTotal, formatDelta);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta, rowFilter);
+    const total = this.getStringFormattedTotals(formatTotal, formatDelta, sizeKey);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, rowFilter);
 
     return [header, total, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }

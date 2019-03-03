@@ -25,8 +25,8 @@ export const AppBar = (props: Props): React.ReactElement => {
   const [showOverflow, toggleOverflow] = React.useState(false);
 
   const handleShowOverflow = React.useCallback(() => {
-    toggleOverflow(!showOverflow);
-  }, [showOverflow, toggleOverflow]);
+    toggleOverflow(showOverflow => !showOverflow);
+  }, []);
 
   return (
     <View style={[styles.root, style]}>

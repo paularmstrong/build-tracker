@@ -24,11 +24,11 @@ export const TotalDeltaCell = (props: Props): React.ReactElement => {
 
   const handleEnter = React.useCallback(() => {
     setTooltipVisibility(true);
-  }, [setTooltipVisibility]);
+  }, []);
 
   const handleExit = React.useCallback(() => {
     setTooltipVisibility(false);
-  }, [setTooltipVisibility]);
+  }, []);
 
   const backgroundColor =
     percentDelta > 0 ? scale(red, percentDelta) : sizeDelta === 0 ? 'white' : scale(green, percentDelta);

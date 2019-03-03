@@ -22,9 +22,11 @@ const titleCase = (value: string): string => {
 const BuildInfo = (props: Props): React.ReactElement => {
   const { build, onClose, style } = props;
   const revision = build.getMetaValue('revision');
+
   const handleClose = React.useCallback(() => {
     onClose(revision);
   }, [onClose, revision]);
+
   return (
     <View style={[styles.root, style]}>
       <View style={styles.header}>

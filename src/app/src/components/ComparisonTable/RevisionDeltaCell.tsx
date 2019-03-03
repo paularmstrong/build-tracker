@@ -20,11 +20,11 @@ export const RevisionDeltaCell = (props: Props): React.ReactElement => {
 
   const handleEnter = React.useCallback(() => {
     setTooltipVisibility(true);
-  }, [setTooltipVisibility]);
+  }, []);
 
   const handleExit = React.useCallback(() => {
     setTooltipVisibility(false);
-  }, [setTooltipVisibility]);
+  }, []);
 
   return (
     <Th accessibilityLabel={`Delta from ${againstRevision} to ${revision}`} style={props.style}>

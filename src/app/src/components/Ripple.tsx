@@ -21,13 +21,10 @@ const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
 
   const { children, disabled, rippleColor = 'rgba(0,0,0,0.2)', onPressIn, onPressOut, style, ...otherProps } = props;
 
-  const handleLayout = React.useCallback(
-    (event): void => {
-      const { width, height } = event.nativeEvent.layout;
-      setSize({ width, height });
-    },
-    [setSize]
-  );
+  const handleLayout = React.useCallback((event): void => {
+    const { width, height } = event.nativeEvent.layout;
+    setSize({ width, height });
+  }, []);
 
   const handlePressIn = React.useCallback(
     (event): void => {
@@ -44,7 +41,7 @@ const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
         }
       }
     },
-    [disabled, onPressIn, setLocation, setRippleVisibility]
+    [disabled, onPressIn]
   );
 
   const handlePressOut = React.useCallback(

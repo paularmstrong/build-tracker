@@ -63,8 +63,8 @@ const Main = (): React.ReactElement => {
     setColorScale(() => scale);
   }, []);
 
-  const handleDisableArtifact = React.useCallback(
-    (name: string): void => {
+  const handleDisableArtifact = React.useCallback((name: string): void => {
+    setActiveArtifacts(activeArtifacts => {
       if (name === 'All') {
         Object.keys(activeArtifacts).forEach(name => {
           activeArtifacts[name] = false;
@@ -72,14 +72,13 @@ const Main = (): React.ReactElement => {
       } else {
         activeArtifacts[name] = false;
       }
-      setActiveArtifacts(activeArtifacts);
-      forceUpdate(Date.now());
-    },
-    [activeArtifacts]
-  );
+      return activeArtifacts;
+    });
+    forceUpdate(Date.now());
+  }, []);
 
-  const handleEnableArtifact = React.useCallback(
-    (name: string): void => {
+  const handleEnableArtifact = React.useCallback((name: string): void => {
+    setActiveArtifacts(activeArtifacts => {
       if (name === 'All') {
         Object.keys(activeArtifacts).forEach(name => {
           activeArtifacts[name] = true;
@@ -87,51 +86,41 @@ const Main = (): React.ReactElement => {
       } else {
         activeArtifacts[name] = true;
       }
-      setActiveArtifacts(activeArtifacts);
-      forceUpdate(Date.now());
-    },
-    [activeArtifacts]
-  );
+      return activeArtifacts;
+    });
+    forceUpdate(Date.now());
+  }, []);
 
-  const handleSelectSizeKey = React.useCallback(
-    (name: string): void => {
-      setSizeKey(name);
-      forceUpdate(Date.now());
-    },
-    [setSizeKey]
-  );
+  const handleSelectSizeKey = React.useCallback((name: string): void => {
+    setSizeKey(name);
+    forceUpdate(Date.now());
+  }, []);
 
-  const handleSelectRevision = React.useCallback(
-    (revision: string): void => {
-      setCompareRevisions([...compareRevisions, revision]);
-    },
-    [compareRevisions, setCompareRevisions]
-  );
+  const handleSelectRevision = React.useCallback((revision: string): void => {
+    setCompareRevisions(compareRevisions => [...compareRevisions, revision]);
+  }, []);
 
   const handleClearRevisions = React.useCallback((): void => {
     setCompareRevisions([]);
-  }, [setCompareRevisions]);
+  }, []);
 
   const handleUnfocusRevision = React.useCallback((): void => {
     setFocusedRevision(null);
-  }, [setFocusedRevision]);
+  }, []);
 
   const handleRemoveRevision = React.useCallback(
     (revision: string): void => {
       if (focusedRevision === revision) {
         setFocusedRevision(null);
       }
-      setCompareRevisions(compareRevisions.filter(r => r !== revision));
+      setCompareRevisions(compareRevisions => compareRevisions.filter(r => r !== revision));
     },
-    [compareRevisions, focusedRevision, setCompareRevisions]
+    [focusedRevision]
   );
 
-  const handleToggleDisabledArtifacts = React.useCallback(
-    (showDisabled: boolean): void => {
-      setDisabledArtifactsVisible(showDisabled);
-    },
-    [setDisabledArtifactsVisible]
-  );
+  const handleToggleDisabledArtifacts = React.useCallback((showDisabled: boolean): void => {
+    setDisabledArtifactsVisible(showDisabled);
+  }, []);
 
   const handleCopyAsMarkdown = React.useCallback((): void => {
     Clipboard.setString(activeComparator.toMarkdown());

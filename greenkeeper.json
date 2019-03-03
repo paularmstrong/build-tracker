@@ -1,12 +1,13 @@
 {
   "groups": {
-    "default": {
+    "repo": {
+      "packages": ["package.json"]
+    },
+    "packages": {
       "packages": [
-        "package.json",
         "src/app/package.json",
         "src/build/package.json",
         "src/comparator/package.json",
-        "src/fixtures/package.json",
         "src/formatting/package.json",
         "src/server/package.json",
         "src/types/package.json"

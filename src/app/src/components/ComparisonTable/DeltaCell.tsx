@@ -44,11 +44,11 @@ export const DeltaCell = (props: Props): React.ReactElement => {
 
   const handleEnter = React.useCallback(() => {
     setTooltipVisibility(true);
-  }, [setTooltipVisibility]);
+  }, []);
 
   const handleExit = React.useCallback(() => {
     setTooltipVisibility(false);
-  }, [setTooltipVisibility]);
+  }, []);
 
   const backgroundColor =
     percentDelta > 0

@@ -26,8 +26,8 @@ export const RevisionCell = (props: Props): React.ReactElement => {
   const [showMenu, toggleMenu] = React.useState(false);
 
   const handleToggleMenu = React.useCallback((): void => {
-    toggleMenu(!showMenu);
-  }, [showMenu, toggleMenu]);
+    toggleMenu(showMenu => !showMenu);
+  }, []);
 
   const handleRemove = React.useCallback((): void => {
     onRemove(cell.revision);

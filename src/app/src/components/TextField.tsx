@@ -33,7 +33,7 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
       setFocused(true);
       onFocus && onFocus(event);
     },
-    [onFocus, setFocused]
+    [onFocus]
   );
 
   const handleBlur = React.useCallback(
@@ -41,7 +41,7 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
       setFocused(false);
       onBlur && onBlur(event);
     },
-    [onBlur, setFocused]
+    [onBlur]
   );
 
   const handleChange = React.useCallback(

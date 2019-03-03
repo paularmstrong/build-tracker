@@ -26,7 +26,7 @@ const RadioSelect = (props: Props): React.ReactElement => {
       setFocus(false);
       onBlur && onBlur(event);
     },
-    [onBlur, setFocus]
+    [onBlur]
   );
 
   const handleFocus = React.useCallback(
@@ -34,7 +34,7 @@ const RadioSelect = (props: Props): React.ReactElement => {
       setFocus(true);
       onFocus && onFocus(event);
     },
-    [onFocus, setFocus]
+    [onFocus]
   );
 
   const handleChange = React.useCallback(

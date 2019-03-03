@@ -4,11 +4,6 @@
 const path = require('path');
 
 module.exports = {
-  globals: {
-    'ts-jest': {
-      skipBabel: true
-    }
-  },
   displayName: 'app',
   moduleNameMapper: {
     'react-art': '<rootDir>/src/app/config/jest/react-art-stub.js'

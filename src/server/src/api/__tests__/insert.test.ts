@@ -3,8 +3,8 @@
  */
 import bodyParser from 'body-parser';
 import Build from '@build-tracker/build';
-import createInsertBuildHandler from '../insert';
 import express from 'express';
+import { insertBuild } from '../insert';
 import request from 'supertest';
 
 const build = new Build({ revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, []);
@@ -14,7 +14,7 @@ describe('insert build handler', () => {
   describe('onInsert', () => {
     test('responds with ...something TODO', () => {
       const getParent = jest.fn(() => Promise.resolve(parentBuild));
-      const handler = createInsertBuildHandler(getParent);
+      const handler = insertBuild(getParent);
       const app = express();
       app.use(bodyParser.json());
       app.post('/test', handler);
@@ -32,7 +32,7 @@ describe('insert build handler', () => {
     test('called with a comparator of the inserted branch against its parentRevision', () => {
       const handleInsert = jest.fn(() => Promise.resolve());
       const getParent = jest.fn(() => Promise.resolve(parentBuild));
-      const handler = createInsertBuildHandler(getParent, handleInsert);
+      const handler = insertBuild(getParent, handleInsert);
       const app = express();
       app.use(bodyParser.json());
       app.post('/test', handler);

@@ -3,9 +3,12 @@
  */
 import AppBar from '../AppBar';
 import Button from '../Button';
+import Menu from '../Menu';
 import MenuIcon from '../../icons/Menu';
+import MenuItem from '../MenuItem';
+import MoreIcon from '../../icons/More';
 import React from 'react';
-import { render } from 'react-native-testing-library';
+import { fireEvent, render } from 'react-native-testing-library';
 import { Text, View } from 'react-native';
 
 describe('AppBar', () => {
@@ -38,6 +41,35 @@ describe('AppBar', () => {
       const { getByTestId } = render(<AppBar actionItems={actionItems} />);
       expect(getByTestId('tacos')).not.toBeUndefined();
       expect(getByTestId('burritos')).not.toBeUndefined();
+    });
+
+    test('renders a button for overflow items', () => {
+      const { getByType } = render(<AppBar overflowItems={[<MenuItem key={0} label="tacos" />]} />);
+      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
+      expect(getByType(Button).props).toMatchObject({
+        icon: MoreIcon,
+        iconOnly: true,
+        title: 'More actions'
+      });
+    });
+  });
+
+  describe('overflow items', () => {
+    test('shows a menu on button press', () => {
+      const { getByType, queryAllByProps } = render(<AppBar overflowItems={[<MenuItem key={0} label="tacos" />]} />);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
+      fireEvent.press(getByType(Button));
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
+    });
+
+    test('hides the menu on dismiss', () => {
+      const { getByType, queryAllByProps } = render(<AppBar overflowItems={[<MenuItem key={0} label="tacos" />]} />);
+      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
+      fireEvent.press(getByType(Button));
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
+      fireEvent(getByType(Menu), 'dismiss');
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
     });
   });
 });

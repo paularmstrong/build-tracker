@@ -3,6 +3,9 @@
  */
 import * as Theme from '../theme';
 import Button from './Button';
+import Menu from './Menu';
+import MenuItem from './MenuItem';
+import MoreIcon from '../icons/More';
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
@@ -13,10 +16,18 @@ interface Props {
   style?: StyleProp<ViewStyle>;
   title?: React.ReactNode;
   actionItems?: Array<React.ReactNode>;
+  overflowItems?: Array<React.ReactElement<typeof MenuItem>>;
 }
 
 export const AppBar = (props: Props): React.ReactElement => {
-  const { actionItems, navigationIcon, onPressNavigationIcon, style, title } = props;
+  const { actionItems, navigationIcon, onPressNavigationIcon, overflowItems, style, title } = props;
+  const overflowRef = React.useRef<View>(null);
+  const [showOverflow, toggleOverflow] = React.useState(false);
+
+  const handleShowOverflow = React.useCallback(() => {
+    toggleOverflow(!showOverflow);
+  }, [showOverflow, toggleOverflow]);
+
   return (
     <View style={[styles.root, style]}>
       {navigationIcon ? (
@@ -41,6 +52,16 @@ export const AppBar = (props: Props): React.ReactElement => {
         title || null
       )}
       <View style={styles.actionItems}>{React.Children.toArray(actionItems)}</View>
+      {overflowItems && overflowItems.length ? (
+        <View ref={overflowRef}>
+          <Button icon={MoreIcon} iconOnly onPress={handleShowOverflow} title="More actions" />
+        </View>
+      ) : null}
+      {showOverflow && overflowItems && overflowItems.length ? (
+        <Menu onDismiss={handleShowOverflow} relativeTo={overflowRef}>
+          {React.Children.toArray(overflowItems)}
+        </Menu>
+      ) : null}
     </View>
   );
 };

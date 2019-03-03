@@ -60,8 +60,12 @@ const Menu = (props: Props): React.ReactElement => {
   }, [relativeTo]);
 
   const menu = (
-    // @ts-ignore
-    <View accessibilityRole="menu" ref={ref} style={[styles.root, { top: position.top, left: position.left }]}>
+    <View
+      // @ts-ignore
+      accessibilityRole="menu"
+      ref={ref}
+      style={[styles.root, { top: position.top, left: position.left }, position.top > 0 && styles.show]}
+    >
       {React.Children.toArray(children)}
     </View>
   );
@@ -83,7 +87,18 @@ const styles = StyleSheet.create({
     width: 'auto',
     maxHeight: 400,
     minHeight: '2rem',
-    minWidth: 200
+    minWidth: 200,
+    // @ts-ignore
+    transitionProperty: 'transform, opacity',
+    transitionDuration: '0.1s',
+    transitionTimingFunction: Theme.MotionTiming.Accelerate,
+    transform: [{ scale: 0.85 }],
+    opacity: 0
+  },
+
+  show: {
+    transform: [{ scale: 1 }],
+    opacity: 1
   }
 });
 

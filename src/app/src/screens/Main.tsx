@@ -15,9 +15,10 @@ import Drawer from '../components/Drawer';
 import DrawerView from '../views/Drawer';
 import Graph from '../components/Graph';
 import MenuIcon from '../icons/Menu';
+import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
-import { StyleSheet, View } from 'react-native';
+import { Clipboard, StyleSheet, View } from 'react-native';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
 
@@ -107,6 +108,10 @@ const Main = (): React.ReactElement => {
     [compareRevisions, setCompareRevisions]
   );
 
+  const handleClearRevisions = React.useCallback((): void => {
+    setCompareRevisions([]);
+  }, [setCompareRevisions]);
+
   const handleUnfocusRevision = React.useCallback((): void => {
     setFocusedRevision(null);
   }, [setFocusedRevision]);
@@ -128,6 +133,14 @@ const Main = (): React.ReactElement => {
     [setDisabledArtifactsVisible]
   );
 
+  const handleCopyAsMarkdown = React.useCallback((): void => {
+    Clipboard.setString(activeComparator.toMarkdown());
+  }, [activeComparator]);
+
+  const handleCopyAsCsv = React.useCallback((): void => {
+    Clipboard.setString(activeComparator.toCsv());
+  }, [activeComparator]);
+
   return (
     <View style={styles.layout}>
       <DrawerView
@@ -146,7 +159,20 @@ const Main = (): React.ReactElement => {
         style={styles.main}
       >
         <View style={[styles.column, styles.chart]}>
-          <AppBar navigationIcon={MenuIcon} onPressNavigationIcon={showDrawer} title="Build Tracker" />
+          <AppBar
+            navigationIcon={MenuIcon}
+            onPressNavigationIcon={showDrawer}
+            overflowItems={
+              compareRevisions.length !== 0
+                ? [
+                    <MenuItem key="clear" label="Clear selected revisions" onPress={handleClearRevisions} />,
+                    <MenuItem key="md" label="Copy as markdown" onPress={handleCopyAsMarkdown} />,
+                    <MenuItem key="csv" label="Copy as CSV" onPress={handleCopyAsCsv} />
+                  ]
+                : []
+            }
+            title="Build Tracker"
+          />
           <Graph
             activeArtifacts={activeArtifacts}
             colorScale={colorScale}

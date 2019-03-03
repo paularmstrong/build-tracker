@@ -4,6 +4,7 @@
 import { act } from 'react-dom/test-utils';
 import AppBar from '../../components/AppBar';
 import BuildInfo from '../../components/BuildInfo';
+import { Clipboard } from 'react-native';
 import ColorScale from '../../modules/ColorScale';
 import ColorScalePicker from '../../components/ColorScalePicker';
 import Comparison from '../../views/Comparison';
@@ -209,6 +210,58 @@ describe('Main', () => {
       });
 
       expect(queryByTestId('buildinfo')).toBeNull();
+    });
+  });
+
+  describe('overflow items', () => {
+    test('can clear selected revisions', async () => {
+      const { getByType, queryAllByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      expect(queryAllByType(Comparison)).toHaveLength(1);
+
+      act(() => {
+        fireEvent.press(getByType(AppBar).props.overflowItems[0]);
+      });
+
+      expect(queryAllByType(Comparison)).toHaveLength(0);
+    });
+
+    test('can copy as markdown', async () => {
+      const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
+      const { getByType, queryAllByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      expect(queryAllByType(Comparison)).toHaveLength(1);
+
+      act(() => {
+        fireEvent.press(getByType(AppBar).props.overflowItems[1]);
+      });
+      const comparator = getByType(Comparison).props.comparator;
+
+      expect(clipboardSpy).toHaveBeenCalledWith(comparator.toMarkdown());
+    });
+
+    test('can copy as csv', async () => {
+      const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
+      const { getByType, queryAllByType } = render(<Main />);
+      act(() => {
+        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      });
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      expect(queryAllByType(Comparison)).toHaveLength(1);
+
+      act(() => {
+        fireEvent.press(getByType(AppBar).props.overflowItems[2]);
+      });
+
+      const comparator = getByType(Comparison).props.comparator;
+
+      expect(clipboardSpy).toHaveBeenCalledWith(comparator.toCsv());
     });
   });
 });

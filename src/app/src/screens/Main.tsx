@@ -102,6 +102,7 @@ const Main = (): React.ReactElement => {
 
   const handleClearRevisions = React.useCallback((): void => {
     setCompareRevisions([]);
+    setFocusedRevision(null);
   }, []);
 
   const handleUnfocusRevision = React.useCallback((): void => {

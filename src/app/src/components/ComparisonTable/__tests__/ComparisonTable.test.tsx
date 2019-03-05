@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import { BodyRow } from '../BodyRow';
 import Build from '@build-tracker/build';
 import ColorScale from '../../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
@@ -22,7 +23,7 @@ const builds = [
 
 describe('ComparisonTable', () => {
   describe('rendering', () => {
-    test('when disabledArtifactsVisible, does not render artifact rows that are disabled', () => {
+    test('when not disabledArtifactsVisible, does not render artifact rows that are disabled', () => {
       const comparator = new Comparator({ builds });
       const { queryAllByProps } = render(
         <ComparisonTable
@@ -30,11 +31,11 @@ describe('ComparisonTable', () => {
           colorScale={ColorScale.Magma}
           comparator={comparator}
           disabledArtifactsVisible={false}
-          hoveredArtifact={null}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
@@ -43,11 +44,32 @@ describe('ComparisonTable', () => {
       expect(queryAllByProps({ cell: comparator.matrixArtifacts[0][0] })).toHaveLength(1);
       expect(queryAllByProps({ cell: comparator.matrixArtifacts[1][0] })).toHaveLength(0);
     });
+
+    test('when not disabledArtifactsVisible, does not render artifact groups that are disabled', () => {
+      const comparator = new Comparator({ builds, groups: [{ name: 'foobar', artifactNames: ['main', 'vendor'] }] });
+      const { queryAllByProps } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: false, main: false }}
+          colorScale={ColorScale.Magma}
+          comparator={comparator}
+          disabledArtifactsVisible={false}
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
+          onFocusRevision={jest.fn()}
+          onHoverArtifacts={jest.fn()}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+
+      expect(queryAllByProps({ cell: comparator.matrixGroups[0][0] })).toHaveLength(0);
+    });
   });
 
   describe('artifact toggling', () => {
-    test('artifact off', () => {
-      const handleDisableArtifact = jest.fn();
+    test('artifacts off', () => {
+      const handleDisableArtifacts = jest.fn();
       const comparator = new Comparator({ builds });
       const { getByProps } = render(
         <ComparisonTable
@@ -55,21 +77,21 @@ describe('ComparisonTable', () => {
           colorScale={ColorScale.Magma}
           comparator={comparator}
           disabledArtifactsVisible
-          hoveredArtifact={null}
-          onDisableArtifact={handleDisableArtifact}
-          onEnableArtifact={jest.fn()}
+          hoveredArtifacts={[]}
+          onDisableArtifacts={handleDisableArtifacts}
+          onEnableArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
       );
       fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'disable', 'main');
-      expect(handleDisableArtifact).toHaveBeenCalledWith('main');
+      expect(handleDisableArtifacts).toHaveBeenCalledWith(['main']);
     });
 
-    test('artifact on', () => {
-      const handleEnableArtifact = jest.fn();
+    test('artifacts on', () => {
+      const handleEnableArtifacts = jest.fn();
       const comparator = new Comparator({ builds });
       const { getByProps } = render(
         <ComparisonTable
@@ -77,61 +99,63 @@ describe('ComparisonTable', () => {
           colorScale={ColorScale.Magma}
           comparator={comparator}
           disabledArtifactsVisible
-          hoveredArtifact={null}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={handleEnableArtifact}
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={handleEnableArtifacts}
           onFocusRevision={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
       );
       fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'enable', 'vendor');
-      expect(handleEnableArtifact).toHaveBeenCalledWith('vendor');
+      expect(handleEnableArtifacts).toHaveBeenCalledWith(['vendor']);
     });
+  });
 
-    test('all on', () => {
-      const handleEnableArtifact = jest.fn();
+  describe('hovering', () => {
+    test('sets singular artifacts to hovered', () => {
+      const handleHoverArtifacts = jest.fn();
       const comparator = new Comparator({ builds });
-      const { getByProps } = render(
+      const { queryAllByType } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
           colorScale={ColorScale.Magma}
           comparator={comparator}
           disabledArtifactsVisible
-          hoveredArtifact={null}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={handleEnableArtifact}
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onHoverArtifacts={handleHoverArtifacts}
           onRemoveRevision={jest.fn()}
           sizeKey="stat"
         />
       );
-      fireEvent(getByProps({ cell: comparator.matrixArtifacts[0][0] }), 'enable', 'All');
-      expect(handleEnableArtifact).toHaveBeenCalledWith('All');
+      fireEvent(queryAllByType(BodyRow)[0], 'hoverArtifact', 'main');
+      expect(handleHoverArtifacts).toHaveBeenCalledWith(['main']);
     });
-  });
 
-  test('disables hovered artifact on mouse out', () => {
-    const handleHoverArtifact = jest.fn();
-    const comparator = new Comparator({ builds });
-    const { getByType } = render(
-      <ComparisonTable
-        activeArtifacts={{ vendor: false, main: false }}
-        colorScale={ColorScale.Magma}
-        comparator={comparator}
-        disabledArtifactsVisible
-        hoveredArtifact={null}
-        onDisableArtifact={jest.fn()}
-        onEnableArtifact={jest.fn()}
-        onFocusRevision={jest.fn()}
-        onHoverArtifact={handleHoverArtifact}
-        onRemoveRevision={jest.fn()}
-        sizeKey="stat"
-      />
-    );
-    fireEvent(getByType(Table), 'mouseLeave');
-    expect(handleHoverArtifact).toHaveBeenCalledWith(null);
+    test('disables hovered artifact on mouse out', () => {
+      const handleHoverArtifacts = jest.fn();
+      const comparator = new Comparator({ builds });
+      const { getByType } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: false, main: false }}
+          colorScale={ColorScale.Magma}
+          comparator={comparator}
+          disabledArtifactsVisible
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
+          onFocusRevision={jest.fn()}
+          onHoverArtifacts={handleHoverArtifacts}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(getByType(Table), 'mouseLeave');
+      expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
+    });
   });
 });

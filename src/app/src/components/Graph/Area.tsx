@@ -15,26 +15,26 @@ interface Props {
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
   data: Array<Series<Build, string>>;
-  hoveredArtifact: string;
+  hoveredArtifacts: Array<string>;
   xScale: ScalePoint<string>;
   yScale: ScaleLinear<number, number>;
 }
 
 const Area = (props: Props): React.ReactElement => {
-  const { activeArtifactNames, comparator, data, hoveredArtifact, xScale, yScale } = props;
+  const { activeArtifactNames, comparator, data, hoveredArtifacts, xScale, yScale } = props;
   const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
   const gRef = React.useRef(null);
 
   const graphColorScale = React.useMemo(() => {
     return d => {
       const color = hsl(colorScale(comparator.artifactNames.indexOf(d.key)));
-      if (hoveredArtifact && d.key !== hoveredArtifact) {
+      if (hoveredArtifacts.length && !hoveredArtifacts.includes(d.key)) {
         color.l = 0.75;
         color.s = 0.4;
       }
       return color.toString();
     };
-  }, [colorScale, comparator.artifactNames, hoveredArtifact]);
+  }, [colorScale, comparator.artifactNames, hoveredArtifacts]);
 
   React.useEffect(() => {
     const contents = select(gRef.current);

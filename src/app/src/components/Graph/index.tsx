@@ -18,8 +18,8 @@ interface Props {
   activeArtifacts: { [key: string]: boolean };
   colorScale: ScaleSequential<string>;
   comparator: Comparator;
-  hoveredArtifact: string;
-  onHoverArtifact: (artifactName: string) => void;
+  hoveredArtifacts: Array<string>;
+  onHoverArtifacts: (artifactNames: Array<string>) => void;
   onSelectRevision: (revision: string) => void;
   selectedRevisions: Array<string>;
   sizeKey: string;
@@ -36,8 +36,8 @@ const Graph = (props: Props): React.ReactElement => {
     activeArtifacts,
     colorScale,
     comparator,
-    hoveredArtifact,
-    onHoverArtifact,
+    hoveredArtifacts,
+    onHoverArtifacts,
     onSelectRevision,
     selectedRevisions,
     sizeKey
@@ -99,14 +99,14 @@ const Graph = (props: Props): React.ReactElement => {
                 colorScale={colorScale}
                 comparator={comparator}
                 data={data}
-                hoveredArtifact={hoveredArtifact}
+                hoveredArtifacts={hoveredArtifacts}
                 xScale={xScale}
                 yScale={yScale}
               />
               <HoverOverlay
                 data={data}
                 height={height - Offset.TOP - Offset.BOTTOM}
-                onHoverArtifact={onHoverArtifact}
+                onHoverArtifacts={onHoverArtifacts}
                 onSelectRevision={onSelectRevision}
                 selectedRevisions={selectedRevisions}
                 width={width - Offset.LEFT - Offset.RIGHT}

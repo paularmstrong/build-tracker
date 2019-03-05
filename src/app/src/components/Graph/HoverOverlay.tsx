@@ -13,7 +13,7 @@ import { ScaleLinear, ScalePoint } from 'd3-scale';
 interface Props {
   data: Array<Series<Build, string>>;
   height: number;
-  onHoverArtifact: (artifactName: string) => void;
+  onHoverArtifacts: (artifactNames: Array<string>) => void;
   onSelectRevision: (revision: string) => void;
   selectedRevisions: Array<string>;
   width: number;
@@ -32,7 +32,7 @@ const handleMoveLine = memoize(
 );
 
 const HoverOverlay = (props: Props): React.ReactElement => {
-  const { data, height, onHoverArtifact, onSelectRevision, selectedRevisions, width, xScale, yScale } = props;
+  const { data, height, onHoverArtifacts, onSelectRevision, selectedRevisions, width, xScale, yScale } = props;
   const lineRef = React.useRef(null);
   const domain = xScale.domain();
 
@@ -82,15 +82,15 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       const hoveredArtifact = data.find(data => {
         return data[revision.index][0] <= yValue && data[revision.index][1] >= yValue;
       });
-      onHoverArtifact(hoveredArtifact ? hoveredArtifact.key : null);
+      onHoverArtifacts(hoveredArtifact ? [hoveredArtifact.key] : []);
     },
-    [buildRevisionFromX, data, onHoverArtifact, xScale, yScale]
+    [buildRevisionFromX, data, onHoverArtifacts, xScale, yScale]
   );
 
   const handleMouseOut = React.useCallback((): void => {
     select(lineRef.current).style('opacity', 0);
-    onHoverArtifact(null);
-  }, [onHoverArtifact]);
+    onHoverArtifacts([]);
+  }, [onHoverArtifacts]);
 
   const handleMouseOver = React.useCallback((): void => {
     select(lineRef.current).style('opacity', 1);

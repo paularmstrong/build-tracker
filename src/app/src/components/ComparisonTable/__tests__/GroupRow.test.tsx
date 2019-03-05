@@ -1,37 +1,37 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { ArtifactCell } from '../ArtifactCell';
-import { BodyRow } from '../BodyRow';
 import ColorScale from '../../../modules/ColorScale';
-import { DeltaCell } from '../DeltaCell';
+import { GroupCell } from '../GroupCell';
+import { GroupRow } from '../GroupRow';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { TotalCell } from '../TotalCell';
+import { TotalDeltaCell } from '../TotalDeltaCell';
 import { Tr } from '../../Table';
-import { ArtifactRow, CellType } from '@build-tracker/comparator';
+import { CellType, GroupRow as GRow } from '@build-tracker/comparator';
 import { fireEvent, render } from 'react-native-testing-library';
 
-describe('BodyRow', () => {
+describe('GroupRow', () => {
   describe('render', () => {
     test('artifact cell', () => {
-      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'tacos' }];
+      const row: GRow = [{ type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' }];
       const handleDisable = jest.fn();
       const handleEnable = jest.fn();
       const { getByType } = render(
-        <BodyRow
+        <GroupRow
           colorScale={ColorScale.Rainbow}
           isActive
           isHovered={false}
-          onDisableArtifact={handleDisable}
-          onEnableArtifact={handleEnable}
-          onHoverArtifact={jest.fn()}
+          onDisable={handleDisable}
+          onEnable={handleEnable}
+          onHover={jest.fn()}
           row={row}
           rowIndex={1}
           sizeKey="stat"
         />
       );
-      expect(getByType(ArtifactCell).props).toMatchObject({
+      expect(getByType(GroupCell).props).toMatchObject({
         cell: row[0],
         color: ColorScale.Rainbow(1),
         isActive: true,
@@ -40,43 +40,19 @@ describe('BodyRow', () => {
       });
     });
 
-    test('delta cell', () => {
-      const row: ArtifactRow = [
-        { type: CellType.ARTIFACT, text: 'tacos' },
-        { name: 'tacos', type: CellType.DELTA, sizes: { stat: 4 }, percents: { stat: 4 }, hashChanged: false }
-      ];
-      const { getByType } = render(
-        <BodyRow
-          colorScale={ColorScale.Rainbow}
-          isActive
-          isHovered={false}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
-          onHoverArtifact={jest.fn()}
-          row={row}
-          rowIndex={1}
-          sizeKey="stat"
-        />
-      );
-      expect(getByType(DeltaCell).props).toMatchObject({
-        cell: row[1],
-        sizeKey: 'stat'
-      });
-    });
-
     test('total cell', () => {
-      const row: ArtifactRow = [
-        { type: CellType.ARTIFACT, text: 'tacos' },
+      const row: GRow = [
+        { type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' },
         { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
       ];
       const { getByType } = render(
-        <BodyRow
+        <GroupRow
           colorScale={ColorScale.Rainbow}
           isActive
           isHovered={false}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onHover={jest.fn()}
           row={row}
           rowIndex={1}
           sizeKey="stat"
@@ -87,22 +63,46 @@ describe('BodyRow', () => {
         sizeKey: 'stat'
       });
     });
+
+    test('total delta cell', () => {
+      const row: GRow = [
+        { type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' },
+        { type: CellType.TOTAL_DELTA, sizes: { stat: 4 }, percents: { stat: 4 } }
+      ];
+      const { getByType } = render(
+        <GroupRow
+          colorScale={ColorScale.Rainbow}
+          isActive
+          isHovered={false}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onHover={jest.fn()}
+          row={row}
+          rowIndex={1}
+          sizeKey="stat"
+        />
+      );
+      expect(getByType(TotalDeltaCell).props).toMatchObject({
+        cell: row[1],
+        sizeKey: 'stat'
+      });
+    });
   });
 
   describe('hovering', () => {
     test('is transparent background when row is not isHovered', () => {
-      const row: ArtifactRow = [
-        { type: CellType.ARTIFACT, text: 'tacos' },
+      const row: GRow = [
+        { type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' },
         { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
       ];
       const { getByType } = render(
-        <BodyRow
+        <GroupRow
           colorScale={ColorScale.Rainbow}
           isActive
           isHovered={false}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onHover={jest.fn()}
           row={row}
           rowIndex={1}
           sizeKey="stat"
@@ -114,18 +114,18 @@ describe('BodyRow', () => {
     });
 
     test('is visually highlighed when the row isHovered', () => {
-      const row: ArtifactRow = [
-        { type: CellType.ARTIFACT, text: 'tacos' },
+      const row: GRow = [
+        { type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' },
         { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
       ];
       const { getByType } = render(
-        <BodyRow
+        <GroupRow
           colorScale={ColorScale.Rainbow}
           isActive
           isHovered
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
-          onHoverArtifact={jest.fn()}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onHover={jest.fn()}
           row={row}
           rowIndex={1}
           sizeKey="stat"
@@ -137,43 +137,43 @@ describe('BodyRow', () => {
     });
 
     test('calls back to onHoverArtifact when mouse enter', () => {
-      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'tacos' }];
-      const handleHoverArtifact = jest.fn();
+      const row: GRow = [{ type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' }];
+      const handleHoverArtifacts = jest.fn();
       const { getByType } = render(
-        <BodyRow
+        <GroupRow
           colorScale={ColorScale.Rainbow}
           isActive
           isHovered
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
-          onHoverArtifact={handleHoverArtifact}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onHover={handleHoverArtifacts}
           row={row}
           rowIndex={1}
           sizeKey="stat"
         />
       );
       fireEvent(getByType(Tr), 'mouseEnter');
-      expect(handleHoverArtifact).toHaveBeenCalledWith('tacos');
+      expect(handleHoverArtifacts).toHaveBeenCalledWith(['tacos', 'burritos']);
     });
 
-    test('calls onHoverArtifact with null if is not active', () => {
-      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'tacos' }];
-      const handleHoverArtifact = jest.fn();
+    test('calls onHoverArtifact with empty array if is not active', () => {
+      const row: GRow = [{ type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' }];
+      const handleHoverArtifacts = jest.fn();
       const { getByType } = render(
-        <BodyRow
+        <GroupRow
           colorScale={ColorScale.Rainbow}
           isActive={false}
           isHovered={false}
-          onDisableArtifact={jest.fn()}
-          onEnableArtifact={jest.fn()}
-          onHoverArtifact={handleHoverArtifact}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onHover={handleHoverArtifacts}
           row={row}
           rowIndex={1}
           sizeKey="stat"
         />
       );
       fireEvent(getByType(Tr), 'mouseEnter');
-      expect(handleHoverArtifact).toHaveBeenCalledWith(null);
+      expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
     });
   });
 });

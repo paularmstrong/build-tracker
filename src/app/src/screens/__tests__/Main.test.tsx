@@ -67,27 +67,14 @@ describe('Main', () => {
   });
 
   describe('artifacts', () => {
-    test('can disable all artifacts', async () => {
+    test('can disable a artifacts', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       act(() => {
-        fireEvent(getByType(Comparison), 'disableArtifact', 'All');
-      });
-      expect(Object.values(getByType(Comparison).props.activeArtifacts)).not.toEqual(expect.arrayContaining([true]));
-      expect(Object.values(getByType(Graph).props.activeArtifacts)).not.toEqual(expect.arrayContaining([true]));
-    });
-
-    test('can disable a single artifact', async () => {
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      act(() => {
-        fireEvent(getByType(Comparison), 'disableArtifact', 'main');
+        fireEvent(getByType(Comparison), 'disableArtifacts', ['main']);
       });
       expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
         main: false,
@@ -97,29 +84,15 @@ describe('Main', () => {
       expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: false, vendor: true, shared: true });
     });
 
-    test('can enable all artifacts', async () => {
+    test('can enable a artifacts', async () => {
       const { getByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       });
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       act(() => {
-        fireEvent(getByType(Comparison), 'disableArtifact', 'All');
-        fireEvent(getByType(Comparison), 'enableArtifact', 'All');
-      });
-      expect(Object.values(getByType(Comparison).props.activeArtifacts)).not.toEqual(expect.arrayContaining([false]));
-      expect(Object.values(getByType(Graph).props.activeArtifacts)).not.toEqual(expect.arrayContaining([false]));
-    });
-
-    test('can enable a single artifact', async () => {
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      act(() => {
-        fireEvent(getByType(Comparison), 'disableArtifact', 'All');
-        fireEvent(getByType(Comparison), 'enableArtifact', 'main');
+        fireEvent(getByType(Comparison), 'disableArtifacts', ['main', 'vendor', 'shared']);
+        fireEvent(getByType(Comparison), 'enableArtifacts', ['main']);
       });
       expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
         main: true,

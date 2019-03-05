@@ -1,20 +1,19 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import ArtifactCell from './ArtifactCell';
-import DeltaCell from './DeltaCell';
+import GroupCell from './GroupCell';
 import { hsl } from 'd3-color';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import { StyleSheet } from 'react-native';
 import TotalCell from './TotalCell';
+import TotalDeltaCell from './TotalDeltaCell';
 import { Tr } from './../Table';
 import {
-  ArtifactCell as ACell,
-  ArtifactRow,
   CellType,
   DeltaCell as DCell,
-  GroupRow,
+  GroupCell as GCell,
+  GroupRow as GRow,
   TotalCell as TCell,
   TotalDeltaCell as TDCell
 } from '@build-tracker/comparator';
@@ -23,61 +22,51 @@ interface Props {
   colorScale: ScaleSequential<string>;
   isActive: boolean;
   isHovered: boolean;
-  onDisableArtifact: (artifactName: string) => void;
-  onEnableArtifact: (artifactName: string) => void;
-  onHoverArtifact: (revision: string) => void;
-  row: ArtifactRow | GroupRow;
+  onDisable: (artifactNames: Array<string>) => void;
+  onEnable: (artifactNames: Array<string>) => void;
+  onHover: (artifactNames: Array<string>) => void;
+  row: GRow;
   rowIndex: number;
   sizeKey: string;
 }
 
-export const BodyRow = (props: Props): React.ReactElement => {
-  const {
-    colorScale,
-    isActive,
-    isHovered,
-    onDisableArtifact,
-    onEnableArtifact,
-    onHoverArtifact,
-    row,
-    rowIndex,
-    sizeKey
-  } = props;
+export const GroupRow = (props: Props): React.ReactElement => {
+  const { colorScale, isActive, isHovered, onDisable, onEnable, onHover, row, rowIndex, sizeKey } = props;
 
-  const mapBodyCell = (cell: ACell | TCell | TDCell | DCell, i: number): React.ReactElement | void => {
+  const mapGroupCell = (cell: GCell | TCell | TDCell | DCell, i: number): React.ReactElement | void => {
     switch (cell.type) {
-      case CellType.ARTIFACT: {
+      case CellType.GROUP: {
         return (
-          <ArtifactCell
+          <GroupCell
             cell={cell}
             color={colorScale(rowIndex)}
             key={i}
             isActive={isActive}
-            onDisable={onDisableArtifact}
-            onEnable={onEnableArtifact}
+            onDisable={onDisable}
+            onEnable={onEnable}
           />
         );
       }
-      case CellType.DELTA:
-        return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
       case CellType.TOTAL:
         return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
+      case CellType.TOTAL_DELTA:
+        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
     }
   };
 
   let backgroundColor = 'transparent';
-  const artifactName = row[0].text;
+  const { artifactNames } = row[0];
   if (isHovered) {
     const color = hsl(colorScale(rowIndex));
     color.l = 0.9;
     backgroundColor = color.toString();
   }
   const handleMouseEnter = React.useCallback(() => {
-    onHoverArtifact(isActive && artifactName !== 'All' ? artifactName : null);
-  }, [artifactName, isActive, onHoverArtifact]);
+    onHover(isActive ? artifactNames : []);
+  }, [artifactNames, isActive, onHover]);
 
   // @ts-ignore
-  const rows = row.map(mapBodyCell);
+  const rows = row.map(mapGroupCell);
 
   return (
     <Tr onMouseEnter={handleMouseEnter} style={[styles.row, { backgroundColor }]}>
@@ -94,4 +83,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.memo(BodyRow);
+export default React.memo(GroupRow);

@@ -20,11 +20,11 @@ const Comparison = (props: Props): React.ReactElement => {
     comparator,
     disabledArtifactsVisible,
     focusedRevision,
-    hoveredArtifact,
-    onDisableArtifact,
-    onEnableArtifact,
+    hoveredArtifacts,
+    onDisableArtifacts,
+    onEnableArtifacts,
     onFocusRevision,
-    onHoverArtifact,
+    onHoverArtifacts,
     onRemoveRevision,
     onUnfocusRevision,
     sizeKey,
@@ -39,11 +39,11 @@ const Comparison = (props: Props): React.ReactElement => {
             colorScale={colorScale}
             comparator={comparator}
             disabledArtifactsVisible={disabledArtifactsVisible}
-            hoveredArtifact={hoveredArtifact}
-            onDisableArtifact={onDisableArtifact}
-            onEnableArtifact={onEnableArtifact}
+            hoveredArtifacts={hoveredArtifacts}
+            onDisableArtifacts={onDisableArtifacts}
+            onEnableArtifacts={onEnableArtifacts}
             onFocusRevision={onFocusRevision}
-            onHoverArtifact={onHoverArtifact}
+            onHoverArtifacts={onHoverArtifacts}
             onRemoveRevision={onRemoveRevision}
             sizeKey={sizeKey}
           />

@@ -163,7 +163,8 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.matrixTotal[0]).toEqual({
         type: 'group',
-        text: 'All'
+        text: 'All',
+        artifactNames: ['churros', 'burritos', 'tacos']
       });
     });
 
@@ -249,7 +250,7 @@ describe('BuildComparator', () => {
         groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
       });
       expect(comparator.matrixGroups[0][3]).toEqual({
-        type: 'delta',
+        type: 'totalDelta',
         name: 'stuff',
         hashChanged: true,
         budgets: [],

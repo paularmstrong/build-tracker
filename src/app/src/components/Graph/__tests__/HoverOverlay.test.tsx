@@ -53,7 +53,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={jest.fn()}
             selectedRevisions={[]}
             width={300}
@@ -76,7 +76,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={jest.fn()}
             selectedRevisions={[]}
             width={300}
@@ -103,7 +103,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={jest.fn()}
             selectedRevisions={[]}
             width={300}
@@ -136,7 +136,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={jest.fn()}
             selectedRevisions={[]}
             width={300}
@@ -154,13 +154,13 @@ describe('HoverOverlay', () => {
     });
 
     test('calls back with the hovered artifact', () => {
-      const handleHoverArtifact = jest.fn();
+      const handleHoverArtifacts = jest.fn();
       const { getByTestId } = render(
         <svg>
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={handleHoverArtifact}
+            onHoverArtifacts={handleHoverArtifacts}
             onSelectRevision={jest.fn()}
             selectedRevisions={[]}
             width={300}
@@ -173,11 +173,11 @@ describe('HoverOverlay', () => {
         fireEvent.mouseMove(getByTestId('hoveroverlay'));
       });
 
-      expect(handleHoverArtifact).toHaveBeenCalledWith('vendor');
+      expect(handleHoverArtifacts).toHaveBeenCalledWith(['vendor']);
     });
 
     test('calls back with null if no artifact', () => {
-      const handleHoverArtifact = jest.fn();
+      const handleHoverArtifacts = jest.fn();
       const yScale = scaleLinear()
         .range([400, 0])
         .domain([0, 200]);
@@ -186,7 +186,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={handleHoverArtifact}
+            onHoverArtifacts={handleHoverArtifacts}
             onSelectRevision={jest.fn()}
             selectedRevisions={[]}
             width={300}
@@ -199,7 +199,7 @@ describe('HoverOverlay', () => {
         fireEvent.mouseMove(getByTestId('hoveroverlay'));
       });
 
-      expect(handleHoverArtifact).toHaveBeenCalledWith(null);
+      expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
     });
   });
 
@@ -211,7 +211,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={[]}
             width={300}
@@ -234,7 +234,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={['1234']}
             width={300}
@@ -256,7 +256,7 @@ describe('HoverOverlay', () => {
           <HoverOverlay
             data={data}
             height={400}
-            onHoverArtifact={jest.fn()}
+            onHoverArtifacts={jest.fn()}
             onSelectRevision={jest.fn()}
             selectedRevisions={['abcdefg1234567', 'abcd']}
             width={300}

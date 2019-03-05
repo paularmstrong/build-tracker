@@ -67,6 +67,7 @@ export interface ArtifactCell {
 export interface GroupCell {
   type: CellType.GROUP;
   text: string;
+  artifactNames: Array<string>;
 }
 export type HeaderRow = [TextCell, ...(Array<RevisionCell | RevisionDeltaCell>)];
 export type ArtifactRow = [ArtifactCell, ...(Array<TotalCell | DeltaCell>)];
@@ -236,7 +237,7 @@ export default class BuildComparator {
   public get matrixTotal(): ComparisonMatrix['total'] {
     if (!this._matrixTotal) {
       this._matrixTotal = [
-        { type: CellType.GROUP, text: 'All' },
+        { type: CellType.GROUP, text: 'All', artifactNames: this.artifactNames },
         ...flatten(
           this.buildDeltas.map((buildDeltas, i) => [
             {
@@ -303,18 +304,18 @@ export default class BuildComparator {
           // @ts-ignore
           ...buildDeltas.map(buildDelta => ({
             ...buildDelta.getGroupDelta(group.name),
-            type: CellType.DELTA
+            type: CellType.TOTAL_DELTA
           }))
         ];
       }
     );
-    return [{ type: CellType.GROUP, text: group.name }, ...flatten(cells)];
+    return [{ type: CellType.GROUP, text: group.name, artifactNames: group.artifactNames }, ...flatten(cells)];
   }
 
   public getSum(artifactNames: Array<string>): GroupRow {
     const filters = [new RegExp(`^(?!(${artifactNames.join('|')})$).*$`)];
     return [
-      { type: CellType.GROUP, text: 'Sum' },
+      { type: CellType.GROUP, text: 'Sum', artifactNames },
       ...flatten(
         this.builds.map((changeBuild, buildIndex) => [
           getTotalArtifactSizes(changeBuild, filters),

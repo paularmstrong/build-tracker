@@ -46,7 +46,7 @@ describe('Area', () => {
           colorScale={ColorScale.Rainbow}
           comparator={comparator}
           data={data}
-          hoveredArtifact={null}
+          hoveredArtifacts={[]}
           xScale={xScale}
           yScale={yScale}
         />
@@ -91,7 +91,7 @@ describe('Area', () => {
           colorScale={ColorScale.Rainbow}
           comparator={comparator}
           data={data}
-          hoveredArtifact={null}
+          hoveredArtifacts={[]}
           xScale={xScale}
           yScale={yScale}
         />
@@ -140,7 +140,7 @@ describe('Area', () => {
           colorScale={ColorScale.Rainbow}
           comparator={comparator}
           data={data}
-          hoveredArtifact={'vendor'}
+          hoveredArtifacts={['vendor']}
           xScale={xScale}
           yScale={yScale}
         />

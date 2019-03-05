@@ -30,6 +30,8 @@ const builds = [
   new Build(buildDataE.meta, buildDataE.artifacts)
 ];
 
+const groups = [{ name: 'Home', artifactNames: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'] }];
+
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
   const [compareRevisions, setCompareRevisions] = React.useState<Array<string>>([]);
@@ -37,7 +39,8 @@ const Main = (): React.ReactElement => {
   const activeComparator = React.useMemo(
     (): Comparator =>
       new Comparator({
-        builds: builds.filter(build => compareRevisions.indexOf(build.getMetaValue('revision')) !== -1)
+        builds: builds.filter(build => compareRevisions.indexOf(build.getMetaValue('revision')) !== -1),
+        groups
       }),
     [compareRevisions]
   );
@@ -45,7 +48,7 @@ const Main = (): React.ReactElement => {
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
   const [sizeKey, setSizeKey] = React.useState<string>(comparator.sizeKeys[0]);
   const [focusedRevision, setFocusedRevision] = React.useState<string>(null);
-  const [hoveredArtifact, setHoveredArtifact] = React.useState<string>(null);
+  const [hoveredArtifacts, setHoveredArtifacts] = React.useState<Array<string>>([]);
   const [disabledArtifactsVisible, setDisabledArtifactsVisible] = React.useState<boolean>(true);
   const [activeArtifacts, setActiveArtifacts] = React.useState<{ [key: string]: boolean }>(
     comparator.artifactNames.reduce((memo: { [key: string]: boolean }, name: string) => {
@@ -63,30 +66,22 @@ const Main = (): React.ReactElement => {
     setColorScale(() => scale);
   }, []);
 
-  const handleDisableArtifact = React.useCallback((name: string): void => {
+  const handleDisableArtifacts = React.useCallback((artifactNames: Array<string>): void => {
     setActiveArtifacts(activeArtifacts => {
-      if (name === 'All') {
-        Object.keys(activeArtifacts).forEach(name => {
-          activeArtifacts[name] = false;
-        });
-      } else {
-        activeArtifacts[name] = false;
-      }
-      return activeArtifacts;
+      return Object.entries(activeArtifacts).reduce((memo, [artifactName, isActive]) => {
+        memo[artifactName] = artifactNames.includes(artifactName) ? false : isActive;
+        return memo;
+      }, {});
     });
     forceUpdate(Date.now());
   }, []);
 
-  const handleEnableArtifact = React.useCallback((name: string): void => {
+  const handleEnableArtifacts = React.useCallback((artifactNames: Array<string>): void => {
     setActiveArtifacts(activeArtifacts => {
-      if (name === 'All') {
-        Object.keys(activeArtifacts).forEach(name => {
-          activeArtifacts[name] = true;
-        });
-      } else {
-        activeArtifacts[name] = true;
-      }
-      return activeArtifacts;
+      return Object.entries(activeArtifacts).reduce((memo, [artifactName, isActive]) => {
+        memo[artifactName] = artifactNames.includes(artifactName) ? true : isActive;
+        return memo;
+      }, {});
     });
     forceUpdate(Date.now());
   }, []);
@@ -186,8 +181,8 @@ const Main = (): React.ReactElement => {
             activeArtifacts={activeArtifacts}
             colorScale={colorScale}
             comparator={comparator}
-            hoveredArtifact={hoveredArtifact}
-            onHoverArtifact={setHoveredArtifact}
+            hoveredArtifacts={hoveredArtifacts}
+            onHoverArtifacts={setHoveredArtifacts}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={compareRevisions}
             sizeKey={sizeKey}
@@ -201,12 +196,12 @@ const Main = (): React.ReactElement => {
               comparator={activeComparator}
               disabledArtifactsVisible={disabledArtifactsVisible}
               focusedRevision={focusedRevision}
-              hoveredArtifact={hoveredArtifact}
-              onDisableArtifact={handleDisableArtifact}
-              onEnableArtifact={handleEnableArtifact}
+              hoveredArtifacts={hoveredArtifacts}
+              onDisableArtifacts={handleDisableArtifacts}
+              onEnableArtifacts={handleEnableArtifacts}
               onFocusRevision={setFocusedRevision}
               onUnfocusRevision={handleUnfocusRevision}
-              onHoverArtifact={setHoveredArtifact}
+              onHoverArtifacts={setHoveredArtifacts}
               onRemoveRevision={handleRemoveRevision}
               sizeKey={sizeKey}
               style={[styles.column, styles.table]}

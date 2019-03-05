@@ -8,6 +8,35 @@ import { Switch } from 'react-native';
 import { fireEvent, render } from 'react-native-testing-library';
 
 describe('GroupCell', () => {
+  describe('folder', () => {
+    test('mouse enter shows a tooltip', () => {
+      const { getByTestId, queryAllByProps } = render(
+        <GroupCell
+          cell={{ type: CellType.GROUP, text: 'tacos', artifactNames: ['main'] }}
+          isActive={false}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+        />
+      );
+      fireEvent(getByTestId('groupicon'), 'mouseEnter');
+      expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(1);
+    });
+
+    test('mouse leave removes the tooltip', () => {
+      const { getByTestId, queryAllByProps } = render(
+        <GroupCell
+          cell={{ type: CellType.GROUP, text: 'tacos', artifactNames: ['main'] }}
+          isActive={false}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+        />
+      );
+      fireEvent(getByTestId('groupicon'), 'mouseEnter');
+      fireEvent(getByTestId('groupicon'), 'mouseLeave');
+      expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(0);
+    });
+  });
+
   describe('switch', () => {
     test('toggles with the name and on', () => {
       const handleDisable = jest.fn();
@@ -15,7 +44,6 @@ describe('GroupCell', () => {
       const { getByType } = render(
         <GroupCell
           cell={{ type: CellType.GROUP, text: 'tacos', artifactNames: ['main'] }}
-          color="red"
           isActive={false}
           onDisable={handleDisable}
           onEnable={handleEnable}
@@ -31,7 +59,6 @@ describe('GroupCell', () => {
       const { getByType } = render(
         <GroupCell
           cell={{ type: CellType.GROUP, text: 'tacos', artifactNames: ['main'] }}
-          color="red"
           isActive
           onDisable={handleDisable}
           onEnable={handleEnable}

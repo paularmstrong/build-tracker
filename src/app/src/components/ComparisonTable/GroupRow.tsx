@@ -1,10 +1,9 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as Theme from '../../theme';
 import GroupCell from './GroupCell';
-import { hsl } from 'd3-color';
 import React from 'react';
-import { ScaleSequential } from 'd3-scale';
 import { StyleSheet } from 'react-native';
 import TotalCell from './TotalCell';
 import TotalDeltaCell from './TotalDeltaCell';
@@ -19,19 +18,16 @@ import {
 } from '@build-tracker/comparator';
 
 interface Props {
-  colorScale: ScaleSequential<string>;
   isActive: boolean;
-  isHovered: boolean;
   onDisable: (artifactNames: Array<string>) => void;
   onEnable: (artifactNames: Array<string>) => void;
   onHover: (artifactNames: Array<string>) => void;
   row: GRow;
-  rowIndex: number;
   sizeKey: string;
 }
 
 export const GroupRow = (props: Props): React.ReactElement => {
-  const { colorScale, isActive, isHovered, onDisable, onEnable, onHover, row, rowIndex, sizeKey } = props;
+  const { isActive, onDisable, onEnable, onHover, row, sizeKey } = props;
 
   const mapGroupCell = (cell: GCell | TCell | TDCell | DCell, i: number): React.ReactElement | void => {
     switch (cell.type) {
@@ -39,28 +35,23 @@ export const GroupRow = (props: Props): React.ReactElement => {
         return (
           <GroupCell
             cell={cell}
-            color={colorScale(rowIndex)}
             key={i}
             isActive={isActive}
             onDisable={onDisable}
             onEnable={onEnable}
+            style={styles.cell}
           />
         );
       }
       case CellType.TOTAL:
-        return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
+        return <TotalCell cell={cell} key={i} sizeKey={sizeKey} style={styles.cell} />;
       case CellType.TOTAL_DELTA:
-        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
+        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} style={styles.cell} />;
     }
   };
 
-  let backgroundColor = 'transparent';
   const { artifactNames } = row[0];
-  if (isHovered) {
-    const color = hsl(colorScale(rowIndex));
-    color.l = 0.9;
-    backgroundColor = color.toString();
-  }
+
   const handleMouseEnter = React.useCallback(() => {
     onHover(isActive ? artifactNames : []);
   }, [artifactNames, isActive, onHover]);
@@ -69,7 +60,7 @@ export const GroupRow = (props: Props): React.ReactElement => {
   const rows = row.map(mapGroupCell);
 
   return (
-    <Tr onMouseEnter={handleMouseEnter} style={[styles.row, { backgroundColor }]}>
+    <Tr onMouseEnter={handleMouseEnter} style={[styles.row]}>
       {rows}
     </Tr>
   );
@@ -77,9 +68,13 @@ export const GroupRow = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   row: {
+    backgroundColor: Theme.Color.Gray05,
     // @ts-ignore
     transitionProperty: 'background-color',
     transitionDuration: '0.1s'
+  },
+  cell: {
+    borderColor: Theme.Color.Gray20
   }
 });
 

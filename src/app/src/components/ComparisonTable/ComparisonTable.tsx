@@ -70,20 +70,17 @@ const ComparisonTable = (props: Props): React.ReactElement => {
       <Thead>
         <HeaderRow onFocusRevision={onFocusRevision} onRemoveRevision={onRemoveRevision} row={matrix.header} />
         <GroupRow
-          colorScale={colorScale}
           isActive={Object.values(activeArtifacts).every(Boolean)}
-          isHovered={false}
           key={'All'}
           onDisable={onDisableArtifacts}
           onEnable={onEnableArtifacts}
           onHover={onHoverArtifacts}
           row={matrix.total}
-          rowIndex={-1}
           sizeKey={sizeKey}
         />
       </Thead>
       <Tbody>
-        {matrix.groups.map((row, i) => {
+        {matrix.groups.map(row => {
           const { artifactNames, text: groupName } = row[0];
           const isActive = Object.keys(activeArtifacts)
             .filter(artifactName => artifactNames.includes(artifactName))
@@ -93,15 +90,12 @@ const ComparisonTable = (props: Props): React.ReactElement => {
           }
           return (
             <GroupRow
-              colorScale={colorScale}
               isActive={isActive}
-              isHovered={artifactNames.every(artifactName => hoveredArtifacts.includes(artifactName))}
               key={groupName}
               onDisable={onDisableArtifacts}
               onEnable={onEnableArtifacts}
               onHover={onHoverArtifacts}
               row={row}
-              rowIndex={i}
               sizeKey={sizeKey}
             />
           );

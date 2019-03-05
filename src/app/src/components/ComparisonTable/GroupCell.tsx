@@ -2,15 +2,15 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../../theme';
+import FolderIcon from '../../icons/Folder';
 import { GroupCell as GCell } from '@build-tracker/comparator';
-import { hsl } from 'd3-color';
 import React from 'react';
-import { Th } from './../Table';
+import { Th } from '../Table';
+import Tooltip from '../Tooltip';
 import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
   cell: GCell;
-  color: string;
   disabled?: boolean;
   isActive: boolean;
   onDisable: (artifactNames: Array<string>) => void;
@@ -21,16 +21,15 @@ interface Props {
 export const GroupCell = (props: Props): React.ReactElement => {
   const {
     cell: { artifactNames, text },
-    color,
     disabled,
     isActive,
     onDisable,
     onEnable,
     style
   } = props;
-  const brighterColor = hsl(color);
-  brighterColor.s = 0.2;
-  brighterColor.l = 0.8;
+
+  const nameRef = React.useRef<View>(null);
+  const [showTooltip, setShowTooltip] = React.useState(false);
 
   const handleValueChange = React.useCallback(
     (toggled: boolean): void => {
@@ -39,18 +38,34 @@ export const GroupCell = (props: Props): React.ReactElement => {
     [artifactNames, onDisable, onEnable]
   );
 
+  const handleToggleTooltip = React.useCallback(() => {
+    setShowTooltip(showTooltip => !showTooltip);
+  }, []);
+
   return (
     <Th style={style}>
       <View style={styles.artifact}>
-        <View style={styles.name}>
-          <Text>{text}</Text>
+        <View ref={nameRef} style={styles.name}>
+          <Text>
+            {
+              // @ts-ignore
+              <FolderIcon
+                onMouseEnter={handleToggleTooltip}
+                onMouseLeave={handleToggleTooltip}
+                style={styles.folder}
+                testID="groupicon"
+              />
+            }{' '}
+            {text}
+          </Text>
         </View>
+        {showTooltip ? <Tooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
         <View style={styles.switch}>
           {
             // @ts-ignore
             <Switch
-              activeThumbColor={color}
-              activeTrackColor={brighterColor.toString()}
+              activeThumbColor={Theme.Color.Primary30}
+              activeTrackColor={Theme.Color.Primary00}
               disabled={disabled}
               onValueChange={handleValueChange}
               value={isActive}
@@ -72,6 +87,9 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     justifyContent: 'center',
     paddingEnd: Theme.Spacing.Xsmall
+  },
+  folder: {
+    color: Theme.Color.Gray40
   },
   switch: {
     paddingStart: Theme.Spacing.Xsmall

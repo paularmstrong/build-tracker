@@ -67,6 +67,7 @@ const Tooltip = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   root: {
+    maxWidth: 400,
     // @ts-ignore
     position: 'absolute',
     backgroundColor: Theme.Color.Gray50,

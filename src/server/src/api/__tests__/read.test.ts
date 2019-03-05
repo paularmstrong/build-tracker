@@ -24,7 +24,7 @@ describe('read', () => {
   describe('queryByRevision', () => {
     test('queries by revision', () => {
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/build/1234567890')
@@ -37,7 +37,7 @@ describe('read', () => {
     test('throws 500 on failure', () => {
       queries.build.byRevision.mockImplementation(() => Promise.reject('tacos'));
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/build/1234567890')
@@ -50,7 +50,7 @@ describe('read', () => {
   describe('queryByRevisionRange', () => {
     test('queries by revision range', () => {
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/builds/range/1234567..abcdef')
@@ -63,7 +63,7 @@ describe('read', () => {
     test('throws 500 on failure', () => {
       queries.builds.byRevisionRange.mockImplementation(() => Promise.reject('tacos'));
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/builds/range/1234567..abcdef')
@@ -76,7 +76,7 @@ describe('read', () => {
   describe('queryByTimeRange', () => {
     test('queries by time range', () => {
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/builds/time/1234567..2345678')
@@ -89,7 +89,7 @@ describe('read', () => {
     test('throws 500 on failure', () => {
       queries.builds.byTimeRange.mockImplementation(() => Promise.reject('tacos'));
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/builds/time/1234567..2345678')
@@ -102,7 +102,7 @@ describe('read', () => {
   describe('queryByRevisions', () => {
     test('queries by revision range', () => {
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/builds/list/1234567/abcdef/239587')
@@ -115,7 +115,7 @@ describe('read', () => {
     test('throws 500 on failure', () => {
       queries.builds.byRevisions.mockImplementation(() => Promise.reject('tacos'));
       const app = express();
-      app.use(middleware(express.Router(), queries, {}));
+      app.use(middleware(express.Router(), queries, {}, {}));
 
       return request(app)
         .get('/api/builds/list/1234567/abcdef/239587')

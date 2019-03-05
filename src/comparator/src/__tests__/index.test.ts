@@ -210,7 +210,7 @@ describe('BuildComparator', () => {
 
     test('includes deltas for each artifact', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixBody[2][3]).toEqual({
+      expect(comparator.matrixBody[2][3]).toMatchObject({
         type: 'delta',
         hashChanged: false,
         name: 'tacos',

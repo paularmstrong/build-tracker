@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { ArtifactFilters } from '@build-tracker/types';
 import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
 import markdownTable from 'markdown-table';
+import { ArtifactBudgets, ArtifactFilters } from '@build-tracker/types';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
@@ -92,6 +92,8 @@ const emptyArtifact = Object.freeze({
   sizes: {}
 });
 
+const emptyObject = Object.freeze({});
+
 const getTotalArtifactSizes = (build: Build, artifactFilters: ArtifactFilters): TotalCell =>
   // @ts-ignore reducing doesn't seem to make typescript happy
   build.artifactNames
@@ -123,9 +125,8 @@ const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): 
   `${formatBytes(cell.sizes[sizeKey] || 0)} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
 const defaultRowFilter = (): boolean => true;
 
-const emptyArray = [];
-
 interface ComparatorOptions {
+  artifactBudgets?: ArtifactBudgets;
   artifactFilters?: ArtifactFilters;
   builds: Array<Build>;
 }
@@ -133,6 +134,7 @@ interface ComparatorOptions {
 export default class BuildComparator {
   public builds: Array<Build>;
 
+  private _artifactBudgets: ArtifactBudgets;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Array<string>;
   private _sizeKeys: Array<string>;
@@ -142,9 +144,10 @@ export default class BuildComparator {
   private _matrixTotal: Array<BodyCell>;
   private _matrixBody: Array<Array<BodyCell>>;
 
-  public constructor({ artifactFilters, builds }: ComparatorOptions) {
+  public constructor({ artifactBudgets, artifactFilters, builds }: ComparatorOptions) {
     this.builds = builds;
-    this._artifactFilters = artifactFilters || emptyArray;
+    this._artifactFilters = artifactFilters || [];
+    this._artifactBudgets = artifactBudgets || emptyObject;
   }
 
   public get artifactNames(): Array<string> {
@@ -187,7 +190,7 @@ export default class BuildComparator {
     if (!this._buildDeltas) {
       this._buildDeltas = this.builds.map((baseBuild, i) => {
         return this.builds.slice(0, i).map(prevBuild => {
-          return new BuildDelta(baseBuild, prevBuild, this._artifactFilters);
+          return new BuildDelta(baseBuild, prevBuild, this._artifactBudgets, this._artifactFilters);
         });
       });
     }
@@ -243,26 +246,30 @@ export default class BuildComparator {
   public get matrixBody(): Array<Array<BodyCell>> {
     if (!this._matrixBody) {
       this._matrixBody = this.artifactNames.map(artifactName => {
-        const cells = this.buildDeltas.map(
-          (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
-            const artifact = this.builds[i].getArtifact(artifactName);
-            return [
-              {
-                ...(artifact ? artifact : emptyArtifact),
-                type: CellType.TOTAL
-              },
-              // @ts-ignore
-              ...buildDeltas.map(buildDelta => ({
-                ...buildDelta.getArtifactDelta(artifactName),
-                type: CellType.DELTA
-              }))
-            ];
-          }
-        );
-        return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
+        return this.getArtifact(artifactName);
       });
     }
     return this._matrixBody;
+  }
+
+  public getArtifact(artifactName: string): Array<BodyCell> {
+    const cells = this.buildDeltas.map(
+      (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
+        const artifact = this.builds[i].getArtifact(artifactName);
+        return [
+          {
+            ...(artifact ? artifact : emptyArtifact),
+            type: CellType.TOTAL
+          },
+          // @ts-ignore
+          ...buildDeltas.map(buildDelta => ({
+            ...buildDelta.getArtifactDelta(artifactName),
+            type: CellType.DELTA
+          }))
+        ];
+      }
+    );
+    return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
   }
 
   public getSum(artifactNames: Array<string>): Array<BodyCell> {

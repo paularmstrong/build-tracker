@@ -1,15 +1,24 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { ArtifactFilters } from '@build-tracker/types';
+import { ArtifactBudgets, ArtifactFilters, Budget } from '@build-tracker/types';
 import Build, { ArtifactSizes, BuildMeta } from '@build-tracker/build';
 import { delta, percentDelta } from './artifact-math';
+
+interface BudgetResult {
+  passing: boolean;
+  expected: number;
+  actual: number;
+  type: Budget['type'];
+  level: Budget['level'];
+}
 
 interface ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
   hashChanged: boolean;
   name: string;
   sizes: AS;
   percents: AS;
+  budget: { [sizeKey: string]: BudgetResult };
 }
 
 interface BuildSizeDelta<M extends BuildMeta = BuildMeta, AS extends ArtifactSizes = ArtifactSizes> {
@@ -21,15 +30,23 @@ interface BuildSizeDelta<M extends BuildMeta = BuildMeta, AS extends ArtifactSiz
 export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes> {
   private _baseBuild: Build<M, A>;
   private _prevBuild: Build<M, A>;
+
+  private _artifactBudgets: ArtifactBudgets;
   private _artifactDeltas: Map<string, ArtifactDelta<A>>;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Set<string>;
   private _sizeKeys: Set<string>;
   private _totalDelta: BuildSizeDelta<M, A>;
 
-  public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, artifactFilters?: ArtifactFilters) {
+  public constructor(
+    baseBuild: Build<M, A>,
+    prevBuild: Build<M, A>,
+    artifactBudgets: ArtifactBudgets,
+    artifactFilters?: ArtifactFilters
+  ) {
     this._baseBuild = baseBuild;
     this._prevBuild = prevBuild;
+    this._artifactBudgets = artifactBudgets;
     this._artifactFilters = artifactFilters || [];
   }
 
@@ -101,8 +118,30 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
           return memo;
         }, {});
 
+        let budgets = [];
+        (this._artifactBudgets[artifactName] || []).forEach(budget => {
+          const { level, maximum, sizeKey, type } = budget;
+          const actual =
+            type === 'delta'
+              ? sizeDeltas[sizeKey]
+              : type === 'percentDelta'
+              ? percentDeltas[sizeKey]
+              : baseArtifact
+              ? baseArtifact.sizes[sizeKey]
+              : 0;
+          const expected = maximum;
+          budgets.push({
+            passing: actual < expected,
+            type,
+            level,
+            actual,
+            expected
+          });
+        });
+
         this._artifactDeltas.set(artifactName, {
           name: artifactName,
+          budgets,
           hashChanged: !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash,
           // @ts-ignore constructed above
           sizes: sizeDeltas,

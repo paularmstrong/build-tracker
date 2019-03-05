@@ -3,6 +3,7 @@
  */
 import bodyParser from 'body-parser';
 import Build from '@build-tracker/build';
+import Comparator from '@build-tracker/comparator';
 import express from 'express';
 import { insertBuild } from '../insert';
 import request from 'supertest';
@@ -25,7 +26,7 @@ describe('insert build handler', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .then(res => {
-          expect(res.body).toEqual({ foo: 'bar' });
+          expect(res.body).toMatchObject({ comparator: new Comparator({ builds: [build, parentBuild] }).toJSON() });
         });
     });
 

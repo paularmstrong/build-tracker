@@ -1,42 +1,30 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-export interface SizeBudget {
-  delta?: number;
-  percent?: number;
-}
+export type ArtifactFilters = Array<RegExp>;
 
 export interface Budget {
-  warn?: {
-    [key: string]: SizeBudget;
-  };
-  error?: {
-    [key: string]: SizeBudget;
-  };
-  good?: {
-    [key: string]: SizeBudget;
-  };
+  level: 'warn' | 'error';
+  sizeKey: string;
+  type: 'delta' | 'percentDelta' | 'size';
+  maximum: number;
 }
 
 export interface Group {
   artifactNames: Array<string>;
-  budget?: Budget;
+  budgets?: Array<Budget>;
   name: string;
 }
 
-export interface ArtifactBudget {
-  budget: Budget;
-  name: string;
+export interface ArtifactBudgets {
+  [artifactName: string]: Array<Budget>;
 }
-
-export type ArtifactFilters = Array<RegExp>;
 
 export interface AppConfig {
   artifacts?: {
-    budgets: Array<ArtifactBudget>;
+    budgets: ArtifactBudgets;
     filters: ArtifactFilters;
   };
-  budgets?: Budget;
   groups?: Array<Group>;
   root: string;
   routing?: 'hash' | 'history';

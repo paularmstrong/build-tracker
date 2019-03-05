@@ -20,8 +20,8 @@ describe('BuildDelta', () => {
       { revision: { value: '456', url: 'https://build-tracker.local' }, parentRevision: 'abc', timestamp: Date.now() },
       [
         { name: 'tacos', hash: '123', sizes: { stat: 1, gzip: 1 } },
-        { name: 'burritos', hash: '123', sizes: { stat: 6, gzip: 4 } },
-        { name: 'churros', hash: '123', sizes: { stat: 6, gzip: 4 } }
+        { name: 'burritos', hash: 'abc', sizes: { stat: 6, gzip: 4 } },
+        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } }
       ]
     );
   });
@@ -93,7 +93,7 @@ describe('BuildDelta', () => {
         },
         {
           budgets: [],
-          hashChanged: false,
+          hashChanged: true,
           name: 'burritos',
           sizes: {
             gzip: -2,
@@ -138,7 +138,7 @@ describe('BuildDelta', () => {
         },
         {
           budgets: [],
-          hashChanged: false,
+          hashChanged: true,
           name: 'burritos',
           sizes: {
             gzip: 2,
@@ -272,6 +272,94 @@ describe('BuildDelta', () => {
             passing: false,
             expected: 0.5,
             actual: 1,
+            type: 'percentDelta',
+            level: 'error'
+          }
+        ]
+      });
+    });
+  });
+
+  describe('getGroupDelta', () => {
+    test('gets the delta for a defined group', () => {
+      const bd = new BuildDelta(buildA, buildB, { groups: [{ name: 'stuff', artifactNames: ['burritos', 'tacos'] }] });
+      expect(bd.getGroupDelta('stuff')).toEqual({
+        budgets: [],
+        hashChanged: true,
+        name: 'stuff',
+        percents: {
+          gzip: -0.4,
+          stat: -0.2857142857142857
+        },
+        sizes: {
+          gzip: -2,
+          stat: -2
+        }
+      });
+    });
+
+    test('includes failing budgets for size', () => {
+      const bd = new BuildDelta(buildB, buildA, {
+        groups: [
+          {
+            name: 'foo',
+            artifactNames: ['burritos', 'tacos'],
+            budgets: [{ level: 'error', sizeKey: 'stat', type: 'size', maximum: 5 }]
+          }
+        ]
+      });
+      expect(bd.getGroupDelta('foo')).toMatchObject({
+        budgets: [
+          {
+            passing: false,
+            expected: 5,
+            actual: 7,
+            type: 'size',
+            level: 'error'
+          }
+        ]
+      });
+    });
+
+    test('includes failing budgets for delta', () => {
+      const bd = new BuildDelta(buildB, buildA, {
+        groups: [
+          {
+            name: 'foo',
+            artifactNames: ['burritos', 'tacos'],
+            budgets: [{ level: 'error', sizeKey: 'gzip', type: 'delta', maximum: 2 }]
+          }
+        ]
+      });
+      expect(bd.getGroupDelta('foo')).toMatchObject({
+        budgets: [
+          {
+            passing: false,
+            expected: 2,
+            actual: 2,
+            type: 'delta',
+            level: 'error'
+          }
+        ]
+      });
+    });
+
+    test('includes failing budgets for percentDelta', () => {
+      const bd = new BuildDelta(buildB, buildA, {
+        groups: [
+          {
+            name: 'foo',
+            artifactNames: ['burritos', 'tacos'],
+            budgets: [{ level: 'error', sizeKey: 'stat', type: 'percentDelta', maximum: 0.2 }]
+          }
+        ]
+      });
+      expect(bd.getGroupDelta('foo')).toMatchObject({
+        budgets: [
+          {
+            passing: false,
+            expected: 0.2,
+            actual: 0.4,
             type: 'percentDelta',
             level: 'error'
           }

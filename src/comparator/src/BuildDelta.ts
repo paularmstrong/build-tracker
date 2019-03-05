@@ -43,6 +43,8 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
   private _artifactDeltas: Map<string, ArtifactDelta<A>>;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Set<string>;
+  private _groups: Array<Group>;
+  private _groupDeltas: Map<string, ArtifactDelta<A>>;
   private _sizeKeys: Set<string>;
   private _totalDelta: BuildSizeDelta<M, A>;
 
@@ -51,6 +53,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     this._prevBuild = prevBuild;
     this._artifactBudgets = options.artifactBudgets || emptyObject;
     this._artifactFilters = options.artifactFilters || [];
+    this._groups = options.groups || [];
   }
 
   public get baseBuild(): Build<M, A> {
@@ -155,6 +158,69 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     }
 
     return Array.from(this._artifactDeltas.values());
+  }
+
+  public getGroupDelta(groupName: string): ArtifactDelta<A> {
+    if (!this._groupDeltas) {
+      this.groupDeltas;
+    }
+    return this._groupDeltas.get(groupName);
+  }
+
+  public get groupDeltas(): Map<string, ArtifactDelta<A>> {
+    if (!this._groupDeltas) {
+      this._groupDeltas = new Map();
+      this._groups.forEach(group => {
+        const baseSum = this._baseBuild.getSum(group.artifactNames);
+        const prevSum = this._prevBuild.getSum(group.artifactNames);
+
+        const hashChanged = group.artifactNames.reduce((changed, artifactName) => {
+          const baseArtifact = this._baseBuild.getArtifact(artifactName);
+          const prevArtifact = this._prevBuild.getArtifact(artifactName);
+          return changed ? true : !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash;
+        }, false);
+
+        const sizes = {};
+        const percents = {};
+        Object.keys(baseSum).forEach(sizeKey => {
+          sizes[sizeKey] = delta(sizeKey, baseSum, prevSum);
+          percents[sizeKey] = percentDelta(sizeKey, baseSum, prevSum);
+        });
+
+        const budgets = [];
+        (group.budgets || []).forEach(budget => {
+          const { level, maximum, sizeKey, type } = budget;
+          const actual =
+            type === 'delta'
+              ? sizes[sizeKey]
+              : type === 'percentDelta'
+              ? percents[sizeKey]
+              : baseSum
+              ? baseSum[sizeKey]
+              : 0;
+          const expected = maximum;
+          budgets.push({
+            passing: actual < expected,
+            type,
+            level,
+            actual,
+            expected
+          });
+        });
+
+        this._groupDeltas.set(group.name, {
+          name: group.name,
+          hashChanged,
+          // @ts-ignore
+          sizes,
+          // @ts-ignore
+          percents,
+          budgets
+        });
+      });
+    }
+
+    return this._groupDeltas;
   }
 
   public get totalDelta(): BuildSizeDelta<M, A> {

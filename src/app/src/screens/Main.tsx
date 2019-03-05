@@ -18,7 +18,7 @@ import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import { Clipboard, StyleSheet, View } from 'react-native';
-import Comparator, { ArtifactCell, BodyCell } from '@build-tracker/comparator';
+import Comparator, { ArtifactRow } from '@build-tracker/comparator';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
 
@@ -123,28 +123,28 @@ const Main = (): React.ReactElement => {
     setDisabledArtifactsVisible(showDisabled);
   }, []);
 
-  const rowFilter = (row: Array<BodyCell>): boolean => {
-    const artifactCell = row[0] as ArtifactCell;
+  const artifactFilter = (row: ArtifactRow): boolean => {
+    const artifactCell = row[0];
     return activeArtifacts[artifactCell.text];
   };
 
   const handleCopyAsMarkdown = React.useCallback((): void => {
     Clipboard.setString(
       activeComparator.toMarkdown({
-        rowFilter,
+        artifactFilter,
         sizeKey
       })
     );
-  }, [activeComparator, rowFilter, sizeKey]);
+  }, [activeComparator, artifactFilter, sizeKey]);
 
   const handleCopyAsCsv = React.useCallback((): void => {
     Clipboard.setString(
       activeComparator.toCsv({
-        rowFilter,
+        artifactFilter,
         sizeKey
       })
     );
-  }, [activeComparator, rowFilter, sizeKey]);
+  }, [activeComparator, artifactFilter, sizeKey]);
 
   const overflowItems = React.useMemo(
     () =>

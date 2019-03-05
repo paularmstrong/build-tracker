@@ -10,13 +10,13 @@ import { StyleSheet } from 'react-native';
 import { TotalCell } from '../TotalCell';
 import { TotalDeltaCell } from '../TotalDeltaCell';
 import { Tr } from '../../Table';
-import { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
+import { ArtifactRow, CellType, GroupRow } from '@build-tracker/comparator';
 import { fireEvent, render } from 'react-native-testing-library';
 
 describe('BodyRow', () => {
   describe('render', () => {
     test('artifact cell', () => {
-      const row: Array<BodyCell> = [{ type: CellType.ARTIFACT, text: 'tacos' }];
+      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'tacos' }];
       const handleDisable = jest.fn();
       const handleEnable = jest.fn();
       const { getByType } = render(
@@ -42,7 +42,8 @@ describe('BodyRow', () => {
     });
 
     test('delta cell', () => {
-      const row: Array<BodyCell> = [
+      const row: ArtifactRow = [
+        { type: CellType.ARTIFACT, text: 'tacos' },
         { name: 'tacos', type: CellType.DELTA, sizes: { stat: 4 }, percents: { stat: 4 }, hashChanged: false }
       ];
       const { getByType } = render(
@@ -59,13 +60,16 @@ describe('BodyRow', () => {
         />
       );
       expect(getByType(DeltaCell).props).toMatchObject({
-        cell: row[0],
+        cell: row[1],
         sizeKey: 'stat'
       });
     });
 
     test('total cell', () => {
-      const row: Array<BodyCell> = [{ type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }];
+      const row: ArtifactRow = [
+        { type: CellType.ARTIFACT, text: 'tacos' },
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+      ];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}
@@ -80,13 +84,16 @@ describe('BodyRow', () => {
         />
       );
       expect(getByType(TotalCell).props).toMatchObject({
-        cell: row[0],
+        cell: row[1],
         sizeKey: 'stat'
       });
     });
 
     test('total delta cell', () => {
-      const row: Array<BodyCell | TDCell> = [{ type: CellType.TOTAL_DELTA, sizes: { stat: 4 }, percents: { stat: 4 } }];
+      const row: GroupRow = [
+        { type: CellType.GROUP, text: 'tacos' },
+        { type: CellType.TOTAL_DELTA, sizes: { stat: 4 }, percents: { stat: 4 } }
+      ];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}
@@ -101,7 +108,7 @@ describe('BodyRow', () => {
         />
       );
       expect(getByType(TotalDeltaCell).props).toMatchObject({
-        cell: row[0],
+        cell: row[1],
         sizeKey: 'stat'
       });
     });
@@ -109,7 +116,10 @@ describe('BodyRow', () => {
 
   describe('hovering', () => {
     test('is transparent background when row is not isHovered', () => {
-      const row: Array<BodyCell> = [{ type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }];
+      const row: ArtifactRow = [
+        { type: CellType.ARTIFACT, text: 'tacos' },
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+      ];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}
@@ -129,7 +139,10 @@ describe('BodyRow', () => {
     });
 
     test('is visually highlighed when the row isHovered', () => {
-      const row: Array<BodyCell> = [{ type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }];
+      const row: ArtifactRow = [
+        { type: CellType.ARTIFACT, text: 'tacos' },
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+      ];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}
@@ -149,7 +162,7 @@ describe('BodyRow', () => {
     });
 
     test('calls back to onHoverArtifact when mouse enter', () => {
-      const row: Array<BodyCell> = [{ type: CellType.ARTIFACT, text: 'tacos' }];
+      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'tacos' }];
       const handleHoverArtifact = jest.fn();
       const { getByType } = render(
         <BodyRow
@@ -169,7 +182,7 @@ describe('BodyRow', () => {
     });
 
     test('calls onHoverArtifact with null if is not active', () => {
-      const row: Array<BodyCell> = [{ type: CellType.ARTIFACT, text: 'tacos' }];
+      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'tacos' }];
       const handleHoverArtifact = jest.fn();
       const { getByType } = render(
         <BodyRow
@@ -189,7 +202,7 @@ describe('BodyRow', () => {
     });
 
     test('calls onHoverArtifact with null if is All', () => {
-      const row: Array<BodyCell> = [{ type: CellType.ARTIFACT, text: 'All' }];
+      const row: ArtifactRow = [{ type: CellType.ARTIFACT, text: 'All' }];
       const handleHoverArtifact = jest.fn();
       const { getByType } = render(
         <BodyRow

@@ -2,14 +2,14 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../../theme';
-import { ArtifactCell as Cell } from '@build-tracker/comparator';
 import { hsl } from 'd3-color';
 import React from 'react';
 import { Th } from './../Table';
+import { ArtifactCell as ACell, GroupCell as GCell } from '@build-tracker/comparator';
 import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
-  cell: Cell;
+  cell: ACell | GCell;
   color: string;
   disabled?: boolean;
   isActive: boolean;

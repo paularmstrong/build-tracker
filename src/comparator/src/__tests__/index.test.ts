@@ -3,7 +3,14 @@
  */
 import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
-import BuildComparator, { BodyCell, DeltaCell, RevisionCell, RevisionDeltaCell, TotalCell, TotalDeltaCell } from '..';
+import BuildComparator, {
+  ArtifactRow,
+  DeltaCell,
+  RevisionCell,
+  RevisionDeltaCell,
+  TotalCell,
+  TotalDeltaCell
+} from '..';
 
 const build1 = new Build({ revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 }, [
   { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
@@ -40,10 +47,10 @@ describe('BuildComparator', () => {
       expect(comparator.artifactNames).toEqual(['tacos']);
     });
 
-    test('filters artifacts from the matrixBody', () => {
+    test('filters artifacts from the matrixArtifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      expect(comparator.matrixBody).toHaveLength(1);
-      expect(comparator.matrixBody[0][0]).toMatchObject({ text: 'tacos' });
+      expect(comparator.matrixArtifacts).toHaveLength(1);
+      expect(comparator.matrixArtifacts[0][0]).toMatchObject({ text: 'tacos' });
     });
   });
 
@@ -155,7 +162,7 @@ describe('BuildComparator', () => {
     test('includes an artifact cell for All', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.matrixTotal[0]).toEqual({
-        type: 'artifact',
+        type: 'group',
         text: 'All'
       });
     });
@@ -182,10 +189,10 @@ describe('BuildComparator', () => {
     });
   });
 
-  describe('matrixBody', () => {
+  describe('matrixArtifacts', () => {
     test('includes a row for each artifact', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixBody.map(r => r[0])).toEqual([
+      expect(comparator.matrixArtifacts.map(r => r[0])).toEqual([
         { type: 'artifact', text: 'churros' },
         { type: 'artifact', text: 'burritos' },
         { type: 'artifact', text: 'tacos' }
@@ -194,12 +201,12 @@ describe('BuildComparator', () => {
 
     test('includes totals for each artifact', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixBody[2][1]).toEqual({
+      expect(comparator.matrixArtifacts[2][1]).toEqual({
         type: 'total',
         name: 'tacos',
         sizes: { gzip: 45, stat: 123 }
       });
-      expect(comparator.matrixBody[2][2]).toEqual({
+      expect(comparator.matrixArtifacts[2][2]).toEqual({
         type: 'total',
         name: 'tacos',
         sizes: { gzip: 43, stat: 123 }
@@ -208,7 +215,7 @@ describe('BuildComparator', () => {
 
     test('includes deltas for each artifact', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixBody[2][3]).toMatchObject({
+      expect(comparator.matrixArtifacts[2][3]).toMatchObject({
         type: 'delta',
         hashChanged: false,
         name: 'tacos',
@@ -216,23 +223,24 @@ describe('BuildComparator', () => {
         sizes: { gzip: -2, stat: 0 }
       });
     });
+  });
 
-    test('includes rows for groups before artifacts', () => {
-      const comparator = new BuildComparator({
-        builds: [build1, build2],
-        groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
-      });
-      expect(comparator.matrixBody).toHaveLength(4);
-      expect(comparator.matrixBody[0][0]).toEqual({ type: 'artifact', text: 'stuff' });
-    });
-
+  describe('matrixGroups', () => {
     test('includes totals for each group', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
         groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
       });
-      expect(comparator.matrixBody[0][1]).toEqual({ type: 'total', name: 'stuff', sizes: { gzip: 90, stat: 456 } });
-      expect(comparator.matrixBody[0][2]).toEqual({ type: 'total', name: 'stuff', sizes: { gzip: 120, stat: 469 } });
+      expect(comparator.matrixGroups[0][1]).toEqual({
+        type: 'total',
+        name: 'stuff',
+        sizes: { gzip: 90, stat: 456 }
+      });
+      expect(comparator.matrixGroups[0][2]).toEqual({
+        type: 'total',
+        name: 'stuff',
+        sizes: { gzip: 120, stat: 469 }
+      });
     });
 
     test('includes deltas for each group', () => {
@@ -240,7 +248,7 @@ describe('BuildComparator', () => {
         builds: [build1, build2],
         groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
       });
-      expect(comparator.matrixBody[0][3]).toEqual({
+      expect(comparator.matrixGroups[0][3]).toEqual({
         type: 'delta',
         name: 'stuff',
         hashChanged: true,
@@ -262,9 +270,17 @@ describe('BuildComparator', () => {
       expect(comparator.toJSON().total).toBe(comparator.matrixTotal);
     });
 
-    test('includes the body', () => {
+    test('includes the groups', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [{ name: 'yum', artifactNames: ['burritos', 'tacos'] }]
+      });
+      expect(comparator.toJSON().groups).toBe(comparator.matrixGroups);
+    });
+
+    test('includes the artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toJSON().body).toBe(comparator.matrixBody);
+      expect(comparator.toJSON().artifacts).toBe(comparator.matrixArtifacts);
     });
   });
 
@@ -293,9 +309,9 @@ describe('BuildComparator', () => {
 `);
     });
 
-    test('can filter rows', () => {
+    test('can filter artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      const rowFilter = (row): boolean => {
+      const artifactFilter = (row): boolean => {
         return row.some(cell => {
           if (cell.sizes && 'gzip' in cell.sizes) {
             return cell.sizes.gzip > 50;
@@ -303,7 +319,7 @@ describe('BuildComparator', () => {
           return false;
         });
       };
-      expect(comparator.toMarkdown({ rowFilter })).toMatchInlineSnapshot(`
+      expect(comparator.toMarkdown({ artifactFilter })).toMatchInlineSnapshot(`
 "|          |  1234567 |  8901234 |                  Δ1 |
 | :------- | -------: | -------: | ------------------: |
 | All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
@@ -331,8 +347,8 @@ describe('BuildComparator', () => {
       // @ts-ignore
       const formatDelta = (cell: DeltaCell | TotalDeltaCell): string => cell.percents.gzip.toFixed(2);
       // @ts-ignore
-      const rowFilter = (row: Array<BodyCell>): boolean => row[0].text !== 'burritos';
-      expect(comparator.toMarkdown({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }))
+      const artifactFilter = (row: ArtifactRow): boolean => row[0].text !== 'burritos';
+      expect(comparator.toMarkdown({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, artifactFilter }))
         .toMatchInlineSnapshot(`
 "|         |  12 |  89 |    d1 |
 | :------ | --: | --: | ----: |
@@ -366,9 +382,9 @@ tacos,0.12 KiB,0.12 KiB,0 KiB (0.0%)"
 `);
     });
 
-    test('can filter rows', () => {
+    test('can filter artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      const rowFilter = (row): boolean => {
+      const artifactFilter = (row): boolean => {
         return row.some(cell => {
           if (cell.sizes && 'gzip' in cell.sizes) {
             return cell.sizes.gzip > 50;
@@ -376,7 +392,7 @@ tacos,0.12 KiB,0.12 KiB,0 KiB (0.0%)"
           return false;
         });
       };
-      expect(comparator.toCsv({ rowFilter })).toMatchInlineSnapshot(`
+      expect(comparator.toCsv({ artifactFilter })).toMatchInlineSnapshot(`
 ",1234567,8901234,Δ1
 All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
 churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
@@ -402,8 +418,8 @@ tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
       // @ts-ignore
       const formatDelta = (cell: DeltaCell | TotalDeltaCell): string => cell.percents.gzip.toFixed(2);
       // @ts-ignore
-      const rowFilter = (row: Array<BodyCell>): boolean => row[0].text !== 'burritos';
-      expect(comparator.toCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, rowFilter }))
+      const artifactFilter = (row: ArtifactRow): boolean => row[0].text !== 'burritos';
+      expect(comparator.toCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, artifactFilter }))
         .toMatchInlineSnapshot(`
 ",12,89,d1
 All,579,592,0.21

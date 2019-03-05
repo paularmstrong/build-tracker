@@ -7,12 +7,12 @@ import RevisionDeltaCell from './RevisionDeltaCell';
 import { StyleSheet } from 'react-native';
 import TextCell from './TextCell';
 import { Tr } from './../Table';
-import { CellType, HeaderCell } from '@build-tracker/comparator';
+import { CellType, HeaderRow as HRow } from '@build-tracker/comparator';
 
 interface Props {
   onFocusRevision: (artifactName: string) => void;
   onRemoveRevision: (artifactName: string) => void;
-  row: Array<HeaderCell>;
+  row: HRow;
 }
 
 export const HeaderRow = (props: Props): React.ReactElement => {

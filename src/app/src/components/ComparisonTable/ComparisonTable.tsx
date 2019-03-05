@@ -61,9 +61,8 @@ const ComparisonTable = (props: Props): React.ReactElement => {
         />
       </Thead>
       <Tbody>
-        {matrix.body.map((row, i) => {
-          // @ts-ignore
-          const artifactName = 'text' in row[0] && row[0].text;
+        {matrix.artifacts.map((row, i) => {
+          const artifactName = row[0].text;
           const isActive = activeArtifacts[artifactName];
           if (!isActive && !disabledArtifactsVisible) {
             return null;

@@ -18,7 +18,8 @@ export enum CellType {
   TOTAL_DELTA = 'totalDelta',
   REVISION = 'revision',
   REVISION_DELTA = 'revisionDelta',
-  ARTIFACT = 'artifact'
+  ARTIFACT = 'artifact',
+  GROUP = 'group'
 }
 
 export interface TextCell {
@@ -63,27 +64,33 @@ export interface ArtifactCell {
   text: string;
 }
 
-export type BodyCell = ArtifactCell | DeltaCell | TotalCell;
-export type HeaderCell = TextCell | RevisionCell | RevisionDeltaCell;
+export interface GroupCell {
+  type: CellType.GROUP;
+  text: string;
+}
+export type HeaderRow = [TextCell, ...(Array<RevisionCell | RevisionDeltaCell>)];
+export type ArtifactRow = [ArtifactCell, ...(Array<TotalCell | DeltaCell>)];
+export type GroupRow = [GroupCell, ...(Array<TotalCell | TotalDeltaCell>)];
 
 export interface ComparisonMatrix {
-  header: Array<HeaderCell>;
-  total: Array<BodyCell | TotalDeltaCell>;
-  body: Array<Array<BodyCell>>;
+  header: HeaderRow;
+  total: GroupRow;
+  groups: Array<GroupRow>;
+  artifacts: Array<ArtifactRow>;
 }
 
 type RevisionStringFormatter = (cell: RevisionCell) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
 type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;
 type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell, sizeKey: string) => string;
-type RowFilter = (row: Array<BodyCell>) => boolean;
+type ArtifactFilter = (row: ArtifactRow) => boolean;
 
 interface FormattingOptions {
   formatRevision?: RevisionStringFormatter;
   formatRevisionDelta?: RevisionDeltaStringFormatter;
   formatTotal?: TotalStringFormatter;
   formatDelta?: DeltaStringFormatter;
-  rowFilter?: RowFilter;
+  artifactFilter?: ArtifactFilter;
   sizeKey?: string;
 }
 
@@ -119,7 +126,7 @@ const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cel
 const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatBytes(cell.sizes[sizeKey] || 0);
 const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string =>
   `${formatBytes(cell.sizes[sizeKey] || 0)} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
-const defaultRowFilter = (): boolean => true;
+const defaultArtifactFilter = (): boolean => true;
 
 interface ComparatorOptions {
   artifactBudgets?: ArtifactBudgets;
@@ -139,9 +146,10 @@ export default class BuildComparator {
   private _sizeKeys: Array<string>;
   private _buildDeltas: Array<Array<BuildDelta>>;
 
-  private _matrixHeader: Array<HeaderCell>;
-  private _matrixTotal: Array<BodyCell>;
-  private _matrixBody: Array<Array<BodyCell>>;
+  private _matrixHeader: ComparisonMatrix['header'];
+  private _matrixTotal: ComparisonMatrix['total'];
+  private _matrixGroups: ComparisonMatrix['groups'];
+  private _matrixArtifacts: ComparisonMatrix['artifacts'];
 
   public constructor({ artifactBudgets, artifactFilters, builds, groups }: ComparatorOptions) {
     this.builds = builds;
@@ -202,7 +210,7 @@ export default class BuildComparator {
     return this._buildDeltas;
   }
 
-  public get matrixHeader(): Array<HeaderCell> {
+  public get matrixHeader(): ComparisonMatrix['header'] {
     if (!this._matrixHeader) {
       this._matrixHeader = [
         { type: CellType.TEXT, text: '' },
@@ -225,10 +233,10 @@ export default class BuildComparator {
     return this._matrixHeader;
   }
 
-  public get matrixTotal(): Array<BodyCell | TotalDeltaCell> {
+  public get matrixTotal(): ComparisonMatrix['total'] {
     if (!this._matrixTotal) {
       this._matrixTotal = [
-        { type: CellType.ARTIFACT, text: 'All' },
+        { type: CellType.GROUP, text: 'All' },
         ...flatten(
           this.buildDeltas.map((buildDeltas, i) => [
             {
@@ -247,17 +255,21 @@ export default class BuildComparator {
     return this._matrixTotal;
   }
 
-  public get matrixBody(): Array<Array<BodyCell>> {
-    if (!this._matrixBody) {
-      this._matrixBody = this._groups.map(group => this._getGroupRow(group));
-      this._matrixBody = this._matrixBody.concat(
-        this.artifactNames.map(artifactName => this._getArtifactRow(artifactName))
-      );
+  public get matrixGroups(): ComparisonMatrix['groups'] {
+    if (!this._matrixGroups) {
+      this._matrixGroups = this._groups.map(group => this._getGroupRow(group));
     }
-    return this._matrixBody;
+    return this._matrixGroups;
   }
 
-  private _getArtifactRow(artifactName: string): Array<BodyCell> {
+  public get matrixArtifacts(): ComparisonMatrix['artifacts'] {
+    if (!this._matrixArtifacts) {
+      this._matrixArtifacts = this.artifactNames.map(artifactName => this._getArtifactRow(artifactName));
+    }
+    return this._matrixArtifacts;
+  }
+
+  private _getArtifactRow(artifactName: string): ArtifactRow {
     const cells = this.buildDeltas.map(
       (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
         const artifact = this.builds[i].getArtifact(artifactName);
@@ -278,7 +290,7 @@ export default class BuildComparator {
     return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
   }
 
-  private _getGroupRow(group: Group): Array<BodyCell> {
+  private _getGroupRow(group: Group): GroupRow {
     const cells = this.buildDeltas.map(
       (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
         const groupSizes = this.builds[i].getSum(group.artifactNames);
@@ -296,13 +308,13 @@ export default class BuildComparator {
         ];
       }
     );
-    return [{ type: CellType.ARTIFACT, text: group.name }, ...flatten(cells)];
+    return [{ type: CellType.GROUP, text: group.name }, ...flatten(cells)];
   }
 
-  public getSum(artifactNames: Array<string>): Array<BodyCell> {
+  public getSum(artifactNames: Array<string>): GroupRow {
     const filters = [new RegExp(`^(?!(${artifactNames.join('|')})$).*$`)];
     return [
-      { type: CellType.TEXT, text: 'Sum' },
+      { type: CellType.GROUP, text: 'Sum' },
       ...flatten(
         this.builds.map((changeBuild, buildIndex) => [
           getTotalArtifactSizes(changeBuild, filters),
@@ -336,9 +348,8 @@ export default class BuildComparator {
     return this.matrixTotal.map(
       (cell): string => {
         switch (cell.type) {
-          case CellType.ARTIFACT:
+          case CellType.GROUP:
             return cell.text;
-          case CellType.DELTA:
           case CellType.TOTAL_DELTA:
             return formatDelta(cell as TotalDeltaCell, sizeKey);
           case CellType.TOTAL:
@@ -352,9 +363,9 @@ export default class BuildComparator {
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
     sizeKey: string = 'gzip',
-    rowFilter: RowFilter = defaultRowFilter
+    artifactFilter: ArtifactFilter = defaultArtifactFilter
   ): Array<Array<string>> {
-    return this.matrixBody.filter(rowFilter).map(
+    return this.matrixArtifacts.filter(artifactFilter).map(
       (row): Array<string> => {
         return row.map(
           (cell): string => {
@@ -376,7 +387,8 @@ export default class BuildComparator {
     return {
       header: this.matrixHeader,
       total: this.matrixTotal,
-      body: this.matrixBody
+      groups: this.matrixGroups,
+      artifacts: this.matrixArtifacts
     };
   }
 
@@ -385,12 +397,12 @@ export default class BuildComparator {
     formatRevisionDelta,
     formatTotal,
     formatDelta,
-    rowFilter,
+    artifactFilter,
     sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const total = this.getStringFormattedTotals(formatTotal, formatDelta, sizeKey);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, rowFilter);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
 
     return markdownTable([header, total, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
   }
@@ -400,12 +412,12 @@ export default class BuildComparator {
     formatRevisionDelta,
     formatTotal,
     formatDelta,
-    rowFilter,
+    artifactFilter,
     sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const total = this.getStringFormattedTotals(formatTotal, formatDelta, sizeKey);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, rowFilter);
+    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
 
     return [header, total, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }

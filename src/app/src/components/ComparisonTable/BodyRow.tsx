@@ -10,7 +10,16 @@ import { StyleSheet } from 'react-native';
 import TotalCell from './TotalCell';
 import TotalDeltaCell from './TotalDeltaCell';
 import { Tr } from './../Table';
-import { BodyCell, CellType, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
+import {
+  ArtifactCell as ACell,
+  ArtifactRow,
+  CellType,
+  DeltaCell as DCell,
+  GroupCell,
+  GroupRow,
+  TotalCell as TCell,
+  TotalDeltaCell as TDCell
+} from '@build-tracker/comparator';
 
 interface Props {
   colorScale: ScaleSequential<string>;
@@ -19,7 +28,7 @@ interface Props {
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
   onHoverArtifact: (revision: string) => void;
-  row: Array<BodyCell | TDCell>;
+  row: ArtifactRow | GroupRow;
   rowIndex: number;
   sizeKey: string;
 }
@@ -37,9 +46,10 @@ export const BodyRow = (props: Props): React.ReactElement => {
     sizeKey
   } = props;
 
-  const mapBodyCell = (cell: BodyCell | TDCell, i: number): React.ReactElement | void => {
+  const mapBodyCell = (cell: ACell | GroupCell | TCell | TDCell | DCell, i: number): React.ReactElement | void => {
     switch (cell.type) {
-      case CellType.ARTIFACT: {
+      case CellType.ARTIFACT:
+      case CellType.GROUP: {
         return (
           <ArtifactCell
             cell={cell}
@@ -61,8 +71,7 @@ export const BodyRow = (props: Props): React.ReactElement => {
   };
 
   let backgroundColor = 'transparent';
-  // @ts-ignore
-  const artifactName = 'text' in row[0] && row[0].text;
+  const artifactName = row[0].text;
   if (isHovered) {
     const color = hsl(colorScale(rowIndex));
     color.l = 0.9;
@@ -72,9 +81,12 @@ export const BodyRow = (props: Props): React.ReactElement => {
     onHoverArtifact(isActive && artifactName !== 'All' ? artifactName : null);
   }, [artifactName, isActive, onHoverArtifact]);
 
+  // @ts-ignore
+  const rows = row.map(mapBodyCell);
+
   return (
     <Tr onMouseEnter={handleMouseEnter} style={[styles.row, { backgroundColor }]}>
-      {row.map(mapBodyCell)}
+      {rows}
     </Tr>
   );
 };

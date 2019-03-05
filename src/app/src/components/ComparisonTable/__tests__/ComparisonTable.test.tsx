@@ -40,8 +40,8 @@ describe('ComparisonTable', () => {
         />
       );
 
-      expect(queryAllByProps({ cell: comparator.matrixBody[0][0] })).toHaveLength(1);
-      expect(queryAllByProps({ cell: comparator.matrixBody[1][0] })).toHaveLength(0);
+      expect(queryAllByProps({ cell: comparator.matrixArtifacts[0][0] })).toHaveLength(1);
+      expect(queryAllByProps({ cell: comparator.matrixArtifacts[1][0] })).toHaveLength(0);
     });
   });
 
@@ -64,7 +64,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      fireEvent(getByProps({ cell: comparator.matrixBody[1][0] }), 'disable', 'main');
+      fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'disable', 'main');
       expect(handleDisableArtifact).toHaveBeenCalledWith('main');
     });
 
@@ -86,7 +86,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      fireEvent(getByProps({ cell: comparator.matrixBody[1][0] }), 'enable', 'vendor');
+      fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'enable', 'vendor');
       expect(handleEnableArtifact).toHaveBeenCalledWith('vendor');
     });
 
@@ -108,7 +108,7 @@ describe('ComparisonTable', () => {
           sizeKey="stat"
         />
       );
-      fireEvent(getByProps({ cell: comparator.matrixBody[0][0] }), 'enable', 'All');
+      fireEvent(getByProps({ cell: comparator.matrixArtifacts[0][0] }), 'enable', 'All');
       expect(handleEnableArtifact).toHaveBeenCalledWith('All');
     });
   });

@@ -22,10 +22,13 @@ export interface ArtifactBudgets {
 
 export interface AppConfig {
   artifacts?: {
-    budgets: ArtifactBudgets;
-    filters: ArtifactFilters;
+    budgets?: ArtifactBudgets;
+    filters?: ArtifactFilters;
+    groups?: Array<Group>;
   };
-  groups?: Array<Group>;
-  root: string;
-  routing?: 'hash' | 'history';
+  /**
+   * Budgets for the sum of all artifacts
+   * @type {Array<Budget>}
+   */
+  budgets?: Array<Budget>;
 }

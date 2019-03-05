@@ -20,16 +20,11 @@ const logger = pino();
 const reqLogger = expressPino({ logger });
 
 export default function runBuildTracker(config: ServerConfig): void {
-  const {
-    artifacts: { budgets },
-    handlers,
-    port = 3000,
-    queries
-  } = config;
+  const { handlers, port = 3000, queries } = config;
   app.use(reqLogger);
   app.use(bodyParser.json());
 
-  app.use(api(express.Router(), queries, handlers, budgets));
+  app.use(api(express.Router(), queries, handlers, config));
 
   app.listen(port);
   logger.info(`Build Tracker server running on port ${port}`);

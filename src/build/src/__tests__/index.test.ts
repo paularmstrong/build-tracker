@@ -81,6 +81,20 @@ describe('Build', () => {
     });
   });
 
+  describe('getSum', () => {
+    test('gets a sum of the given artifact names', () => {
+      const build = new Build(baseMeta, [
+        tacoArtifact,
+        burritoArtifact,
+        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } }
+      ]);
+      expect(build.getSum(['churros', 'burritos'])).toEqual({
+        stat: 9,
+        gzip: 6
+      });
+    });
+  });
+
   describe('getTotals', () => {
     test('gets the computed totals for all sizes', () => {
       const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);

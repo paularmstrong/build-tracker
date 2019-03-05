@@ -46,7 +46,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
   private _sizeKeys: Set<string>;
   private _totalDelta: BuildSizeDelta<M, A>;
 
-  public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, options: DeltaOptions) {
+  public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, options: DeltaOptions = {}) {
     this._baseBuild = baseBuild;
     this._prevBuild = prevBuild;
     this._artifactBudgets = options.artifactBudgets || emptyObject;

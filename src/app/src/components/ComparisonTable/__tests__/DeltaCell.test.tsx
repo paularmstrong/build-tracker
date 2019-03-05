@@ -13,7 +13,13 @@ describe('DeltaCell', () => {
     test('is a formatted value', () => {
       const { queryAllByText } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { stat: 0.5 }, hashChanged: true, sizes: { stat: 4300 } }}
+          cell={{
+            type: CellType.DELTA,
+            name: 'tacos',
+            percents: { stat: 0.5 },
+            hashChanged: true,
+            sizes: { stat: 4300 }
+          }}
           sizeKey="stat"
         />
       );
@@ -23,7 +29,7 @@ describe('DeltaCell', () => {
     test('is empty string if value is zero', () => {
       const { queryAllByType } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { stat: 0 }, hashChanged: false, sizes: { stat: 0 } }}
+          cell={{ type: CellType.DELTA, name: 'tacos', percents: { stat: 0 }, hashChanged: false, sizes: { stat: 0 } }}
           sizeKey="stat"
         />
       );
@@ -33,7 +39,13 @@ describe('DeltaCell', () => {
     test('shows formatted bytes and delta in the title', () => {
       const { getByType } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { stat: -0.5 }, hashChanged: true, sizes: { stat: -134 } }}
+          cell={{
+            type: CellType.DELTA,
+            name: 'tacos',
+            percents: { stat: -0.5 },
+            hashChanged: true,
+            sizes: { stat: -134 }
+          }}
           sizeKey="stat"
         />
       );
@@ -44,7 +56,7 @@ describe('DeltaCell', () => {
     test('shows a warning label if no change, but hash changed', () => {
       const { getByType, queryAllByText } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { stat: 0 }, hashChanged: true, sizes: { stat: 0 } }}
+          cell={{ type: CellType.DELTA, name: 'tacos', percents: { stat: 0 }, hashChanged: true, sizes: { stat: 0 } }}
           sizeKey="stat"
         />
       );
@@ -57,7 +69,13 @@ describe('DeltaCell', () => {
     test('is green for reductions', () => {
       const { getByType } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { gzip: -1 }, hashChanged: true, sizes: { gzip: -4300 } }}
+          cell={{
+            type: CellType.DELTA,
+            name: 'tacos',
+            percents: { gzip: -1 },
+            hashChanged: true,
+            sizes: { gzip: -4300 }
+          }}
           sizeKey="gzip"
         />
       );
@@ -69,7 +87,13 @@ describe('DeltaCell', () => {
     test('is red for increases', () => {
       const { getByType } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { gzip: 0.9 }, hashChanged: true, sizes: { gzip: 4300 } }}
+          cell={{
+            type: CellType.DELTA,
+            name: 'tacos',
+            percents: { gzip: 0.9 },
+            hashChanged: true,
+            sizes: { gzip: 4300 }
+          }}
           sizeKey="gzip"
         />
       );
@@ -81,7 +105,7 @@ describe('DeltaCell', () => {
     test('is red if no size change', () => {
       const { getByType } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { gzip: 0 }, hashChanged: true, sizes: { gzip: 0 } }}
+          cell={{ type: CellType.DELTA, name: 'tacos', percents: { gzip: 0 }, hashChanged: true, sizes: { gzip: 0 } }}
           sizeKey="gzip"
         />
       );
@@ -93,7 +117,7 @@ describe('DeltaCell', () => {
     test('is transparent for no change', () => {
       const { getByType } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { gzip: 0 }, hashChanged: false, sizes: { gzip: 0 } }}
+          cell={{ type: CellType.DELTA, name: 'tacos', percents: { gzip: 0 }, hashChanged: false, sizes: { gzip: 0 } }}
           sizeKey="gzip"
         />
       );
@@ -105,7 +129,13 @@ describe('DeltaCell', () => {
     test('mouse enter shows a tooltip', () => {
       const { getByTestId, queryAllByProps } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { gzip: 1 }, hashChanged: false, sizes: { gzip: 1024 } }}
+          cell={{
+            type: CellType.DELTA,
+            name: 'tacos',
+            percents: { gzip: 1 },
+            hashChanged: false,
+            sizes: { gzip: 1024 }
+          }}
           sizeKey="gzip"
         />
       );
@@ -116,7 +146,13 @@ describe('DeltaCell', () => {
     test('mouse leave removes the tooltip', () => {
       const { getByTestId, queryAllByProps } = render(
         <DeltaCell
-          cell={{ type: CellType.DELTA, percents: { gzip: 1 }, hashChanged: false, sizes: { gzip: 1024 } }}
+          cell={{
+            type: CellType.DELTA,
+            name: 'tacos',
+            percents: { gzip: 1 },
+            hashChanged: false,
+            sizes: { gzip: 1024 }
+          }}
           sizeKey="gzip"
         />
       );

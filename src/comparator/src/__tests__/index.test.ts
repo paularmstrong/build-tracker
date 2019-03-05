@@ -197,13 +197,11 @@ describe('BuildComparator', () => {
       expect(comparator.matrixBody[2][1]).toEqual({
         type: 'total',
         name: 'tacos',
-        hash: 'abc',
         sizes: { gzip: 45, stat: 123 }
       });
       expect(comparator.matrixBody[2][2]).toEqual({
         type: 'total',
         name: 'tacos',
-        hash: 'abc',
         sizes: { gzip: 43, stat: 123 }
       });
     });
@@ -216,6 +214,39 @@ describe('BuildComparator', () => {
         name: 'tacos',
         percents: { gzip: -0.044444444444444446, stat: 0 },
         sizes: { gzip: -2, stat: 0 }
+      });
+    });
+
+    test('includes rows for groups before artifacts', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
+      });
+      expect(comparator.matrixBody).toHaveLength(4);
+      expect(comparator.matrixBody[0][0]).toEqual({ type: 'artifact', text: 'stuff' });
+    });
+
+    test('includes totals for each group', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
+      });
+      expect(comparator.matrixBody[0][1]).toEqual({ type: 'total', name: 'stuff', sizes: { gzip: 90, stat: 456 } });
+      expect(comparator.matrixBody[0][2]).toEqual({ type: 'total', name: 'stuff', sizes: { gzip: 120, stat: 469 } });
+    });
+
+    test('includes deltas for each group', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
+      });
+      expect(comparator.matrixBody[0][3]).toEqual({
+        type: 'delta',
+        name: 'stuff',
+        hashChanged: true,
+        budgets: [],
+        percents: { gzip: 0.3333333333333333, stat: 0.02850877192982456 },
+        sizes: { gzip: 30, stat: 13 }
       });
     });
   });

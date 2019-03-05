@@ -93,6 +93,18 @@ describe('Build', () => {
         gzip: 6
       });
     });
+
+    test('gets a sum even if an artifact does not exist', () => {
+      const build = new Build(baseMeta, [
+        tacoArtifact,
+        burritoArtifact,
+        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } }
+      ]);
+      expect(build.getSum(['nachos', 'burritos'])).toEqual({
+        stat: 3,
+        gzip: 2
+      });
+    });
   });
 
   describe('getTotals', () => {

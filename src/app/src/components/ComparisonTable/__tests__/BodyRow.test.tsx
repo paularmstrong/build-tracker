@@ -43,7 +43,7 @@ describe('BodyRow', () => {
 
     test('delta cell', () => {
       const row: Array<BodyCell> = [
-        { type: CellType.DELTA, sizes: { stat: 4 }, percents: { stat: 4 }, hashChanged: false }
+        { name: 'tacos', type: CellType.DELTA, sizes: { stat: 4 }, percents: { stat: 4 }, hashChanged: false }
       ];
       const { getByType } = render(
         <BodyRow
@@ -65,7 +65,7 @@ describe('BodyRow', () => {
     });
 
     test('total cell', () => {
-      const row: Array<BodyCell> = [{ type: CellType.TOTAL, sizes: { stat: 4 } }];
+      const row: Array<BodyCell> = [{ type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}
@@ -109,7 +109,7 @@ describe('BodyRow', () => {
 
   describe('hovering', () => {
     test('is transparent background when row is not isHovered', () => {
-      const row: Array<BodyCell> = [{ type: CellType.TOTAL, sizes: { stat: 4 } }];
+      const row: Array<BodyCell> = [{ type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}
@@ -129,7 +129,7 @@ describe('BodyRow', () => {
     });
 
     test('is visually highlighed when the row isHovered', () => {
-      const row: Array<BodyCell> = [{ type: CellType.TOTAL, sizes: { stat: 4 } }];
+      const row: Array<BodyCell> = [{ type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }];
       const { getByType } = render(
         <BodyRow
           colorScale={ColorScale.Rainbow}

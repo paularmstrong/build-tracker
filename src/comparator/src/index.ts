@@ -30,12 +30,13 @@ export interface DeltaCell {
   type: CellType.DELTA;
   sizes: ArtifactSizes;
   percents: ArtifactSizes;
-  name?: string;
+  name: string;
   hashChanged: boolean;
 }
 
 export interface TotalCell {
   type: CellType.TOTAL;
+  name: string;
   sizes: ArtifactSizes;
 }
 
@@ -86,12 +87,6 @@ interface FormattingOptions {
   sizeKey?: string;
 }
 
-const emptyArtifact = Object.freeze({
-  name: '',
-  hash: '',
-  sizes: {}
-});
-
 const emptyObject = Object.freeze({});
 
 const getTotalArtifactSizes = (build: Build, artifactFilters: ArtifactFilters): TotalCell =>
@@ -101,6 +96,7 @@ const getTotalArtifactSizes = (build: Build, artifactFilters: ArtifactFilters): 
     .reduce(
       (totalMemo, artifactName): TotalCell => {
         return {
+          name: artifactName,
           type: CellType.TOTAL,
           sizes: Object.entries(build.getArtifact(artifactName).sizes).reduce((memo, [key, value]) => {
             if (!memo[key]) {
@@ -137,6 +133,8 @@ export default class BuildComparator {
 
   private _artifactBudgets: ArtifactBudgets;
   private _artifactFilters: ArtifactFilters;
+  private _groups: Array<Group>;
+
   private _artifactNames: Array<string>;
   private _sizeKeys: Array<string>;
   private _buildDeltas: Array<Array<BuildDelta>>;
@@ -145,10 +143,11 @@ export default class BuildComparator {
   private _matrixTotal: Array<BodyCell>;
   private _matrixBody: Array<Array<BodyCell>>;
 
-  public constructor({ artifactBudgets, artifactFilters, builds }: ComparatorOptions) {
+  public constructor({ artifactBudgets, artifactFilters, builds, groups }: ComparatorOptions) {
     this.builds = builds;
     this._artifactFilters = artifactFilters || [];
     this._artifactBudgets = artifactBudgets || emptyObject;
+    this._groups = groups || [];
   }
 
   public get artifactNames(): Array<string> {
@@ -193,7 +192,8 @@ export default class BuildComparator {
         return this.builds.slice(0, i).map(prevBuild => {
           return new BuildDelta(baseBuild, prevBuild, {
             artifactBudgets: this._artifactBudgets,
-            artifactFilters: this._artifactFilters
+            artifactFilters: this._artifactFilters,
+            groups: this._groups
           });
         });
       });
@@ -249,20 +249,22 @@ export default class BuildComparator {
 
   public get matrixBody(): Array<Array<BodyCell>> {
     if (!this._matrixBody) {
-      this._matrixBody = this.artifactNames.map(artifactName => {
-        return this.getArtifact(artifactName);
-      });
+      this._matrixBody = this._groups.map(group => this._getGroupRow(group));
+      this._matrixBody = this._matrixBody.concat(
+        this.artifactNames.map(artifactName => this._getArtifactRow(artifactName))
+      );
     }
     return this._matrixBody;
   }
 
-  public getArtifact(artifactName: string): Array<BodyCell> {
+  private _getArtifactRow(artifactName: string): Array<BodyCell> {
     const cells = this.buildDeltas.map(
       (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
         const artifact = this.builds[i].getArtifact(artifactName);
         return [
           {
-            ...(artifact ? artifact : emptyArtifact),
+            sizes: artifact ? artifact.sizes : emptyObject,
+            name: artifactName,
             type: CellType.TOTAL
           },
           // @ts-ignore
@@ -274,6 +276,27 @@ export default class BuildComparator {
       }
     );
     return [{ type: CellType.ARTIFACT, text: artifactName }, ...flatten(cells)];
+  }
+
+  private _getGroupRow(group: Group): Array<BodyCell> {
+    const cells = this.buildDeltas.map(
+      (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
+        const groupSizes = this.builds[i].getSum(group.artifactNames);
+        return [
+          {
+            sizes: groupSizes,
+            name: group.name,
+            type: CellType.TOTAL
+          },
+          // @ts-ignore
+          ...buildDeltas.map(buildDelta => ({
+            ...buildDelta.getGroupDelta(group.name),
+            type: CellType.DELTA
+          }))
+        ];
+      }
+    );
+    return [{ type: CellType.ARTIFACT, text: group.name }, ...flatten(cells)];
   }
 
   public getSum(artifactNames: Array<string>): Array<BodyCell> {

@@ -1,9 +1,11 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { ArtifactBudgets, ArtifactFilters, Budget } from '@build-tracker/types';
+import { ArtifactBudgets, ArtifactFilters, Budget, Group } from '@build-tracker/types';
 import Build, { ArtifactSizes, BuildMeta } from '@build-tracker/build';
 import { delta, percentDelta } from './artifact-math';
+
+const emptyObject = Object.freeze({});
 
 interface BudgetResult {
   passing: boolean;
@@ -27,6 +29,12 @@ interface BuildSizeDelta<M extends BuildMeta = BuildMeta, AS extends ArtifactSiz
   percents: AS;
 }
 
+export interface DeltaOptions {
+  artifactBudgets?: ArtifactBudgets;
+  artifactFilters?: ArtifactFilters;
+  groups?: Array<Group>;
+}
+
 export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes> {
   private _baseBuild: Build<M, A>;
   private _prevBuild: Build<M, A>;
@@ -38,16 +46,11 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
   private _sizeKeys: Set<string>;
   private _totalDelta: BuildSizeDelta<M, A>;
 
-  public constructor(
-    baseBuild: Build<M, A>,
-    prevBuild: Build<M, A>,
-    artifactBudgets: ArtifactBudgets,
-    artifactFilters?: ArtifactFilters
-  ) {
+  public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, options: DeltaOptions) {
     this._baseBuild = baseBuild;
     this._prevBuild = prevBuild;
-    this._artifactBudgets = artifactBudgets;
-    this._artifactFilters = artifactFilters || [];
+    this._artifactBudgets = options.artifactBudgets || emptyObject;
+    this._artifactFilters = options.artifactFilters || [];
   }
 
   public get baseBuild(): Build<M, A> {

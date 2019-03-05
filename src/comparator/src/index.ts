@@ -4,7 +4,7 @@
 import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
 import markdownTable from 'markdown-table';
-import { ArtifactBudgets, ArtifactFilters } from '@build-tracker/types';
+import { ArtifactBudgets, ArtifactFilters, Group } from '@build-tracker/types';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
@@ -129,6 +129,7 @@ interface ComparatorOptions {
   artifactBudgets?: ArtifactBudgets;
   artifactFilters?: ArtifactFilters;
   builds: Array<Build>;
+  groups?: Array<Group>;
 }
 
 export default class BuildComparator {
@@ -190,7 +191,10 @@ export default class BuildComparator {
     if (!this._buildDeltas) {
       this._buildDeltas = this.builds.map((baseBuild, i) => {
         return this.builds.slice(0, i).map(prevBuild => {
-          return new BuildDelta(baseBuild, prevBuild, this._artifactBudgets, this._artifactFilters);
+          return new BuildDelta(baseBuild, prevBuild, {
+            artifactBudgets: this._artifactBudgets,
+            artifactFilters: this._artifactFilters
+          });
         });
       });
     }

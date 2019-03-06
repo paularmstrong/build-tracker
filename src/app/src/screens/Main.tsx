@@ -17,6 +17,7 @@ import MenuIcon from '../icons/Menu';
 import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
+import { BudgetLevel, BudgetType } from '@build-tracker/types';
 import { Clipboard, StyleSheet, View } from 'react-native';
 import Comparator, { ArtifactRow } from '@build-tracker/comparator';
 
@@ -30,7 +31,17 @@ const builds = [
   new Build(buildDataE.meta, buildDataE.artifacts)
 ];
 
-const groups = [{ name: 'Home', artifactNames: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'] }];
+const groups = [
+  {
+    name: 'Home',
+    artifactNames: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'],
+    budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 350000 }]
+  }
+];
+
+const artifactBudgets = {
+  'bundle.Conversation': [{ level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.DELTA, maximum: 100 }]
+};
 
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
@@ -39,6 +50,7 @@ const Main = (): React.ReactElement => {
   const activeComparator = React.useMemo(
     (): Comparator =>
       new Comparator({
+        artifactBudgets,
         builds: builds.filter(build => compareRevisions.indexOf(build.getMetaValue('revision')) !== -1),
         groups
       }),

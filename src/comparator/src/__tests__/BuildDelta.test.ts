@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import ArtifactDelta from '../ArtifactDelta';
 import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
 
@@ -78,109 +79,25 @@ describe('BuildDelta', () => {
     test('gets an array of deltas for all artifacts', () => {
       const bd = new BuildDelta(buildA, buildB);
       expect(bd.artifactDeltas).toEqual([
-        {
-          budgets: [],
-          hashChanged: false,
-          name: 'tacos',
-          sizes: {
-            gzip: 0,
-            stat: 1
-          },
-          percents: {
-            gzip: 0,
-            stat: 1
-          }
-        },
-        {
-          budgets: [],
-          hashChanged: true,
-          name: 'burritos',
-          sizes: {
-            gzip: -2,
-            stat: -3
-          },
-          percents: {
-            gzip: -0.5,
-            stat: -0.5
-          }
-        },
-        {
-          budgets: [],
-          hashChanged: true,
-          name: 'churros',
-          sizes: {
-            gzip: -4,
-            stat: -6
-          },
-          percents: {
-            gzip: -1,
-            stat: -1
-          }
-        }
+        new ArtifactDelta('tacos', [], { gzip: 1, stat: 2 }, { gzip: 1, stat: 1 }, false),
+        new ArtifactDelta('burritos', [], { gzip: 2, stat: 3 }, { gzip: 4, stat: 6 }, true),
+        new ArtifactDelta('churros', [], { gzip: 0, stat: 0 }, { gzip: 4, stat: 6 }, true)
       ]);
     });
 
     test('artifact deltas when adding artifacts', () => {
       const bd = new BuildDelta(buildB, buildA);
       expect(bd.artifactDeltas).toEqual([
-        {
-          budgets: [],
-          hashChanged: false,
-          name: 'tacos',
-          sizes: {
-            gzip: 0,
-            stat: -1
-          },
-          percents: {
-            gzip: 0,
-            stat: -0.5
-          }
-        },
-        {
-          budgets: [],
-          hashChanged: true,
-          name: 'burritos',
-          sizes: {
-            gzip: 2,
-            stat: 3
-          },
-          percents: {
-            gzip: 1,
-            stat: 1
-          }
-        },
-        {
-          budgets: [],
-          hashChanged: true,
-          name: 'churros',
-          sizes: {
-            gzip: 4,
-            stat: 6
-          },
-          percents: {
-            gzip: 1,
-            stat: 1
-          }
-        }
+        new ArtifactDelta('tacos', [], { gzip: 1, stat: 1 }, { gzip: 1, stat: 2 }, false),
+        new ArtifactDelta('burritos', [], { gzip: 4, stat: 6 }, { gzip: 2, stat: 3 }, true),
+        new ArtifactDelta('churros', [], { gzip: 4, stat: 6 }, { gzip: 0, stat: 0 }, true)
       ]);
     });
 
     test('respects artifact filters', () => {
       const bd = new BuildDelta(buildA, buildB, { artifactFilters: [/churros/, /burritos/] });
       expect(bd.artifactDeltas).toEqual([
-        {
-          budgets: [],
-          hashChanged: false,
-          name: 'tacos',
-          sizes: {
-            gzip: 0,
-            stat: 1
-          },
-          percents: {
-            gzip: 0,
-            stat: 1
-          }
-        }
+        new ArtifactDelta('tacos', [], { gzip: 1, stat: 2 }, { gzip: 1, stat: 1 }, false)
       ]);
     });
   });
@@ -188,215 +105,18 @@ describe('BuildDelta', () => {
   describe('getArtifactDelta', () => {
     test('gets the delta for a single artifact', () => {
       const bd = new BuildDelta(buildA, buildB);
-      expect(bd.getArtifactDelta('tacos')).toEqual({
-        budgets: [],
-        hashChanged: false,
-        name: 'tacos',
-        sizes: {
-          gzip: 0,
-          stat: 1
-        },
-        percents: {
-          gzip: 0,
-          stat: 1
-        }
-      });
-    });
-
-    test('includes passing budgets', () => {
-      const bd = new BuildDelta(buildA, buildB, {
-        artifactBudgets: {
-          burritos: [{ level: 'error', sizeKey: 'gzip', type: 'size', maximum: 5 }]
-        }
-      });
-      expect(bd.getArtifactDelta('burritos')).toMatchObject({
-        budgets: [
-          {
-            passing: true,
-            expected: 5,
-            actual: 2,
-            type: 'size',
-            level: 'error'
-          }
-        ]
-      });
-    });
-
-    test('includes failing budgets for size', () => {
-      const bd = new BuildDelta(buildB, buildA, {
-        artifactBudgets: {
-          burritos: [{ level: 'error', sizeKey: 'stat', type: 'size', maximum: 5 }]
-        }
-      });
-      expect(bd.getArtifactDelta('burritos')).toMatchObject({
-        budgets: [
-          {
-            passing: false,
-            expected: 5,
-            actual: 6,
-            type: 'size',
-            level: 'error'
-          }
-        ]
-      });
-    });
-
-    test('includes failing budgets for delta', () => {
-      const bd = new BuildDelta(buildB, buildA, {
-        artifactBudgets: {
-          burritos: [{ level: 'error', sizeKey: 'gzip', type: 'delta', maximum: 2 }]
-        }
-      });
-      expect(bd.getArtifactDelta('burritos')).toMatchObject({
-        budgets: [
-          {
-            passing: false,
-            expected: 2,
-            actual: 2,
-            type: 'delta',
-            level: 'error'
-          }
-        ]
-      });
-    });
-
-    test('includes failing budgets for percentDelta', () => {
-      const bd = new BuildDelta(buildB, buildA, {
-        artifactBudgets: {
-          burritos: [{ level: 'error', sizeKey: 'stat', type: 'percentDelta', maximum: 0.5 }]
-        }
-      });
-      expect(bd.getArtifactDelta('burritos')).toMatchObject({
-        budgets: [
-          {
-            passing: false,
-            expected: 0.5,
-            actual: 1,
-            type: 'percentDelta',
-            level: 'error'
-          }
-        ]
-      });
+      expect(bd.getArtifactDelta('tacos')).toEqual(
+        new ArtifactDelta('tacos', [], { gzip: 1, stat: 2 }, { gzip: 1, stat: 1 }, false)
+      );
     });
   });
 
   describe('getGroupDelta', () => {
     test('gets the delta for a defined group', () => {
       const bd = new BuildDelta(buildA, buildB, { groups: [{ name: 'stuff', artifactNames: ['burritos', 'tacos'] }] });
-      expect(bd.getGroupDelta('stuff')).toEqual({
-        budgets: [],
-        hashChanged: true,
-        name: 'stuff',
-        percents: {
-          gzip: -0.4,
-          stat: -0.2857142857142857
-        },
-        sizes: {
-          gzip: -2,
-          stat: -2
-        }
-      });
-    });
-
-    test('includes failing budgets for size', () => {
-      const bd = new BuildDelta(buildB, buildA, {
-        groups: [
-          {
-            name: 'foo',
-            artifactNames: ['burritos', 'tacos'],
-            budgets: [{ level: 'error', sizeKey: 'stat', type: 'size', maximum: 5 }]
-          }
-        ]
-      });
-      expect(bd.getGroupDelta('foo')).toMatchObject({
-        budgets: [
-          {
-            passing: false,
-            expected: 5,
-            actual: 7,
-            type: 'size',
-            level: 'error'
-          }
-        ]
-      });
-    });
-
-    test('includes failing budgets for delta', () => {
-      const bd = new BuildDelta(buildB, buildA, {
-        groups: [
-          {
-            name: 'foo',
-            artifactNames: ['burritos', 'tacos'],
-            budgets: [{ level: 'error', sizeKey: 'gzip', type: 'delta', maximum: 2 }]
-          }
-        ]
-      });
-      expect(bd.getGroupDelta('foo')).toMatchObject({
-        budgets: [
-          {
-            passing: false,
-            expected: 2,
-            actual: 2,
-            type: 'delta',
-            level: 'error'
-          }
-        ]
-      });
-    });
-
-    test('includes failing budgets for percentDelta', () => {
-      const bd = new BuildDelta(buildB, buildA, {
-        groups: [
-          {
-            name: 'foo',
-            artifactNames: ['burritos', 'tacos'],
-            budgets: [{ level: 'error', sizeKey: 'stat', type: 'percentDelta', maximum: 0.2 }]
-          }
-        ]
-      });
-      expect(bd.getGroupDelta('foo')).toMatchObject({
-        budgets: [
-          {
-            passing: false,
-            expected: 0.2,
-            actual: 0.4,
-            type: 'percentDelta',
-            level: 'error'
-          }
-        ]
-      });
-    });
-  });
-
-  describe('totalDelta', () => {
-    test('gets the total delta of all assets added together', () => {
-      const bd = new BuildDelta(buildA, buildB);
-      expect(bd.totalDelta).toEqual({
-        againstRevision: '456',
-        sizes: {
-          gzip: -6,
-          stat: -8
-        },
-        percents: {
-          gzip: -(6 / 9),
-          stat: -(8 / 13)
-        }
-      });
-    });
-
-    test('gets the total delta of all assets added together, without filtered artifacts', () => {
-      const bd = new BuildDelta(buildA, buildB, { artifactFilters: [/burritos/] });
-      expect(bd.totalDelta).toEqual({
-        againstRevision: '456',
-        sizes: {
-          gzip: -4,
-          stat: -5
-        },
-        percents: {
-          gzip: -(4 / 5),
-          stat: -(5 / 7)
-        }
-      });
+      expect(bd.getGroupDelta('stuff')).toEqual(
+        new ArtifactDelta('stuff', [], { stat: 5, gzip: 3 }, { stat: 7, gzip: 5 }, true)
+      );
     });
   });
 });

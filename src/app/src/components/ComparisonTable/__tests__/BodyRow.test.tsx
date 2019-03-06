@@ -43,7 +43,15 @@ describe('BodyRow', () => {
     test('delta cell', () => {
       const row: ArtifactRow = [
         { type: CellType.ARTIFACT, text: 'tacos' },
-        { name: 'tacos', type: CellType.DELTA, sizes: { stat: 4 }, percents: { stat: 4 }, hashChanged: false }
+        {
+          name: 'tacos',
+          type: CellType.DELTA,
+          budgets: [],
+          failingBudgets: [],
+          sizes: { stat: 4 },
+          percents: { stat: 4 },
+          hashChanged: false
+        }
       ];
       const { getByType } = render(
         <BodyRow

@@ -1,33 +1,11 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { ArtifactBudgets, ArtifactFilters, Budget, Group } from '@build-tracker/types';
+import ArtifactDelta from './ArtifactDelta';
+import { ArtifactBudgets, ArtifactFilters, Group } from '@build-tracker/types';
 import Build, { ArtifactSizes, BuildMeta } from '@build-tracker/build';
-import { delta, percentDelta } from './artifact-math';
 
 const emptyObject = Object.freeze({});
-
-interface BudgetResult {
-  passing: boolean;
-  expected: number;
-  actual: number;
-  type: Budget['type'];
-  level: Budget['level'];
-}
-
-interface ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
-  hashChanged: boolean;
-  name: string;
-  sizes: AS;
-  percents: AS;
-  budget: { [sizeKey: string]: BudgetResult };
-}
-
-interface BuildSizeDelta<M extends BuildMeta = BuildMeta, AS extends ArtifactSizes = ArtifactSizes> {
-  againstRevision: M['revision'];
-  sizes: AS;
-  percents: AS;
-}
 
 export interface DeltaOptions {
   artifactBudgets?: ArtifactBudgets;
@@ -46,7 +24,6 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
   private _groups: Array<Group>;
   private _groupDeltas: Map<string, ArtifactDelta<A>>;
   private _sizeKeys: Set<string>;
-  private _totalDelta: BuildSizeDelta<M, A>;
 
   public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, options: DeltaOptions = {}) {
     this._baseBuild = baseBuild;
@@ -105,6 +82,14 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     return this._artifactNames;
   }
 
+  private get _fauxArtifactSizes(): A {
+    // @ts-ignore
+    return this.artifactSizes.reduce((memo, sizeKey) => {
+      memo[sizeKey] = 0;
+      return memo;
+    }, {});
+  }
+
   public get artifactDeltas(): Array<ArtifactDelta<A>> {
     if (!this._artifactDeltas) {
       this._artifactDeltas = new Map();
@@ -112,48 +97,18 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
         const baseArtifact = this._baseBuild.getArtifact(artifactName);
         const prevArtifact = this._prevBuild.getArtifact(artifactName);
 
-        const sizeDeltas = prevArtifact
-          ? this.artifactSizes.reduce((memo, sizeKey) => {
-              memo[sizeKey] = delta(sizeKey, baseArtifact && baseArtifact.sizes, prevArtifact && prevArtifact.sizes);
-              return memo;
-            }, {})
-          : { ...baseArtifact.sizes };
+        const sizes = baseArtifact ? baseArtifact.sizes : this._fauxArtifactSizes;
+        const prevSizes = prevArtifact ? prevArtifact.sizes : this._fauxArtifactSizes;
 
-        const percentDeltas = this.artifactSizes.reduce((memo, sizeKey) => {
-          memo[sizeKey] = percentDelta(sizeKey, baseArtifact && baseArtifact.sizes, prevArtifact && prevArtifact.sizes);
-          return memo;
-        }, {});
+        const delta = new ArtifactDelta<A>(
+          artifactName,
+          this._artifactBudgets[artifactName] || [],
+          sizes,
+          prevSizes,
+          !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash
+        );
 
-        let budgets = [];
-        (this._artifactBudgets[artifactName] || []).forEach(budget => {
-          const { level, maximum, sizeKey, type } = budget;
-          const actual =
-            type === 'delta'
-              ? sizeDeltas[sizeKey]
-              : type === 'percentDelta'
-              ? percentDeltas[sizeKey]
-              : baseArtifact
-              ? baseArtifact.sizes[sizeKey]
-              : 0;
-          const expected = maximum;
-          budgets.push({
-            passing: actual < expected,
-            type,
-            level,
-            actual,
-            expected
-          });
-        });
-
-        this._artifactDeltas.set(artifactName, {
-          name: artifactName,
-          budgets,
-          hashChanged: !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash,
-          // @ts-ignore constructed above
-          sizes: sizeDeltas,
-          // @ts-ignore constructed above
-          percents: percentDeltas
-        });
+        this._artifactDeltas.set(artifactName, delta);
       });
     }
 
@@ -180,71 +135,18 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
           return changed ? true : !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash;
         }, false);
 
-        const sizes = {};
-        const percents = {};
-        Object.keys(baseSum).forEach(sizeKey => {
-          sizes[sizeKey] = delta(sizeKey, baseSum, prevSum);
-          percents[sizeKey] = percentDelta(sizeKey, baseSum, prevSum);
-        });
+        const delta = new ArtifactDelta<A>(
+          group.name,
+          group.budgets || [],
+          baseSum || this._fauxArtifactSizes,
+          prevSum || this._fauxArtifactSizes,
+          hashChanged
+        );
 
-        const budgets = [];
-        (group.budgets || []).forEach(budget => {
-          const { level, maximum, sizeKey, type } = budget;
-          const actual =
-            type === 'delta'
-              ? sizes[sizeKey]
-              : type === 'percentDelta'
-              ? percents[sizeKey]
-              : baseSum
-              ? baseSum[sizeKey]
-              : 0;
-          const expected = maximum;
-          budgets.push({
-            passing: actual < expected,
-            type,
-            level,
-            actual,
-            expected
-          });
-        });
-
-        this._groupDeltas.set(group.name, {
-          name: group.name,
-          hashChanged,
-          // @ts-ignore
-          sizes,
-          // @ts-ignore
-          percents,
-          budgets
-        });
+        this._groupDeltas.set(group.name, delta);
       });
     }
 
     return this._groupDeltas;
-  }
-
-  public get totalDelta(): BuildSizeDelta<M, A> {
-    if (!this._totalDelta) {
-      const baseTotals = this._baseBuild.getTotals(this._artifactFilters);
-      const prevTotals = this._prevBuild.getTotals(this._artifactFilters);
-
-      const sizes = {};
-      const percents = {};
-      Object.keys(baseTotals).forEach(sizeKey => {
-        sizes[sizeKey] = delta(sizeKey, baseTotals, prevTotals);
-        percents[sizeKey] = percentDelta(sizeKey, baseTotals, prevTotals);
-      });
-
-      this._totalDelta = {
-        // @ts-ignore TODO
-        againstRevision: this._prevBuild.getMetaValue('revision'),
-        // @ts-ignore constructed above
-        sizes,
-        // @ts-ignore constructed above
-        percents
-      };
-    }
-
-    return this._totalDelta;
   }
 }

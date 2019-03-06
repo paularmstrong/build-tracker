@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import { DeltaCell } from '../DeltaCell';
 import { GroupCell } from '../GroupCell';
 import { GroupRow } from '../GroupRow';
 import React from 'react';
 import { TotalCell } from '../TotalCell';
-import { TotalDeltaCell } from '../TotalDeltaCell';
 import { Tr } from '../../Table';
 import { CellType, GroupRow as GRow } from '@build-tracker/comparator';
 import { fireEvent, render } from 'react-native-testing-library';
@@ -51,12 +51,20 @@ describe('GroupRow', () => {
     test('total delta cell', () => {
       const row: GRow = [
         { type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' },
-        { type: CellType.TOTAL_DELTA, sizes: { stat: 4 }, percents: { stat: 4 } }
+        {
+          type: CellType.TOTAL_DELTA,
+          name: 'tacos',
+          hashChanged: true,
+          budgets: [],
+          failingBudgets: [],
+          sizes: { stat: 4 },
+          percents: { stat: 4 }
+        }
       ];
       const { getByType } = render(
         <GroupRow isActive onDisable={jest.fn()} onEnable={jest.fn()} onHover={jest.fn()} row={row} sizeKey="stat" />
       );
-      expect(getByType(TotalDeltaCell).props).toMatchObject({
+      expect(getByType(DeltaCell).props).toMatchObject({
         cell: row[1],
         sizeKey: 'stat'
       });

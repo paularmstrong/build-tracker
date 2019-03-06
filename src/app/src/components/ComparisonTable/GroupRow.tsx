@@ -2,15 +2,14 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../../theme';
+import DeltaCell from './DeltaCell';
 import GroupCell from './GroupCell';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import TotalCell from './TotalCell';
-import TotalDeltaCell from './TotalDeltaCell';
 import { Tr } from './../Table';
 import {
   CellType,
-  DeltaCell as DCell,
   GroupCell as GCell,
   GroupRow as GRow,
   TotalCell as TCell,
@@ -29,7 +28,7 @@ interface Props {
 export const GroupRow = (props: Props): React.ReactElement => {
   const { isActive, onDisable, onEnable, onHover, row, sizeKey } = props;
 
-  const mapGroupCell = (cell: GCell | TCell | TDCell | DCell, i: number): React.ReactElement | void => {
+  const mapGroupCell = (cell: GCell | TCell | TDCell, i: number): React.ReactElement | void => {
     switch (cell.type) {
       case CellType.GROUP: {
         return (
@@ -46,7 +45,7 @@ export const GroupRow = (props: Props): React.ReactElement => {
       case CellType.TOTAL:
         return <TotalCell cell={cell} key={i} sizeKey={sizeKey} style={styles.cell} />;
       case CellType.TOTAL_DELTA:
-        return <TotalDeltaCell cell={cell} key={i} sizeKey={sizeKey} style={styles.cell} />;
+        return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} style={styles.cell} />;
     }
   };
 

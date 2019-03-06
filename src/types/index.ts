@@ -3,13 +3,24 @@
  */
 export type ArtifactFilters = Array<RegExp>;
 
+export enum BudgetLevel {
+  WARN = 'warn',
+  ERROR = 'error'
+}
+
+export enum BudgetType {
+  DELTA = 'delta',
+  PERCENT_DELTA = 'percentDelta',
+  SIZE = 'size'
+}
+
 export interface Budget {
   /**
    * Budget callout level
    * warn - inform that this change could be problematic
    * error - this change violates the budget and should not be accepted
    */
-  level: 'warn' | 'error';
+  level: BudgetLevel;
   /**
    * Type of file size to operate on. Usually 'gzip' or 'stat1'
    * @type {string}
@@ -21,12 +32,21 @@ export interface Budget {
    * percentDelta - maximum allowed for the percent change from the previous value to the new value
    * size - absolute maximum value
    */
-  type: 'delta' | 'percentDelta' | 'size';
+  type: BudgetType;
   /**
    * Maximum value for the type defined above
    * @type {number}
    */
   maximum: number;
+}
+
+export interface BudgetResult {
+  sizeKey: string;
+  passing: boolean;
+  expected: number;
+  actual: number;
+  type: Budget['type'];
+  level: Budget['level'];
 }
 
 export interface Group {

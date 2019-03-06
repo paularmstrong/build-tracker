@@ -3,34 +3,36 @@
  */
 import { ArtifactSizes } from '@build-tracker/build';
 
-export const delta = (key: string, baseArtifact?: ArtifactSizes, prevArtifact?: ArtifactSizes): number => {
-  if (!baseArtifact) {
-    if (!prevArtifact) {
+export const delta = (key: string, baseSizes?: ArtifactSizes, prevSizes?: ArtifactSizes): number => {
+  if (!baseSizes) {
+    if (!prevSizes) {
       return 0;
     }
-    return -prevArtifact[key];
-  } else if (!prevArtifact) {
-    return baseArtifact[key];
+    return -prevSizes[key];
+  } else if (!prevSizes) {
+    return baseSizes[key];
   }
 
-  return baseArtifact[key] - prevArtifact[key];
+  return baseSizes[key] - prevSizes[key];
 };
 
-export const percentDelta = (key: string, baseArtifact?: ArtifactSizes, prevArtifact?: ArtifactSizes): number => {
-  if (!baseArtifact) {
-    if (!prevArtifact) {
+export const percentDelta = (key: string, baseSizes?: ArtifactSizes, prevSizes?: ArtifactSizes): number => {
+  if (!baseSizes) {
+    if (!prevSizes) {
       return 0;
     }
     return -1;
   }
 
-  if (!prevArtifact) {
+  if (!prevSizes) {
     return 1;
   }
 
-  const base = prevArtifact[key];
-  const changed = baseArtifact[key];
-  if (changed > base) {
+  const base = prevSizes[key];
+  const changed = baseSizes[key];
+  if (base === 0) {
+    return 1;
+  } else if (changed > base) {
     const delta = changed - base;
     return delta / base;
   } else if (changed < base) {

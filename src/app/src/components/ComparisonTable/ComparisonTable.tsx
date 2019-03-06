@@ -69,17 +69,6 @@ const ComparisonTable = (props: Props): React.ReactElement => {
     <Table onMouseLeave={handleMouseOut} style={styles.table}>
       <Thead>
         <HeaderRow onFocusRevision={onFocusRevision} onRemoveRevision={onRemoveRevision} row={matrix.header} />
-        <GroupRow
-          isActive={Object.values(activeArtifacts).every(Boolean)}
-          key={'All'}
-          onDisable={onDisableArtifacts}
-          onEnable={onEnableArtifacts}
-          onHover={onHoverArtifacts}
-          row={matrix.total}
-          sizeKey={sizeKey}
-        />
-      </Thead>
-      <Tbody>
         {matrix.groups.map(row => {
           const { artifactNames, text: groupName } = row[0];
           const isActive = Object.keys(activeArtifacts)
@@ -100,6 +89,8 @@ const ComparisonTable = (props: Props): React.ReactElement => {
             />
           );
         })}
+      </Thead>
+      <Tbody>
         {matrix.artifacts.map((row, i) => {
           const artifactName = row[0].text;
           const isActive = activeArtifacts[artifactName];

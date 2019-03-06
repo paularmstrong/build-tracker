@@ -29,7 +29,7 @@ describe('BuildComparator', () => {
     const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
 
     test('filters artifact sizes from the totals', () => {
-      const [, build1Total, build2Total, deltaTotal] = comparator.matrixTotal;
+      const [, build1Total, build2Total, deltaTotal] = comparator.matrixGroups[0];
       expect(build1Total).toMatchObject(expect.objectContaining({ sizes: { gzip: 45, stat: 123 } }));
       expect(build2Total).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
       expect(deltaTotal).toMatchObject(
@@ -95,37 +95,6 @@ describe('BuildComparator', () => {
     });
   });
 
-  describe('getSum', () => {
-    test('gets a row of sums', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
-      const [, build1Sum, build2Sum, deltaSum] = comparator.getSum(['burritos', 'tacos']);
-      expect(build1Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 135, stat: 579 } }));
-      expect(build2Sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 43, stat: 123 } }));
-      expect(deltaSum).toMatchObject(
-        expect.objectContaining({
-          sizes: { gzip: -2, stat: 0 },
-          percents: {
-            gzip: -0.044444444444444446,
-            stat: 0
-          }
-        })
-      );
-    });
-
-    test('filters on exact names', () => {
-      const comparator = new BuildComparator({
-        builds: [
-          new Build({ revision: '1234567', parentRevision: 'abcdef', timestamp: 1234567 }, [
-            { name: 'i18n/en', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
-            { name: 'i18n/en-GB', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
-          ])
-        ]
-      });
-      const [, sum] = comparator.getSum(['i18n/en']);
-      expect(sum).toMatchObject(expect.objectContaining({ sizes: { gzip: 90, stat: 456 } }));
-    });
-  });
-
   describe('matrixHeader', () => {
     test('starts with empty text cell', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
@@ -154,38 +123,6 @@ describe('BuildComparator', () => {
         deltaIndex: 1,
         againstRevision: build1.getMetaValue('revision'),
         revision: build2.getMetaValue('revision')
-      });
-    });
-  });
-
-  describe('matrixTotal', () => {
-    test('includes an artifact cell for All', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixTotal[0]).toEqual({
-        type: 'group',
-        text: 'All',
-        artifactNames: ['churros', 'burritos', 'tacos']
-      });
-    });
-
-    test('includes an total cell for each build', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixTotal[1]).toEqual({
-        type: 'total',
-        sizes: { gzip: 135, stat: 579 }
-      });
-      expect(comparator.matrixTotal[2]).toEqual({
-        type: 'total',
-        sizes: { gzip: 163, stat: 592 }
-      });
-    });
-
-    test('includes an total delta cell', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixTotal[3]).toEqual({
-        type: 'totalDelta',
-        sizes: { gzip: 28, stat: 13 },
-        percents: { gzip: 0.2074074074074074, stat: 0.022452504317789293 }
       });
     });
   });
@@ -227,17 +164,53 @@ describe('BuildComparator', () => {
   });
 
   describe('matrixGroups', () => {
+    test('includes an artifact cell for All', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.matrixGroups[0][0]).toEqual({
+        type: 'group',
+        text: 'All',
+        artifactNames: ['churros', 'burritos', 'tacos']
+      });
+    });
+
+    test('includes an total cell for each build', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.matrixGroups[0][1]).toEqual({
+        type: 'total',
+        name: 'All',
+        sizes: { gzip: 135, stat: 579 }
+      });
+      expect(comparator.matrixGroups[0][2]).toEqual({
+        type: 'total',
+        name: 'All',
+        sizes: { gzip: 163, stat: 592 }
+      });
+    });
+
+    test('includes an total delta cell', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.matrixGroups[0][3]).toEqual({
+        type: 'totalDelta',
+        name: 'All',
+        budgets: [],
+        failingBudgets: [],
+        hashChanged: true,
+        sizes: { gzip: 28, stat: 13 },
+        percents: { gzip: 0.2074074074074074, stat: 0.022452504317789293 }
+      });
+    });
+
     test('includes totals for each group', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
         groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
       });
-      expect(comparator.matrixGroups[0][1]).toEqual({
+      expect(comparator.matrixGroups[1][1]).toEqual({
         type: 'total',
         name: 'stuff',
         sizes: { gzip: 90, stat: 456 }
       });
-      expect(comparator.matrixGroups[0][2]).toEqual({
+      expect(comparator.matrixGroups[1][2]).toEqual({
         type: 'total',
         name: 'stuff',
         sizes: { gzip: 120, stat: 469 }
@@ -249,11 +222,12 @@ describe('BuildComparator', () => {
         builds: [build1, build2],
         groups: [{ name: 'stuff', artifactNames: ['churros', 'burritos'] }]
       });
-      expect(comparator.matrixGroups[0][3]).toEqual({
+      expect(comparator.matrixGroups[1][3]).toEqual({
         type: 'totalDelta',
         name: 'stuff',
         hashChanged: true,
         budgets: [],
+        failingBudgets: [],
         percents: { gzip: 0.3333333333333333, stat: 0.02850877192982456 },
         sizes: { gzip: 30, stat: 13 }
       });
@@ -264,11 +238,6 @@ describe('BuildComparator', () => {
     test('includes the header', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toJSON().header).toBe(comparator.matrixHeader);
-    });
-
-    test('includes the total', () => {
-      const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.toJSON().total).toBe(comparator.matrixTotal);
     });
 
     test('includes the groups', () => {

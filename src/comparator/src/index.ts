@@ -4,7 +4,7 @@
 import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
 import markdownTable from 'markdown-table';
-import { ArtifactBudgets, ArtifactFilters, Group } from '@build-tracker/types';
+import { ArtifactBudgets, ArtifactFilters, BudgetResult, Group } from '@build-tracker/types';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
@@ -29,10 +29,12 @@ export interface TextCell {
 
 export interface DeltaCell {
   type: CellType.DELTA;
+  name: string;
   sizes: ArtifactSizes;
   percents: ArtifactSizes;
-  name: string;
   hashChanged: boolean;
+  budgets: Array<BudgetResult>;
+  failingBudgets: Array<BudgetResult>;
 }
 
 export interface TotalCell {
@@ -43,8 +45,12 @@ export interface TotalCell {
 
 export interface TotalDeltaCell {
   type: CellType.TOTAL_DELTA;
+  name: string;
   sizes: ArtifactSizes;
   percents: ArtifactSizes;
+  hashChanged: boolean;
+  budgets: Array<BudgetResult>;
+  failingBudgets: Array<BudgetResult>;
 }
 
 export interface RevisionCell {
@@ -75,7 +81,6 @@ export type GroupRow = [GroupCell, ...(Array<TotalCell | TotalDeltaCell>)];
 
 export interface ComparisonMatrix {
   header: HeaderRow;
-  total: GroupRow;
   groups: Array<GroupRow>;
   artifacts: Array<ArtifactRow>;
 }
@@ -96,27 +101,6 @@ interface FormattingOptions {
 }
 
 const emptyObject = Object.freeze({});
-
-const getTotalArtifactSizes = (build: Build, artifactFilters: ArtifactFilters): TotalCell =>
-  // @ts-ignore reducing doesn't seem to make typescript happy
-  build.artifactNames
-    .filter(artifactName => !artifactFilters.some(filter => filter.test(artifactName)))
-    .reduce(
-      (totalMemo, artifactName): TotalCell => {
-        return {
-          name: artifactName,
-          type: CellType.TOTAL,
-          sizes: Object.entries(build.getArtifact(artifactName).sizes).reduce((memo, [key, value]) => {
-            if (!memo[key]) {
-              memo[key] = 0;
-            }
-            memo[key] = memo[key] + value;
-            return memo;
-          }, totalMemo.sizes)
-        };
-      },
-      { type: CellType.TOTAL, sizes: {} }
-    );
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const flatten = (arrays: Array<any>): Array<any> => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
@@ -148,7 +132,6 @@ export default class BuildComparator {
   private _buildDeltas: Array<Array<BuildDelta>>;
 
   private _matrixHeader: ComparisonMatrix['header'];
-  private _matrixTotal: ComparisonMatrix['total'];
   private _matrixGroups: ComparisonMatrix['groups'];
   private _matrixArtifacts: ComparisonMatrix['artifacts'];
 
@@ -156,7 +139,7 @@ export default class BuildComparator {
     this.builds = builds;
     this._artifactFilters = artifactFilters || [];
     this._artifactBudgets = artifactBudgets || emptyObject;
-    this._groups = groups || [];
+    this._groups = [{ name: 'All', artifactNames: this.artifactNames }, ...groups].filter(Boolean);
   }
 
   public get artifactNames(): Array<string> {
@@ -234,28 +217,6 @@ export default class BuildComparator {
     return this._matrixHeader;
   }
 
-  public get matrixTotal(): ComparisonMatrix['total'] {
-    if (!this._matrixTotal) {
-      this._matrixTotal = [
-        { type: CellType.GROUP, text: 'All', artifactNames: this.artifactNames },
-        ...flatten(
-          this.buildDeltas.map((buildDeltas, i) => [
-            {
-              sizes: this.builds[i].getTotals(this._artifactFilters),
-              type: CellType.TOTAL
-            },
-            ...buildDeltas.map(buildDelta => ({
-              percents: buildDelta.totalDelta.percents,
-              sizes: buildDelta.totalDelta.sizes,
-              type: CellType.TOTAL_DELTA
-            }))
-          ])
-        )
-      ];
-    }
-    return this._matrixTotal;
-  }
-
   public get matrixGroups(): ComparisonMatrix['groups'] {
     if (!this._matrixGroups) {
       this._matrixGroups = this._groups.map(group => this._getGroupRow(group));
@@ -282,7 +243,7 @@ export default class BuildComparator {
           },
           // @ts-ignore
           ...buildDeltas.map(buildDelta => ({
-            ...buildDelta.getArtifactDelta(artifactName),
+            ...buildDelta.getArtifactDelta(artifactName).toObject(),
             type: CellType.DELTA
           }))
         ];
@@ -303,26 +264,13 @@ export default class BuildComparator {
           },
           // @ts-ignore
           ...buildDeltas.map(buildDelta => ({
-            ...buildDelta.getGroupDelta(group.name),
+            ...buildDelta.getGroupDelta(group.name).toObject(),
             type: CellType.TOTAL_DELTA
           }))
         ];
       }
     );
     return [{ type: CellType.GROUP, text: group.name, artifactNames: group.artifactNames }, ...flatten(cells)];
-  }
-
-  public getSum(artifactNames: Array<string>): GroupRow {
-    const filters = [new RegExp(`^(?!(${artifactNames.join('|')})$).*$`)];
-    return [
-      { type: CellType.GROUP, text: 'Sum', artifactNames },
-      ...flatten(
-        this.builds.map((changeBuild, buildIndex) => [
-          getTotalArtifactSizes(changeBuild, filters),
-          ...flatten(this.buildDeltas[buildIndex].map(buildDelta => buildDelta.totalDelta))
-        ])
-      ).filter(cell => !cell.length)
-    ];
   }
 
   public getStringFormattedHeader(
@@ -341,22 +289,24 @@ export default class BuildComparator {
     });
   }
 
-  public getStringFormattedTotals(
+  public getStringFormattedGroups(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
     sizeKey: string = 'gzip'
-  ): Array<string> {
-    return this.matrixTotal.map(
-      (cell): string => {
-        switch (cell.type) {
-          case CellType.GROUP:
-            return cell.text;
-          case CellType.TOTAL_DELTA:
-            return formatDelta(cell as TotalDeltaCell, sizeKey);
-          case CellType.TOTAL:
-            return formatTotal(cell as TotalCell, sizeKey);
+  ): Array<Array<string>> {
+    return this.matrixGroups.map(row =>
+      row.map(
+        (cell): string => {
+          switch (cell.type) {
+            case CellType.GROUP:
+              return cell.text;
+            case CellType.TOTAL_DELTA:
+              return formatDelta(cell as TotalDeltaCell, sizeKey);
+            case CellType.TOTAL:
+              return formatTotal(cell as TotalCell, sizeKey);
+          }
         }
-      }
+      )
     );
   }
 
@@ -387,7 +337,6 @@ export default class BuildComparator {
   public toJSON(): ComparisonMatrix {
     return {
       header: this.matrixHeader,
-      total: this.matrixTotal,
       groups: this.matrixGroups,
       artifacts: this.matrixArtifacts
     };
@@ -402,10 +351,10 @@ export default class BuildComparator {
     sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const total = this.getStringFormattedTotals(formatTotal, formatDelta, sizeKey);
+    const groups = this.getStringFormattedGroups(formatTotal, formatDelta, sizeKey);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
 
-    return markdownTable([header, total, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
+    return markdownTable([header, ...groups, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
   }
 
   public toCsv({
@@ -417,9 +366,9 @@ export default class BuildComparator {
     sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const total = this.getStringFormattedTotals(formatTotal, formatDelta, sizeKey);
+    const groups = this.getStringFormattedGroups(formatTotal, formatDelta, sizeKey);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
 
-    return [header, total, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
+    return [header, ...groups, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }
 }

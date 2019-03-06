@@ -20,12 +20,19 @@ const Tooltip = (props: Props): React.ReactElement => {
   const ref: React.RefObject<View> = React.createRef();
 
   React.useEffect(() => {
+    let mounted = true;
     if (relativeTo.current) {
       const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
       ref.current.measure(
         (_x: number, _y: number, tipWidth: number, tipHeight: number): void => {
+          if (!mounted) {
+            return;
+          }
           relativeTo.current.measureInWindow(
             (x: number, y: number, width: number, height: number): void => {
+              if (!mounted) {
+                return;
+              }
               let top = y + height + tipSpace;
               let left = x + width / 2 - tipWidth / 2;
               // too far right when underneath
@@ -49,6 +56,9 @@ const Tooltip = (props: Props): React.ReactElement => {
         }
       );
     }
+    return () => {
+      mounted = false;
+    };
   });
 
   const tooltip = (

@@ -153,18 +153,6 @@ const Main = (): React.ReactElement => {
     );
   }, [activeComparator, artifactFilter, sizeKey]);
 
-  const overflowItems = React.useMemo(
-    () =>
-      compareRevisions.length !== 0
-        ? [
-            <MenuItem key="clear" label="Clear selected revisions" onPress={handleClearRevisions} />,
-            <MenuItem key="md" label="Copy as markdown" onPress={handleCopyAsMarkdown} />,
-            <MenuItem key="csv" label="Copy as CSV" onPress={handleCopyAsCsv} />
-          ]
-        : [],
-    [compareRevisions.length, handleClearRevisions, handleCopyAsMarkdown, handleCopyAsCsv]
-  );
-
   return (
     <View style={styles.layout}>
       <DrawerView
@@ -186,7 +174,13 @@ const Main = (): React.ReactElement => {
           <AppBar
             navigationIcon={MenuIcon}
             onPressNavigationIcon={showDrawer}
-            overflowItems={overflowItems}
+            overflowItems={
+              <>
+                <MenuItem key="clear" label="Clear selected revisions" onPress={handleClearRevisions} />
+                <MenuItem key="md" label="Copy as markdown" onPress={handleCopyAsMarkdown} />
+                <MenuItem key="csv" label="Copy as CSV" onPress={handleCopyAsCsv} />
+              </>
+            }
             title="Build Tracker"
           />
           <Graph

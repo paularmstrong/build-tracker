@@ -4,7 +4,6 @@
 import * as Theme from '../theme';
 import Button from './Button';
 import Menu from './Menu';
-import MenuItem from './MenuItem';
 import MoreIcon from '../icons/More';
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
@@ -16,7 +15,7 @@ interface Props {
   style?: StyleProp<ViewStyle>;
   title?: React.ReactNode;
   actionItems?: Array<React.ReactNode>;
-  overflowItems?: Array<React.ReactElement<typeof MenuItem>>;
+  overflowItems?: React.ReactElement;
 }
 
 export const AppBar = (props: Props): React.ReactElement => {
@@ -52,14 +51,14 @@ export const AppBar = (props: Props): React.ReactElement => {
         title || null
       )}
       <View style={styles.actionItems}>{React.Children.toArray(actionItems)}</View>
-      {overflowItems && overflowItems.length ? (
+      {overflowItems ? (
         <View ref={overflowRef}>
           <Button icon={MoreIcon} iconOnly onPress={handleShowOverflow} title="More actions" />
         </View>
       ) : null}
-      {showOverflow && overflowItems && overflowItems.length ? (
+      {showOverflow && overflowItems ? (
         <Menu onDismiss={handleShowOverflow} relativeTo={overflowRef}>
-          {React.Children.toArray(overflowItems)}
+          {overflowItems}
         </Menu>
       ) : null}
     </View>

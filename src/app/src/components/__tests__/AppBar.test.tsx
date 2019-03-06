@@ -44,7 +44,7 @@ describe('AppBar', () => {
     });
 
     test('renders a button for overflow items', () => {
-      const { getByType } = render(<AppBar overflowItems={[<MenuItem key={0} label="tacos" />]} />);
+      const { getByType } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
       // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       expect(getByType(Button).props).toMatchObject({
         icon: MoreIcon,
@@ -56,7 +56,7 @@ describe('AppBar', () => {
 
   describe('overflow items', () => {
     test('shows a menu on button press', () => {
-      const { getByType, queryAllByProps } = render(<AppBar overflowItems={[<MenuItem key={0} label="tacos" />]} />);
+      const { getByType, queryAllByProps } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
       // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       fireEvent.press(getByType(Button));
@@ -64,7 +64,7 @@ describe('AppBar', () => {
     });
 
     test('hides the menu on dismiss', () => {
-      const { getByType, queryAllByProps } = render(<AppBar overflowItems={[<MenuItem key={0} label="tacos" />]} />);
+      const { getByType, queryAllByProps } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
       // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       fireEvent.press(getByType(Button));
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);

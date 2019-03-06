@@ -188,7 +188,7 @@ describe('Main', () => {
 
   describe('overflow items', () => {
     test('can clear selected revisions', async () => {
-      const { getByType, queryAllByType } = render(<Main />);
+      const { getByType, getByProps, queryAllByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       });
@@ -196,7 +196,8 @@ describe('Main', () => {
       expect(queryAllByType(Comparison)).toHaveLength(1);
 
       act(() => {
-        fireEvent.press(getByType(AppBar).props.overflowItems[0]);
+        fireEvent.press(getByProps({ title: 'More actions' }));
+        fireEvent.press(getByProps({ label: 'Clear selected revisions' }));
       });
 
       expect(queryAllByType(Comparison)).toHaveLength(0);
@@ -204,7 +205,7 @@ describe('Main', () => {
 
     test('can copy as markdown', async () => {
       const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
-      const { getByType, queryAllByType } = render(<Main />);
+      const { getByType, getByProps, queryAllByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       });
@@ -212,7 +213,8 @@ describe('Main', () => {
       expect(queryAllByType(Comparison)).toHaveLength(1);
 
       act(() => {
-        fireEvent.press(getByType(AppBar).props.overflowItems[1]);
+        fireEvent.press(getByProps({ title: 'More actions' }));
+        fireEvent.press(getByProps({ label: 'Copy as markdown' }));
       });
       const comparator = getByType(Comparison).props.comparator;
 
@@ -221,7 +223,7 @@ describe('Main', () => {
 
     test('can copy as csv', async () => {
       const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
-      const { getByType, queryAllByType } = render(<Main />);
+      const { getByProps, getByType, queryAllByType } = render(<Main />);
       act(() => {
         fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       });
@@ -229,7 +231,8 @@ describe('Main', () => {
       expect(queryAllByType(Comparison)).toHaveLength(1);
 
       act(() => {
-        fireEvent.press(getByType(AppBar).props.overflowItems[2]);
+        fireEvent.press(getByProps({ title: 'More actions' }));
+        fireEvent.press(getByProps({ label: 'Copy as CSV' }));
       });
 
       const comparator = getByType(Comparison).props.comparator;

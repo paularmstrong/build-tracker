@@ -74,9 +74,6 @@ const ComparisonTable = (props: Props): React.ReactElement => {
           const isActive = Object.keys(activeArtifacts)
             .filter(artifactName => artifactNames.includes(artifactName))
             .every(artifactName => activeArtifacts[artifactName]);
-          if (!isActive && !disabledArtifactsVisible) {
-            return null;
-          }
           return (
             <GroupRow
               isActive={isActive}

@@ -45,7 +45,7 @@ describe('ComparisonTable', () => {
       expect(queryAllByProps({ cell: comparator.matrixArtifacts[1][0] })).toHaveLength(0);
     });
 
-    test('when not disabledArtifactsVisible, does not render artifact groups that are disabled', () => {
+    test('when not disabledArtifactsVisible, still renders groups that are disabled', () => {
       const comparator = new Comparator({ builds, groups: [{ name: 'foobar', artifactNames: ['main', 'vendor'] }] });
       const { queryAllByProps } = render(
         <ComparisonTable
@@ -63,7 +63,7 @@ describe('ComparisonTable', () => {
         />
       );
 
-      expect(queryAllByProps({ cell: comparator.matrixGroups[0][0] })).toHaveLength(0);
+      expect(queryAllByProps({ cell: comparator.matrixGroups[0][0] })).toHaveLength(1);
     });
   });
 

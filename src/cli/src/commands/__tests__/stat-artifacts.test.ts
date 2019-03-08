@@ -1,17 +1,19 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as Command from '../stat-artifacts';
 import * as path from 'path';
-import * as RunCommand from '../run';
 import yargs from 'yargs';
 
-describe('run command', () => {
+describe('stat-artifacts command', () => {
   describe('builder', () => {
     test('defaults to no config', () => {
-      const args = RunCommand.builder(yargs([]));
+      const args = Command.builder(yargs([]));
       expect(args.argv).toEqual({
         $0: expect.any(String),
-        _: []
+        _: [],
+        o: true,
+        out: true
       });
     });
   });
@@ -22,7 +24,7 @@ describe('run command', () => {
         jest
           .spyOn(process, 'cwd')
           .mockReturnValue(path.join(path.dirname(require.resolve('@build-tracker/fixtures')), 'cli-configs/commonjs'));
-        return RunCommand.handler({}).then(result => {
+        return Command.handler({ out: false }).then(result => {
           expect(result).toMatchObject({
             configPath: path.join(
               path.dirname(require.resolve('@build-tracker/fixtures')),
@@ -33,11 +35,12 @@ describe('run command', () => {
       });
 
       test('loaded via cosmiconfig when provided', () => {
-        return RunCommand.handler({
+        return Command.handler({
           config: path.join(
             path.dirname(require.resolve('@build-tracker/fixtures')),
             'cli-configs/rc/.build-trackerrc.js'
-          )
+          ),
+          out: false
         }).then(result => {
           expect(result).toMatchObject({
             configPath: path.join(
@@ -49,8 +52,38 @@ describe('run command', () => {
       });
 
       test('throws if no configuration found', () => {
-        return RunCommand.handler({ config: 'tacos' }).catch(e => {
+        return Command.handler({ config: 'tacos', out: false }).catch(e => {
           expect(e.message).toMatch('Could not find configuration file');
+        });
+      });
+    });
+
+    describe('out', () => {
+      test('writes the artifact stats to stdou', () => {
+        const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+        return Command.handler({
+          config: path.join(
+            path.dirname(require.resolve('@build-tracker/fixtures')),
+            'cli-configs/rc/.build-trackerrc.js'
+          ),
+          out: true
+        }).then(() => {
+          expect(writeSpy.mock.calls[0][0]).toMatchInlineSnapshot(`
+"{
+  \\"../../fakedist/main.1234567.js\\": {
+    \\"hash\\": \\"631a500f31d7602a386b4f858338dd6f\\",
+    \\"stat\\": 64,
+    \\"gzip\\": 73,
+    \\"brotli\\": 49
+  },
+  \\"../../fakedist/vendor.js\\": {
+    \\"hash\\": \\"fc4bcd175441f89862f9d81e37599416\\",
+    \\"stat\\": 82,
+    \\"gzip\\": 82,
+    \\"brotli\\": 62
+  }
+}"
+`);
         });
       });
     });

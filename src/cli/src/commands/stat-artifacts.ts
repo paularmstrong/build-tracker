@@ -7,12 +7,20 @@ import glob from 'glob';
 import path from 'path';
 import readfile from '../modules/readfile';
 
-export const command = 'run';
+export const command = 'stat-artifacts';
 
-export const description = 'Run the Build Tracker server';
+export const description = 'Compute your artifact stats';
 
 interface Args {
   config?: string;
+  out: boolean;
+}
+
+interface Stat {
+  hash: string;
+  stat: number;
+  gzip: number;
+  brotli: number;
 }
 
 const group = 'Run';
@@ -20,14 +28,23 @@ const group = 'Run';
 const defaultNameMapper = (fileName: string): string => fileName;
 
 export const builder = (yargs): Argv<Args> =>
-  yargs.usage(`Usage: $0 ${command}`).option('config', {
-    alias: 'c',
-    description: 'Override path to the build-tracker CLI config file',
-    group,
-    normalize: true
-  });
+  yargs
+    .usage(`Usage: $0 ${command}`)
+    .option('config', {
+      alias: 'c',
+      description: 'Override path to the build-tracker CLI config file',
+      group,
+      normalize: true
+    })
+    .option('out', {
+      alias: 'o',
+      default: true,
+      description: 'Write the stats to stdout',
+      group,
+      type: 'boolean'
+    });
 
-export const handler = async (args: Args): Promise<{}> => {
+export const handler = async (args: Args): Promise<{ configPath: string; files: Map<string, Stat> }> => {
   const { config: configPath } = args;
 
   const explorer = cosmiconfig('build-tracker');
@@ -47,8 +64,17 @@ export const handler = async (args: Args): Promise<{}> => {
     });
   }, []);
 
+  if (args.out) {
+    const fileOut = Array.from(files).reduce((memo, [artifactName, stat]) => {
+      memo[artifactName] = stat;
+      return memo;
+    }, {});
+    // @ts-ignore
+    process.stdout.write(JSON.stringify(fileOut, null, 2));
+  }
+
   return Promise.resolve({
     configPath: result.filepath,
-    files: Array.from(files)
+    files
   });
 };

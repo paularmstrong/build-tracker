@@ -29,7 +29,7 @@ describe('stat-artifacts command', () => {
           ),
           out: true
         }).then(() => {
-          expect(writeSpy.mock.calls[0][0]).toMatchInlineSnapshot(`
+          expect(writeSpy.mock.calls[writeSpy.mock.calls.length - 1][0]).toMatchInlineSnapshot(`
 "{
   \\"../../fakedist/main.1234567.js\\": {
     \\"hash\\": \\"631a500f31d7602a386b4f858338dd6f\\",

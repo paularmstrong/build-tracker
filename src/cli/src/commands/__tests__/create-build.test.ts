@@ -20,9 +20,7 @@ describe('create-build', () => {
   describe('handler', () => {
     test('throws if the working tree is dirty', () => {
       jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
-      return Command.handler({}).catch(err => {
-        expect(err).toMatchInlineSnapshot(`[TypeError: Cannot read property 'config' of null]`);
-      });
+      expect(Command.handler({})).rejects.toThrow();
     });
 
     test('returns a JSON representation of a build', () => {

@@ -24,6 +24,7 @@
     "@types/glob": "^7.1.1",
     "@types/gzip-size": "^4.1.0",
     "@types/node": "^11.10.4",
-    "@types/yargs": "^12.0.9"
+    "@types/yargs": "^12.0.9",
+    "mock-spawn": "^0.2.6"
   }
 }

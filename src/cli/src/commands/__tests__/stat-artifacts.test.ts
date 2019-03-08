@@ -19,45 +19,6 @@ describe('stat-artifacts command', () => {
   });
 
   describe('handler', () => {
-    describe('config', () => {
-      test('found via cosmiconfig when not provided', () => {
-        jest
-          .spyOn(process, 'cwd')
-          .mockReturnValue(path.join(path.dirname(require.resolve('@build-tracker/fixtures')), 'cli-configs/commonjs'));
-        return Command.handler({ out: false }).then(result => {
-          expect(result).toMatchObject({
-            configPath: path.join(
-              path.dirname(require.resolve('@build-tracker/fixtures')),
-              'cli-configs/commonjs/build-tracker.config.js'
-            )
-          });
-        });
-      });
-
-      test('loaded via cosmiconfig when provided', () => {
-        return Command.handler({
-          config: path.join(
-            path.dirname(require.resolve('@build-tracker/fixtures')),
-            'cli-configs/rc/.build-trackerrc.js'
-          ),
-          out: false
-        }).then(result => {
-          expect(result).toMatchObject({
-            configPath: path.join(
-              path.dirname(require.resolve('@build-tracker/fixtures')),
-              'cli-configs/rc/.build-trackerrc.js'
-            )
-          });
-        });
-      });
-
-      test('throws if no configuration found', () => {
-        return Command.handler({ config: 'tacos', out: false }).catch(e => {
-          expect(e.message).toMatch('Could not find configuration file');
-        });
-      });
-    });
-
     describe('out', () => {
       test('writes the artifact stats to stdou', () => {
         const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);

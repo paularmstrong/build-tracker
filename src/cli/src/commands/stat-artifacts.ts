@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Argv } from 'yargs';
-import cosmiconfig from 'cosmiconfig';
+import getConfig from '../modules/config';
 import glob from 'glob';
 import path from 'path';
 import readfile from '../modules/readfile';
@@ -23,7 +23,7 @@ interface Stat {
   brotli: number;
 }
 
-const group = 'Run';
+const group = 'Stat artifacts';
 
 const defaultNameMapper = (fileName: string): string => fileName;
 
@@ -44,28 +44,21 @@ export const builder = (yargs): Argv<Args> =>
       type: 'boolean'
     });
 
-export const handler = async (args: Args): Promise<{ configPath: string; files: Map<string, Stat> }> => {
-  const { config: configPath } = args;
+export const handler = async (args: Args): Promise<{ artifacts: Map<string, Stat> }> => {
+  const { artifacts: artifactGlobs, baseDir, cwd, getFilenameHash, nameMapper = defaultNameMapper } = await getConfig(
+    args.config
+  );
 
-  const explorer = cosmiconfig('build-tracker');
-  let result;
-  try {
-    result = !configPath ? await explorer.search() : await explorer.load(configPath);
-  } catch (e) {
-    throw new Error('Could not find configuration file');
-  }
-
-  const { artifacts, baseDir, cwd, getFilenameHash, nameMapper = defaultNameMapper } = result.config;
-  const files = new Map();
-  artifacts.forEach(fileGlob => {
+  const artifacts = new Map();
+  artifactGlobs.forEach(fileGlob => {
     glob.sync(path.resolve(cwd, fileGlob)).forEach(filePath => {
       const sizes = readfile(filePath, getFilenameHash);
-      files.set(nameMapper(path.relative(baseDir, filePath).replace(`.${sizes.hash}`, '')), sizes);
+      artifacts.set(nameMapper(path.relative(baseDir, filePath).replace(`.${sizes.hash}`, '')), sizes);
     });
   }, []);
 
   if (args.out) {
-    const fileOut = Array.from(files).reduce((memo, [artifactName, stat]) => {
+    const fileOut = Array.from(artifacts).reduce((memo, [artifactName, stat]) => {
       memo[artifactName] = stat;
       return memo;
     }, {});
@@ -74,7 +67,6 @@ export const handler = async (args: Args): Promise<{ configPath: string; files: 
   }
 
   return Promise.resolve({
-    configPath: result.filepath,
-    files
+    artifacts
   });
 };

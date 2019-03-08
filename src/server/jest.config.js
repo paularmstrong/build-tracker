@@ -4,6 +4,7 @@
 module.exports = {
   displayName: 'server',
   testEnvironment: 'node',
+  resetMocks: true,
   rootDir: './',
   roots: ['<rootDir>/src'],
   transform: {

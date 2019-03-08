@@ -26,7 +26,7 @@ describe('git', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
       return Git.isDirty().then(() => {
-        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.env.cwd });
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
       });
     });
 
@@ -52,7 +52,7 @@ describe('git', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
       return Git.getDefaultBranch().then(() => {
-        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.env.cwd });
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
       });
     });
 
@@ -83,7 +83,7 @@ describe('git', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
       return Git.getParentRevision('master').then(() => {
-        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.env.cwd });
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
       });
     });
 
@@ -101,7 +101,7 @@ describe('git', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
       return Git.getCurrentRevision().then(() => {
-        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.env.cwd });
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
       });
     });
 
@@ -134,7 +134,7 @@ describe('git', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
       return Git.getRevisionDetails('12345').then(() => {
-        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.env.cwd });
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
       });
     });
 

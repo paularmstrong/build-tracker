@@ -20,6 +20,8 @@ describe('run command', () => {
     });
 
     test('resolves the config path for requires', () => {
+      jest.spyOn(process, 'cwd').mockReturnValue(__dirname);
+
       const args = RunCommand.builder(
         yargs(['--config', '@build-tracker/fixtures/server-configs/build-tracker.config.js'])
       );

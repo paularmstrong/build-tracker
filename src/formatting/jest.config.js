@@ -4,6 +4,7 @@
 module.exports = {
   displayName: 'formatting',
   testEnvironment: 'node',
+  resetMocks: true,
   rootDir: './',
   roots: ['<rootDir>/src'],
   transform: {

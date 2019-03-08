@@ -21,7 +21,7 @@ describe('stat-artifacts command', () => {
   describe('handler', () => {
     describe('out', () => {
       test('writes the artifact stats to stdou', () => {
-        const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+        const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
         return Command.handler({
           config: path.join(
             path.dirname(require.resolve('@build-tracker/fixtures')),

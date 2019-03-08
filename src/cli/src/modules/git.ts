@@ -26,3 +26,26 @@ export function getParentRevision(master: string, cwd: string = process.env.cwd)
     }
   );
 }
+
+export function getCurrentRevision(cwd: string = process.env.cwd): Promise<string> {
+  return spawn('git', ['rev-parse', 'HEAD'], { cwd }).then((buffer: Buffer): string => buffer.toString());
+}
+
+interface RevDetails {
+  timestamp: number;
+  name: string;
+  subject: string;
+}
+
+export function getRevisionDetails(sha: string, cwd: string = process.env.cwd): Promise<RevDetails> {
+  return spawn('git', ['show', '-s', `--format=%ct${0x1f}%aN${0x1f}%s`, sha], { cwd }).then(
+    (buffer: Buffer): RevDetails => {
+      const [timestamp, name, subject] = buffer.toString().split(`${0x1f}`);
+      return {
+        timestamp: parseInt(timestamp, 10),
+        name,
+        subject
+      };
+    }
+  );
+}

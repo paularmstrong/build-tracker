@@ -14,12 +14,9 @@ describe('version command', () => {
 
   describe('handler', () => {
     test('runs the server with the given config', () => {
-      const mockWrite = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+      const mockWrite = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
       VersionCommand.handler();
-      expect(mockWrite.mock.calls[0][0]).toMatchInlineSnapshot(`
-"1.0.0
-"
-`);
+      expect(mockWrite).toHaveBeenCalledWith('1.0.0\n');
     });
   });
 });

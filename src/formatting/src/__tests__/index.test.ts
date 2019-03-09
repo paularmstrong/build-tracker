@@ -1,7 +1,8 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { formatBytes, formatSha } from '../';
+import { BudgetLevel, BudgetType } from '@build-tracker/types';
+import { formatBudgetResult, formatBytes, formatSha } from '../';
 
 describe('formatBytes', () => {
   describe('defaults', () => {
@@ -40,5 +41,115 @@ describe('formatBytes', () => {
 describe('formatSha', () => {
   test('slices the sha to 7 characters', () => {
     expect(formatSha('1234567abcdef')).toEqual('1234567');
+  });
+});
+
+describe('formatBudgetResult', () => {
+  describe('error', () => {
+    test('size', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.SIZE,
+            level: BudgetLevel.ERROR
+          },
+          'tacos'
+        )
+      ).toEqual('Error: "tacos" failed budget size limit of 2 KiB by 2 KiB');
+    });
+
+    test('delta', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.DELTA,
+            level: BudgetLevel.ERROR
+          },
+          'tacos'
+        )
+      ).toEqual(
+        'Error: "tacos" failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+      );
+    });
+
+    test('percentDelta', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 0.1,
+            actual: 0.2,
+            type: BudgetType.PERCENT_DELTA,
+            level: BudgetLevel.ERROR
+          },
+          'tacos'
+        )
+      ).toEqual(
+        'Error: "tacos" failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+      );
+    });
+  });
+
+  describe('warning', () => {
+    test('size', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.SIZE,
+            level: BudgetLevel.WARN
+          },
+          'tacos'
+        )
+      ).toEqual('Warning: "tacos" failed budget size limit of 2 KiB by 2 KiB');
+    });
+
+    test('delta', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.DELTA,
+            level: BudgetLevel.WARN
+          },
+          'tacos'
+        )
+      ).toEqual(
+        'Warning: "tacos" failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+      );
+    });
+
+    test('percentDelta', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 0.1,
+            actual: 0.2,
+            type: BudgetType.PERCENT_DELTA,
+            level: BudgetLevel.WARN
+          },
+          'tacos'
+        )
+      ).toEqual(
+        'Warning: "tacos" failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+      );
+    });
   });
 });

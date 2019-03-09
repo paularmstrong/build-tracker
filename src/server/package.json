@@ -29,7 +29,7 @@
     "@types/node": "^11.10.4",
     "@types/yargs": "^12.0.9",
     "node-mocks-http": "^1.7.3",
-    "supertest": "^3.4.2",
+    "supertest": "^4.0.0",
     "ts-node": "^8.0.2"
   }
 }

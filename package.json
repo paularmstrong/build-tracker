@@ -7,7 +7,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "src/*"
+    "src/*",
+    "plugins/*"
   ],
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./src/app/config/devserver.config.js",

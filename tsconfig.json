@@ -20,5 +20,5 @@
     "sourceMap": true,
     "target": "es5"
   },
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**"]
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**", "plugins/**/dist/**"]
 }

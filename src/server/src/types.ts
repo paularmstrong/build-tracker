@@ -4,7 +4,7 @@
 import Comparator from '@build-tracker/comparator';
 import { Artifact, BuildMeta } from '@build-tracker/build';
 
-interface Build {
+export interface Build {
   meta: BuildMeta;
   artifacts: Array<Artifact<{}>>;
 }
@@ -12,11 +12,12 @@ interface Build {
 export interface Queries {
   build: {
     byRevision: (revision: string) => Promise<Build>;
+    insert: (build: Build) => Promise<string>;
   };
   builds: {
     byRevisions: (...revisions: Array<string>) => Promise<Array<Build>>;
     byRevisionRange: (startRevision: string, endRevision: string) => Promise<Array<Build>>;
-    byTimeRange: (startTimestamp: number, endTimestamp: string) => Promise<Array<Build>>;
+    byTimeRange: (startTimestamp: number, endTimestamp: number) => Promise<Array<Build>>;
   };
 }
 

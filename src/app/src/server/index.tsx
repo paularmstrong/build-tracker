@@ -4,26 +4,24 @@
 import { AppRegistry } from 'react-native-web';
 import Main from '../screens/Main';
 import ReactDOMServer from 'react-dom/server';
-import { v4 as uuid } from 'uuid';
 import { Request, RequestHandler, Response } from 'express';
 
 AppRegistry.registerComponent('App', () => Main);
 
-export function getPageHTML(scripts: Array<string>): string {
+export function getPageHTML(nonce: string, scripts: Array<string>): string {
   // @ts-ignore
   const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: {} });
   const html = ReactDOMServer.renderToString(element);
-  const nonce = uuid();
   const css = ReactDOMServer.renderToStaticMarkup(getStyleElement({ nonce }));
 
-  return `
-<!DOCTYPE html>
-<html style="height:100%">
+  return `<!DOCTYPE html>
+<html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
-<body style="height:100%; overflow-y:hidden">
-<div id="root" style="display:flex; height: 100%">
+<body>
+<div id="root">
 ${html}
 </div>
 <div id="menuPortal"></div>
@@ -44,6 +42,7 @@ interface DevOptions {
 }
 
 const serverRender = (options: ProdOptions | DevOptions): RequestHandler => (_req: Request, res: Response): void => {
+  const { nonce } = res.locals;
   const stats =
     'clientStats' in options
       ? options.clientStats
@@ -59,7 +58,7 @@ const serverRender = (options: ProdOptions | DevOptions): RequestHandler => (_re
 
   const { assetsByChunkName } = stats;
   const assets = Array.isArray(assetsByChunkName.app) ? assetsByChunkName.app : [assetsByChunkName.app];
-  res.send(getPageHTML(assets));
+  res.send(getPageHTML(nonce, assets));
 };
 
 export default serverRender;

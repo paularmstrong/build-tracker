@@ -64,7 +64,11 @@ const Menu = (props: Props): React.ReactElement => {
       // @ts-ignore
       accessibilityRole="menu"
       ref={ref}
-      style={[styles.root, { top: position.top, left: position.left }, position.top > 0 && styles.show]}
+      style={[
+        styles.root,
+        position.top > 0 && { top: position.top, left: position.left },
+        position.top > 0 && styles.show
+      ]}
     >
       {React.Children.toArray(children)}
     </View>

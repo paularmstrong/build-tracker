@@ -4,10 +4,13 @@
 import api from './api';
 import { AppConfig } from '@build-tracker/types';
 import bodyParser from 'body-parser';
-import express from 'express';
+import crypto from 'crypto';
 import expressPino from 'express-pino-logger';
+import getCSP from './csp';
+import helmet from 'helmet';
 import path from 'path';
 import pino from 'pino';
+import express, { NextFunction, Request, Response } from 'express';
 import { Handlers, Queries } from './types';
 
 export interface ServerConfig extends AppConfig {
@@ -23,14 +26,22 @@ const reqLogger = expressPino({ logger });
 
 export default function runBuildTracker(config: ServerConfig): void {
   const { handlers, port = 3000, queries } = config;
+  const IN_DEV = process.env.NODE_ENV !== 'production' && config.dev;
   app.use(reqLogger);
   app.use(bodyParser.json());
 
   app.use(api(express.Router(), queries, config, handlers));
 
+  app.use((_req: Request, res: Response, next: NextFunction) => {
+    res.locals.nonce = crypto.randomBytes(16).toString('base64');
+    next();
+  });
+
+  app.use(helmet.contentSecurityPolicy({ directives: getCSP(IN_DEV) }));
+
   const APP_ROOT = path.dirname(require.resolve('@build-tracker/app'));
 
-  if (process.env.NODE_ENV !== 'production' && config.dev) {
+  if (IN_DEV) {
     const middleware = require('webpack-dev-middleware');
     const webpack = require('webpack');
     const compiler = webpack(require(path.join(APP_ROOT, '../config/webpack.config'))({ port }));

@@ -10,7 +10,6 @@
     "prebuild": "mkdirp dist",
     "build": "NODE_ENV=production webpack --config config/webpack.config.js --json > dist/stats.json",
     "clean": "rimraf dist",
-    "start": "webpack-dev-server --hot --config config/webpack.config.js",
     "tsc": "tsc --noEmit"
   },
   "dependencies": {

@@ -20,11 +20,9 @@ module.exports = reporter => ({
   devServer: {
     contentBase: SRC_ROOT,
     hot: true,
-    noInfo: true,
-    stats: 'none'
+    noInfo: true
   },
-  stats: 'none',
-  devtool: 'cheap-module-eval-source-map',
+  devtool: IS_PROD ? 'source-map' : 'cheap-module-eval-source-map',
   module: {
     rules: [{ test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }]
   },
@@ -33,6 +31,9 @@ module.exports = reporter => ({
       'react-native$': 'react-native-web'
     },
     extensions: ['.tsx', '.ts', '.js']
+  },
+  node: {
+    global: false
   },
   optimization: {
     splitChunks: {
@@ -45,6 +46,9 @@ module.exports = reporter => ({
     publicPath: '/client/'
   },
   plugins: [
+    new webpack.DefinePlugin({
+      global: 'window'
+    }),
     !IS_PROD &&
       reporter &&
       new WebpackBar({

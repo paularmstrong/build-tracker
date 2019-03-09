@@ -2,13 +2,12 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 const path = require('path');
-const reporter = require('./webpack-progress');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 
 const { DIST_ROOT, IS_PROD, SRC_ROOT } = require('./constants');
 
-module.exports = {
+module.exports = reporter => ({
   name: 'server',
   target: 'node',
   entry: path.join(SRC_ROOT, 'server/index.tsx'),
@@ -39,6 +38,7 @@ module.exports = {
   },
   plugins: [
     !IS_PROD &&
+      reporter &&
       new WebpackBar({
         name: 'Server',
         color: 'blue',
@@ -46,4 +46,4 @@ module.exports = {
       }),
     !IS_PROD && new webpack.HotModuleReplacementPlugin()
   ].filter(Boolean)
-};
+});

@@ -33,8 +33,8 @@ export default function runBuildTracker(config: ServerConfig): void {
   if (process.env.NODE_ENV !== 'production' && config.dev) {
     const middleware = require('webpack-dev-middleware');
     const webpack = require('webpack');
-    const compiler = webpack(require(path.join(APP_ROOT, '../config/webpack.config')));
-    app.use(middleware(compiler, { publicPath: '/', serverSideRender: true }));
+    const compiler = webpack(require(path.join(APP_ROOT, '../config/webpack.config'))({ port }));
+    app.use(middleware(compiler, { noInfo: true, publicPath: '/', serverSideRender: true }));
     app.use(require('webpack-hot-middleware')(compiler.compilers.find(compiler => compiler.name === 'client')));
     app.use(require('webpack-hot-server-middleware')(compiler));
   } else {

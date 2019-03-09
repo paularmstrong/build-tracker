@@ -2,13 +2,12 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 const path = require('path');
-const reporter = require('./webpack-progress');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 
 const { DIST_ROOT, IS_PROD, SRC_ROOT } = require('./constants');
 
-module.exports = {
+module.exports = reporter => ({
   name: 'client',
   target: 'web',
   entry: {
@@ -21,8 +20,10 @@ module.exports = {
   devServer: {
     contentBase: SRC_ROOT,
     hot: true,
-    noInfo: true
+    noInfo: true,
+    stats: 'none'
   },
+  stats: 'none',
   devtool: 'cheap-module-eval-source-map',
   module: {
     rules: [{ test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }]
@@ -45,6 +46,7 @@ module.exports = {
   },
   plugins: [
     !IS_PROD &&
+      reporter &&
       new WebpackBar({
         name: 'Web',
         color: 'green',
@@ -52,4 +54,4 @@ module.exports = {
       }),
     !IS_PROD && new webpack.HotModuleReplacementPlugin()
   ].filter(Boolean)
-};
+});

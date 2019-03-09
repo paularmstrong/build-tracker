@@ -7,7 +7,7 @@ const clearOutput = () => {
   process.stdout.write('\x1B[2J\x1B[0f');
 };
 
-module.exports = {
+module.exports = port => ({
   change: (context, { shortPath }) => {
     clearOutput();
     console.log(`⏱  ${shortPath} changed. Rebuilding…`);
@@ -27,11 +27,11 @@ module.exports = {
     const { hasErrors, message, name } = context.state;
 
     if (hasErrors) {
-      console.log(`\n 🚨 Server is ready on https://localhost:8080, but may not work correctly\n`);
+      console.log(`\n 🚨 Server is ready on https://localhost:${port}, but may not work correctly\n`);
       console.error(`${chalk.red(name)}: ${message}`);
     } else {
       clearOutput();
-      console.log(`\n 🚀 Server is ready on https://localhost:8080\n`);
+      console.log(`\n 🚀 Server is ready on https://localhost:${port}\n`);
     }
   }
-};
+});

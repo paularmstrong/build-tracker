@@ -4,7 +4,6 @@
 import * as Theme from '../../theme';
 import DrawerLink from '../DrawerLink';
 import HeartIcon from '../../icons/Heart';
-import OpenInExternalIcon from '../../icons/OpenInExternal';
 import React from 'react';
 import { fireEvent, render } from 'react-native-testing-library';
 import { StyleSheet, Text } from 'react-native';
@@ -21,16 +20,6 @@ describe('DrawerLink', () => {
       const { queryAllByType } = render(
         <DrawerLink href="https://build-tracker.local" icon={HeartIcon} text="tacos" />
       );
-      expect(queryAllByType(HeartIcon)).toHaveLength(1);
-    });
-
-    test('renders an openInExternal icon if the hostname is not the current', () => {
-      const { queryAllByType } = render(<DrawerLink href="https://tacos.local" text="tacos" />);
-      expect(queryAllByType(OpenInExternalIcon)).toHaveLength(1);
-    });
-
-    test('renders the provided icon even if the hostname is not the current', () => {
-      const { queryAllByType } = render(<DrawerLink href="https://tacos.local" icon={HeartIcon} text="tacos" />);
       expect(queryAllByType(HeartIcon)).toHaveLength(1);
     });
   });

@@ -8,6 +8,7 @@ import Divider from '../components/Divider';
 import Drawer from '../components/Drawer';
 import DrawerLink from '../components/DrawerLink';
 import HeartIcon from '../icons/Heart';
+import OpenInExternalIcon from '../icons/OpenInExternal';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import SizeKeyPicker from '../components/SizeKeyPicker';
@@ -62,7 +63,7 @@ const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElem
       <Divider />
       <View style={styles.footer}>
         <Subtitle title="Links" />
-        <DrawerLink href="https://github.com/paularmstrong/build-tracker" text="Github" />
+        <DrawerLink href="https://github.com/paularmstrong/build-tracker" icon={OpenInExternalIcon} text="Github" />
       </View>
       <View style={styles.attribution}>
         <Text style={styles.attrText}>

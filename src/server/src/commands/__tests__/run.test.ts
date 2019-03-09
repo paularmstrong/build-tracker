@@ -20,13 +20,11 @@ describe('run command', () => {
     });
 
     test('resolves the config path for requires', () => {
-      jest.spyOn(process, 'cwd').mockReturnValue(__dirname);
+      jest.spyOn(process, 'cwd').mockReturnValue(path.join(__dirname, '../../..'));
 
-      const args = RunCommand.builder(
-        yargs(['--config', '@build-tracker/fixtures/server-configs/build-tracker.config.js'])
-      );
+      const args = RunCommand.builder(yargs(['--config', './fixtures/server-configs/build-tracker.config.js']));
       expect(args.argv.config).toEqual(
-        require.resolve('@build-tracker/fixtures/server-configs/build-tracker.config.js')
+        path.join(__dirname, '../../../fixtures/server-configs/build-tracker.config.js')
       );
     });
   });

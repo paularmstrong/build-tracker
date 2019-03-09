@@ -3,7 +3,6 @@
  */
 import * as Theme from '../theme';
 import Hoverable from './Hoverable';
-import OpenInExternal from '../icons/OpenInExternal';
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
@@ -15,10 +14,7 @@ interface Props {
 }
 
 const DrawerLink = (props: Props): React.ReactElement => {
-  const { href, icon = null, style, text } = props;
-
-  const url = new URL(href);
-  const Icon = !icon && url.hostname !== window.location.hostname ? OpenInExternal : icon;
+  const { href, icon: Icon = null, style, text } = props;
 
   return (
     <Hoverable>

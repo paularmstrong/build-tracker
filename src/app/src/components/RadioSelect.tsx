@@ -58,7 +58,7 @@ const RadioSelect = (props: Props): React.ReactElement => {
           onChange: handleChange,
           onFocus: handleFocus,
           role: 'checkbox',
-          style: [StyleSheet.absoluteFillObject, styles.native],
+          style: [styles.native],
           type: 'checkbox'
         })}
       </View>
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.Color.Primary30
   },
   native: {
+    ...StyleSheet.absoluteFillObject,
     height: '100%',
     margin: 0,
     opacity: 0,

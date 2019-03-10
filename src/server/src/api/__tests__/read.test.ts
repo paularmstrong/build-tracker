@@ -41,7 +41,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/build/1234567890')
-        .then(res => {
+        .catch(res => {
           expect(res.status).toBe(500);
         });
     });
@@ -67,7 +67,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/range/1234567..abcdef')
-        .then(res => {
+        .catch(res => {
           expect(res.status).toBe(500);
         });
     });
@@ -93,7 +93,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/time/1234567..2345678')
-        .then(res => {
+        .catch(res => {
           expect(res.status).toBe(500);
         });
     });
@@ -119,7 +119,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/list/1234567/abcdef/239587')
-        .then(res => {
+        .catch(res => {
           expect(res.status).toBe(500);
         });
     });

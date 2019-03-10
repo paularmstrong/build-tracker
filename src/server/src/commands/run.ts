@@ -18,8 +18,8 @@ const group = 'Run';
 export const builder = (yargs): Argv<Args> =>
   yargs.usage(`Usage: $0 ${command}`).option('config', {
     alias: 'c',
-    coerce: v => require.resolve(v),
-    default: path.join(process.cwd(), 'build-tracker.config.js'),
+    coerce: v => path.join(process.cwd(), v),
+    default: 'build-tracker.config.js',
     description: 'path to the build-tracker config file',
     group,
     normalize: true

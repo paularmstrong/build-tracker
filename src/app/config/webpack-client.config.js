@@ -1,13 +1,14 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 
 const { DIST_ROOT, IS_PROD, SRC_ROOT } = require('./constants');
 
-module.exports = reporter => ({
+module.exports = (env, reporter) => ({
   name: 'client',
   target: 'web',
   entry: {
@@ -37,6 +38,14 @@ module.exports = reporter => ({
   },
   optimization: {
     splitChunks: {
+      cacheGroups: {
+        vendor: {
+          chunks: 'initial',
+          name: 'vendor',
+          test: /node_modules/,
+          enforce: true
+        }
+      },
       chunks: 'async'
     }
   },
@@ -46,6 +55,7 @@ module.exports = reporter => ({
     publicPath: '/client/'
   },
   plugins: [
+    env.analyzer && new BundleAnalyzerPlugin({ defaultSizes: 'gzip', openAnalyzer: true }),
     new webpack.DefinePlugin({
       global: 'window'
     }),

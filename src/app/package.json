@@ -9,6 +9,7 @@
   "scripts": {
     "prebuild": "mkdirp dist",
     "build": "NODE_ENV=production webpack --config config/webpack.config.js --json > dist/stats.json",
+    "analyze": "NODE_ENV=production webpack --config config/webpack.config.js --env.analyzer",
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
   },
@@ -52,6 +53,7 @@
     "supertest": "^4.0.0",
     "ts-loader": "^5.3.3",
     "webpack": "^4.29.5",
+    "webpack-bundle-analyzer": "^3.1.0",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.1.14",
     "webpackbar": "^3.1.5"

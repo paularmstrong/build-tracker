@@ -7,7 +7,7 @@ const WebpackBar = require('webpackbar');
 
 const { DIST_ROOT, IS_PROD, SRC_ROOT } = require('./constants');
 
-module.exports = reporter => ({
+module.exports = (env, reporter) => ({
   name: 'server',
   target: 'node',
   entry: path.join(SRC_ROOT, 'server/index.tsx'),

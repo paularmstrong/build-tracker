@@ -41,6 +41,10 @@ interface DevOptions {
   clientStats: Stats;
 }
 
+const getAssetByName = (asset: Array<string> | string): Array<string> => {
+  return Array.isArray(asset) ? asset : [asset];
+};
+
 const serverRender = (options: ProdOptions | DevOptions): RequestHandler => (_req: Request, res: Response): void => {
   const { nonce } = res.locals;
   const stats =
@@ -57,8 +61,7 @@ const serverRender = (options: ProdOptions | DevOptions): RequestHandler => (_re
   }
 
   const { assetsByChunkName } = stats;
-  const assets = Array.isArray(assetsByChunkName.app) ? assetsByChunkName.app : [assetsByChunkName.app];
-  res.send(getPageHTML(nonce, assets));
+  res.send(getPageHTML(nonce, [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)]));
 };
 
 export default serverRender;

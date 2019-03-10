@@ -5,5 +5,6 @@ const fakeBuild = require('../builds/01141f29743fb2bdd7e176cf919fc964025cea5a.js
 
 module.exports = {
   getParentBuild: () => Promise.resolve(fakeBuild),
-  port: 3000
+  port: 3000,
+  setup: () => Promise.resolve()
 };

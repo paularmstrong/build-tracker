@@ -17,6 +17,7 @@ export interface ServerConfig extends AppConfig {
   dev?: boolean;
   handlers?: Handlers;
   port?: number;
+  setup?: () => Promise<boolean>;
   queries: Queries;
 }
 

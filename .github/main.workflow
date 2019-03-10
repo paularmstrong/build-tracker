@@ -17,7 +17,7 @@ action "Set status" {
 action "Add labels" {
   uses = "adamzolyak/monorepo-pr-labeler-action@1.1.1"
   env = {
-    BASE_DIRS = "src"
+    BASE_DIRS = "src|plugins"
   }
   secrets = ["GITHUB_TOKEN"]
 }

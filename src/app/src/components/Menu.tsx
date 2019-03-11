@@ -28,7 +28,7 @@ const Menu = (props: Props): React.ReactElement => {
     return () => {
       document.body.removeEventListener('click', handleClickOutside);
     };
-  });
+  }, [onDismiss]);
 
   React.useEffect(() => {
     if (ref.current && relativeTo.current) {

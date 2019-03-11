@@ -45,7 +45,9 @@ const Graph = (props: Props): React.ReactElement => {
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
-  const activeArtifactNames = Object.keys(activeArtifacts).filter(name => activeArtifacts[name]);
+  const activeArtifactNames = React.useMemo(() => Object.keys(activeArtifacts).filter(name => activeArtifacts[name]), [
+    activeArtifacts
+  ]);
 
   const xScale = React.useMemo(() => {
     const domain = comparator.builds

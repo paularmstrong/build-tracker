@@ -25,7 +25,7 @@ const XAxis = (props: Props): React.ReactElement => {
       .attr('x', 6)
       .attr('transform', 'rotate(24)')
       .style('text-anchor', 'start');
-  });
+  }, [scale]);
 
   return <g ref={ref} transform={`translate(0, ${height})`} />;
 };

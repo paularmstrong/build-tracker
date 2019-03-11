@@ -36,19 +36,22 @@ const Area = (props: Props): React.ReactElement => {
     };
   }, [colorScale, comparator.artifactNames, hoveredArtifacts]);
 
+  const areaChart = React.useMemo(() => {
+    return (
+      area()
+        // @ts-ignore d.data does exist
+        .x(d => xScale(d.data.getMetaValue('revision')))
+        .y0(d => yScale(d[0]))
+        .y1(d => yScale(d[1]))
+    );
+  }, [xScale, yScale]);
+
   React.useEffect(() => {
     const contents = select(gRef.current);
-
-    const areaChart = area()
-      // @ts-ignore d.data does exist
-      .x(d => xScale(d.data.getMetaValue('revision')))
-      .y0(d => yScale(d[0]))
-      .y1(d => yScale(d[1]));
 
     const artifact = contents.selectAll('.artifact').data(data, (d: { key: string }) => d.key);
     const builds = contents.selectAll('.build').data([]);
     builds.exit().remove();
-
     artifact.exit().remove();
 
     artifact
@@ -63,7 +66,7 @@ const Area = (props: Props): React.ReactElement => {
       .duration(100)
       .style('fill', graphColorScale)
       .attr('d', areaChart);
-  });
+  }, [areaChart, data, graphColorScale]);
 
   return <g aria-label={`Stacked area chart for ${activeArtifactNames.join(', ')}`} pointerEvents="all" ref={gRef} />;
 };

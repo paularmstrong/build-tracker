@@ -126,6 +126,19 @@ const Main = (): React.ReactElement => {
     [focusedRevision]
   );
 
+  const handleHoverArtifacts = React.useCallback(
+    (newHovered: Array<string>): void => {
+      const equal =
+        newHovered.length === hoveredArtifacts.length &&
+        newHovered.every(value => hoveredArtifacts.indexOf(value) !== -1);
+      if (equal) {
+        return;
+      }
+      setHoveredArtifacts(newHovered);
+    },
+    [hoveredArtifacts]
+  );
+
   const handleToggleDisabledArtifacts = React.useCallback((showDisabled: boolean): void => {
     setDisabledArtifactsVisible(showDisabled);
   }, []);
@@ -188,7 +201,7 @@ const Main = (): React.ReactElement => {
             colorScale={colorScale}
             comparator={comparator}
             hoveredArtifacts={hoveredArtifacts}
-            onHoverArtifacts={setHoveredArtifacts}
+            onHoverArtifacts={handleHoverArtifacts}
             onSelectRevision={handleSelectRevision}
             selectedRevisions={compareRevisions}
             sizeKey={sizeKey}
@@ -207,7 +220,7 @@ const Main = (): React.ReactElement => {
               onEnableArtifacts={handleEnableArtifacts}
               onFocusRevision={setFocusedRevision}
               onUnfocusRevision={handleUnfocusRevision}
-              onHoverArtifacts={setHoveredArtifacts}
+              onHoverArtifacts={handleHoverArtifacts}
               onRemoveRevision={handleRemoveRevision}
               sizeKey={sizeKey}
               style={[styles.column, styles.table]}

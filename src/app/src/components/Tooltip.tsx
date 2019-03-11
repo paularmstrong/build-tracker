@@ -59,7 +59,7 @@ const Tooltip = (props: Props): React.ReactElement => {
     return () => {
       mounted = false;
     };
-  });
+  }, [ref, relativeTo]);
 
   const tooltip = (
     <View

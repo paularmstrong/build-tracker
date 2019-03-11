@@ -129,6 +129,34 @@ describe('Main', () => {
     });
   });
 
+  describe('hovering artifacts', () => {
+    test('updates hovered artifacts', async () => {
+      const { getByType } = render(<Main />);
+
+      expect(getByType(Graph).props.hoveredArtifacts).toEqual([]);
+
+      act(() => {
+        fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
+      });
+
+      expect(getByType(Graph).props.hoveredArtifacts).toEqual(['main']);
+    });
+
+    test('does not update hovered artifacts if equal', async () => {
+      const { getByType } = render(<Main />);
+
+      act(() => {
+        fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
+      });
+      const { hoveredArtifacts } = getByType(Graph).props;
+      act(() => {
+        fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
+      });
+
+      expect(getByType(Graph).props.hoveredArtifacts).toBe(hoveredArtifacts);
+    });
+  });
+
   describe('on select revision', () => {
     test('updates the comparison table', () => {
       const { getByType } = render(<Main />);

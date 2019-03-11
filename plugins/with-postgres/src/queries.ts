@@ -12,7 +12,7 @@ export default class Queries {
     this._pool = pool;
   }
 
-  public getyByRevision = async (revision: string): Promise<BuildStruct> => {
+  public getByRevision = async (revision: string): Promise<BuildStruct> => {
     const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = $1', [revision]);
     if (res.rowCount !== 1) {
       throw new Error('No result found');
@@ -27,7 +27,7 @@ export default class Queries {
       'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, @4)',
       [
         build.getMetaValue('revision'),
-        build.timestamp,
+        build.meta.timestamp,
         build.getMetaValue('parentRevision'),
         build.meta,
         build.artifacts
@@ -35,7 +35,7 @@ export default class Queries {
     );
 
     if (res.rowCount !== 1) {
-      throw new Error('No result found');
+      throw new Error('Unable to insert build');
     }
 
     return Promise.resolve(build.getMetaValue('revision'));

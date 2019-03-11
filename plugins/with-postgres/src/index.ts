@@ -17,7 +17,7 @@ export default function withPostgres(config: Partial<ServerConfig> & { pg: PoolC
     setup: setup(pool),
     queries: {
       build: {
-        byRevision: queries.getyByRevision,
+        byRevision: queries.getByRevision,
         insert: queries.insert
       },
       builds: {

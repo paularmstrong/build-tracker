@@ -21,9 +21,7 @@ export function getPageHTML(nonce: string, scripts: Array<string>): string {
 <style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
 <body>
-<div id="root">
-${html}
-</div>
+<div id="root">${html}</div>
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
 ${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`)}

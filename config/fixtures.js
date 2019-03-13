@@ -1,0 +1,46 @@
+const glob = require('glob');
+const path = require('path');
+const { UnimplementedError } = require('@build-tracker/api-errors');
+
+const builds = new Map();
+glob.sync(`${path.join(__dirname, '../src/fixtures/builds')}/*.json`).forEach(fileName => {
+  const build = require(fileName);
+  builds.set(build.meta.revision.value || build.meta.revision, build);
+});
+
+module.exports = {
+  dev: true,
+  queries: {
+    build: {
+      byRevision: async revision => {
+        return Promise.resolve(builds.get(revision));
+      },
+      insert: async () => {
+        throw new UnimplementedError();
+      }
+    },
+    builds: {
+      byRevisions: async (...revisions) => {
+        return Promise.resolve(Array.from(builds.values()).filter(build => revisions.includes(build.meta.revision)));
+      },
+      byRevisionRange: async () => {
+        throw new UnimplementedError();
+      },
+      byTimeRange: async (startTimestamp, endTimestamp) => {
+        return Promise.resolve(
+          Array.from(builds.values())
+            .filter(build => build.meta.timestamp >= startTimestamp && build.meta.timestamp <= endTimestamp)
+            .sort((a, b) => b.meta.timestamp - a.meta.timestamp)
+        );
+      },
+      recent: async (limit = 20) => {
+        return Promise.resolve(
+          Array.from(builds.values())
+            .sort((a, b) => b.meta.timestamp - a.meta.timestamp)
+            .slice(-limit)
+        );
+      }
+    }
+  },
+  setup: () => Promise.resolve()
+};

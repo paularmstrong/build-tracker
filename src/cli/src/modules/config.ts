@@ -4,6 +4,7 @@
 import cosmiconfig from 'cosmiconfig';
 
 interface Config {
+  applicationUrl: string;
   artifacts: Array<string>;
   baseDir: string;
   cwd: string;

@@ -1,0 +1,17 @@
+{
+  "name": "@build-tracker/api-errors",
+  "version": "1.0.0",
+  "description": "Build Tracker API errors",
+  "author": "Paul Armstrong <paul@spaceyak.com>",
+  "repository": "git@github.com:paularmstrong/build-tracker.git",
+  "license": "MIT",
+  "main": "dist",
+  "types": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "tsc": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

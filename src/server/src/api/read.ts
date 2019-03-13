@@ -11,9 +11,9 @@ export const queryByRevision = (queries: Queries['build']): RequestHandler => (r
     .then(build => {
       res.send(build);
     })
-    .catch(() => {
-      res.status(500);
-      res.end();
+    .catch(error => {
+      res.status(error.status || 500);
+      res.send({ error: error.message });
     });
 };
 
@@ -27,9 +27,9 @@ export const queryByRevisionRange = (queries: Queries['builds']): RequestHandler
     .then(builds => {
       res.send(builds);
     })
-    .catch(() => {
-      res.status(500);
-      res.end();
+    .catch(error => {
+      res.status(error.status || 500);
+      res.send({ error: error.message });
     });
 };
 
@@ -40,9 +40,9 @@ export const queryByTimeRange = (queries: Queries['builds']): RequestHandler => 
     .then(builds => {
       res.send(builds);
     })
-    .catch(() => {
-      res.status(500);
-      res.end();
+    .catch(error => {
+      res.status(error.status || 500);
+      res.send({ error: error.message });
     });
 };
 
@@ -53,8 +53,8 @@ export const queryByRevisions = (queries: Queries['builds']): RequestHandler => 
     .then(builds => {
       res.send(builds);
     })
-    .catch(() => {
-      res.status(500);
-      res.end();
+    .catch(error => {
+      res.status(error.status || 500);
+      res.send({ error: error.message });
     });
 };

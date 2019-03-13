@@ -4,6 +4,7 @@
 import Build from '@build-tracker/build';
 import { Build as BuildStruct } from '@build-tracker/server/src/types';
 import { Pool } from 'pg';
+import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 
 export default class Queries {
   private _pool: Pool;
@@ -15,7 +16,7 @@ export default class Queries {
   public getByRevision = async (revision: string): Promise<BuildStruct> => {
     const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = $1', [revision]);
     if (res.rowCount !== 1) {
-      throw new Error('No result found');
+      throw new NotFoundError();
     }
 
     return Promise.resolve(res.rows[0]);
@@ -44,14 +45,14 @@ export default class Queries {
   public getByRevisions = async (...revisions: Array<string>): Promise<Array<BuildStruct>> => {
     const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision in $1', [revisions]);
     if (res.rowCount === 0) {
-      throw new Error('No result found');
+      throw new NotFoundError();
     }
 
     return Promise.resolve(res.rows);
   };
 
   public getByRevisionRange = async (startRevision: string, endRevision: string): Promise<Array<BuildStruct>> => {
-    throw new Error(`unimplemented ${startRevision} - ${endRevision}`);
+    throw new UnimplementedError(`revision range ${startRevision} - ${endRevision}`);
   };
 
   public getByTimeRange = async (startTimestamp: number, endTimestamp: number): Promise<Array<BuildStruct>> => {
@@ -60,7 +61,7 @@ export default class Queries {
       [startTimestamp, endTimestamp]
     );
     if (res.rowCount === 0) {
-      throw new Error('No result found');
+      throw new NotFoundError();
     }
 
     return Promise.resolve(res.rows);

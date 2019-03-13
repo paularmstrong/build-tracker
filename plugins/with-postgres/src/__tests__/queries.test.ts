@@ -3,6 +3,7 @@
  */
 import { Pool } from 'pg';
 import Queries from '../queries';
+import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 
 jest.mock('pg');
 
@@ -29,7 +30,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
       return queries.getByRevision('12345').catch(err => {
-        expect(err.message).toEqual('No result found');
+        expect(err).toBeInstanceOf(NotFoundError);
       });
     });
   });
@@ -92,7 +93,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
       return queries.getByRevisions('12345', 'abcde').catch(err => {
-        expect(err.message).toEqual('No result found');
+        expect(err).toBeInstanceOf(NotFoundError);
       });
     });
   });
@@ -101,7 +102,7 @@ describe('withPostgres', () => {
     test('throw unimplemented error', () => {
       const queries = new Queries(new Pool());
       return queries.getByRevisionRange('12345', 'abcde').catch(err => {
-        expect(err.message).toMatch('unimplemented');
+        expect(err).toBeInstanceOf(UnimplementedError);
       });
     });
   });
@@ -125,7 +126,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
       return queries.getByTimeRange(12345, 67890).catch(err => {
-        expect(err.message).toEqual('No result found');
+        expect(err).toBeInstanceOf(NotFoundError);
       });
     });
   });

@@ -115,7 +115,7 @@ describe('withPostgres', () => {
       const queries = new Queries(new Pool());
       return queries.getByTimeRange(12345, 67890).then(res => {
         expect(query).toHaveBeenCalledWith(
-          'SELECT meta, artifacts FROM builds WHERE  timestamp >= $1 AND timestamp <= $2 ORDER BY timestamp',
+          'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 ORDER BY timestamp',
           [12345, 67890]
         );
         expect(res).toEqual([row1, row2]);
@@ -126,6 +126,27 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
       return queries.getByTimeRange(12345, 67890).catch(err => {
+        expect(err).toBeInstanceOf(NotFoundError);
+      });
+    });
+  });
+
+  describe('getRecent', () => {
+    test('returns N most recent', () => {
+      const row1 = { meta: { revision: '12345' }, artifacts: [] };
+      const row2 = { meta: { revision: 'abcde' }, artifacts: [] };
+      query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
+      const queries = new Queries(new Pool());
+      return queries.getRecent(2).then(res => {
+        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds LIMIT $1 ORDER BY timestamp', [2]);
+        expect(res).toEqual([row1, row2]);
+      });
+    });
+
+    test('throws with no results', () => {
+      query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
+      const queries = new Queries(new Pool());
+      return queries.getRecent().catch(err => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });

@@ -58,3 +58,16 @@ export const queryByRevisions = (queries: Queries['builds']): RequestHandler => 
       res.send({ error: error.message });
     });
 };
+
+export const queryByRecent = (queries: Queries['builds']): RequestHandler => (req: Request, res: Response): void => {
+  const { limit } = req.params;
+  queries
+    .recent(limit)
+    .then(builds => {
+      res.send(builds);
+    })
+    .catch(error => {
+      res.status(error.status || 500);
+      res.send({ error: error.message });
+    });
+};

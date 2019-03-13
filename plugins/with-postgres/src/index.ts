@@ -27,7 +27,8 @@ export default function withPostgres(config: Partial<ServerConfig> & { pg: PoolC
       builds: {
         byRevisions: queries.getByRevisions,
         byRevisionRange: queries.getByRevisionRange,
-        byTimeRange: queries.getByTimeRange
+        byTimeRange: queries.getByTimeRange,
+        recent: queries.getRecent
       }
     }
   };

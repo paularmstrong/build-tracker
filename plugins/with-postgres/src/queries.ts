@@ -57,9 +57,18 @@ export default class Queries {
 
   public getByTimeRange = async (startTimestamp: number, endTimestamp: number): Promise<Array<BuildStruct>> => {
     const res = await this._pool.query(
-      'SELECT meta, artifacts FROM builds WHERE  timestamp >= $1 AND timestamp <= $2 ORDER BY timestamp',
+      'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 ORDER BY timestamp',
       [startTimestamp, endTimestamp]
     );
+    if (res.rowCount === 0) {
+      throw new NotFoundError();
+    }
+
+    return Promise.resolve(res.rows);
+  };
+
+  public getRecent = async (limit: number = 20): Promise<Array<BuildStruct>> => {
+    const res = await this._pool.query('SELECT meta, artifacts FROM builds LIMIT $1 ORDER BY timestamp', [limit]);
     if (res.rowCount === 0) {
       throw new NotFoundError();
     }

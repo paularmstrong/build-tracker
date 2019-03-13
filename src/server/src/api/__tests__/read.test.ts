@@ -16,7 +16,8 @@ describe('read', () => {
       builds: {
         byRevisions: jest.fn(() => Promise.resolve([build])),
         byRevisionRange: jest.fn(() => Promise.resolve([build])),
-        byTimeRange: jest.fn(() => Promise.resolve([build]))
+        byTimeRange: jest.fn(() => Promise.resolve([build])),
+        recent: jest.fn(() => Promise.resolve([build]))
       }
     };
   });
@@ -119,6 +120,44 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/list/1234567/abcdef/239587')
+        .catch(res => {
+          expect(res.status).toBe(500);
+        });
+    });
+  });
+
+  describe('queryByRecent', () => {
+    test('queries recent revisions', () => {
+      const app = express();
+      app.use(middleware(express.Router(), queries, {}, {}));
+
+      return request(app)
+        .get('/api/builds')
+        .then(res => {
+          expect(queries.builds.recent).toHaveBeenCalledWith(undefined);
+          expect(res.body).toEqual([build]);
+        });
+    });
+
+    test('queries recent revisions with limit', () => {
+      const app = express();
+      app.use(middleware(express.Router(), queries, {}, {}));
+
+      return request(app)
+        .get('/api/builds/4')
+        .then(res => {
+          expect(queries.builds.recent).toHaveBeenCalledWith('4');
+          expect(res.body).toEqual([build]);
+        });
+    });
+
+    test('throws 500 on failure', () => {
+      queries.builds.recent.mockImplementation(() => Promise.reject('tacos'));
+      const app = express();
+      app.use(middleware(express.Router(), queries, {}, {}));
+
+      return request(app)
+        .get('/api/builds')
         .catch(res => {
           expect(res.status).toBe(500);
         });

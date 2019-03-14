@@ -7,5 +7,5 @@ import ReactDOM from 'react-dom';
 
 AppRegistry.registerComponent('App', () => Main);
 // @ts-ignore
-const { element } = AppRegistry.getApplication('App', { initialProps: {} });
+const { element } = AppRegistry.getApplication('App', { initialProps: window.__PROPS__ || {} });
 ReactDOM.hydrate(element, document.getElementById('root'));

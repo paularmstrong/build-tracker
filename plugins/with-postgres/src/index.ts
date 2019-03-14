@@ -9,7 +9,9 @@ import { Pool, PoolConfig } from 'pg';
 
 config();
 
-export default function withPostgres(config: Partial<ServerConfig> & { pg: PoolConfig }): ServerConfig {
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+export default function withPostgres(config: Omit<ServerConfig, 'queries'> & { pg: PoolConfig }): ServerConfig {
   const { pg: pgConfig } = config;
 
   const pool = new Pool(pgConfig);

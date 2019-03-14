@@ -8,9 +8,9 @@ import { Request, RequestHandler, Response } from 'express';
 
 AppRegistry.registerComponent('App', () => Main);
 
-export function getPageHTML(nonce: string, scripts: Array<string>): string {
+export function getPageHTML(nonce: string, props: React.ComponentProps<typeof Main>, scripts: Array<string>): string {
   // @ts-ignore
-  const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: {} });
+  const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: props });
   const html = ReactDOMServer.renderToString(element);
   const css = ReactDOMServer.renderToStaticMarkup(getStyleElement({ nonce }));
 
@@ -21,11 +21,10 @@ export function getPageHTML(nonce: string, scripts: Array<string>): string {
 <style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
 <body>
-<div id="root">
-${html}
-</div>
+<div id="root">${html}</div>
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
+<script nonce="${nonce}">window.__PROPS__=${JSON.stringify(props)}</script>
 ${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`)}
   `;
 }
@@ -34,10 +33,10 @@ interface Stats {
   assetsByChunkName: { [key: string]: string | Array<string> };
   name: string;
 }
-interface ProdOptions {
+interface ProdStats {
   children: Array<Stats>;
 }
-interface DevOptions {
+interface DevStats {
   clientStats: Stats;
 }
 
@@ -45,23 +44,25 @@ const getAssetByName = (asset: Array<string> | string): Array<string> => {
   return Array.isArray(asset) ? asset : [asset];
 };
 
-const serverRender = (options: ProdOptions | DevOptions): RequestHandler => (_req: Request, res: Response): void => {
-  const { nonce } = res.locals;
-  const stats =
-    'clientStats' in options
-      ? options.clientStats
-      : 'children' in options
-      ? options.children.find(child => child.name === 'client')
+const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Request, res: Response): void => {
+  const { nonce, url } = res.locals;
+  const appStats =
+    'clientStats' in stats
+      ? stats.clientStats
+      : 'children' in stats
+      ? stats.children.find(child => child.name === 'client')
       : null;
 
-  if (!stats) {
+  if (!appStats) {
     res.status(500);
     res.send('Internal Server Error: no application configured');
     return;
   }
 
-  const { assetsByChunkName } = stats;
-  res.send(getPageHTML(nonce, [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)]));
+  const { assetsByChunkName } = appStats;
+  res.send(
+    getPageHTML(nonce, { url }, [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)])
+  );
 };
 
 export default serverRender;

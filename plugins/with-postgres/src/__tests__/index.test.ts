@@ -6,6 +6,8 @@ import withPostgres from '../';
 
 jest.mock('pg');
 
+const url = 'https://build-tracker.local';
+
 describe('withPostgres', () => {
   beforeAll(() => {
     // @ts-ignore
@@ -15,15 +17,15 @@ describe('withPostgres', () => {
   });
 
   test('preserves user-set config', () => {
-    expect(withPostgres({ pg: {}, port: 1234 })).toMatchObject({ port: 1234 });
+    expect(withPostgres({ pg: {}, port: 1234, url })).toMatchObject({ port: 1234 });
   });
 
   test('adds setup', () => {
-    expect(withPostgres({ pg: {} })).toHaveProperty('setup');
+    expect(withPostgres({ pg: {}, url })).toHaveProperty('setup');
   });
 
   test('adds queries', () => {
-    expect(withPostgres({ pg: {} })).toMatchObject({
+    expect(withPostgres({ pg: {}, url })).toMatchObject({
       queries: {
         build: {
           byRevision: expect.any(Function),

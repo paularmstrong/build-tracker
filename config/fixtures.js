@@ -42,5 +42,6 @@ module.exports = {
       }
     }
   },
-  setup: () => Promise.resolve()
+  setup: () => Promise.resolve(),
+  url: 'http://localhost:3000'
 };

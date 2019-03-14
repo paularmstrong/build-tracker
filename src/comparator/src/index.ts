@@ -143,6 +143,10 @@ export default class BuildComparator {
   }
 
   public get artifactNames(): Array<string> {
+    if (this.builds.length === 0) {
+      return [];
+    }
+
     if (!this._artifactNames) {
       this._artifactNames = Array.prototype.concat
         .apply([], this.builds.map(build => build.artifacts))
@@ -160,6 +164,10 @@ export default class BuildComparator {
   }
 
   public get sizeKeys(): Array<string> {
+    if (this.builds.length === 0) {
+      return [];
+    }
+
     if (!this._sizeKeys) {
       this._sizeKeys = Object.keys(this.builds[0].artifacts[0].sizes).sort();
       const allSizeKeys = new Set();
@@ -179,6 +187,10 @@ export default class BuildComparator {
   }
 
   public get buildDeltas(): Array<Array<BuildDelta>> {
+    if (this.builds.length === 0) {
+      return [];
+    }
+
     if (!this._buildDeltas) {
       this._buildDeltas = this.builds.map((baseBuild, i) => {
         return this.builds.slice(0, i).map(prevBuild => {

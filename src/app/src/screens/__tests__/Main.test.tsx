@@ -1,9 +1,11 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { act } from 'react-dom/test-utils';
+import * as CrossFetch from 'cross-fetch';
 import AppBar from '../../components/AppBar';
-import BuildInfo from '../../components/BuildInfo';
+import buildA from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
+import buildB from '@build-tracker/fixtures/builds/01141f29743fb2bdd7e176cf919fc964025cea5a.json';
+import buildC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
 import { Clipboard } from 'react-native';
 import ColorScale from '../../modules/ColorScale';
 import ColorScalePicker from '../../components/ColorScalePicker';
@@ -40,25 +42,46 @@ jest.mock('../../components/Drawer', () => {
   return Drawer;
 });
 
+jest.mock('../../components/Graph', () => {
+  return () => null;
+});
+
+jest.mock('../../views/Comparison', () => {
+  return () => null;
+});
+
+jest.mock('cross-fetch', () => {
+  return {
+    fetch: jest.fn()
+  };
+});
+
+const url = 'https://build-tracker.local';
+
 describe('Main', () => {
+  beforeEach(() => {
+    jest.spyOn(CrossFetch, 'fetch').mockImplementation(() =>
+      // @ts-ignore
+      Promise.resolve({
+        json: () => [buildA, buildB, buildC]
+      })
+    );
+  });
+
   describe('drawer', () => {
     test('shows the drawer when AppBar pressNavigationIcon hit', () => {
       const showSpy = jest.spyOn(Drawer.prototype, 'show');
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(AppBar), 'pressNavigationIcon');
-      });
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(AppBar), 'pressNavigationIcon');
       expect(showSpy).toHaveBeenCalled();
     });
   });
 
   describe('color scale', () => {
     test('sets color scale context when scale is selected', async () => {
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Magma);
-      });
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Magma);
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
       expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Magma);
       expect(getByType(Comparison).props.colorScale).toBe(ColorScale.Magma);
@@ -68,14 +91,10 @@ describe('Main', () => {
 
   describe('artifacts', () => {
     test('can disable a artifacts', async () => {
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      act(() => {
-        fireEvent(getByType(Comparison), 'disableArtifacts', ['main']);
-      });
+      fireEvent(getByType(Comparison), 'disableArtifacts', ['main']);
       expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
         main: false,
         vendor: true,
@@ -85,15 +104,11 @@ describe('Main', () => {
     });
 
     test('can enable a artifacts', async () => {
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      act(() => {
-        fireEvent(getByType(Comparison), 'disableArtifacts', ['main', 'vendor', 'shared']);
-        fireEvent(getByType(Comparison), 'enableArtifacts', ['main']);
-      });
+      fireEvent(getByType(Comparison), 'disableArtifacts', ['main', 'vendor', 'shared']);
+      fireEvent(getByType(Comparison), 'enableArtifacts', ['main']);
       expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
         main: true,
         vendor: false,
@@ -103,27 +118,20 @@ describe('Main', () => {
     });
 
     test('can toggle visibility of disabled artifacts', async () => {
-      const { getByType, queryAllByProps } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
+      const { getByType, queryAllByProps } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(queryAllByProps({ disabledArtifactsVisible: true })).toHaveLength(3);
-      act(() => {
-        fireEvent(getByType(Drawer), 'toggleDisabledArtifacts', false);
-      });
+      expect(queryAllByProps({ disabledArtifactsVisible: true })).toHaveLength(2);
+      fireEvent(getByType(Drawer), 'toggleDisabledArtifacts', false);
 
-      expect(queryAllByProps({ disabledArtifactsVisible: false })).toHaveLength(3);
+      expect(queryAllByProps({ disabledArtifactsVisible: false })).toHaveLength(2);
     });
   });
 
   describe('on select size key', () => {
     test('passes the new size key to graph', async () => {
-      const { getByType, queryAllByProps } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(SizeKeyPicker), 'select', 'stat');
-      });
-
+      const { getByType, queryAllByProps } = render(<Main url={url} />);
+      fireEvent(getByType(SizeKeyPicker), 'select', 'stat');
       expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(2);
       expect(queryAllByProps({ sizeKey: 'gzip' })).toHaveLength(0);
     });
@@ -131,119 +139,89 @@ describe('Main', () => {
 
   describe('hovering artifacts', () => {
     test('updates hovered artifacts', async () => {
-      const { getByType } = render(<Main />);
-
+      const { getByType } = render(<Main url={url} />);
       expect(getByType(Graph).props.hoveredArtifacts).toEqual([]);
-
-      act(() => {
-        fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
-      });
-
+      fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
       expect(getByType(Graph).props.hoveredArtifacts).toEqual(['main']);
     });
 
     test('does not update hovered artifacts if equal', async () => {
-      const { getByType } = render(<Main />);
-
-      act(() => {
-        fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
-      });
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
       const { hoveredArtifacts } = getByType(Graph).props;
-      act(() => {
-        fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
-      });
-
+      fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
       expect(getByType(Graph).props.hoveredArtifacts).toBe(hoveredArtifacts);
     });
   });
 
   describe('on select revision', () => {
-    test('updates the comparison table', () => {
-      const { getByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      });
-      expect(getByType(Comparison).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual([
-        '243024909db66ac3c3e48d2ffe4015f049609834'
-      ]);
+    test('updates the comparison table', async () => {
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      expect(getByType(Comparison).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual(
+        expect.arrayContaining(['243024909db66ac3c3e48d2ffe4015f049609834', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04'])
+      );
     });
   });
 
   describe('focused revisions', () => {
-    test('focusing a revision shows the build info', () => {
-      const { getByType, queryByTestId } = render(<Main />);
-      expect(queryByTestId('buildinfo')).toBeNull();
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
+    test('focusing a revision shows the build info', async () => {
+      const { getByType, queryAllByProps } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
 
-      expect(queryByTestId('buildinfo')).not.toBeNull();
+      expect(queryAllByProps({ focusedRevision: '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04' })).toHaveLength(1);
     });
 
-    test('removing a revision hides the build info', () => {
-      const { getByType, queryByTestId } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(Comparison), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
+    test('removing focused revision hides the build info', async () => {
+      const { getByType, queryAllByProps } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      fireEvent(getByType(Comparison), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
 
-      expect(queryByTestId('buildinfo')).toBeNull();
+      expect(queryAllByProps({ focusedRevision: null })).toHaveLength(1);
     });
 
-    test('removing focused revision hides the build info', () => {
-      const { getByType, queryByTestId } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(Comparison), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      });
+    test('closing the build info removes the component', async () => {
+      const { getByType, queryAllByProps } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      fireEvent(getByType(Comparison), 'unfocusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
 
-      expect(queryByTestId('buildinfo')).toBeNull();
-    });
-
-    test('closing the build info removes the component', () => {
-      const { getByType, queryByTestId } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-        fireEvent(getByType(BuildInfo), 'close');
-      });
-
-      expect(queryByTestId('buildinfo')).toBeNull();
+      expect(queryAllByProps({ focusedRevision: null })).toHaveLength(1);
     });
   });
 
   describe('overflow items', () => {
     test('can clear selected revisions', async () => {
-      const { getByType, getByProps, queryAllByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      });
+      const { getByType, getByProps, queryAllByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(queryAllByType(Comparison)).toHaveLength(1);
 
-      act(() => {
-        fireEvent.press(getByProps({ title: 'More actions' }));
-        fireEvent.press(getByProps({ label: 'Clear selected revisions' }));
-      });
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Clear selected revisions' }));
 
       expect(queryAllByType(Comparison)).toHaveLength(0);
     });
 
     test('can copy as markdown', async () => {
       const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
-      const { getByType, getByProps, queryAllByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      });
+      const { getByType, getByProps } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(queryAllByType(Comparison)).toHaveLength(1);
+      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
 
-      act(() => {
-        fireEvent.press(getByProps({ title: 'More actions' }));
-        fireEvent.press(getByProps({ label: 'Copy as markdown' }));
-      });
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy as markdown' }));
       const comparator = getByType(Comparison).props.comparator;
 
       expect(clipboardSpy).toHaveBeenCalledWith(comparator.toMarkdown());
@@ -251,17 +229,12 @@ describe('Main', () => {
 
     test('can copy as csv', async () => {
       const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
-      const { getByProps, getByType, queryAllByType } = render(<Main />);
-      act(() => {
-        fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      });
+      const { getByProps, getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(queryAllByType(Comparison)).toHaveLength(1);
 
-      act(() => {
-        fireEvent.press(getByProps({ title: 'More actions' }));
-        fireEvent.press(getByProps({ label: 'Copy as CSV' }));
-      });
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy as CSV' }));
 
       const comparator = getByType(Comparison).props.comparator;
 

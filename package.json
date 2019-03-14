@@ -11,7 +11,7 @@
     "plugins/*"
   ],
   "scripts": {
-    "dev": "ts-node src/server/src/index.ts run -c ./src/app/config/devserver.config.js",
+    "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",
     "prebuild": "yarnpkg clean",
     "build": "lerna run build --stream --parallel",
     "clean": "lerna run clean --stream --parallel",

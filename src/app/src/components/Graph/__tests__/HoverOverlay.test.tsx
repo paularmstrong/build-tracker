@@ -122,15 +122,18 @@ describe('HoverOverlay', () => {
   });
 
   describe('onMouseMove', () => {
-    test('moves the line', () => {
-      const mockD3Select = jest.fn(() => ({
+    let mockD3Select;
+    beforeEach(() => {
+      mockD3Select = jest.fn(() => ({
         attr: mockD3Select,
         duration: mockD3Select,
         transition: mockD3Select
       }));
-
       // @ts-ignore
       jest.spyOn(Selection, 'select').mockReturnValue(mockD3Select());
+    });
+
+    test('moves the line', () => {
       const { getByTestId } = render(
         <svg>
           <HoverOverlay

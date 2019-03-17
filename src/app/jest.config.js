@@ -1,19 +1,16 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-const path = require('path');
-
 module.exports = {
+  preset: '../../config/jest.js',
   displayName: 'app',
-  preset: 'react-native-web',
-  rootDir: path.join(__dirname, '../..'),
-  roots: ['<rootDir>/src/app'],
-  setupFiles: ['<rootDir>/src/app/config/jest/setup.js'],
+  moduleNameMapper: {
+    'react-art': '<rootDir>/config/jest/react-art-stub.js',
+    '^react-native$': '<rootDir>/../../node_modules/react-native-web/dist/cjs'
+  },
+  rootDir: './',
+  roots: ['<rootDir>/src'],
+  setupFiles: ['<rootDir>/../../node_modules/react-native-web/jest/setup.js', '<rootDir>/config/jest/setup.js'],
   setupFilesAfterEnv: ['react-testing-library/cleanup-after-each'],
-  testEnvironment: 'jsdom',
-  testURL: 'https://build-tracker.local',
-  timers: 'fake',
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest'
-  }
+  testEnvironment: 'jsdom'
 };

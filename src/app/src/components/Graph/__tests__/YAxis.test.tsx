@@ -13,11 +13,14 @@ const scale = scaleLinear()
   .domain([0, 100]);
 
 describe('YAxis', () => {
-  test('creates a left axis', () => {
-    const mockCall = jest.fn();
+  let mockCall, selectSpy;
+  beforeEach(() => {
+    mockCall = jest.fn();
     // @ts-ignore Just want to make sure call is called
-    const selectSpy = jest.spyOn(Selection, 'select').mockReturnValue({ call: mockCall });
+    selectSpy = jest.spyOn(Selection, 'select').mockReturnValue({ call: mockCall });
+  });
 
+  test('creates a left axis', () => {
     render(
       <svg>
         <YAxis scale={scale} />

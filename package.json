@@ -6,9 +6,11 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "src/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "src/*"
+    ]
+  },
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./src/app/config/devserver.config.js",
     "prebuild": "yarnpkg clean",
@@ -38,7 +40,7 @@
     ]
   },
   "devDependencies": {
-    "@types/jest": "^24.0.9",
+    "@types/jest": "^24.0.11",
     "@typescript-eslint/eslint-plugin": "^1.4.2",
     "@typescript-eslint/parser": "^1.4.2",
     "eslint": "^5.15.0",
@@ -51,7 +53,7 @@
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-react-hooks": "^1.4.0",
     "husky": "^1.3.1",
-    "jest": "^24.1.0",
+    "jest": "^24.5.0",
     "lerna": "^3.11.1",
     "lint-staged": "^8.1.5",
     "prettier": "^1.16.4",

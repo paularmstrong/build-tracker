@@ -25,7 +25,7 @@ ${css}
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
 <script nonce="${nonce}">window.__PROPS__=${JSON.stringify(props)}</script>
-${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`)}
+${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;
 }
 
@@ -61,7 +61,11 @@ const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Req
 
   const { assetsByChunkName } = appStats;
   res.send(
-    getPageHTML(nonce, { url }, [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)])
+    getPageHTML(
+      nonce,
+      { url },
+      [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)].filter(Boolean)
+    )
   );
 };
 

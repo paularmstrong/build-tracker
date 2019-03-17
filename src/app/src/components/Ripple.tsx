@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 
   animateOut: {
     // @ts-ignore
-    animationName: [{ from: { opacity: 1 }, to: { opacity: 0 } }],
+    animationKeyframes: [{ from: { opacity: 1 }, to: { opacity: 0 } }],
     animationDuration: '0.2s',
     animationIterationCount: 1,
     transitionDelay: '0.2s',

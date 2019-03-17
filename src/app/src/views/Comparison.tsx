@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     borderTopColor: Theme.Color.Gray10,
     borderTopWidth: StyleSheet.hairlineWidth,
     animationDuration: '0.1s',
-    animationName: [
+    animationKeyframes: [
       {
         '0%': { transform: [{ translateY: '100%' }] },
         '100%': { transform: [{ translateY: '0%' }] }

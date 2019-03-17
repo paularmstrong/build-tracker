@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     paddingTop: '1.65rem',
     paddingBottom: '0.85rem',
     // @ts-ignore
-    outline: 'none'
+    outlineStyle: 'none'
   },
 
   helpText: {

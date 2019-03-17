@@ -4,7 +4,7 @@
   "description": "Build Tracker client side application for tracking builds over time",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
-  "main": "dist/stats.json",
+  "main": ".",
   "license": "MIT",
   "scripts": {
     "prebuild": "mkdirp dist",

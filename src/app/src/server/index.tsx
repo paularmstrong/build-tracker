@@ -24,7 +24,7 @@ ${css}
 <div id="root">${html}</div>
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
-${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`)}
+${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;
 }
 
@@ -59,7 +59,11 @@ const serverRender = (options: ProdOptions | DevOptions): RequestHandler => (_re
   }
 
   const { assetsByChunkName } = stats;
-  res.send(getPageHTML(nonce, [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)]));
+
+  const scripts = [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)].filter(
+    Boolean
+  );
+  res.send(getPageHTML(nonce, scripts));
 };
 
 export default serverRender;

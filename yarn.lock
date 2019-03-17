@@ -1674,11 +1674,6 @@ arrify@^1.0.0, arrify@^1.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
-art@^0.10.1:
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/art/-/art-0.10.3.tgz#b01d84a968ccce6208df55a733838c96caeeaea2"
-  integrity sha512-HXwbdofRTiJT6qZX/FnchtldzJjS3vkLJxQilc3Xj+ma2MXjY4UAyQ0ls1XZYVnDvVIBiFZbC6QsvtW86TD6tQ==
-
 asap@^2.0.0, asap@~2.0.3:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
@@ -7851,18 +7846,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-art@^16.8.2:
-  version "16.8.3"
-  resolved "https://registry.yarnpkg.com/react-art/-/react-art-16.8.3.tgz#1af3a7818815a583968b96d8df5536189657b36d"
-  integrity sha512-sdf3w/wn2vZZMMJ0gxmMbwGGCx8PUcVLpHqBfLTudlIpehH5xQvD/A5zC19oaVeRwiEXDo5LGg+ue45ZYaPcNw==
-  dependencies:
-    art "^0.10.1"
-    create-react-class "^15.6.2"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.13.3"
-
 react-dom@^16.8.2:
   version "16.8.3"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.3.tgz#ae236029e66210783ac81999d3015dfc475b9c32"
@@ -7895,10 +7878,10 @@ react-native-testing-library@^1.5.0:
   dependencies:
     pretty-format "^23.6.0"
 
-react-native-web@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.10.0.tgz#7c67a25d1262f01d462b3a11cc603aef47537d18"
-  integrity sha512-swqplCGSOL1PPFyFf9fnFdLYyFWP9P0tdI5xxmURirjtZH2P+1pF61ApUu5s8Hx8uHDqMXwmVauydXI2sv7tGA==
+react-native-web@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.11.1.tgz#a70c8358e36f38a563a709f267c8f153ee7dc435"
+  integrity sha512-U607lxZRrl08vP/4+d717pXZyo7wdiDNOT5j3szj7behxiYvW9kw6OF2GQzU+Jw9twyeu+ZGsO2JOG9NeU+QyQ==
   dependencies:
     array-find-index "^1.0.2"
     create-react-class "^15.6.2"

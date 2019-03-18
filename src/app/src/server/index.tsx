@@ -24,6 +24,7 @@ ${css}
 <div id="root">${html}</div>
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
+<div id="snackbarPortal"></div>
 <script nonce="${nonce}">window.__PROPS__=${JSON.stringify(props)}</script>
 ${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;

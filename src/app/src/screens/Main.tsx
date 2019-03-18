@@ -13,6 +13,7 @@ import MenuIcon from '../icons/Menu';
 import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
+import Snackbar from '../components/Snackbar';
 import { BudgetLevel, BudgetType } from '@build-tracker/types';
 import { Clipboard, StyleSheet, View } from 'react-native';
 import Comparator, { ArtifactRow } from '@build-tracker/comparator';
@@ -77,6 +78,8 @@ const Main = (props: Props): React.ReactElement => {
   const [focusedRevision, setFocusedRevision] = React.useState<string>(null);
   const [hoveredArtifacts, setHoveredArtifacts] = React.useState<Array<string>>([]);
   const [disabledArtifactsVisible, setDisabledArtifactsVisible] = React.useState<boolean>(true);
+
+  const [messages, setMessages] = React.useState<Array<string>>([]);
 
   const [, forceUpdate] = React.useState(0);
 
@@ -165,6 +168,7 @@ const Main = (props: Props): React.ReactElement => {
         sizeKey
       })
     );
+    setMessages(messages => [...messages, 'Copied table as markdown'].filter(Boolean));
   }, [activeComparator, artifactFilter, sizeKey]);
 
   const handleCopyAsCsv = React.useCallback((): void => {
@@ -174,7 +178,16 @@ const Main = (props: Props): React.ReactElement => {
         sizeKey
       })
     );
+    setMessages(messages => [...messages, 'Copied table as CSV'].filter(Boolean));
   }, [activeComparator, artifactFilter, sizeKey]);
+
+  React.useEffect(() => {
+    if (messages.length) {
+      setTimeout(() => {
+        setMessages(messages => messages.slice(1));
+      }, 4000);
+    }
+  }, [messages]);
 
   return (
     <View style={styles.layout}>
@@ -217,6 +230,7 @@ const Main = (props: Props): React.ReactElement => {
             sizeKey={sizeKey}
           />
         </View>
+        {messages.length ? <Snackbar key={messages[0]} text={messages[0]} /> : null}
         {compareRevisions.length ? (
           <React.Suspense fallback={null}>
             <Comparison

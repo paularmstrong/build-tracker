@@ -201,6 +201,11 @@ describe('Main', () => {
   });
 
   describe('overflow items', () => {
+    let clipboardSpy;
+    beforeEach(() => {
+      clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
+    });
+
     test('can clear selected revisions', async () => {
       const { getByType, getByProps, queryAllByType } = render(<Main url={url} />);
       fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
@@ -213,7 +218,6 @@ describe('Main', () => {
     });
 
     test('can copy as markdown', async () => {
-      const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
       const { getByType, getByProps } = render(<Main url={url} />);
       fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
@@ -227,8 +231,19 @@ describe('Main', () => {
       expect(clipboardSpy).toHaveBeenCalledWith(comparator.toMarkdown());
     });
 
+    test('shows a message when copied as markdown', async () => {
+      const { getByProps, getByType, queryAllByProps, queryAllByText } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy as markdown' }));
+
+      expect(queryAllByProps({ accessibilityRole: 'alert' })).toHaveLength(1);
+      expect(queryAllByText('Copied table as markdown')).toHaveLength(1);
+    });
+
     test('can copy as csv', async () => {
-      const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
       const { getByProps, getByType } = render(<Main url={url} />);
       fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
       await flushMicrotasksQueue(); // ensure dynamic imports are loaded
@@ -239,6 +254,35 @@ describe('Main', () => {
       const comparator = getByType(Comparison).props.comparator;
 
       expect(clipboardSpy).toHaveBeenCalledWith(comparator.toCsv());
+    });
+
+    test('shows a message when copied as csv', async () => {
+      const { getByProps, getByType, queryAllByProps, queryAllByText } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy as CSV' }));
+
+      expect(queryAllByProps({ accessibilityRole: 'alert' })).toHaveLength(1);
+      expect(queryAllByText('Copied table as CSV')).toHaveLength(1);
+    });
+  });
+
+  describe('messages', () => {
+    test('removes messages after some time ', async () => {
+      jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
+      const { getByProps, getByType, queryAllByProps, update } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy as CSV' }));
+
+      expect(queryAllByProps({ accessibilityRole: 'alert' })).toHaveLength(1);
+      update(<Main url={url} />);
+      jest.runAllTimers();
+      expect(queryAllByProps({ accessibilityRole: 'alert' })).toHaveLength(0);
     });
   });
 });

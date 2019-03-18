@@ -48,7 +48,7 @@ export const RevisionCell = (props: Props): React.ReactElement => {
               ref={contentRef}
               style={styles.content}
             >
-              <Text>{formatSha(cell.revision)}</Text>
+              <Text style={styles.revision}>{formatSha(cell.revision)}</Text>
             </TouchableOpacity>
           </Th>
         )}
@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '100%'
+  },
+  revision: {
+    fontWeight: 'bold'
   }
 });
 

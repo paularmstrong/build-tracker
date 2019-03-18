@@ -6,7 +6,7 @@ import { formatSha } from '@build-tracker/formatting';
 import React from 'react';
 import { Th } from '../Table';
 import Tooltip from '../Tooltip';
-import { StyleProp, Text, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
   cell: Cell;
@@ -31,7 +31,7 @@ export const RevisionDeltaCell = (props: Props): React.ReactElement => {
       {
         // @ts-ignore
         <View onMouseEnter={handleEnter} onMouseLeave={handleExit} ref={viewRef} testID="delta">
-          <Text>{`𝚫${deltaIndex}`}</Text>
+          <Text style={styles.delta}>{`𝚫${deltaIndex}`}</Text>
         </View>
       }
       {showTooltip ? (
@@ -40,5 +40,11 @@ export const RevisionDeltaCell = (props: Props): React.ReactElement => {
     </Th>
   );
 };
+
+const styles = StyleSheet.create({
+  delta: {
+    fontWeight: 'bold'
+  }
+});
 
 export default React.memo(RevisionDeltaCell);

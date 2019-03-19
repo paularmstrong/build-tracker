@@ -37,7 +37,7 @@ export default function spawn(command: string, args?: ReadonlyArray<string>, opt
 
     proc.on('close', code => {
       if (code !== 0) {
-        return reject({ code, stderr: Buffer.concat(stderr), errors });
+        return reject({ code, stderr: Buffer.concat(stderr).toString(), errors });
       }
       resolve(Buffer.concat(stdout));
     });

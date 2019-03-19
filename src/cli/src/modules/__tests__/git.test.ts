@@ -41,7 +41,7 @@ describe('git', () => {
 
   describe('getDefaultBranch', () => {
     test('returns the default branch of the repo', () => {
-      jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('chili')));
+      jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('asdf\nHEAD branch: chili\n')));
 
       return Git.getDefaultBranch().then(branch => {
         expect(branch).toBe('chili');
@@ -49,7 +49,9 @@ describe('git', () => {
     });
 
     test('uses the process cwd', () => {
-      const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
+      const spawn = jest
+        .spyOn(Spawn, 'default')
+        .mockImplementation(() => Promise.resolve(Buffer.from('asdf\nHEAD branch: chili\n')));
 
       return Git.getDefaultBranch().then(() => {
         expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
@@ -57,7 +59,9 @@ describe('git', () => {
     });
 
     test('uses given cwd', () => {
-      const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
+      const spawn = jest
+        .spyOn(Spawn, 'default')
+        .mockImplementation(() => Promise.resolve(Buffer.from('asdf\nHEAD branch: chili\n')));
 
       return Git.getDefaultBranch('tacos').then(() => {
         expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: 'tacos' });

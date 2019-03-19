@@ -20,13 +20,14 @@ interface Props {
   isActive: boolean;
   onDisable: (artifactNames: Array<string>) => void;
   onEnable: (artifactNames: Array<string>) => void;
+  onFocus: (artifactName: Array<string>) => void;
   onHover: (artifactNames: Array<string>) => void;
   row: GRow;
   sizeKey: string;
 }
 
 export const GroupRow = (props: Props): React.ReactElement => {
-  const { isActive, onDisable, onEnable, onHover, row, sizeKey } = props;
+  const { isActive, onDisable, onEnable, onFocus, onHover, row, sizeKey } = props;
 
   const mapGroupCell = (cell: GCell | TCell | TDCell, i: number): React.ReactElement | void => {
     switch (cell.type) {
@@ -38,6 +39,7 @@ export const GroupRow = (props: Props): React.ReactElement => {
             isActive={isActive}
             onDisable={onDisable}
             onEnable={onEnable}
+            onFocus={onFocus}
             style={styles.cell}
           />
         );

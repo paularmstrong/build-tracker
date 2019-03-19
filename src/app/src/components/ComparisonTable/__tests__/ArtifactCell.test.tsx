@@ -10,15 +10,15 @@ import { fireEvent, render } from 'react-native-testing-library';
 describe('ArtifactCell', () => {
   describe('switch', () => {
     test('toggles with the name and on', () => {
-      const handleDisable = jest.fn();
       const handleEnable = jest.fn();
       const { getByType } = render(
         <ArtifactCell
           cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
           color="red"
           isActive={false}
-          onDisable={handleDisable}
+          onDisable={jest.fn()}
           onEnable={handleEnable}
+          onFocus={jest.fn()}
         />
       );
       fireEvent(getByType(Switch), 'valueChange', true);
@@ -27,18 +27,36 @@ describe('ArtifactCell', () => {
 
     test('toggles with the name and off', () => {
       const handleDisable = jest.fn();
-      const handleEnable = jest.fn();
       const { getByType } = render(
         <ArtifactCell
           cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
           color="red"
           isActive
           onDisable={handleDisable}
-          onEnable={handleEnable}
+          onEnable={jest.fn()}
+          onFocus={jest.fn()}
         />
       );
       fireEvent(getByType(Switch), 'valueChange', false);
       expect(handleDisable).toHaveBeenCalledWith('tacos');
+    });
+  });
+
+  describe('focus', () => {
+    test('focuses the artifact', () => {
+      const handleFocus = jest.fn();
+      const { getByProps } = render(
+        <ArtifactCell
+          cell={{ type: CellType.ARTIFACT, text: 'tacos' }}
+          color="red"
+          isActive={false}
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onFocus={handleFocus}
+        />
+      );
+      fireEvent(getByProps({ accessibilityRole: 'button' }), 'press');
+      expect(handleFocus).toHaveBeenCalledWith('tacos');
     });
   });
 });

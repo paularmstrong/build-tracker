@@ -25,6 +25,7 @@ interface Props {
   isHovered: boolean;
   onDisableArtifact: (artifactName: string) => void;
   onEnableArtifact: (artifactName: string) => void;
+  onFocusArtifact: (artifactName: string) => void;
   onHoverArtifact: (revision: string) => void;
   row: ArtifactRow | GroupRow;
   rowIndex: number;
@@ -38,6 +39,7 @@ export const BodyRow = (props: Props): React.ReactElement => {
     isHovered,
     onDisableArtifact,
     onEnableArtifact,
+    onFocusArtifact,
     onHoverArtifact,
     row,
     rowIndex,
@@ -55,6 +57,7 @@ export const BodyRow = (props: Props): React.ReactElement => {
             isActive={isActive}
             onDisable={onDisableArtifact}
             onEnable={onEnableArtifact}
+            onFocus={onFocusArtifact}
           />
         );
       }

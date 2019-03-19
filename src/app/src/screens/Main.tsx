@@ -111,6 +111,16 @@ const Main = (props: Props): React.ReactElement => {
     forceUpdate(Date.now());
   }, []);
 
+  const handleFocusArtifacts = React.useCallback((artifactNames: Array<string>): void => {
+    setActiveArtifacts(activeArtifacts => {
+      return Object.keys(activeArtifacts).reduce((memo, artifactName) => {
+        memo[artifactName] = artifactNames.includes(artifactName) ? true : false;
+        return memo;
+      }, {});
+    });
+    forceUpdate(Date.now());
+  }, []);
+
   const handleSelectSizeKey = React.useCallback((name: string): void => {
     setSizeKey(name);
     forceUpdate(Date.now());
@@ -242,6 +252,7 @@ const Main = (props: Props): React.ReactElement => {
               hoveredArtifacts={hoveredArtifacts}
               onDisableArtifacts={handleDisableArtifacts}
               onEnableArtifacts={handleEnableArtifacts}
+              onFocusArtifacts={handleFocusArtifacts}
               onFocusRevision={setFocusedRevision}
               onUnfocusRevision={handleUnfocusRevision}
               onHoverArtifacts={handleHoverArtifacts}

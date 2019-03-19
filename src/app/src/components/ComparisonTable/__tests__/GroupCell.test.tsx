@@ -16,6 +16,7 @@ describe('GroupCell', () => {
           isActive={false}
           onDisable={jest.fn()}
           onEnable={jest.fn()}
+          onFocus={jest.fn()}
         />
       );
       fireEvent(getByTestId('groupicon'), 'mouseEnter');
@@ -29,6 +30,7 @@ describe('GroupCell', () => {
           isActive={false}
           onDisable={jest.fn()}
           onEnable={jest.fn()}
+          onFocus={jest.fn()}
         />
       );
       fireEvent(getByTestId('groupicon'), 'mouseEnter');
@@ -47,6 +49,7 @@ describe('GroupCell', () => {
           isActive={false}
           onDisable={handleDisable}
           onEnable={handleEnable}
+          onFocus={jest.fn()}
         />
       );
       fireEvent(getByType(Switch), 'valueChange', true);
@@ -62,10 +65,28 @@ describe('GroupCell', () => {
           isActive
           onDisable={handleDisable}
           onEnable={handleEnable}
+          onFocus={jest.fn()}
         />
       );
       fireEvent(getByType(Switch), 'valueChange', false);
       expect(handleDisable).toHaveBeenCalledWith(['main']);
+    });
+  });
+
+  describe('focus', () => {
+    test('focuses the artifact', () => {
+      const handleFocus = jest.fn();
+      const { getByProps } = render(
+        <GroupCell
+          cell={{ type: CellType.GROUP, text: 'tacos', artifactNames: ['main'] }}
+          isActive
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onFocus={handleFocus}
+        />
+      );
+      fireEvent(getByProps({ accessibilityRole: 'button' }), 'press');
+      expect(handleFocus).toHaveBeenCalledWith(['main']);
     });
   });
 });

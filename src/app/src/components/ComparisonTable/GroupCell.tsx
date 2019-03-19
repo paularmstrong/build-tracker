@@ -4,10 +4,11 @@
 import * as Theme from '../../theme';
 import FolderIcon from '../../icons/Folder';
 import { GroupCell as GCell } from '@build-tracker/comparator';
+import Hoverable from '../Hoverable';
 import React from 'react';
 import { Th } from '../Table';
 import Tooltip from '../Tooltip';
-import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Switch, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 interface Props {
   cell: GCell;
@@ -15,6 +16,7 @@ interface Props {
   isActive: boolean;
   onDisable: (artifactNames: Array<string>) => void;
   onEnable: (artifactNames: Array<string>) => void;
+  onFocus: (artifactNames: Array<string>) => void;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -25,6 +27,7 @@ export const GroupCell = (props: Props): React.ReactElement => {
     isActive,
     onDisable,
     onEnable,
+    onFocus,
     style
   } = props;
 
@@ -42,23 +45,33 @@ export const GroupCell = (props: Props): React.ReactElement => {
     setShowTooltip(showTooltip => !showTooltip);
   }, []);
 
+  const handleFocus = React.useCallback(() => {
+    onFocus(artifactNames);
+  }, [artifactNames, onFocus]);
+
   return (
     <Th style={style}>
       <View style={styles.artifact}>
-        <View ref={nameRef} style={styles.name}>
-          <Text>
-            {
-              // @ts-ignore
-              <FolderIcon
-                onMouseEnter={handleToggleTooltip}
-                onMouseLeave={handleToggleTooltip}
-                style={styles.folder}
-                testID="groupicon"
-              />
-            }{' '}
-            {text}
-          </Text>
-        </View>
+        <Hoverable>
+          {isHovered => (
+            <TouchableOpacity accessibilityRole="button" onPress={handleFocus} style={styles.name}>
+              <View ref={nameRef}>
+                <Text style={isHovered && styles.hoveredText}>
+                  {
+                    // @ts-ignore
+                    <FolderIcon
+                      onMouseEnter={handleToggleTooltip}
+                      onMouseLeave={handleToggleTooltip}
+                      style={[styles.folder, isHovered && styles.hoveredText]}
+                      testID="groupicon"
+                    />
+                  }{' '}
+                  {text}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </Hoverable>
         {showTooltip ? <Tooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
         <View style={styles.switch}>
           {
@@ -85,6 +98,8 @@ const styles = StyleSheet.create({
   },
   name: {
     flexShrink: 1,
+    flexGrow: 1,
+    alignItems: 'flex-start',
     justifyContent: 'center',
     paddingEnd: Theme.Spacing.Xsmall
   },
@@ -93,6 +108,9 @@ const styles = StyleSheet.create({
   },
   switch: {
     paddingStart: Theme.Spacing.Xsmall
+  },
+  hoveredText: {
+    color: Theme.Color.Primary30
   }
 });
 

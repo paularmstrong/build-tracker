@@ -117,6 +117,19 @@ describe('Main', () => {
       expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: true, vendor: false, shared: false });
     });
 
+    test('can focus artifacts', async () => {
+      const { getByType } = render(<Main url={url} />);
+      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
+      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
+      fireEvent(getByType(Comparison), 'focusArtifacts', ['main', 'vendor']);
+      expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
+        main: true,
+        vendor: true,
+        shared: false
+      });
+      expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: true, vendor: true, shared: false });
+    });
+
     test('can toggle visibility of disabled artifacts', async () => {
       const { getByType, queryAllByProps } = render(<Main url={url} />);
       fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');

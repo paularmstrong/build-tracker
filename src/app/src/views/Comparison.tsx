@@ -23,6 +23,7 @@ const Comparison = (props: Props): React.ReactElement => {
     hoveredArtifacts,
     onDisableArtifacts,
     onEnableArtifacts,
+    onFocusArtifacts,
     onFocusRevision,
     onHoverArtifacts,
     onRemoveRevision,
@@ -42,6 +43,7 @@ const Comparison = (props: Props): React.ReactElement => {
             hoveredArtifacts={hoveredArtifacts}
             onDisableArtifacts={onDisableArtifacts}
             onEnableArtifacts={onEnableArtifacts}
+            onFocusArtifacts={onFocusArtifacts}
             onFocusRevision={onFocusRevision}
             onHoverArtifacts={onHoverArtifacts}
             onRemoveRevision={onRemoveRevision}

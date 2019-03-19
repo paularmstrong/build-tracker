@@ -34,6 +34,7 @@ describe('ComparisonTable', () => {
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -56,6 +57,7 @@ describe('ComparisonTable', () => {
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -80,6 +82,7 @@ describe('ComparisonTable', () => {
           hoveredArtifacts={[]}
           onDisableArtifacts={handleDisableArtifacts}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -102,6 +105,7 @@ describe('ComparisonTable', () => {
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={handleEnableArtifacts}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -110,6 +114,29 @@ describe('ComparisonTable', () => {
       );
       fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'enable', 'vendor');
       expect(handleEnableArtifacts).toHaveBeenCalledWith(['vendor']);
+    });
+
+    test('focus', () => {
+      const handleFocusArtifacts = jest.fn();
+      const comparator = new Comparator({ builds });
+      const { getByProps } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: true, main: false }}
+          colorScale={ColorScale.Magma}
+          comparator={comparator}
+          disabledArtifactsVisible
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={handleFocusArtifacts}
+          onFocusRevision={jest.fn()}
+          onHoverArtifacts={jest.fn()}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'focusArtifact', 'vendor');
+      expect(handleFocusArtifacts).toHaveBeenCalledWith(['vendor']);
     });
   });
 
@@ -126,6 +153,7 @@ describe('ComparisonTable', () => {
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={handleHoverArtifacts}
           onRemoveRevision={jest.fn()}
@@ -148,6 +176,7 @@ describe('ComparisonTable', () => {
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={handleHoverArtifacts}
           onRemoveRevision={jest.fn()}

@@ -3,7 +3,7 @@ const path = require('path');
 const repoRoot = path.join(__dirname, '..');
 
 module.exports = {
-  applicationUrl: 'https://salty-dusk-69127.herokuapp.com/',
+  applicationUrl: 'https://build-tracker-demo.herokuapp.com',
   artifacts: ['src/*/dist/**/*.js', 'plugins/*/dist/**/*.js'],
   baseDir: repoRoot,
   cwd: repoRoot,

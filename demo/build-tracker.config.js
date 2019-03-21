@@ -5,5 +5,6 @@ module.exports = withPostgres({
     connectionString: process.env.DATABASE_URL,
     ssl: true
   },
-  port: process.env.PORT
+  port: process.env.PORT,
+  url: 'https://build-tracker-demo.herokuapp.com'
 });

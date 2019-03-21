@@ -25,7 +25,7 @@ export default class Queries {
   public insert = async ({ meta, artifacts }: BuildStruct): Promise<string> => {
     const build = new Build(meta, artifacts);
     const res = await this._pool.query(
-      'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4)',
+      'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4, $5)',
       [
         build.getMetaValue('revision'),
         build.meta.timestamp,

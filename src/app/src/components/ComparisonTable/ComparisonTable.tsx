@@ -25,6 +25,8 @@ interface Props {
   sizeKey: string;
 }
 
+const emptyArray = [];
+
 const ComparisonTable = (props: Props): React.ReactElement => {
   const {
     activeArtifacts,
@@ -48,7 +50,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
 
   const handleHoverArtifact = React.useCallback(
     (artifactName: string): void => {
-      onHoverArtifacts([artifactName]);
+      onHoverArtifacts(artifactName ? [artifactName] : emptyArray);
     },
     [onHoverArtifacts]
   );

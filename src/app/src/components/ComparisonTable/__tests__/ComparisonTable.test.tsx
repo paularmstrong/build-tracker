@@ -186,5 +186,28 @@ describe('ComparisonTable', () => {
       fireEvent(getByType(Table), 'mouseLeave');
       expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
     });
+
+    test('sets to empty array when hovering artifactName is falsy', () => {
+      const handleHoverArtifacts = jest.fn();
+      const comparator = new Comparator({ builds });
+      const { queryAllByType } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: false, main: false }}
+          colorScale={ColorScale.Magma}
+          comparator={comparator}
+          disabledArtifactsVisible
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
+          onFocusRevision={jest.fn()}
+          onHoverArtifacts={handleHoverArtifacts}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(queryAllByType(BodyRow)[0], 'hoverArtifact', null);
+      expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
+    });
   });
 });

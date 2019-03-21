@@ -76,7 +76,7 @@ export const BodyRow = (props: Props): React.ReactElement => {
     backgroundColor = color.toString();
   }
   const handleMouseEnter = React.useCallback(() => {
-    onHoverArtifact(isActive && artifactName !== 'All' ? artifactName : null);
+    onHoverArtifact(isActive ? artifactName : null);
   }, [artifactName, isActive, onHoverArtifact]);
 
   // @ts-ignore

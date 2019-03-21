@@ -50,7 +50,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 1, rows: [build] }));
       return queries.insert(build).then(res => {
         expect(query).toHaveBeenCalledWith(
-          'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, @4)',
+          'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4)',
           ['12345', now, 'abcdef', build.meta, build.artifacts]
         );
         expect(res).toEqual('12345');

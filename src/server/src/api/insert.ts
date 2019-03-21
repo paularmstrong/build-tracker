@@ -29,5 +29,8 @@ export const insertBuild = (
       res.send({
         comparator: comparator.toJSON()
       });
+    })
+    .catch(err => {
+      res.send(err);
     });
 };

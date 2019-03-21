@@ -18,6 +18,7 @@ export function getPageHTML(nonce: string, props: React.ComponentProps<typeof Ma
 <html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Tracker</title>
 <style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
 <body>

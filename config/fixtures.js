@@ -1,6 +1,7 @@
 const glob = require('glob');
 const path = require('path');
 const { UnimplementedError } = require('@build-tracker/api-errors');
+const { BudgetLevel, BudgetType } = require('@build-tracker/types');
 
 const builds = new Map();
 glob.sync(`${path.join(__dirname, '../src/fixtures/builds')}/*.json`).forEach(fileName => {
@@ -10,6 +11,15 @@ glob.sync(`${path.join(__dirname, '../src/fixtures/builds')}/*.json`).forEach(fi
 
 module.exports = {
   dev: true,
+  artifacts: {
+    groups: [
+      {
+        name: 'Home',
+        artifactNames: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'],
+        budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 350000 }]
+      }
+    ]
+  },
   queries: {
     build: {
       byRevision: async revision => {

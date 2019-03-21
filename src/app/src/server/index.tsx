@@ -46,7 +46,7 @@ const getAssetByName = (asset: Array<string> | string): Array<string> => {
 };
 
 const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Request, res: Response): void => {
-  const { nonce, url } = res.locals;
+  const { nonce, props } = res.locals;
   const appStats =
     'clientStats' in stats
       ? stats.clientStats
@@ -64,7 +64,7 @@ const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Req
   res.send(
     getPageHTML(
       nonce,
-      { url },
+      props,
       [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)].filter(Boolean)
     )
   );

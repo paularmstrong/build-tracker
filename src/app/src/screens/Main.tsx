@@ -3,6 +3,7 @@
  */
 import * as Theme from '../theme';
 import AppBar from '../components/AppBar';
+import { AppConfig } from '@build-tracker/types';
 import Build from '@build-tracker/build';
 import ColorScale from '../modules/ColorScale';
 import Drawer from '../components/Drawer';
@@ -14,30 +15,18 @@ import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
 import Snackbar from '../components/Snackbar';
-import { BudgetLevel, BudgetType } from '@build-tracker/types';
 import { Clipboard, StyleSheet, View } from 'react-native';
 import Comparator, { ArtifactRow } from '@build-tracker/comparator';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
 
-const groups = [
-  {
-    name: 'Home',
-    artifactNames: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'],
-    budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 350000 }]
-  }
-];
-
-const artifactBudgets = {
-  'bundle.Conversation': [{ level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.DELTA, maximum: 100 }]
-};
-
 interface Props {
+  artifactConfig?: AppConfig['artifacts'];
   url: string;
 }
 
 const Main = (props: Props): React.ReactElement => {
-  const { url } = props;
+  const { artifactConfig = {}, url } = props;
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
   const [compareRevisions, setCompareRevisions] = React.useState<Array<string>>([]);
 
@@ -67,11 +56,11 @@ const Main = (props: Props): React.ReactElement => {
   const activeComparator = React.useMemo(
     (): Comparator =>
       new Comparator({
-        artifactBudgets,
+        artifactBudgets: artifactConfig.budgets,
         builds: builds.filter(build => compareRevisions.indexOf(build.getMetaValue('revision')) !== -1),
-        groups
+        groups: artifactConfig.groups
       }),
-    [builds, compareRevisions]
+    [artifactConfig.budgets, artifactConfig.groups, builds, compareRevisions]
   );
 
   const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);

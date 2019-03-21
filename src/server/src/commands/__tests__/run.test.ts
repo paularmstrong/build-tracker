@@ -4,6 +4,7 @@
 import * as path from 'path';
 import * as RunCommand from '../run';
 import * as Server from '../../server';
+import express from 'express';
 import yargs from 'yargs';
 
 describe('run command', () => {
@@ -31,7 +32,7 @@ describe('run command', () => {
 
   describe('handler', () => {
     test('runs the server with the given config', () => {
-      jest.spyOn(Server, 'default').mockImplementation(() => {});
+      jest.spyOn(Server, 'default').mockImplementation(() => express());
       const configPath = require.resolve('@build-tracker/fixtures/server-configs/build-tracker.config.js');
       RunCommand.handler({ config: configPath });
       expect(Server.default).toHaveBeenCalledWith(require(configPath));

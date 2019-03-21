@@ -67,7 +67,7 @@ const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElem
       </View>
       <View style={styles.attribution}>
         <Text style={styles.attrText}>
-          Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by
+          Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by{' '}
           {
             // @ts-ignore
             <Text accessibilityRole="link" href="https://twitter.com/paularmstrong" target="_blank">

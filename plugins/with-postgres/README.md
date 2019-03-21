@@ -9,6 +9,7 @@ const withPostgres = require('@build-tracker/plugin-with-postgres');
 
 module.exports = withPostgres({
   pg: {
+    connectionString: '', // default: process.env.DATABASE_URL
     user: '', // default: process.env.PGUSER
     host: '', // default: process.env.PGHOST
     database: '', // default: process.env.PGPASSWORD
@@ -22,6 +23,10 @@ module.exports = withPostgres({
 ## Configuration
 
 All configuration options that are able to fall back on `process.env` environment variables can be written to your systems `ENV` or to a local `.env` file via [dotenv](https://github.com/motdotla/dotenv#readme).
+
+### `connectionString: string = process.env.DATABASE_URL`
+
+Optional. Use a single connection string to bypass the individual configs for `host`, `database`, `user`, `password`, and `port`.
 
 ### `host: string = process.env.PGHOST`
 

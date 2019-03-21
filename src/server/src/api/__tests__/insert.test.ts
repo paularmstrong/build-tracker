@@ -33,7 +33,7 @@ describe('insert build handler', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .then(() => {
-          expect(queries.insert).toHaveBeenCalledWith(expect.any(Build));
+          expect(queries.insert).toHaveBeenCalled();
         });
     });
   });

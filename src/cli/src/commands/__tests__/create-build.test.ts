@@ -37,39 +37,7 @@ describe('create-build', () => {
         .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
 
       return Command.handler({ config, out: true, 'skip-dirty-check': true }).then(() => {
-        expect(writeSpy.mock.calls[0]).toMatchInlineSnapshot(`
-Array [
-  "{
-  \\"meta\\": {
-    \\"parentRevision\\": \\"1234567\\",
-    \\"revision\\": \\"abcdefg\\",
-    \\"timestamp\\": 1234567890,
-    \\"author\\": \\"Jimmy\\",
-    \\"subject\\": \\"tacos\\"
-  },
-  \\"artifacts\\": [
-    {
-      \\"name\\": \\"../../fakedist/main.1234567.js\\",
-      \\"hash\\": \\"631a500f31d7602a386b4f858338dd6f\\",
-      \\"sizes\\": {
-        \\"stat\\": 64,
-        \\"gzip\\": 73,
-        \\"brotli\\": 49
-      }
-    },
-    {
-      \\"name\\": \\"../../fakedist/vendor.js\\",
-      \\"hash\\": \\"fc4bcd175441f89862f9d81e37599416\\",
-      \\"sizes\\": {
-        \\"stat\\": 82,
-        \\"gzip\\": 82,
-        \\"brotli\\": 62
-      }
-    }
-  ]
-}",
-]
-`);
+        expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"1234567\\"'));
       });
     });
 

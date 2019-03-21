@@ -11,8 +11,6 @@ describe('upload-build', () => {
       expect(args.argv).toEqual({
         $0: expect.any(String),
         _: [],
-        o: true,
-        out: true,
         'skip-dirty-check': false,
         skipDirtyCheck: false
       });

@@ -68,7 +68,7 @@ export default class Queries {
   };
 
   public getRecent = async (limit: number = 20): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds LIMIT $1 ORDER BY timestamp', [limit]);
+    const res = await this._pool.query('SELECT meta, artifacts FROM builds ORDER BY timestamp LIMIT $1', [limit]);
     if (res.rowCount === 0) {
       throw new NotFoundError();
     }

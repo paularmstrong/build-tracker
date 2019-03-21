@@ -138,7 +138,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getRecent(2).then(res => {
-        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds LIMIT $1 ORDER BY timestamp', [2]);
+        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds ORDER BY timestamp LIMIT $1', [2]);
         expect(res).toEqual([row1, row2]);
       });
     });

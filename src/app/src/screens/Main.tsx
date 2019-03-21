@@ -63,7 +63,9 @@ const Main = (props: Props): React.ReactElement => {
     [artifactConfig.budgets, artifactConfig.groups, builds, compareRevisions]
   );
 
-  const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(() => ColorScale.Rainbow);
+  const [colorScale, setColorScale] = React.useState<ScaleSequential<string>>(
+    () => ColorScale[Object.keys(ColorScale)[0]]
+  );
   const [focusedRevision, setFocusedRevision] = React.useState<string>(null);
   const [hoveredArtifacts, setHoveredArtifacts] = React.useState<Array<string>>([]);
   const [disabledArtifactsVisible, setDisabledArtifactsVisible] = React.useState<boolean>(true);

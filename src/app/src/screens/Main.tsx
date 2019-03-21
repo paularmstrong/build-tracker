@@ -212,11 +212,13 @@ const Main = (props: Props): React.ReactElement => {
             navigationIcon={MenuIcon}
             onPressNavigationIcon={showDrawer}
             overflowItems={
-              <>
-                <MenuItem key="clear" label="Clear selected revisions" onPress={handleClearRevisions} />
-                <MenuItem key="md" label="Copy as markdown" onPress={handleCopyAsMarkdown} />
-                <MenuItem key="csv" label="Copy as CSV" onPress={handleCopyAsCsv} />
-              </>
+              compareRevisions.length ? (
+                <>
+                  <MenuItem key="clear" label="Clear selected revisions" onPress={handleClearRevisions} />
+                  <MenuItem key="md" label="Copy as markdown" onPress={handleCopyAsMarkdown} />
+                  <MenuItem key="csv" label="Copy as CSV" onPress={handleCopyAsCsv} />
+                </>
+              ) : null
             }
             title="Build Tracker"
           />

@@ -21,11 +21,17 @@ interface Props {
 export const AppBar = (props: Props): React.ReactElement => {
   const { actionItems, navigationIcon, onPressNavigationIcon, overflowItems, style, title } = props;
   const overflowRef = React.useRef<View>(null);
-  const [showOverflow, toggleOverflow] = React.useState(false);
+  const [showOverflow, setShowOverflow] = React.useState(false);
 
   const handleShowOverflow = React.useCallback(() => {
-    toggleOverflow(showOverflow => !showOverflow);
+    setShowOverflow(showOverflow => !showOverflow);
   }, []);
+
+  React.useEffect(() => {
+    if (!overflowItems) {
+      setShowOverflow(false);
+    }
+  }, [overflowItems]);
 
   return (
     <View style={[styles.root, style]}>

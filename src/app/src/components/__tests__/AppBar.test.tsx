@@ -71,5 +71,18 @@ describe('AppBar', () => {
       fireEvent(getByType(Menu), 'dismiss');
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
     });
+
+    test('does not re-show the menu when overflowItems changes', () => {
+      const { getByType, queryAllByProps, update } = render(
+        <AppBar overflowItems={<MenuItem key={0} label="tacos" />} />
+      );
+      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
+      fireEvent.press(getByType(Button));
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
+      update(<AppBar overflowItems={null} />);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+      update(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+    });
   });
 });

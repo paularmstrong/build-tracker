@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Build Tracker v1.0.0 · Build Tracker</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="It&#x27;s finally here"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Build Tracker v1.0.0 · Build Tracker"/><meta property="og:type" content="website"/><meta property="og:url" content="https://paularmstrong.github.io/build-tracker/blog/2019/03/22/version-1"/><meta property="og:description" content="It&#x27;s finally here"/><meta property="og:image" content="https://paularmstrong.github.io/build-tracker/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://paularmstrong.github.io/build-tracker/img/docusaurus.png"/><link rel="shortcut icon" href="/build-tracker/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"/><link rel="alternate" type="application/atom+xml" href="https://paularmstrong.github.io/build-tracker/blog/atom.xml" title="Build Tracker Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://paularmstrong.github.io/build-tracker/blog/feed.xml" title="Build Tracker Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/build-tracker/css/main.css"/><script src="/build-tracker/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/build-tracker/"><img class="logo" src="/build-tracker/img/logo.svg" alt="Build Tracker"/><h2 class="headerTitleWithLogo">Build Tracker</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/build-tracker/docs/installation" target="_self">Docs</a></li><li class=""><a href="https://build-tracker-demo.herokuapp.com" target="_self">Demo</a></li><li class=""><a href="https://github.com/paularmstrong/build-tracker" target="_self">GitHub</a></li><li class="siteNavGroupActive"><a href="/build-tracker/blog/" target="_self">Blog</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/build-tracker/blog/2019/03/22/version-1">Build Tracker v1.0.0</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/build-tracker/blog/2019/03/22/version-1">Build Tracker v1.0.0</a></h1><p class="post-meta">March 22, 2019</p><div class="authorBlock"><p class="post-authorName"><a href="http://twitter.com/paularmstrong" target="_blank" rel="noreferrer noopener">Paul Armstrong</a></p></div></header><div><span><p>It's finally here</p>
+</span></div></div><div class="blogSocialSection"></div></div><div class="blog-recent"><a class="button" href="/build-tracker/blog">Recent Posts</a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/build-tracker/" class="nav-home"><img src="/build-tracker/img/logo.svg" alt="Build Tracker" width="66" height="58"/></a><div><h5>Docs</h5><a href="/build-tracker/docs/en/installation.html">Getting Started</a><a href="/build-tracker/docs/en/guides.html">Guides</a><a href="/build-tracker/docs/en/plugins.html">Plugins</a></div><div><h5>Community</h5><a href="/build-tracker/en/users.html">User Showcase</a><a href="http://stackoverflow.com/questions/tagged/build-tracker" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/build-tracker/blog">Blog</a><a href="https://github.com/paularmstrong/build-tracker">GitHub</a><a class="github-button" href="https://github.com/paularmstrong/build-tracker/docs" data-icon="octicon-star" data-count-href="/paularmstrong/build-tracker/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Paul Armstrong</section></footer></div></body></html>

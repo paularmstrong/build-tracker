@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Postgres · Build Tracker</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;Connecting your Build Tracker application to a PostgreSQL database is easy with the help of &lt;code&gt;@build-tracker/plugin-with-postgres&lt;/code&gt;&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Postgres · Build Tracker"/><meta property="og:type" content="website"/><meta property="og:url" content="https://paularmstrong.github.io/build-tracker/"/><meta property="og:description" content="&lt;p&gt;Connecting your Build Tracker application to a PostgreSQL database is easy with the help of &lt;code&gt;@build-tracker/plugin-with-postgres&lt;/code&gt;&lt;/p&gt;
+"/><meta property="og:image" content="https://paularmstrong.github.io/build-tracker/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://paularmstrong.github.io/build-tracker/img/docusaurus.png"/><link rel="shortcut icon" href="/build-tracker/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"/><link rel="alternate" type="application/atom+xml" href="https://paularmstrong.github.io/build-tracker/blog/atom.xml" title="Build Tracker Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://paularmstrong.github.io/build-tracker/blog/feed.xml" title="Build Tracker Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/build-tracker/css/main.css"/><script src="/build-tracker/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/build-tracker/"><img class="logo" src="/build-tracker/img/logo.svg" alt="Build Tracker"/><h2 class="headerTitleWithLogo">Build Tracker</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/build-tracker/docs/installation" target="_self">Docs</a></li><li class=""><a href="https://build-tracker-demo.herokuapp.com" target="_self">Demo</a></li><li class=""><a href="https://github.com/paularmstrong/build-tracker" target="_self">GitHub</a></li><li class=""><a href="/build-tracker/blog/" target="_self">Blog</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Plugins</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul class=""><li class="navListItem"><a class="navItem" href="/build-tracker/docs/installation">Getting Started</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Plugins</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/build-tracker/docs/withPosgres">Postgres</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Postgres</h1></header><article><div><span><p>Connecting your Build Tracker application to a PostgreSQL database is easy with the help of <code>@build-tracker/plugin-with-postgres</code></p>
+<h2><a class="anchor" aria-hidden="true" id="installation"></a><a href="#installation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Installation</h2>
+<pre><code class="hljs css language-sh">yarn add @build-tracker/plugin-with-postgres
+<span class="hljs-comment"># or</span>
+npm install --save @build-tracker/plugin-with-postgres
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="configuration"></a><a href="#configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuration</h2>
+<p>Edit your <code>build-tracker.config.js</code> file and compose your output configuration:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> withPostgres = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@build-tracker/plugin-with-postgres'</span>);
+
+<span class="hljs-built_in">module</span>.exports = withPostgres({
+  <span class="hljs-attr">pg</span>: {
+    <span class="hljs-attr">connectionString</span>: <span class="hljs-string">''</span>, <span class="hljs-comment">// default: process.env.DATABASE_URL</span>
+    user: <span class="hljs-string">''</span>, <span class="hljs-comment">// default: process.env.PGUSER</span>
+    host: <span class="hljs-string">''</span>, <span class="hljs-comment">// default: process.env.PGHOST</span>
+    database: <span class="hljs-string">''</span>, <span class="hljs-comment">// default: process.env.PGPASSWORD</span>
+    password: <span class="hljs-string">''</span>, <span class="hljs-comment">// default: process.env.PGDATABASE</span>
+    port: <span class="hljs-number">5432</span>, <span class="hljs-comment">// default: process.env.PGPORT</span>
+    ssl: <span class="hljs-literal">true</span>
+  }
+});
+</code></pre>
+<p>All configuration options that are able to fall back on <code>process.env</code> environment variables can be written to your systems <code>ENV</code> or to a local <code>.env</code> file via <a href="https://github.com/motdotla/dotenv#readme">dotenv</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="connectionstring-string-processenvdatabase-url"></a><a href="#connectionstring-string-processenvdatabase-url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>connectionString: string = process.env.DATABASE_URL</code></h3>
+<p>Optional. Use a single connection string to bypass the individual configs for <code>host</code>, <code>database</code>, <code>user</code>, <code>password</code>, and <code>port</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="host-string-processenvpghost"></a><a href="#host-string-processenvpghost" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>host: string = process.env.PGHOST</code></h3>
+<p>Database host.</p>
+<h3><a class="anchor" aria-hidden="true" id="database-string-processenvpgpassword"></a><a href="#database-string-processenvpgpassword" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>database: string = process.env.PGPASSWORD</code></h3>
+<p>Database name.</p>
+<h3><a class="anchor" aria-hidden="true" id="user-string-processenvpguser"></a><a href="#user-string-processenvpguser" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>user: string = process.env.PGUSER</code></h3>
+<p>Database username with read access.</p>
+<h3><a class="anchor" aria-hidden="true" id="password-string-processenvpgdatabase"></a><a href="#password-string-processenvpgdatabase" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>password: string = process.env.PGDATABASE</code></h3>
+<p>Password for the given database username.</p>
+<h3><a class="anchor" aria-hidden="true" id="port-number-processenvpgport-5432"></a><a href="#port-number-processenvpgport-5432" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>port: number = process.env.PGPORT = 5432</code></h3>
+<p>Database host port.</p>
+<h3><a class="anchor" aria-hidden="true" id="ssl-boolean-false"></a><a href="#ssl-boolean-false" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>ssl: boolean = false</code></h3>
+<p>Set to true to connect to your host using SSL (if supported).</p>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/20/2019 by Paul Armstrong</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/build-tracker/docs/installation"><span class="arrow-prev">← </span><span>Getting Started</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#installation">Installation</a></li><li><a href="#configuration">Configuration</a><ul class="toc-headings"><li><a href="#connectionstring-string-processenvdatabase-url"><code>connectionString: string = process.env.DATABASE_URL</code></a></li><li><a href="#host-string-processenvpghost"><code>host: string = process.env.PGHOST</code></a></li><li><a href="#database-string-processenvpgpassword"><code>database: string = process.env.PGPASSWORD</code></a></li><li><a href="#user-string-processenvpguser"><code>user: string = process.env.PGUSER</code></a></li><li><a href="#password-string-processenvpgdatabase"><code>password: string = process.env.PGDATABASE</code></a></li><li><a href="#port-number-processenvpgport-5432"><code>port: number = process.env.PGPORT = 5432</code></a></li><li><a href="#ssl-boolean-false"><code>ssl: boolean = false</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/build-tracker/" class="nav-home"><img src="/build-tracker/img/logo.svg" alt="Build Tracker" width="66" height="58"/></a><div><h5>Docs</h5><a href="/build-tracker/docs/en/installation.html">Getting Started</a><a href="/build-tracker/docs/en/guides.html">Guides</a><a href="/build-tracker/docs/en/plugins.html">Plugins</a></div><div><h5>Community</h5><a href="/build-tracker/en/users.html">User Showcase</a><a href="http://stackoverflow.com/questions/tagged/build-tracker" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/build-tracker/blog">Blog</a><a href="https://github.com/paularmstrong/build-tracker">GitHub</a><a class="github-button" href="https://github.com/paularmstrong/build-tracker/docs" data-icon="octicon-star" data-count-href="/paularmstrong/build-tracker/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Paul Armstrong</section></footer></div></body></html>

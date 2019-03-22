@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://paularmstrong.github.io/build-tracker/blog</id>
+    <title>Build Tracker Blog</title>
+    <updated>2019-03-22T06:00:00Z</updated>
+    <generator>Feed for Node.js</generator>
+    <link rel="alternate" href="https://paularmstrong.github.io/build-tracker/blog"/>
+    <subtitle>The best place to stay up-to-date with the latest Build Tracker news and events.</subtitle>
+    <logo>https://paularmstrong.github.io/build-tracker/img/logo.svg</logo>
+    <rights>Copyright © 2019 Paul Armstrong</rights>
+    <entry>
+        <title type="html"><![CDATA[Build Tracker v1.0.0]]></title>
+        <id>https://paularmstrong.github.io/build-tracker/blog/2019/03/22/version-1.html</id>
+        <link href="https://paularmstrong.github.io/build-tracker/blog/2019/03/22/version-1.html">
+        </link>
+        <updated>2019-03-22T06:00:00Z</updated>
+        <summary type="html"><![CDATA[<p>It's finally here</p> ]]></summary>
+        <author>
+            <name>Paul Armstrong</name>
+            <uri>http://twitter.com/paularmstrong</uri>
+        </author>
+    </entry>
+</feed>

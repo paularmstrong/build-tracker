@@ -4,6 +4,7 @@
 import { AppRegistry } from 'react-native-web';
 import Main from '../screens/Main';
 import ReactDOMServer from 'react-dom/server';
+import toSource from 'tosource';
 import { Request, RequestHandler, Response } from 'express';
 
 AppRegistry.registerComponent('App', () => Main);
@@ -26,7 +27,7 @@ ${css}
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
 <div id="snackbarPortal"></div>
-<script nonce="${nonce}">window.__PROPS__=${JSON.stringify(props)}</script>
+<script nonce="${nonce}">window.__PROPS__=${toSource(props)}</script>
 ${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;
 }

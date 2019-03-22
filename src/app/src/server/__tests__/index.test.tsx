@@ -52,6 +52,7 @@ describe('Server', () => {
           expect(res.text).toMatch('<script nonce="12345-67890-12345-67890" src="/client/tacos.js"></script>');
         });
     });
+
     test('are added in prod mode', () => {
       app.get('/', serverRenderer({ children: [{ name: 'client', assetsByChunkName: { app: 'app.js' } }] }));
 
@@ -59,6 +60,26 @@ describe('Server', () => {
         .get('/')
         .then(res => {
           expect(res.text).toMatch('<script nonce="12345-67890-12345-67890" src="/client/app.js"></script>');
+        });
+    });
+  });
+
+  describe('props', () => {
+    test('are added as JS source', () => {
+      app.use((_req: Request, res: Response, next: NextFunction) => {
+        res.locals.props = { artifactConfig: { groups: [{ name: 'Foo', artifactMatch: /foo/ }] } };
+        next();
+      });
+      app.get('/', serverRenderer({ children: [{ name: 'client', assetsByChunkName: { app: 'app.js' } }] }));
+
+      return request(app)
+        .get('/')
+        .then(res => {
+          const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
+          expect(match[1]).toMatchInlineSnapshot(`
+"={ artifactConfig:{ groups:[ { name:\\"Foo\\",
+        artifactMatch:/foo/ } ] } }"
+`);
         });
     });
   });

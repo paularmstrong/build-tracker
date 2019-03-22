@@ -232,6 +232,32 @@ describe('BuildComparator', () => {
         sizes: { gzip: 30, stat: 13 }
       });
     });
+
+    test('includes data for artifactMatch regex', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [{ name: 'stuff', artifactNames: ['burritos'], artifactMatch: /^tac/ }]
+      });
+      expect(comparator.matrixGroups[1][1]).toEqual({
+        type: 'total',
+        name: 'stuff',
+        sizes: { gzip: 135, stat: 579 }
+      });
+      expect(comparator.matrixGroups[1][2]).toEqual({
+        type: 'total',
+        name: 'stuff',
+        sizes: { gzip: 43, stat: 123 }
+      });
+      expect(comparator.matrixGroups[1][3]).toEqual({
+        type: 'totalDelta',
+        name: 'stuff',
+        hashChanged: true,
+        budgets: [],
+        failingBudgets: [],
+        percents: { gzip: -0.6814814814814815, stat: -0.7875647668393783 },
+        sizes: { gzip: -92, stat: -456 }
+      });
+    });
   });
 
   describe('toJSON', () => {

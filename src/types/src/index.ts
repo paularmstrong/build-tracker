@@ -51,6 +51,7 @@ export interface BudgetResult {
 
 export interface Group {
   artifactNames: Array<string>;
+  artifactMatch?: RegExp;
   budgets?: Array<Budget>;
   name: string;
 }

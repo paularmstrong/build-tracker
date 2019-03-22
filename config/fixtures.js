@@ -14,6 +14,11 @@ module.exports = {
   artifacts: {
     groups: [
       {
+        name: 'Entries',
+        artifactMatch: /^\w+$/,
+        budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 250000 }]
+      },
+      {
         name: 'Home',
         artifactNames: ['main', 'vendor', 'shared', 'runtime', 'bundle.HomeTimeline'],
         budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 350000 }]

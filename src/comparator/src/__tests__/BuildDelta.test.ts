@@ -118,5 +118,14 @@ describe('BuildDelta', () => {
         new ArtifactDelta('stuff', [], { stat: 5, gzip: 3 }, { stat: 7, gzip: 5 }, true)
       );
     });
+
+    test('calculates sum and hash changes with regex artifact match', () => {
+      const bd = new BuildDelta(buildA, buildB, {
+        groups: [{ name: 'stuff', artifactNames: ['burritos'], artifactMatch: /^tac/ }]
+      });
+      expect(bd.getGroupDelta('stuff')).toEqual(
+        new ArtifactDelta('stuff', [], { stat: 5, gzip: 3 }, { stat: 7, gzip: 5 }, true)
+      );
+    });
   });
 });

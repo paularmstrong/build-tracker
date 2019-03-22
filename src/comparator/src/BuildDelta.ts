@@ -126,10 +126,17 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     if (!this._groupDeltas) {
       this._groupDeltas = new Map();
       this._groups.forEach(group => {
-        const baseSum = this._baseBuild.getSum(group.artifactNames);
-        const prevSum = this._prevBuild.getSum(group.artifactNames);
+        let artifactNames = group.artifactNames ? [...group.artifactNames] : [];
+        if (group.artifactMatch) {
+          artifactNames = artifactNames.concat(
+            Array.from(this.artifactNames).filter(name => group.artifactMatch.test(name))
+          );
+        }
 
-        const hashChanged = group.artifactNames.reduce((changed, artifactName) => {
+        const baseSum = this._baseBuild.getSum(artifactNames);
+        const prevSum = this._prevBuild.getSum(artifactNames);
+
+        const hashChanged = artifactNames.reduce((changed, artifactName) => {
           const baseArtifact = this._baseBuild.getArtifact(artifactName);
           const prevArtifact = this._prevBuild.getArtifact(artifactName);
           return changed ? true : !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash;

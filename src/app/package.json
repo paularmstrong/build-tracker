@@ -28,6 +28,7 @@
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-native-web": "^0.11.1",
+    "tosource": "^1.0.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

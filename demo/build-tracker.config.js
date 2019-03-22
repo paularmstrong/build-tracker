@@ -6,7 +6,7 @@ module.exports = withPostgres({
     groups: [
       {
         name: 'Web App',
-        artifactNames: ['app/client/vendor', 'app/client/app', 'app/client/Comparison'],
+        artifactMatch: /^app\/client/,
         budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 150000 }]
       }
     ]

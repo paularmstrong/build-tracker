@@ -41,21 +41,22 @@ export const handler = async (args: Args): Promise<void> => {
   const build = await createBuild({ ...args, out: false });
 
   const url = new URL(`${config.applicationUrl}/api/builds`);
-  const httpProtocol = url.protocol === 'https:' ? https : http;
-
+  const httpProtocol = config.applicationUrl.startsWith('https:') ? https : http;
+  const body = JSON.stringify(build);
   const requestOptions = {
+    host: url.hostname.replace(`${httpProtocol}//`, ''),
+    port: url.port || config.applicationUrl.startsWith('https:') ? 443 : 80,
+    path: url.pathname,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'content-type': 'application/json',
+      'content-length': Buffer.byteLength(body)
     }
   };
 
   return new Promise((resolve, reject) => {
-    const req = httpProtocol.request(url, requestOptions, (res: http.IncomingMessage) => {
+    const req = httpProtocol.request(requestOptions, (res: http.IncomingMessage) => {
       res.setEncoding('utf8');
-      res.on('error', error => {
-        process.stderr.write(error.toString());
-      });
 
       res.on('data', data => {
         process.stdout.write(data);
@@ -69,10 +70,9 @@ export const handler = async (args: Args): Promise<void> => {
     req.on('error', error => {
       process.stderr.write(error.toString());
       reject(error);
-      process.exit(1);
     });
 
-    req.write(JSON.stringify(build));
+    req.write(body);
     req.end();
   });
 };

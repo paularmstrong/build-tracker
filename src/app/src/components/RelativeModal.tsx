@@ -4,11 +4,11 @@
 import * as Theme from '../theme';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dimensions, StyleSheet, View, ViewProps } from 'react-native';
+import { Dimensions, StyleSheet, TouchableOpacity, View, ViewProps } from 'react-native';
 
 interface Props {
   accessibilityRole?: ViewProps['accessibilityRole'] | 'menu';
-  children: React.ReactElement | Array<React.ReactElement>;
+  children?: React.ReactElement | Array<React.ReactElement>;
   onDismiss?: () => void;
   portalRootID?: string;
   relativeTo: React.RefObject<View>;
@@ -20,15 +20,8 @@ const Menu = (props: Props): React.ReactElement => {
   const portalRoot = portalRootID && document.getElementById(portalRootID);
   const ref = React.useRef<View>(null);
 
-  React.useEffect(() => {
-    const handleClickOutside = (): void => {
-      onDismiss && onDismiss();
-    };
-    document.body.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.body.removeEventListener('click', handleClickOutside);
-    };
+  const handlePressOutside = React.useCallback((): void => {
+    onDismiss && onDismiss();
   }, [onDismiss]);
 
   React.useEffect(() => {
@@ -61,18 +54,26 @@ const Menu = (props: Props): React.ReactElement => {
   }, [relativeTo]);
 
   const menu = (
-    <View
-      // @ts-ignore
-      accessibilityRole={accessibilityRole}
-      ref={ref}
-      style={[
-        styles.root,
-        position.top > 0 && { top: position.top, left: position.left },
-        position.top > 0 && styles.show
-      ]}
-    >
-      {React.Children.toArray(children)}
-    </View>
+    <>
+      <TouchableOpacity
+        activeOpacity={0}
+        onPress={handlePressOutside}
+        style={StyleSheet.absoluteFill}
+        testID="overlay"
+      />
+      <View
+        // @ts-ignore
+        accessibilityRole={accessibilityRole}
+        ref={ref}
+        style={[
+          styles.root,
+          position.top > 0 && { top: position.top, left: position.left },
+          position.top > 0 && styles.show
+        ]}
+      >
+        {React.Children.toArray(children)}
+      </View>
+    </>
   );
 
   return portalRoot ? ReactDOM.createPortal(menu, portalRoot) : menu;

@@ -10,7 +10,7 @@ interface Props extends React.ComponentProps<typeof RelativeModal> {
 }
 
 const Menu = (props: Props): React.ReactElement => {
-  return <RelativeModal {...props} portalRootID="menuPortal" />;
+  return <RelativeModal {...props} accessibilityRole="menu" portalRootID="menuPortal" />;
 };
 
 export default Menu;

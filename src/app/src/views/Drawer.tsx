@@ -2,7 +2,9 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
+import Button from '../components/Button';
 import ColorScalePicker from '../components/ColorScalePicker';
+import DateTextField from '../components/DateTextField';
 import Divider from '../components/Divider';
 import Drawer from '../components/Drawer';
 import DrawerLink from '../components/DrawerLink';
@@ -21,6 +23,8 @@ interface MappedState {
   disabledArtifactsVisible: State['disabledArtifactsVisible'];
 }
 
+const today = new Date();
+
 const mapState = (state: State): MappedState => ({
   comparator: state.comparator,
   disabledArtifactsVisible: state.disabledArtifactsVisible
@@ -29,6 +33,9 @@ const mapState = (state: State): MappedState => ({
 const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElement => {
   const { comparator, disabledArtifactsVisible } = useMappedState(mapState);
   const dispatch = useDispatch();
+
+  const [startDate, setStartDate] = React.useState<Date>(null);
+  const [endDate, setEndDate] = React.useState<Date>(null);
 
   const handleToggleDisabled = React.useCallback(
     (showDisabled: boolean): void => {
@@ -42,10 +49,24 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
       <View style={styles.header}>
         <Text style={styles.title}>Build Tracker</Text>
       </View>
+
       <Divider />
+
+      <Subtitle title="Date range" />
+      <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.date} />
+      <DateTextField minDate={startDate} maxDate={today} label="End date" onSet={setEndDate} style={styles.date} />
+      <View style={styles.date}>
+        <Button title="Get range" type="unelevated" />
+      </View>
+
+      <Divider />
+
       <Subtitle title="Compare artifacts by" />
+
       <SizeKeyPicker keys={comparator.sizeKeys} />
+
       <Divider />
+
       <View style={styles.switchRoot}>
         {
           // @ts-ignore
@@ -59,7 +80,9 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
         }
         <Text>Show disabled artifacts</Text>
       </View>
+
       <Divider />
+
       <Subtitle title="Color scale" />
       <ColorScalePicker />
       <Divider />
@@ -98,6 +121,9 @@ const styles = StyleSheet.create({
   },
   switch: {
     marginEnd: Theme.Spacing.Small
+  },
+  date: {
+    marginBottom: Theme.Spacing.Small
   },
   attribution: {
     paddingVertical: Theme.Spacing.Large,

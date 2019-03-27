@@ -23,6 +23,7 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
     onFocus,
     style,
     trailingIcon: TrailingIcon,
+    value: propValue,
     ...textInputProps
   } = props;
   const [isFocused, setFocused] = React.useState(false);
@@ -51,6 +52,10 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
     },
     [onChangeText, setValue]
   );
+
+  if (propValue !== value) {
+    setValue(propValue);
+  }
 
   const labelMoved = isFocused || value !== '';
 

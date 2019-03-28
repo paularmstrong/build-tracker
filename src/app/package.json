@@ -28,6 +28,8 @@
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-native-web": "^0.11.1",
+    "redux": "^4.0.1",
+    "redux-react-hook": "^3.2.1",
     "tosource": "^1.0.0",
     "uuid": "^3.3.2"
   },
@@ -51,6 +53,7 @@
     "react-native-testing-library": "^1.5.0",
     "react-test-renderer": "^16.8.3",
     "react-testing-library": "^6.0.0",
+    "redux-mock-store": "^1.5.3",
     "supertest": "^4.0.0",
     "ts-loader": "^5.3.3",
     "webpack": "^4.29.5",

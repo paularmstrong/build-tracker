@@ -43,8 +43,8 @@ describe('Area', () => {
       <svg>
         <Area
           activeArtifactNames={['main']}
-          colorScale={ColorScale.Rainbow}
-          comparator={comparator}
+          artifactNames={comparator.artifactNames}
+          colorScale={ColorScale.Cool}
           data={data}
           hoveredArtifacts={[]}
           xScale={xScale}
@@ -88,8 +88,8 @@ describe('Area', () => {
       <svg>
         <Area
           activeArtifactNames={['main', 'vendor']}
-          colorScale={ColorScale.Rainbow}
-          comparator={comparator}
+          artifactNames={comparator.artifactNames}
+          colorScale={ColorScale.Cool}
           data={data}
           hoveredArtifacts={[]}
           xScale={xScale}
@@ -137,8 +137,8 @@ describe('Area', () => {
       <svg>
         <Area
           activeArtifactNames={['main', 'vendor']}
-          colorScale={ColorScale.Rainbow}
-          comparator={comparator}
+          artifactNames={comparator.artifactNames}
+          colorScale={ColorScale.Cool}
           data={data}
           hoveredArtifacts={['vendor']}
           xScale={xScale}

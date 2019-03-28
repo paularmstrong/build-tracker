@@ -2,32 +2,33 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../../theme';
+import ColorScales from '../../modules/ColorScale';
 import RadioSelect from '../RadioSelect';
 import React from 'react';
-import { ScaleSequential } from 'd3-scale';
+import { setColorScale } from '../../store/actions';
+import { useDispatch } from 'redux-react-hook';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
   isSelected?: boolean;
-  name: string;
-  onSelect: (scale: ScaleSequential<string>) => void;
-  scale: ScaleSequential<string>;
+  name: keyof typeof ColorScales;
   style?: StyleProp<ViewStyle>;
 }
 
 export const ColorScale = (props: Props): React.ReactElement => {
-  const { isSelected, name, onSelect, scale, style } = props;
+  const { isSelected, name, style } = props;
 
+  const dispatch = useDispatch();
   const handleSelect = React.useCallback(
-    (checked: boolean): void => {
+    (checked: boolean) => {
       if (checked) {
-        onSelect(scale);
+        dispatch(setColorScale(name));
       }
     },
-    [onSelect, scale]
+    [dispatch, name]
   );
 
-  const nativeID = `radio${name.replace(/^\w/g, '')}`;
+  const nativeID = `radio${`${name}`.replace(/^\w/g, '')}`;
 
   return (
     // @ts-ignore

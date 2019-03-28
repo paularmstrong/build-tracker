@@ -28,8 +28,8 @@ describe('ComparisonTable', () => {
       const { queryAllByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: true }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible={false}
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
@@ -51,8 +51,8 @@ describe('ComparisonTable', () => {
       const { queryAllByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible={false}
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
@@ -76,8 +76,8 @@ describe('ComparisonTable', () => {
       const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: true }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={handleDisableArtifacts}
@@ -99,8 +99,8 @@ describe('ComparisonTable', () => {
       const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
@@ -122,8 +122,8 @@ describe('ComparisonTable', () => {
       const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
@@ -147,8 +147,8 @@ describe('ComparisonTable', () => {
       const { queryAllByType } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
@@ -170,8 +170,8 @@ describe('ComparisonTable', () => {
       const { getByType } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
@@ -193,8 +193,8 @@ describe('ComparisonTable', () => {
       const { queryAllByType } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}

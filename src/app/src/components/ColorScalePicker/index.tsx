@@ -6,28 +6,20 @@ import ColorScale from './ColorScale';
 import ColorScales from '../../modules/ColorScale';
 import React from 'react';
 import { ScaleSequential } from 'd3-scale';
+import { State } from '../../store/types';
+import { useMappedState } from 'redux-react-hook';
 import { StyleSheet, View } from 'react-native';
 
-interface Props {
-  activeColorScale: ScaleSequential<string>;
-  onSelect: (scale: ScaleSequential<string>) => void;
-}
+const mapState = (state: State): { activeColorScale: ScaleSequential<string> } => ({
+  activeColorScale: ColorScales[state.colorScale]
+});
 
-export const ColorScalePicker = (props: Props): React.ReactElement => {
-  const { activeColorScale, onSelect } = props;
+export const ColorScalePicker = (): React.ReactElement => {
+  const { activeColorScale } = useMappedState(mapState);
   return (
     <View style={styles.root}>
       {Object.entries(ColorScales).map(([name, scale]) => {
-        return (
-          <ColorScale
-            isSelected={activeColorScale === scale}
-            key={name}
-            name={name}
-            onSelect={onSelect}
-            scale={scale}
-            style={styles.scale}
-          />
-        );
+        return <ColorScale isSelected={activeColorScale === scale} key={name} name={name} style={styles.scale} />;
       })}
     </View>
   );

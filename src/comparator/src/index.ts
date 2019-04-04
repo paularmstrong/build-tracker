@@ -265,9 +265,13 @@ export default class BuildComparator {
   }
 
   private _getGroupRow(group: Group): GroupRow {
+    let artifactNames = group.artifactNames ? [...group.artifactNames].filter(Boolean) : [];
+    if (group.artifactMatch) {
+      artifactNames = artifactNames.concat(this.artifactNames.filter(name => group.artifactMatch.test(name)));
+    }
     const cells = this.buildDeltas.map(
       (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
-        const groupSizes = this.builds[i].getSum(group.artifactNames);
+        const groupSizes = this.builds[i].getSum(artifactNames);
         return [
           {
             sizes: groupSizes,
@@ -282,7 +286,7 @@ export default class BuildComparator {
         ];
       }
     );
-    return [{ type: CellType.GROUP, text: group.name, artifactNames: group.artifactNames }, ...flatten(cells)];
+    return [{ type: CellType.GROUP, text: group.name, artifactNames }, ...flatten(cells)];
   }
 
   public getStringFormattedHeader(

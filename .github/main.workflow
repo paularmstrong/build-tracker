@@ -24,7 +24,7 @@ action "Add labels" {
 
 workflow "On push" {
   on = "push"
-  resolves = ["Lint", "Verify tests", "Verify types"]
+  resolves = ["Lint", "Verify tests", "Verify types", "Upload build"]
 }
 
 action "Filters for GitHub Actions" {
@@ -54,6 +54,18 @@ action "Verify types" {
   uses = "nuxt/actions-yarn@master"
   needs = ["Install dependencies"]
   args = "tsc"
+}
+
+action "Build" {
+  uses = "nuxt/actions-yarn@master"
+  needs = ["Install dependencies"]
+  args = "build"
+}
+
+action "Upload build" {
+  uses = "nuxt/actions-yarn@master"
+  needs = ["Build"]
+  args = "ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js"
 }
 
 action "Install PR dependencies" {

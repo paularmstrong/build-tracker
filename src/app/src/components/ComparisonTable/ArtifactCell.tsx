@@ -2,11 +2,12 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../../theme';
+import Hoverable from '../Hoverable';
 import { hsl } from 'd3-color';
 import React from 'react';
-import { Th } from './../Table';
+import { Th } from '../Table';
 import { ArtifactCell as ACell, GroupCell as GCell } from '@build-tracker/comparator';
-import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Switch, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 interface Props {
   cell: ACell | GCell;
@@ -15,6 +16,7 @@ interface Props {
   isActive: boolean;
   onDisable: (artifactName: string) => void;
   onEnable: (artifactName: string) => void;
+  onFocus: (artifactName: string) => void;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -26,6 +28,7 @@ export const ArtifactCell = (props: Props): React.ReactElement => {
     isActive,
     onDisable,
     onEnable,
+    onFocus,
     style
   } = props;
   const brighterColor = hsl(color);
@@ -36,15 +39,24 @@ export const ArtifactCell = (props: Props): React.ReactElement => {
     toggled ? onEnable(text) : onDisable(text);
   };
 
+  const handlePress = React.useCallback(() => {
+    onFocus(text);
+  }, [onFocus, text]);
+
   return (
     <Th style={style}>
       <View style={styles.artifact}>
-        <View style={styles.name}>
-          <Text>{text}</Text>
-        </View>
+        <Hoverable>
+          {isHovered => (
+            <TouchableOpacity accessibilityRole="button" onPress={handlePress} style={styles.name}>
+              <Text style={[isHovered && styles.hoveredText]}>{text}</Text>
+            </TouchableOpacity>
+          )}
+        </Hoverable>
         <View style={styles.switch}>
           {
             // @ts-ignore
+
             <Switch
               activeThumbColor={color}
               activeTrackColor={brighterColor.toString()}
@@ -67,11 +79,16 @@ const styles = StyleSheet.create({
   },
   name: {
     flexShrink: 1,
+    flexGrow: 1,
+    alignItems: 'flex-start',
     justifyContent: 'center',
     paddingEnd: Theme.Spacing.Xsmall
   },
   switch: {
     paddingStart: Theme.Spacing.Xsmall
+  },
+  hoveredText: {
+    color: Theme.Color.Primary30
   }
 });
 

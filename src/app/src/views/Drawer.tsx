@@ -3,38 +3,40 @@
  */
 import * as Theme from '../theme';
 import ColorScalePicker from '../components/ColorScalePicker';
-import Comparator from '@build-tracker/comparator';
 import Divider from '../components/Divider';
 import Drawer from '../components/Drawer';
 import DrawerLink from '../components/DrawerLink';
 import HeartIcon from '../icons/Heart';
 import OpenInExternalIcon from '../icons/OpenInExternal';
 import React from 'react';
-import { ScaleSequential } from 'd3-scale';
+import { setDisabledArtifactsVisible } from '../store/actions';
 import SizeKeyPicker from '../components/SizeKeyPicker';
+import { State } from '../store/types';
 import Subtitle from '../components/Subtitle';
 import { StyleSheet, Switch, Text, View } from 'react-native';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
-interface Props {
-  colorScale: ScaleSequential<string>;
-  comparator: Comparator;
-  disabledArtifactsVisible: boolean;
-  onSelectColorScale: (scale: ScaleSequential<string>) => void;
-  onSelectSizeKey: (sizeKey: string) => void;
-  onToggleDisabledArtifacts: (showDisabled: boolean) => void;
-  sizeKey: string;
+interface MappedState {
+  comparator: State['comparator'];
+  disabledArtifactsVisible: State['disabledArtifactsVisible'];
 }
 
-const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElement => {
-  const {
-    colorScale,
-    comparator,
-    disabledArtifactsVisible,
-    onSelectColorScale,
-    onSelectSizeKey,
-    onToggleDisabledArtifacts,
-    sizeKey
-  } = props;
+const mapState = (state: State): MappedState => ({
+  comparator: state.comparator,
+  disabledArtifactsVisible: state.disabledArtifactsVisible
+});
+
+const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElement => {
+  const { comparator, disabledArtifactsVisible } = useMappedState(mapState);
+  const dispatch = useDispatch();
+
+  const handleToggleDisabled = React.useCallback(
+    (showDisabled: boolean): void => {
+      dispatch(setDisabledArtifactsVisible(showDisabled));
+    },
+    [dispatch]
+  );
+
   return (
     <Drawer hidden ref={ref}>
       <View style={styles.header}>
@@ -42,7 +44,7 @@ const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElem
       </View>
       <Divider />
       <Subtitle title="Compare artifacts by" />
-      <SizeKeyPicker keys={comparator.sizeKeys} onSelect={onSelectSizeKey} selected={sizeKey} />
+      <SizeKeyPicker keys={comparator.sizeKeys} />
       <Divider />
       <View style={styles.switchRoot}>
         {
@@ -50,7 +52,7 @@ const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElem
           <Switch
             activeThumbColor={Theme.Color.Primary30}
             activeTrackColor={Theme.Color.Primary00}
-            onValueChange={onToggleDisabledArtifacts}
+            onValueChange={handleToggleDisabled}
             style={styles.switch}
             value={disabledArtifactsVisible}
           />
@@ -59,7 +61,7 @@ const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElem
       </View>
       <Divider />
       <Subtitle title="Color scale" />
-      <ColorScalePicker activeColorScale={colorScale} onSelect={onSelectColorScale} />
+      <ColorScalePicker />
       <Divider />
       <View style={styles.footer}>
         <Subtitle title="Links" />
@@ -67,7 +69,7 @@ const DrawerView = (props: Props, ref: React.RefObject<Drawer>): React.ReactElem
       </View>
       <View style={styles.attribution}>
         <Text style={styles.attrText}>
-          Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by
+          Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by{' '}
           {
             // @ts-ignore
             <Text accessibilityRole="link" href="https://twitter.com/paularmstrong" target="_blank">

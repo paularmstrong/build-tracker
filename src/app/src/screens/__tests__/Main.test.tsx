@@ -1,21 +1,19 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as Actions from '../../store/actions';
 import * as CrossFetch from 'cross-fetch';
-import AppBar from '../../components/AppBar';
+import Build from '@build-tracker/build';
 import buildA from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
 import buildB from '@build-tracker/fixtures/builds/01141f29743fb2bdd7e176cf919fc964025cea5a.json';
 import buildC from '@build-tracker/fixtures/builds/243024909db66ac3c3e48d2ffe4015f049609834.json';
-import { Clipboard } from 'react-native';
-import ColorScale from '../../modules/ColorScale';
-import ColorScalePicker from '../../components/ColorScalePicker';
+import Comparator from '@build-tracker/comparator';
 import Comparison from '../../views/Comparison';
-import Drawer from '../../components/Drawer';
-import Graph from '../../components/Graph';
 import Main from '../Main';
+import mockStore from '../../store/mock';
 import React from 'react';
-import SizeKeyPicker from '../../components/SizeKeyPicker';
-import { fireEvent, flushMicrotasksQueue, render } from 'react-native-testing-library';
+import { StoreContext } from 'redux-react-hook';
+import { flushMicrotasksQueue, render } from 'react-native-testing-library';
 
 // React.memo components are not findable by type
 jest.mock('../../components/ColorScalePicker', () => {
@@ -59,8 +57,9 @@ jest.mock('cross-fetch', () => {
 const url = 'https://build-tracker.local';
 
 describe('Main', () => {
+  let fetchSpy;
   beforeEach(() => {
-    jest.spyOn(CrossFetch, 'fetch').mockImplementation(() =>
+    fetchSpy = jest.spyOn(CrossFetch, 'fetch').mockImplementation(() =>
       // @ts-ignore
       Promise.resolve({
         json: () => [buildA, buildB, buildC]
@@ -68,177 +67,49 @@ describe('Main', () => {
     );
   });
 
-  describe('drawer', () => {
-    test('shows the drawer when AppBar pressNavigationIcon hit', () => {
-      const showSpy = jest.spyOn(Drawer.prototype, 'show');
-      const { getByType } = render(<Main url={url} />);
-      fireEvent(getByType(AppBar), 'pressNavigationIcon');
-      expect(showSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('color scale', () => {
-    test('sets color scale context when scale is selected', async () => {
-      const { getByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      fireEvent(getByType(ColorScalePicker), 'select', ColorScale.Magma);
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(getByType(ColorScalePicker).props.activeColorScale).toBe(ColorScale.Magma);
-      expect(getByType(Comparison).props.colorScale).toBe(ColorScale.Magma);
-      expect(getByType(Graph).props.colorScale).toBe(ColorScale.Magma);
-    });
-  });
-
-  describe('artifacts', () => {
-    test('can disable a artifacts', async () => {
-      const { getByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Comparison), 'disableArtifacts', ['main']);
-      expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
-        main: false,
-        vendor: true,
-        shared: true
-      });
-      expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: false, vendor: true, shared: true });
-    });
-
-    test('can enable a artifacts', async () => {
-      const { getByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Comparison), 'disableArtifacts', ['main', 'vendor', 'shared']);
-      fireEvent(getByType(Comparison), 'enableArtifacts', ['main']);
-      expect(getByType(Comparison).props.activeArtifacts).toMatchObject({
-        main: true,
-        vendor: false,
-        shared: false
-      });
-      expect(getByType(Graph).props.activeArtifacts).toMatchObject({ main: true, vendor: false, shared: false });
-    });
-
-    test('can toggle visibility of disabled artifacts', async () => {
-      const { getByType, queryAllByProps } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(queryAllByProps({ disabledArtifactsVisible: true })).toHaveLength(2);
-      fireEvent(getByType(Drawer), 'toggleDisabledArtifacts', false);
-
-      expect(queryAllByProps({ disabledArtifactsVisible: false })).toHaveLength(2);
-    });
-  });
-
-  describe('on select size key', () => {
-    test('passes the new size key to graph', async () => {
-      const { getByType, queryAllByProps } = render(<Main url={url} />);
-      fireEvent(getByType(SizeKeyPicker), 'select', 'stat');
-      expect(queryAllByProps({ sizeKey: 'stat' })).toHaveLength(2);
-      expect(queryAllByProps({ sizeKey: 'gzip' })).toHaveLength(0);
-    });
-  });
-
-  describe('hovering artifacts', () => {
-    test('updates hovered artifacts', async () => {
-      const { getByType } = render(<Main url={url} />);
-      expect(getByType(Graph).props.hoveredArtifacts).toEqual([]);
-      fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
-      expect(getByType(Graph).props.hoveredArtifacts).toEqual(['main']);
-    });
-
-    test('does not update hovered artifacts if equal', async () => {
-      const { getByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
-      const { hoveredArtifacts } = getByType(Graph).props;
-      fireEvent(getByType(Graph), 'hoverArtifacts', ['main']);
-      expect(getByType(Graph).props.hoveredArtifacts).toBe(hoveredArtifacts);
-    });
-  });
-
-  describe('on select revision', () => {
-    test('updates the comparison table', async () => {
-      const { getByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      expect(getByType(Comparison).props.comparator.builds.map(b => b.getMetaValue('revision'))).toEqual(
-        expect.arrayContaining(['243024909db66ac3c3e48d2ffe4015f049609834', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04'])
+  describe('startup', () => {
+    test('fetches builds and updates', async () => {
+      const setBuildsSpy = jest.spyOn(Actions, 'setBuilds');
+      const component = (
+        <StoreContext.Provider
+          value={mockStore({
+            builds: [],
+            comparedRevisions: [],
+            comparator: new Comparator({ builds: [] }),
+            snacks: [],
+            url
+          })}
+        >
+          <Main />
+        </StoreContext.Provider>
+      );
+      const { update } = render(component);
+      update(component);
+      await flushMicrotasksQueue();
+      expect(fetchSpy).toHaveBeenCalledWith(`${url}/api/builds`);
+      expect(setBuildsSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([expect.any(Build), expect.any(Build), expect.any(Build)])
       );
     });
   });
 
-  describe('focused revisions', () => {
-    test('focusing a revision shows the build info', async () => {
-      const { getByType, queryAllByProps } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-
-      expect(queryAllByProps({ focusedRevision: '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04' })).toHaveLength(1);
-    });
-
-    test('removing focused revision hides the build info', async () => {
-      const { getByType, queryAllByProps } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      fireEvent(getByType(Comparison), 'removeRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-
-      expect(queryAllByProps({ focusedRevision: null })).toHaveLength(1);
-    });
-
-    test('closing the build info removes the component', async () => {
-      const { getByType, queryAllByProps } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Comparison), 'focusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      fireEvent(getByType(Comparison), 'unfocusRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-
-      expect(queryAllByProps({ focusedRevision: null })).toHaveLength(1);
-    });
-  });
-
-  describe('overflow items', () => {
-    test('can clear selected revisions', async () => {
-      const { getByType, getByProps, queryAllByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-
-      fireEvent.press(getByProps({ title: 'More actions' }));
-      fireEvent.press(getByProps({ label: 'Clear selected revisions' }));
-
-      expect(queryAllByType(Comparison)).toHaveLength(0);
-    });
-
-    test('can copy as markdown', async () => {
-      const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
-      const { getByType, getByProps } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-
-      fireEvent.press(getByProps({ title: 'More actions' }));
-      fireEvent.press(getByProps({ label: 'Copy as markdown' }));
-      const comparator = getByType(Comparison).props.comparator;
-
-      expect(clipboardSpy).toHaveBeenCalledWith(comparator.toMarkdown());
-    });
-
-    test('can copy as csv', async () => {
-      const clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});
-      const { getByProps, getByType } = render(<Main url={url} />);
-      fireEvent(getByType(Graph), 'selectRevision', '243024909db66ac3c3e48d2ffe4015f049609834');
-      await flushMicrotasksQueue(); // ensure dynamic imports are loaded
-
-      fireEvent.press(getByProps({ title: 'More actions' }));
-      fireEvent.press(getByProps({ label: 'Copy as CSV' }));
-
-      const comparator = getByType(Comparison).props.comparator;
-
-      expect(clipboardSpy).toHaveBeenCalledWith(comparator.toCsv());
+  describe('comparison view', () => {
+    test('shows when there are compared revisions', async () => {
+      const store = mockStore({
+        builds: [new Build(buildA.meta, buildA.artifacts)],
+        comparedRevisions: [buildA.meta.revision],
+        comparator: new Comparator({ builds: [new Build(buildA.meta, buildA.artifacts)] }),
+        snacks: [],
+        url
+      });
+      const component = (
+        <StoreContext.Provider value={store}>
+          <Main />
+        </StoreContext.Provider>
+      );
+      const { queryAllByType } = render(component);
+      await flushMicrotasksQueue();
+      expect(queryAllByType(Comparison)).toHaveLength(1);
     });
   });
 });

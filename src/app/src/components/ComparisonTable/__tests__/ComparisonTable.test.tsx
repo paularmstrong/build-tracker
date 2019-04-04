@@ -28,12 +28,13 @@ describe('ComparisonTable', () => {
       const { queryAllByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: true }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible={false}
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -50,12 +51,13 @@ describe('ComparisonTable', () => {
       const { queryAllByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible={false}
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -74,12 +76,13 @@ describe('ComparisonTable', () => {
       const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: true }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={handleDisableArtifacts}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -96,12 +99,13 @@ describe('ComparisonTable', () => {
       const { getByProps } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: true, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={handleEnableArtifacts}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={jest.fn()}
           onRemoveRevision={jest.fn()}
@@ -110,6 +114,29 @@ describe('ComparisonTable', () => {
       );
       fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'enable', 'vendor');
       expect(handleEnableArtifacts).toHaveBeenCalledWith(['vendor']);
+    });
+
+    test('focus', () => {
+      const handleFocusArtifacts = jest.fn();
+      const comparator = new Comparator({ builds });
+      const { getByProps } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: true, main: false }}
+          comparator={comparator}
+          colorScale={ColorScale.Cool}
+          disabledArtifactsVisible
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={handleFocusArtifacts}
+          onFocusRevision={jest.fn()}
+          onHoverArtifacts={jest.fn()}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(getByProps({ cell: comparator.matrixArtifacts[1][0] }), 'focusArtifact', 'vendor');
+      expect(handleFocusArtifacts).toHaveBeenCalledWith(['vendor']);
     });
   });
 
@@ -120,12 +147,13 @@ describe('ComparisonTable', () => {
       const { queryAllByType } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={handleHoverArtifacts}
           onRemoveRevision={jest.fn()}
@@ -142,12 +170,13 @@ describe('ComparisonTable', () => {
       const { getByType } = render(
         <ComparisonTable
           activeArtifacts={{ vendor: false, main: false }}
-          colorScale={ColorScale.Magma}
           comparator={comparator}
+          colorScale={ColorScale.Cool}
           disabledArtifactsVisible
           hoveredArtifacts={[]}
           onDisableArtifacts={jest.fn()}
           onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
           onFocusRevision={jest.fn()}
           onHoverArtifacts={handleHoverArtifacts}
           onRemoveRevision={jest.fn()}
@@ -155,6 +184,29 @@ describe('ComparisonTable', () => {
         />
       );
       fireEvent(getByType(Table), 'mouseLeave');
+      expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
+    });
+
+    test('sets to empty array when hovering artifactName is falsy', () => {
+      const handleHoverArtifacts = jest.fn();
+      const comparator = new Comparator({ builds });
+      const { queryAllByType } = render(
+        <ComparisonTable
+          activeArtifacts={{ vendor: false, main: false }}
+          comparator={comparator}
+          colorScale={ColorScale.Cool}
+          disabledArtifactsVisible
+          hoveredArtifacts={[]}
+          onDisableArtifacts={jest.fn()}
+          onEnableArtifacts={jest.fn()}
+          onFocusArtifacts={jest.fn()}
+          onFocusRevision={jest.fn()}
+          onHoverArtifacts={handleHoverArtifacts}
+          onRemoveRevision={jest.fn()}
+          sizeKey="stat"
+        />
+      );
+      fireEvent(queryAllByType(BodyRow)[0], 'hoverArtifact', null);
       expect(handleHoverArtifacts).toHaveBeenCalledWith([]);
     });
   });

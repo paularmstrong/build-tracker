@@ -24,7 +24,10 @@
     "@types/glob": "^7.1.1",
     "@types/gzip-size": "^4.1.0",
     "@types/node": "^11.10.4",
+    "@types/request": "^2.48.1",
+    "@types/request-promise-native": "^1.0.15",
     "@types/yargs": "^12.0.9",
-    "mock-spawn": "^0.2.6"
+    "mock-spawn": "^0.2.6",
+    "nock": "^10.0.6"
   }
 }

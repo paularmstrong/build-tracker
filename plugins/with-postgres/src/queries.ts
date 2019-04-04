@@ -25,13 +25,13 @@ export default class Queries {
   public insert = async ({ meta, artifacts }: BuildStruct): Promise<string> => {
     const build = new Build(meta, artifacts);
     const res = await this._pool.query(
-      'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, @4)',
+      'INSERT INTO builds (revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4, $5)',
       [
         build.getMetaValue('revision'),
         build.meta.timestamp,
         build.getMetaValue('parentRevision'),
-        build.meta,
-        build.artifacts
+        JSON.stringify(build.meta),
+        JSON.stringify(build.artifacts)
       ]
     );
 
@@ -68,7 +68,7 @@ export default class Queries {
   };
 
   public getRecent = async (limit: number = 20): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds LIMIT $1 ORDER BY timestamp', [limit]);
+    const res = await this._pool.query('SELECT meta, artifacts FROM builds ORDER BY timestamp LIMIT $1', [limit]);
     if (res.rowCount === 0) {
       throw new NotFoundError();
     }

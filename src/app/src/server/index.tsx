@@ -3,14 +3,32 @@
  */
 import { AppRegistry } from 'react-native-web';
 import Main from '../screens/Main';
+import makeStore from '../store';
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { Store } from 'redux';
+import { StoreContext } from 'redux-react-hook';
+import toSource from 'tosource';
+import { Actions, State } from '../store/types';
 import { Request, RequestHandler, Response } from 'express';
 
-AppRegistry.registerComponent('App', () => Main);
+interface AppProps {
+  store: Store<State, Actions>;
+}
 
-export function getPageHTML(nonce: string, props: React.ComponentProps<typeof Main>, scripts: Array<string>): string {
+const App = (props: AppProps): React.ReactElement => (
+  <StoreContext.Provider value={props.store}>
+    <Main />
+  </StoreContext.Provider>
+);
+
+AppRegistry.registerComponent('App', () => App);
+
+export function getPageHTML(nonce: string, state: Partial<State>, scripts: Array<string>): string {
+  const store = makeStore(state);
+
   // @ts-ignore
-  const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: props });
+  const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: { store } });
   const html = ReactDOMServer.renderToString(element);
   const css = ReactDOMServer.renderToStaticMarkup(getStyleElement({ nonce }));
 
@@ -18,13 +36,15 @@ export function getPageHTML(nonce: string, props: React.ComponentProps<typeof Ma
 <html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Tracker</title>
 <style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
 <body>
 <div id="root">${html}</div>
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
-<script nonce="${nonce}">window.__PROPS__=${JSON.stringify(props)}</script>
+<div id="snackbarPortal"></div>
+<script nonce="${nonce}">window.__PROPS__=${toSource(state)}</script>
 ${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;
 }
@@ -45,7 +65,7 @@ const getAssetByName = (asset: Array<string> | string): Array<string> => {
 };
 
 const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Request, res: Response): void => {
-  const { nonce, url } = res.locals;
+  const { nonce, props } = res.locals;
   const appStats =
     'clientStats' in stats
       ? stats.clientStats
@@ -63,7 +83,7 @@ const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Req
   res.send(
     getPageHTML(
       nonce,
-      { url },
+      props,
       [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)].filter(Boolean)
     )
   );

@@ -12,23 +12,24 @@ export function isDirty(cwd: string = process.cwd()): Promise<boolean> {
 }
 
 export function getDefaultBranch(cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['symbolic-ref', 'refs/remotes/origin/HEAD'], { cwd }).then(
+  return spawn('git', ['remote', 'show', 'origin'], { cwd }).then(
     (buffer: Buffer): string => {
-      return buffer.toString().replace(/^refs\/remotes\/origin/, '');
+      const matches = buffer.toString().match(/HEAD branch: (\S+)/);
+      return matches[1];
     }
   );
 }
 
-export function getParentRevision(master: string, cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['merge-base', 'HEAD', `origin/${master}`], { cwd }).then(
+export function getParentRevision(branch: string, cwd: string = process.cwd()): Promise<string> {
+  return spawn('git', ['merge-base', 'HEAD', `origin/${branch}`], { cwd }).then(
     (buffer: Buffer): string => {
-      return buffer.toString();
+      return buffer.toString().trim();
     }
   );
 }
 
 export function getCurrentRevision(cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['rev-parse', 'HEAD'], { cwd }).then((buffer: Buffer): string => buffer.toString());
+  return spawn('git', ['rev-parse', 'HEAD'], { cwd }).then((buffer: Buffer): string => buffer.toString().trim());
 }
 
 interface RevDetails {

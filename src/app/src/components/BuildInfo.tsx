@@ -2,16 +2,17 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
-import Build from '@build-tracker/build';
 import Button from './Button';
 import CloseIcon from '../icons/Close';
 import React from 'react';
+import { setFocusedRevision } from '../store/actions';
+import { State } from '../store/types';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Table, Tbody, Td, Th, Tr } from './Table';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 interface Props {
-  build: Build;
-  onClose?: (revision: string) => void;
+  focusedRevision: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -20,12 +21,22 @@ const titleCase = (value: string): string => {
 };
 
 const BuildInfo = (props: Props): React.ReactElement => {
-  const { build, onClose, style } = props;
+  const { focusedRevision, style } = props;
+
+  const mapState = React.useCallback(
+    (state: State) => ({
+      build: state.comparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)
+    }),
+    [focusedRevision]
+  );
+  const { build } = useMappedState(mapState);
   const revision = build.getMetaValue('revision');
 
+  const dispatch = useDispatch();
+
   const handleClose = React.useCallback(() => {
-    onClose(revision);
-  }, [onClose, revision]);
+    dispatch(setFocusedRevision(undefined));
+  }, [dispatch]);
 
   return (
     <View style={[styles.root, style]}>

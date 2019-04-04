@@ -1,17 +1,21 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import ColorScale from '../../../modules/ColorScale';
-import ColorScaleComponent from '../ColorScale';
 import { ColorScalePicker } from '../';
+import mockStore from '../../../store/mock';
 import React from 'react';
-import { fireEvent, render } from 'react-native-testing-library';
+import { render } from 'react-native-testing-library';
+import { StoreContext } from 'redux-react-hook';
 
 describe('ColorScalePicker', () => {
-  test('passes onSelect through', () => {
-    const handleSelect = jest.fn();
-    const { queryAllByType } = render(<ColorScalePicker activeColorScale={ColorScale.Magma} onSelect={handleSelect} />);
-    fireEvent(queryAllByType(ColorScaleComponent)[0], 'select', ColorScale.Rainbow);
-    expect(handleSelect).toHaveBeenCalledWith(ColorScale.Rainbow);
+  test('sets the active scale to selected', () => {
+    const { queryAllByProps } = render(
+      <StoreContext.Provider value={mockStore({ colorScale: 'Magma' })}>
+        <ColorScalePicker />
+      </StoreContext.Provider>
+    );
+    const selected = queryAllByProps({ isSelected: true });
+    expect(selected).toHaveLength(1);
+    expect(selected[0].props.name).toBe('Magma');
   });
 });

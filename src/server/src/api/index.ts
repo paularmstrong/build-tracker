@@ -16,7 +16,7 @@ const middleware = (
   handlers?: Handlers
 ): express.Router => {
   const { onBuildInsert = defaultBuildInsert } = handlers || {};
-  router.post('/api/builds', insertBuild(queries.build.byRevision, appConfig, onBuildInsert));
+  router.post('/api/builds', insertBuild(queries.build, appConfig, onBuildInsert));
   router.get('/api/builds/:limit?', queryByRecent(queries.builds));
   router.get('/api/builds/range/:startRevision..:endRevision', queryByRevisionRange(queries.builds));
   router.get('/api/builds/time/:startTimestamp..:endTimestamp', queryByTimeRange(queries.builds));

@@ -6,25 +6,29 @@ import * as Git from '../../modules/git';
 import * as path from 'path';
 import yargs from 'yargs';
 
+const config = path.join(
+  path.dirname(require.resolve('@build-tracker/fixtures')),
+  'cli-configs/rc/.build-trackerrc.js'
+);
+
 describe('create-build', () => {
   describe('builder', () => {
     test('defaults config', () => {
       const args = Command.builder(yargs([]));
       expect(args.argv).toEqual({
         $0: expect.any(String),
-        _: []
+        _: [],
+        o: true,
+        out: true,
+        'skip-dirty-check': false,
+        skipDirtyCheck: false
       });
     });
   });
 
   describe('handler', () => {
-    test('throws if the working tree is dirty', () => {
-      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
-      expect(Command.handler({})).rejects.toThrow();
-    });
-
-    test('returns a JSON representation of a build', () => {
-      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(false));
+    test('writes the artifact stats to stdout', () => {
+      const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
       jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
       jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
       jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
@@ -32,13 +36,43 @@ describe('create-build', () => {
         .spyOn(Git, 'getRevisionDetails')
         .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
 
-      return Command.handler({
-        config: path.join(
-          path.dirname(require.resolve('@build-tracker/fixtures')),
-          'cli-configs/rc/.build-trackerrc.js'
-        )
-      }).then(res => {
-        expect(res).toEqual({
+      return Command.handler({ config, out: true, 'skip-dirty-check': true }).then(() => {
+        expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"1234567\\"'));
+      });
+    });
+
+    test('allows skipping the git worktree check', () => {
+      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
+      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      jest
+        .spyOn(Git, 'getRevisionDetails')
+        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+
+      return Command.handler({ config, out: false, 'skip-dirty-check': true }).then(res => {
+        expect(res).toEqual(expect.any(Object));
+      });
+    });
+
+    test('throws if the working tree is dirty', () => {
+      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
+      return Command.handler({ config, out: false, 'skip-dirty-check': false }).catch(err => {
+        expect(err).toBeInstanceOf(Error);
+        expect(err.message).toEqual('Current work tree is dirty. Please commit all changes before proceeding');
+      });
+    });
+
+    test('returns a JSON representation of a build', () => {
+      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      jest
+        .spyOn(Git, 'getRevisionDetails')
+        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+
+      return Command.handler({ config, out: false, 'skip-dirty-check': true }).then(res => {
+        expect(res).toMatchObject({
           meta: {
             parentRevision: '1234567',
             revision: 'abcdefg',

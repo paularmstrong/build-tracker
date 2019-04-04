@@ -18,26 +18,31 @@ interface Props {
   hoveredArtifacts: Array<string>;
   onDisableArtifacts: (artifactNames: Array<string>) => void;
   onEnableArtifacts: (artifactNames: Array<string>) => void;
+  onFocusArtifacts: (artifactName: Array<string>) => void;
   onFocusRevision: (revision: string) => void;
   onHoverArtifacts: (artifactNames: Array<string>) => void;
   onRemoveRevision: (revision: string) => void;
   sizeKey: string;
 }
 
+const emptyArray = [];
+
 const ComparisonTable = (props: Props): React.ReactElement => {
   const {
     activeArtifacts,
+    colorScale,
     comparator,
     disabledArtifactsVisible,
     hoveredArtifacts,
     onDisableArtifacts,
     onEnableArtifacts,
+    onFocusArtifacts,
     onFocusRevision,
     onHoverArtifacts,
     onRemoveRevision,
     sizeKey
   } = props;
-  const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
+
   const matrix = comparator.toJSON();
 
   const handleMouseOut = React.useCallback(() => {
@@ -46,7 +51,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
 
   const handleHoverArtifact = React.useCallback(
     (artifactName: string): void => {
-      onHoverArtifacts([artifactName]);
+      onHoverArtifacts(artifactName ? [artifactName] : emptyArray);
     },
     [onHoverArtifacts]
   );
@@ -65,6 +70,13 @@ const ComparisonTable = (props: Props): React.ReactElement => {
     [onEnableArtifacts]
   );
 
+  const handleFocusArtifact = React.useCallback(
+    (artifactName: string): void => {
+      onFocusArtifacts([artifactName]);
+    },
+    [onFocusArtifacts]
+  );
+
   return (
     <Table onMouseLeave={handleMouseOut} style={styles.table}>
       <Thead>
@@ -80,6 +92,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
               key={groupName}
               onDisable={onDisableArtifacts}
               onEnable={onEnableArtifacts}
+              onFocus={onFocusArtifacts}
               onHover={onHoverArtifacts}
               row={row}
               sizeKey={sizeKey}
@@ -102,6 +115,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
               key={artifactName}
               onDisableArtifact={handleDisableArtifact}
               onEnableArtifact={handleEnableArtifact}
+              onFocusArtifact={handleFocusArtifact}
               onHoverArtifact={handleHoverArtifact}
               row={row}
               rowIndex={i}

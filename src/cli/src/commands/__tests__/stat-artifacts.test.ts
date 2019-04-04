@@ -20,7 +20,7 @@ describe('stat-artifacts command', () => {
 
   describe('handler', () => {
     describe('out', () => {
-      test('writes the artifact stats to stdou', () => {
+      test('writes the artifact stats to stdout', () => {
         const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
         return Command.handler({
           config: path.join(

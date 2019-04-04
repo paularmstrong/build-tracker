@@ -21,6 +21,7 @@ describe('GroupRow', () => {
           isActive
           onDisable={handleDisable}
           onEnable={handleEnable}
+          onFocus={jest.fn()}
           onHover={jest.fn()}
           row={row}
           sizeKey="stat"
@@ -40,7 +41,15 @@ describe('GroupRow', () => {
         { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
       ];
       const { getByType } = render(
-        <GroupRow isActive onDisable={jest.fn()} onEnable={jest.fn()} onHover={jest.fn()} row={row} sizeKey="stat" />
+        <GroupRow
+          isActive
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onFocus={jest.fn()}
+          onHover={jest.fn()}
+          row={row}
+          sizeKey="stat"
+        />
       );
       expect(getByType(TotalCell).props).toMatchObject({
         cell: row[1],
@@ -62,7 +71,15 @@ describe('GroupRow', () => {
         }
       ];
       const { getByType } = render(
-        <GroupRow isActive onDisable={jest.fn()} onEnable={jest.fn()} onHover={jest.fn()} row={row} sizeKey="stat" />
+        <GroupRow
+          isActive
+          onDisable={jest.fn()}
+          onEnable={jest.fn()}
+          onFocus={jest.fn()}
+          onHover={jest.fn()}
+          row={row}
+          sizeKey="stat"
+        />
       );
       expect(getByType(DeltaCell).props).toMatchObject({
         cell: row[1],
@@ -80,6 +97,7 @@ describe('GroupRow', () => {
           isActive
           onDisable={jest.fn()}
           onEnable={jest.fn()}
+          onFocus={jest.fn()}
           onHover={handleHoverArtifacts}
           row={row}
           sizeKey="stat"
@@ -97,6 +115,7 @@ describe('GroupRow', () => {
           isActive={false}
           onDisable={jest.fn()}
           onEnable={jest.fn()}
+          onFocus={jest.fn()}
           onHover={handleHoverArtifacts}
           row={row}
           sizeKey="stat"

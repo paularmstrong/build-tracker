@@ -38,10 +38,12 @@ interface RevDetails {
   subject: string;
 }
 
+const SPLIT_POINT = `${0x1f};${0x1f}`;
+
 export function getRevisionDetails(sha: string, cwd: string = process.cwd()): Promise<RevDetails> {
-  return spawn('git', ['show', '-s', `--format=%ct${0x1f}%aN${0x1f}%s`, sha], { cwd }).then(
+  return spawn('git', ['show', '-s', `--format=%ct${SPLIT_POINT}%aN${SPLIT_POINT}%s`, sha], { cwd }).then(
     (buffer: Buffer): RevDetails => {
-      const [timestamp, name, subject] = buffer.toString().split(`${0x1f}`);
+      const [timestamp, name, subject] = buffer.toString().split(`${SPLIT_POINT}`);
       return {
         timestamp: parseInt(timestamp, 10),
         name,

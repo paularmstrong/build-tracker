@@ -120,7 +120,7 @@ describe('git', () => {
 
   describe('getRevisionDetails', () => {
     test('returns an object of details', () => {
-      const del = 0x1f;
+      const del = `${0x1f};${0x1f}`;
       jest
         .spyOn(Spawn, 'default')
         .mockImplementation(() => Promise.resolve(Buffer.from(`1551808003${del}jimmy${del}tacos, tacos, tacos`)));

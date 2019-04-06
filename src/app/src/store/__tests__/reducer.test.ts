@@ -16,6 +16,7 @@ const initialState: State = Object.freeze({
   colorScale: Object.keys(ColorScale)[0],
   comparator: new Comparator({ builds: [] }),
   comparedRevisions: [],
+  dateRange: undefined,
   disabledArtifactsVisible: true,
   hoveredArtifacts: [],
   snacks: [],
@@ -167,6 +168,23 @@ describe('reducer', () => {
       const mockState = { ...initialState, hoveredArtifacts: ['tacos', 'burritos'] };
       const state = reducer(mockState, Actions.setHoveredArtifacts(['burritos', 'tacos']));
       expect(state).toBe(mockState);
+    });
+  });
+
+  describe('date range', () => {
+    test('sets the date range', () => {
+      const start = new Date(2018);
+      const end = new Date(2019);
+      const state = reducer(initialState, Actions.setDateRange(start, end));
+      expect(state.dateRange).toEqual({ start, end });
+    });
+
+    test('clears the comparedRevisions', () => {
+      const state = reducer(
+        { ...initialState, comparedRevisions: ['123', '456', '789'] },
+        Actions.setDateRange(new Date(2017), new Date(2019))
+      );
+      expect(state.comparedRevisions).toHaveLength(0);
     });
   });
 

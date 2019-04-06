@@ -19,23 +19,35 @@ const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ 
 
 interface MappedState {
   buildsCount: number;
+  dateRange: { start: Date; end: Date };
   showComparisonTable: boolean;
   url: string;
 }
 
 const mapState = (state: State): MappedState => ({
   buildsCount: state.builds.length,
+  dateRange: state.dateRange,
   showComparisonTable: !!state.comparedRevisions.length,
   url: state.url
 });
 
+const dateToSeconds = (date: Date): number => Math.round(date.valueOf() / 1000);
+
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
 
-  const { buildsCount, showComparisonTable, url } = useMappedState(mapState);
+  const { buildsCount, dateRange, showComparisonTable, url } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
+    if (dateRange) {
+      fetch(`${url}/api/builds/time/${dateToSeconds(dateRange.start)}...${dateToSeconds(dateRange.end)}`)
+        .then(response => response.json())
+        .then(builds => {
+          dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
+        });
+      return;
+    }
     if (buildsCount === 0) {
       fetch(`${url}/api/builds`)
         .then(response => response.json())
@@ -43,7 +55,7 @@ const Main = (): React.ReactElement => {
           dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
         });
     }
-  }, [buildsCount, dispatch, url]);
+  }, [buildsCount, dateRange, dispatch, url]);
 
   return (
     <View style={styles.layout}>

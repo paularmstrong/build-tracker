@@ -6,6 +6,11 @@ import Build from '@build-tracker/build';
 import ColorScale from '../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 
+interface DateRange {
+  start: Date;
+  end: Date;
+}
+
 export interface State {
   activeArtifacts: { [key: string]: boolean };
   activeComparator: Comparator;
@@ -14,6 +19,7 @@ export interface State {
   colorScale: keyof typeof ColorScale;
   comparator: Comparator;
   comparedRevisions: Array<string>;
+  dateRange?: DateRange;
   disabledArtifactsVisible: boolean;
   focusedRevision?: string;
   hoveredArtifacts: Array<string>;
@@ -39,6 +45,7 @@ export type SetSizeKey = Action<'SET_SIZE_KEY', string>;
 export type AddSnack = Action<'ADD_SNACK', string>;
 export type RemoveSnack = Action<'REMOVE_SNACK', string>;
 export type SetHoveredArtifacts = Action<'HOVER_ARTIFACTS', Array<string>>;
+export type SetDateRange = Action<'SET_DATE_RANGE', DateRange>;
 
 export type Actions =
   | SetArtifactsActiveAction
@@ -52,4 +59,5 @@ export type Actions =
   | SetSizeKey
   | AddSnack
   | RemoveSnack
-  | SetHoveredArtifacts;
+  | SetHoveredArtifacts
+  | SetDateRange;

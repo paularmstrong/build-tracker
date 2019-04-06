@@ -8,34 +8,40 @@ import DateTextField from '../components/DateTextField';
 import Divider from '../components/Divider';
 import Drawer from '../components/Drawer';
 import DrawerLink from '../components/DrawerLink';
+import endOfDay from 'date-fns/end_of_day';
 import HeartIcon from '../icons/Heart';
 import OpenInExternalIcon from '../icons/OpenInExternal';
 import React from 'react';
-import { setDisabledArtifactsVisible } from '../store/actions';
 import SizeKeyPicker from '../components/SizeKeyPicker';
+import startOfDay from 'date-fns/start_of_day';
 import { State } from '../store/types';
 import Subtitle from '../components/Subtitle';
+import { setDateRange, setDisabledArtifactsVisible } from '../store/actions';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 interface MappedState {
   comparator: State['comparator'];
   disabledArtifactsVisible: State['disabledArtifactsVisible'];
+  storeEnd: Date;
+  storeStart: Date;
 }
 
 const today = new Date();
 
 const mapState = (state: State): MappedState => ({
   comparator: state.comparator,
-  disabledArtifactsVisible: state.disabledArtifactsVisible
+  disabledArtifactsVisible: state.disabledArtifactsVisible,
+  storeEnd: state.dateRange ? state.dateRange.end : null,
+  storeStart: state.dateRange ? state.dateRange.start : null
 });
 
 const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElement => {
-  const { comparator, disabledArtifactsVisible } = useMappedState(mapState);
+  const { comparator, disabledArtifactsVisible, storeEnd, storeStart } = useMappedState(mapState);
   const dispatch = useDispatch();
 
-  const [startDate, setStartDate] = React.useState<Date>(null);
-  const [endDate, setEndDate] = React.useState<Date>(null);
+  const [startDate, setStartDate] = React.useState<Date>(storeStart);
+  const [endDate, setEndDate] = React.useState<Date>(storeEnd);
 
   const handleToggleDisabled = React.useCallback(
     (showDisabled: boolean): void => {
@@ -43,6 +49,10 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
     },
     [dispatch]
   );
+
+  const handleSetDateRange = React.useCallback((): void => {
+    dispatch(setDateRange(startOfDay(startDate), endOfDay(endDate)));
+  }, [dispatch, startDate, endDate]);
 
   return (
     <Drawer hidden ref={ref}>
@@ -56,7 +66,7 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
       <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.date} />
       <DateTextField minDate={startDate} maxDate={today} label="End date" onSet={setEndDate} style={styles.date} />
       <View style={styles.date}>
-        <Button title="Get range" type="unelevated" />
+        <Button disabled={!startDate || !endDate} onPress={handleSetDateRange} title="Get range" type="unelevated" />
       </View>
 
       <Divider />

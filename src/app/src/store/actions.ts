@@ -12,6 +12,7 @@ import {
   SetArtifactsActiveAction,
   SetBuildsAction,
   SetColorScaleAction,
+  SetDateRange,
   SetDisabledArtifactsVisible,
   SetFocusedRevision,
   SetHoveredArtifacts,
@@ -72,3 +73,8 @@ export const setHoveredArtifacts = (artifactNames: Array<string>): SetHoveredArt
 });
 
 export const setSizeKey = (key: string): SetSizeKey => ({ type: 'SET_SIZE_KEY', payload: key });
+
+export const setDateRange = (start: Date, end: Date): SetDateRange => ({
+  type: 'SET_DATE_RANGE',
+  payload: { start, end }
+});

@@ -88,6 +88,9 @@ export default function reducer(state: State, action: Actions): State {
       }
       return { ...state, hoveredArtifacts: action.payload };
 
+    case 'SET_DATE_RANGE':
+      return { ...state, dateRange: action.payload };
+
     default:
       return state;
   }

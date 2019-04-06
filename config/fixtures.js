@@ -45,13 +45,13 @@ module.exports = {
         return Promise.resolve(
           Array.from(builds.values())
             .filter(build => build.meta.timestamp >= startTimestamp && build.meta.timestamp <= endTimestamp)
-            .sort((a, b) => b.meta.timestamp - a.meta.timestamp)
+            .sort((a, b) => a.meta.timestamp - b.meta.timestamp)
         );
       },
       recent: async (limit = 20) => {
         return Promise.resolve(
           Array.from(builds.values())
-            .sort((a, b) => b.meta.timestamp - a.meta.timestamp)
+            .sort((a, b) => a.meta.timestamp - b.meta.timestamp)
             .slice(-limit)
         );
       }

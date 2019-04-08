@@ -8,6 +8,17 @@ import { TextInput } from 'react-native';
 import { fireEvent, flushMicrotasksQueue, render } from 'react-native-testing-library';
 
 describe('DateTextField', () => {
+  describe('onBlur', () => {
+    test('hides the date picker', async () => {
+      const { getByType, queryAllByType } = render(<DateTextField label="foobar" onSet={jest.fn()} />);
+      fireEvent(getByType(TextInput), 'focus');
+      await flushMicrotasksQueue();
+      expect(queryAllByType(DatePicker)).toHaveLength(1);
+      fireEvent(getByType(TextInput), 'blur');
+      expect(queryAllByType(DatePicker)).toHaveLength(0);
+    });
+  });
+
   describe('onChangeText', () => {
     test('calls onSet for a valid date', async () => {
       const handleSet = jest.fn();

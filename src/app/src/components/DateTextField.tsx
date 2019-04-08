@@ -56,9 +56,19 @@ const DateTextField = (props: Props): React.ReactElement => {
     [onSet]
   );
 
+  const handleBlur = React.useCallback((): void => {
+    setDatePickerVisible(false);
+  }, []);
+
   return (
     <View ref={startDateRef} style={style}>
-      <TextField label={label} onChangeText={handleChangeText} onFocus={toggleDatePicker} value={stringValue} />
+      <TextField
+        label={label}
+        onBlur={handleBlur}
+        onChangeText={handleChangeText}
+        onFocus={toggleDatePicker}
+        value={stringValue}
+      />
       {datePickerVisible ? (
         <React.Suspense fallback={null}>
           <DatePicker

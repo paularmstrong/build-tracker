@@ -31,7 +31,7 @@ export const percentDelta = (key: string, baseSizes?: ArtifactSizes, prevSizes?:
   const base = prevSizes[key];
   const changed = baseSizes[key];
   if (base === 0) {
-    return 1;
+    return changed === 0 ? 0 : 1;
   } else if (changed > base) {
     const delta = changed - base;
     return delta / base;

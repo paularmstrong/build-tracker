@@ -73,10 +73,11 @@ describe('BuildComparator', () => {
     });
 
     test('throws an error if some builds have size keys that others do not', () => {
-      const comparator = new BuildComparator({
-        builds: [new Build(build1.meta, [{ name: 'tacos', hash: 'abc', sizes: { tacos: 123 } }]), build2]
-      });
-      expect(() => comparator.sizeKeys).toThrow();
+      expect(() => {
+        new BuildComparator({
+          builds: [new Build(build1.meta, [{ name: 'tacos', hash: 'abc', sizes: { tacos: 123 } }]), build2]
+        });
+      }).toThrowErrorMatchingInlineSnapshot(`"builds provided do not have same size keys for artifacts"`);
     });
   });
 
@@ -349,7 +350,7 @@ describe('BuildComparator', () => {
 "|         |  12 |  89 |    d1 |
 | :------ | --: | --: | ----: |
 | All     | 579 | 592 |  0.21 |
-| churros |     | 469 |  1.00 |
+| churros |   0 | 469 |  1.00 |
 | tacos   | 123 | 123 | -0.04 |"
 `);
     });
@@ -419,7 +420,7 @@ tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
         .toMatchInlineSnapshot(`
 ",12,89,d1
 All,579,592,0.21
-churros,,469,1.00
+churros,0,469,1.00
 tacos,123,123,-0.04"
 `);
     });

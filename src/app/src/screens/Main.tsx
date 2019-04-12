@@ -12,7 +12,7 @@ import React from 'react';
 import { setBuilds } from '../store/actions';
 import Snacks from '../views/Snacks';
 import { State } from '../store/types';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
@@ -33,18 +33,33 @@ const mapState = (state: State): MappedState => ({
 
 const dateToSeconds = (date: Date): number => Math.round(date.valueOf() / 1000);
 
+enum FetchState {
+  NONE,
+  FETCHING,
+  FETCHED,
+  ERROR
+}
+
 const Main = (): React.ReactElement => {
   const drawerRef: React.RefObject<Drawer> = React.useRef(null);
 
   const { buildsCount, dateRange, showComparisonTable, url } = useMappedState(mapState);
+  const [fetchState, setFetchState] = React.useState<FetchState>(FetchState.NONE);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
+    setFetchState(FetchState.FETCHING);
     if (dateRange) {
       fetch(`${url}/api/builds/time/${dateToSeconds(dateRange.start)}...${dateToSeconds(dateRange.end)}`)
         .then(response => response.json())
         .then(builds => {
           dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
+        })
+        .then(() => {
+          setFetchState(FetchState.FETCHED);
+        })
+        .catch(() => {
+          setFetchState(FetchState.ERROR);
         });
       return;
     }
@@ -53,6 +68,12 @@ const Main = (): React.ReactElement => {
         .then(response => response.json())
         .then(builds => {
           dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
+        })
+        .then(() => {
+          setFetchState(FetchState.FETCHED);
+        })
+        .catch(() => {
+          setFetchState(FetchState.ERROR);
         });
     }
   }, [buildsCount, dateRange, dispatch, url]);
@@ -67,7 +88,13 @@ const Main = (): React.ReactElement => {
       >
         <View style={[styles.column, styles.chart]}>
           <AppBarView drawerRef={drawerRef} />
-          <Graph />
+          {fetchState == FetchState.FETCHED ? (
+            <Graph />
+          ) : fetchState == FetchState.FETCHING ? (
+            <View style={styles.loading}>
+              <ActivityIndicator accessibilityLabel="Loading builds…" color={Theme.Color.Secondary30} size={'large'} />
+            </View>
+          ) : null}
         </View>
         <Snacks />
         {showComparisonTable ? (
@@ -97,6 +124,11 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     height: '100vh',
     alignItems: 'flex-start'
+  },
+  loading: {
+    flexGrow: 1,
+    alignSelf: 'center',
+    justifyContent: 'center'
   },
   chart: {
     flexDirection: 'column'

@@ -7,7 +7,7 @@ import Build from '@build-tracker/build';
 import Drawer from '../components/Drawer';
 import DrawerView from '../views/Drawer';
 import { fetch } from 'cross-fetch';
-import Graph from '../components/Graph';
+import Graph from '../views/Graph';
 import React from 'react';
 import { setBuilds } from '../store/actions';
 import Snacks from '../views/Snacks';

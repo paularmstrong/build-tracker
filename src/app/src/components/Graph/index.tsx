@@ -24,9 +24,12 @@ export class SVG extends React.Component<{ height: number; width: number }> {
   }
 }
 
+interface Props {
+  comparator: State['comparator'];
+}
+
 interface MappedState {
   activeArtifacts: State['activeArtifacts'];
-  comparator: State['comparator'];
   colorScale: ScaleSequential<string>;
   hoveredArtifacts: State['hoveredArtifacts'];
   selectedRevisions: State['comparedRevisions'];
@@ -35,17 +38,15 @@ interface MappedState {
 
 const mapState = (state: State): MappedState => ({
   activeArtifacts: state.activeArtifacts,
-  comparator: state.comparator,
   colorScale: ColorScales[state.colorScale].domain([0, state.comparator.artifactNames.length]),
   hoveredArtifacts: state.hoveredArtifacts,
   selectedRevisions: state.comparedRevisions,
   sizeKey: state.sizeKey
 });
 
-const Graph = (): React.ReactElement => {
-  const { activeArtifacts, comparator, colorScale, hoveredArtifacts, selectedRevisions, sizeKey } = useMappedState(
-    mapState
-  );
+const Graph = (props: Props): React.ReactElement => {
+  const { comparator } = props;
+  const { activeArtifacts, colorScale, hoveredArtifacts, selectedRevisions, sizeKey } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });

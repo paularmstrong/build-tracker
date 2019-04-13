@@ -33,7 +33,7 @@ describe('Graph', () => {
           sizeKey: 'stat'
         })}
       >
-        <Graph />
+        <Graph comparator={comparator} />
       </StoreContext.Provider>
     );
     fireEvent(getByType(View), 'layout', { nativeEvent: { layout: { width: 400, height: 300 } } });

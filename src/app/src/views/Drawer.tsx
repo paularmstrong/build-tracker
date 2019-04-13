@@ -71,11 +71,13 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
 
       <Divider />
 
-      <Subtitle title="Compare artifacts by" />
-
-      <SizeKeyPicker keys={comparator.sizeKeys} />
-
-      <Divider />
+      {comparator.sizeKeys.length > 1 ? (
+        <>
+          <Subtitle title="Compare artifacts by" />
+          <SizeKeyPicker keys={comparator.sizeKeys} />
+          <Divider />
+        </>
+      ) : null}
 
       <View style={styles.switchRoot}>
         {

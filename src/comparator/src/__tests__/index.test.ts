@@ -64,6 +64,11 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.artifactNames).toEqual(['churros', 'burritos', 'tacos']);
     });
+
+    test('returns an empty array if there are no builds', () => {
+      const comparator = new BuildComparator({ builds: [] });
+      expect(comparator.artifactNames).toEqual([]);
+    });
   });
 
   describe('sizeKeys', () => {
@@ -79,6 +84,18 @@ describe('BuildComparator', () => {
         });
       }).toThrowErrorMatchingInlineSnapshot(`"builds provided do not have same size keys for artifacts"`);
     });
+
+    test('returns an empty array if there are no builds', () => {
+      const comparator = new BuildComparator({ builds: [] });
+      expect(comparator.sizeKeys).toEqual([]);
+    });
+
+    test('returns an empty array if there are no artifacts', () => {
+      const comparator = new BuildComparator({
+        builds: [new Build(build1.meta, [])]
+      });
+      expect(comparator.sizeKeys).toEqual([]);
+    });
   });
 
   describe('buildDeltas', () => {
@@ -93,6 +110,11 @@ describe('BuildComparator', () => {
       expect(comparator.buildDeltas[0]).toHaveLength(0);
       expect(comparator.buildDeltas[1]).toHaveLength(1);
       expect(comparator.buildDeltas[1][0]).toBeInstanceOf(BuildDelta);
+    });
+
+    test('returns an empty array if there are no builds', () => {
+      const comparator = new BuildComparator({ builds: [] });
+      expect(comparator.buildDeltas).toEqual([]);
     });
   });
 

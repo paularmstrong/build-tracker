@@ -171,7 +171,7 @@ export default class BuildComparator {
   }
 
   public get sizeKeys(): Array<string> {
-    if (this.builds.length === 0) {
+    if (this.builds.length === 0 || this.artifactNames.length === 0) {
       return [];
     }
 

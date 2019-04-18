@@ -45,10 +45,13 @@ const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactE
     dispatch(clearComparedRevisions());
   }, [dispatch]);
 
-  const artifactFilter = (row: ArtifactRow): boolean => {
-    const artifactCell = row[0];
-    return activeArtifacts[artifactCell.text];
-  };
+  const artifactFilter = React.useCallback(
+    (row: ArtifactRow): boolean => {
+      const artifactCell = row[0];
+      return activeArtifacts[artifactCell.text];
+    },
+    [activeArtifacts]
+  );
 
   const handleCopyAsMarkdown = React.useCallback((): void => {
     Clipboard.setString(

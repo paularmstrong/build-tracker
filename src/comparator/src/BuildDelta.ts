@@ -65,6 +65,14 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     if (!this._artifactDeltas) {
       this.artifactDeltas;
     }
+    if (!this._artifactDeltas.has(name)) {
+      // @ts-ignore
+      const noSize: A = this.artifactSizes.reduce((memo, key) => {
+        memo[key] = 0;
+        return memo;
+      }, {});
+      return new ArtifactDelta<A>(name, [], noSize, noSize, false);
+    }
     return this._artifactDeltas.get(name);
   }
 

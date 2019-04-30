@@ -1,25 +1,35 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as Actions from '../../../store/actions';
+import mockStore from '../../../store/mock';
 import React from 'react';
 import SizeKeyPicker from '../';
+import { StoreContext } from 'redux-react-hook';
 import { fireEvent, render } from 'react-native-testing-library';
 
 describe('SizeKeyPicker', () => {
   test('renders a button per key', () => {
-    const { queryAllByProps } = render(<SizeKeyPicker keys={['foo', 'bar']} onSelect={jest.fn()} selected="foo" />);
+    const { queryAllByProps } = render(
+      <StoreContext.Provider value={mockStore({ sizeKey: 'foo' })}>
+        <SizeKeyPicker keys={['foo', 'bar']} />
+      </StoreContext.Provider>
+    );
     expect(queryAllByProps({ isSelected: true, value: 'foo' })).toHaveLength(1);
     expect(queryAllByProps({ isSelected: false, value: 'bar' })).toHaveLength(1);
   });
 
   test('passes the onSelect handler', () => {
-    const handleSelect = jest.fn();
+    const handleSelect = jest.spyOn(Actions, 'setSizeKey');
     const { queryAllByProps } = render(
-      <SizeKeyPicker keys={['foo', 'bar', 'tacos']} onSelect={handleSelect} selected="foo" />
+      <StoreContext.Provider value={mockStore({ sizeKey: 'foo' })}>
+        <SizeKeyPicker keys={['foo', 'bar', 'tacos']} />
+      </StoreContext.Provider>
     );
-    const buttons = queryAllByProps({ onSelect: handleSelect });
-    expect(buttons).toHaveLength(4); // the root component counts as 1
-    fireEvent(buttons[0], 'select', 'foo');
+    expect(queryAllByProps({ value: 'foo' })).toHaveLength(1);
+    expect(queryAllByProps({ value: 'bar' })).toHaveLength(1);
+    expect(queryAllByProps({ value: 'tacos' })).toHaveLength(1);
+    fireEvent(queryAllByProps({ value: 'bar' })[0], 'select', 'foo');
     expect(handleSelect).toHaveBeenCalledWith('foo');
   });
 });

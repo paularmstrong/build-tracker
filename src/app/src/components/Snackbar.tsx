@@ -2,9 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
-import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { StyleSheet, Text, View } from 'react-native';
 
 interface Props {
@@ -13,16 +11,12 @@ interface Props {
 
 const Snackbar = (props: Props): React.ReactElement => {
   const { text } = props;
-  const portalRoot = canUseDOM && document.getElementById('snackbarPortal');
-
-  const bar = (
+  return (
     // @ts-ignore
     <View accessibilityRole="alert" style={styles.root}>
       <Text style={styles.text}>{text}</Text>
     </View>
   );
-
-  return portalRoot ? ReactDOM.createPortal(bar, portalRoot) : bar;
 };
 
 const styles = StyleSheet.create({

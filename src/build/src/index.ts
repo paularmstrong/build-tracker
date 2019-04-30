@@ -71,7 +71,7 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
   }
 
   public get timestamp(): Date {
-    return new Date(this._meta.timestamp);
+    return new Date(parseInt(`${this._meta.timestamp}000`, 10));
   }
 
   public getMetaValue(key: keyof Omit<M, 'timestamp'>): string {

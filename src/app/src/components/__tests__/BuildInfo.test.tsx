@@ -1,18 +1,26 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as Actions from '../../store/actions';
 import Build from '@build-tracker/build';
 import BuildInfo from '../BuildInfo';
+import Comparator from '@build-tracker/comparator';
+import mockStore from '../../store/mock';
 import React from 'react';
+import { StoreContext } from 'redux-react-hook';
 import { fireEvent, render } from 'react-native-testing-library';
 
 const build = new Build({ revision: '1234565', parentRevision: 'abcdef', timestamp: 123 }, []);
 
 describe('BuildInfo', () => {
   test('can be closed', () => {
-    const handleClose = jest.fn();
-    const { getByProps } = render(<BuildInfo build={build} onClose={handleClose} />);
+    const focusRevisionSpy = jest.spyOn(Actions, 'setFocusedRevision');
+    const { getByProps } = render(
+      <StoreContext.Provider value={mockStore({ comparator: new Comparator({ builds: [build] }) })}>
+        <BuildInfo focusedRevision="1234565" />
+      </StoreContext.Provider>
+    );
     fireEvent.press(getByProps({ title: 'Close' }));
-    expect(handleClose).toHaveBeenCalledWith('1234565');
+    expect(focusRevisionSpy).toHaveBeenCalledWith(undefined);
   });
 });

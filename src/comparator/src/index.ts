@@ -130,6 +130,7 @@ export default class BuildComparator {
   private _artifactNames: Array<string>;
   private _sizeKeys: Array<string>;
   private _buildDeltas: Array<Array<BuildDelta>>;
+  private _emptySizes: Readonly<{ [key: string]: number }>;
 
   private _matrixHeader: ComparisonMatrix['header'];
   private _matrixGroups: ComparisonMatrix['groups'];
@@ -140,6 +141,12 @@ export default class BuildComparator {
     this._artifactFilters = artifactFilters || [];
     this._artifactBudgets = artifactBudgets || emptyObject;
     this._groups = [{ name: 'All', artifactNames: this.artifactNames }, ...groups].filter(Boolean);
+    this._emptySizes = Object.freeze(
+      this.sizeKeys.reduce((memo, key) => {
+        memo[key] = 0;
+        return memo;
+      }, {})
+    );
   }
 
   public get artifactNames(): Array<string> {
@@ -164,7 +171,7 @@ export default class BuildComparator {
   }
 
   public get sizeKeys(): Array<string> {
-    if (this.builds.length === 0) {
+    if (this.builds.length === 0 || this.artifactNames.length === 0) {
       return [];
     }
 
@@ -179,8 +186,8 @@ export default class BuildComparator {
         });
       });
 
-      if (allSizeKeys.size !== this._sizeKeys.length) {
-        throw new Error();
+      if (allSizeKeys.size !== this._sizeKeys.length || !this._sizeKeys.every(key => allSizeKeys.has(key))) {
+        throw new Error('builds provided do not have same size keys for artifacts');
       }
     }
     return this._sizeKeys;
@@ -249,7 +256,7 @@ export default class BuildComparator {
         const artifact = this.builds[i].getArtifact(artifactName);
         return [
           {
-            sizes: artifact ? artifact.sizes : emptyObject,
+            sizes: artifact ? artifact.sizes : this._emptySizes,
             name: artifactName,
             type: CellType.TOTAL
           },

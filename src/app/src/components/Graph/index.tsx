@@ -4,26 +4,19 @@
 import 'd3-transition';
 import Area from './Area';
 import Build from '@build-tracker/build';
-import Comparator from '@build-tracker/comparator';
+import ColorScales from '../../modules/ColorScale';
 import HoverOverlay from './HoverOverlay';
 import { Offset } from './Offset';
 import React from 'react';
+import { ScaleSequential } from 'd3-scale';
 import { stack } from 'd3-shape';
+import { State } from '../../store/types';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
+import { addComparedRevision, setHoveredArtifacts } from '../../store/actions';
 import { createElement, LayoutChangeEvent, StyleSheet, View } from 'react-native';
-import { scaleLinear, scalePoint, ScaleSequential } from 'd3-scale';
-
-interface Props {
-  activeArtifacts: { [key: string]: boolean };
-  colorScale: ScaleSequential<string>;
-  comparator: Comparator;
-  hoveredArtifacts: Array<string>;
-  onHoverArtifacts: (artifactNames: Array<string>) => void;
-  onSelectRevision: (revision: string) => void;
-  selectedRevisions: Array<string>;
-  sizeKey: string;
-}
+import { scaleLinear, scalePoint } from 'd3-scale';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 export class SVG extends React.Component<{ height: number; width: number }> {
   public render(): React.ReactElement {
@@ -31,23 +24,37 @@ export class SVG extends React.Component<{ height: number; width: number }> {
   }
 }
 
+interface Props {
+  comparator: State['comparator'];
+}
+
+interface MappedState {
+  activeArtifacts: State['activeArtifacts'];
+  colorScale: ScaleSequential<string>;
+  hoveredArtifacts: State['hoveredArtifacts'];
+  selectedRevisions: State['comparedRevisions'];
+  sizeKey: string;
+}
+
+const mapState = (state: State): MappedState => ({
+  activeArtifacts: state.activeArtifacts,
+  colorScale: ColorScales[state.colorScale].domain([0, state.comparator.artifactNames.length]),
+  hoveredArtifacts: state.hoveredArtifacts,
+  selectedRevisions: state.comparedRevisions,
+  sizeKey: state.sizeKey
+});
+
 const Graph = (props: Props): React.ReactElement => {
-  const {
-    activeArtifacts,
-    colorScale,
-    comparator,
-    hoveredArtifacts,
-    onHoverArtifacts,
-    onSelectRevision,
-    selectedRevisions,
-    sizeKey
-  } = props;
+  const { comparator } = props;
+  const { activeArtifacts, colorScale, hoveredArtifacts, selectedRevisions, sizeKey } = useMappedState(mapState);
+  const dispatch = useDispatch();
+
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });
   const svgRef = React.useRef(null);
 
-  const activeArtifactNames = React.useMemo(() => Object.keys(activeArtifacts).filter(name => activeArtifacts[name]), [
-    activeArtifacts
-  ]);
+  const activeArtifactNames = React.useMemo(() => {
+    return Object.keys(activeArtifacts).filter(name => activeArtifacts[name]);
+  }, [activeArtifacts]);
 
   const xScale = React.useMemo(() => {
     const domain = comparator.builds
@@ -88,6 +95,20 @@ const Graph = (props: Props): React.ReactElement => {
     setDimensions({ height, width });
   };
 
+  const handleHoverArtifacts = React.useCallback(
+    (artifacts: Array<string>): void => {
+      dispatch(setHoveredArtifacts(artifacts));
+    },
+    [dispatch]
+  );
+
+  const handleSelectRevision = React.useCallback(
+    (revision: string): void => {
+      dispatch(addComparedRevision(revision));
+    },
+    [dispatch]
+  );
+
   return (
     <View onLayout={handleLayout} style={styles.root}>
       <SVG height={height} ref={svgRef} width={width}>
@@ -98,8 +119,8 @@ const Graph = (props: Props): React.ReactElement => {
               <YAxis scale={yScale} />
               <Area
                 activeArtifactNames={activeArtifactNames}
+                artifactNames={comparator.artifactNames}
                 colorScale={colorScale}
-                comparator={comparator}
                 data={data}
                 hoveredArtifacts={hoveredArtifacts}
                 xScale={xScale}
@@ -108,8 +129,8 @@ const Graph = (props: Props): React.ReactElement => {
               <HoverOverlay
                 data={data}
                 height={height - Offset.TOP - Offset.BOTTOM}
-                onHoverArtifacts={onHoverArtifacts}
-                onSelectRevision={onSelectRevision}
+                onHoverArtifacts={handleHoverArtifacts}
+                onSelectRevision={handleSelectRevision}
                 selectedRevisions={selectedRevisions}
                 width={width - Offset.LEFT - Offset.RIGHT}
                 xScale={xScale}

@@ -82,7 +82,7 @@ describe('read', () => {
       return request(app)
         .get('/api/builds/time/1234567..2345678')
         .then(res => {
-          expect(queries.builds.byTimeRange).toHaveBeenCalledWith('1234567', '2345678');
+          expect(queries.builds.byTimeRange).toHaveBeenCalledWith(1234567, 2345678);
           expect(res.body).toEqual([build]);
         });
     });

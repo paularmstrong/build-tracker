@@ -13,78 +13,40 @@ interface Props {
   disabled?: boolean;
   icon?: React.ComponentType<{ style?: StyleProp<ViewStyle> }>;
   iconOnly?: boolean;
-  onPress?: () => void;
+  onPress?: (event: MouseEvent) => void;
   style?: StyleProp<ViewStyle>;
   testID?: string;
   title: string;
   type?: 'text' | 'raised' | 'unelevated' | 'outlined' | 'shape' | 'shapeRaised';
 }
 
-interface State {
-  isActive: boolean;
-}
+const Button = (props: Props): React.ReactElement => {
+  const [isActive, setIsActive] = React.useState(false);
+  const {
+    accessibilityLabel,
+    color = 'primary',
+    disabled = false,
+    icon: Icon,
+    iconOnly,
+    onPress,
+    style,
+    title,
+    type = 'text'
+  } = props;
+  const rippleColor =
+    ['outlined', 'text'].indexOf(type) !== -1
+      ? Theme.Color.Gray30
+      : color === 'primary'
+      ? Theme.Color.Primary20
+      : Theme.Color.Secondary20;
 
-class Button extends React.Component<Props, State> {
-  public static defaultProps = {
-    color: 'primary',
-    disabled: false,
-    type: 'text'
-  };
-
-  public state = { isActive: false };
-
-  public render(): React.ReactNode {
-    const { accessibilityLabel, color, disabled, icon: Icon, iconOnly, style, title, type } = this.props;
-    const rippleColor =
-      ['outlined', 'text'].indexOf(type) !== -1
-        ? Theme.Color.Gray30
-        : color === 'primary'
-        ? Theme.Color.Primary20
-        : Theme.Color.Secondary20;
-    return (
-      <Hoverable>
-        {isHovered => (
-          // @ts-ignore annoying web-specific props
-          <Ripple
-            accessibilityLabel={accessibilityLabel || title}
-            accessibilityRole="button"
-            disabled={disabled}
-            onPress={this._handlePress}
-            onPressIn={this._handlePressIn}
-            onPressOut={this._handlePressOut}
-            rippleColor={rippleColor}
-            style={[
-              rootStyles.root,
-              ...this._getRootStyles(isHovered),
-              iconOnly && type === 'text' && rootStyles.shape,
-              style
-            ]}
-          >
-            <View pointerEvents="none" style={[rootStyles.content, iconOnly && rootStyles.contentIconOnly]}>
-              <Text style={[textStyles.root, ...this._getTextStyles(isHovered)]}>
-                {Icon ? (
-                  <Icon
-                    style={[iconOnly ? iconStyles.iconOnly : iconStyles.withText, ...this._getIconStyles(isHovered)]}
-                  />
-                ) : null}
-                {iconOnly ? null : title}
-              </Text>
-            </View>
-          </Ripple>
-        )}
-      </Hoverable>
-    );
-  }
-
-  private _getRootStyles = (isHovered: boolean): Array<StyleProp<ViewStyle>> => this._getStyles(rootStyles, isHovered);
-  private _getTextStyles = (isHovered: boolean): Array<StyleProp<TextStyle>> => this._getStyles(textStyles, isHovered);
-  private _getIconStyles = (isHovered: boolean): Array<StyleProp<ViewStyle>> => this._getStyles(iconStyles, isHovered);
-  private _getStyles(
+  const _getRootStyles = (isHovered: boolean): Array<StyleProp<ViewStyle>> => _getStyles(rootStyles, isHovered);
+  const _getTextStyles = (isHovered: boolean): Array<StyleProp<TextStyle>> => _getStyles(textStyles, isHovered);
+  const _getIconStyles = (isHovered: boolean): Array<StyleProp<ViewStyle>> => _getStyles(iconStyles, isHovered);
+  const _getStyles = (
     styles: typeof rootStyles | typeof textStyles,
     isHovered: boolean
-  ): Array<StyleProp<ViewStyle | TextStyle>> {
-    const { color, disabled, type } = this.props;
-    const { isActive } = this.state;
+  ): Array<StyleProp<ViewStyle | TextStyle>> => {
     const isRaised = ['raised', 'shapeRaised'].indexOf(type) !== -1;
     const isBg = ['raised', 'unelevated', 'shape', 'shapeRaised'].indexOf(type) !== -1;
 
@@ -93,6 +55,7 @@ class Button extends React.Component<Props, State> {
       !disabled && isHovered && styles.rootHover,
       !disabled && isActive && styles.rootActive,
       styles[color],
+      disabled && styles[`${color}Disabled`],
       isRaised && styles.raised,
       isRaised && styles[`raised${color}`],
       isBg && styles.bg,
@@ -109,26 +72,58 @@ class Button extends React.Component<Props, State> {
       !disabled && isActive && isRaised && styles['raisedActive'],
       !disabled && isActive && isRaised && styles[`raised${color}Active`]
     ];
-  }
-
-  private _handlePress = () => {
-    const { disabled, onPress } = this.props;
-    if (disabled) {
-      return;
-    }
-    if (onPress) {
-      onPress();
-    }
   };
 
-  private _handlePressIn = () => {
-    this.setState({ isActive: true });
-  };
+  const _handlePress = React.useCallback(
+    (event): void => {
+      if (disabled) {
+        return;
+      }
+      onPress && onPress(event);
+    },
+    [disabled, onPress]
+  );
 
-  private _handlePressOut = () => {
-    this.setState({ isActive: false });
-  };
-}
+  const _handlePressIn = React.useCallback(() => {
+    setIsActive(true);
+  }, []);
+
+  const _handlePressOut = React.useCallback(() => {
+    setIsActive(false);
+  }, []);
+
+  return (
+    <Hoverable>
+      {isHovered => (
+        // @ts-ignore annoying web-specific props
+        <Ripple
+          accessibilityLabel={accessibilityLabel || title}
+          accessibilityRole="button"
+          disabled={disabled}
+          onPress={_handlePress}
+          onPressIn={_handlePressIn}
+          onPressOut={_handlePressOut}
+          rippleColor={rippleColor}
+          style={[
+            rootStyles.root,
+            ..._getRootStyles(isHovered),
+            iconOnly && type === 'text' && rootStyles.shape,
+            style
+          ]}
+        >
+          <View pointerEvents="none" style={[rootStyles.content, iconOnly && rootStyles.contentIconOnly]}>
+            <Text style={[textStyles.root, ..._getTextStyles(isHovered)]}>
+              {Icon ? (
+                <Icon style={[iconOnly ? iconStyles.iconOnly : iconStyles.withText, ..._getIconStyles(isHovered)]} />
+              ) : null}
+              {iconOnly ? null : title}
+            </Text>
+          </View>
+        </Ripple>
+      )}
+    </Hoverable>
+  );
+};
 
 const rootStyles = StyleSheet.create({
   root: {
@@ -233,8 +228,14 @@ const textStyles = StyleSheet.create({
   primary: {
     color: Theme.Color.Primary40
   },
+  primaryDisabled: {
+    color: Theme.Color.Gray30
+  },
   secondary: {
     color: Theme.Color.Secondary40
+  },
+  secondaryDisabled: {
+    color: Theme.Color.Gray30
   },
 
   bgprimary: {
@@ -260,8 +261,14 @@ const iconStyles = StyleSheet.create({
   primary: {
     color: Theme.Color.Primary40
   },
+  primaryDisabled: {
+    color: Theme.Color.Gray30
+  },
   secondary: {
     color: Theme.Color.Secondary40
+  },
+  secondaryDisabled: {
+    color: Theme.Color.Gray30
   },
 
   bgprimary: {

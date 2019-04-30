@@ -36,7 +36,7 @@ export const queryByRevisionRange = (queries: Queries['builds']): RequestHandler
 export const queryByTimeRange = (queries: Queries['builds']): RequestHandler => (req: Request, res: Response): void => {
   const { startTimestamp, endTimestamp } = req.params;
   queries
-    .byTimeRange(startTimestamp, endTimestamp)
+    .byTimeRange(parseInt(startTimestamp, 10), parseInt(endTimestamp, 10))
     .then(builds => {
       res.send(builds);
     })

@@ -31,7 +31,6 @@ describe('AppBar', () => {
 
     test('renders a button when provided a navigationIcon', () => {
       const { getByType } = render(<AppBar navigationIcon={MenuIcon} />);
-      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       const button = getByType(Button);
       expect(button.props).toEqual(expect.objectContaining({ color: 'primary', icon: MenuIcon, title: 'Menu' }));
     });
@@ -45,7 +44,6 @@ describe('AppBar', () => {
 
     test('renders a button for overflow items', () => {
       const { getByType } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
-      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       expect(getByType(Button).props).toMatchObject({
         icon: MoreIcon,
         iconOnly: true,
@@ -58,16 +56,14 @@ describe('AppBar', () => {
     test('shows a menu on button press', () => {
       const { getByType, queryAllByProps } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
-      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       fireEvent.press(getByType(Button));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(2);
     });
 
     test('hides the menu on dismiss', () => {
       const { getByType, queryAllByProps } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
-      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       fireEvent.press(getByType(Button));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(2);
       fireEvent(getByType(Menu), 'dismiss');
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
     });
@@ -76,9 +72,8 @@ describe('AppBar', () => {
       const { getByType, queryAllByProps, update } = render(
         <AppBar overflowItems={<MenuItem key={0} label="tacos" />} />
       );
-      // @ts-ignore ts-jest fails on this but not tsc ¯\_(ツ)_/¯
       fireEvent.press(getByType(Button));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(2);
       update(<AppBar overflowItems={null} />);
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
       update(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);

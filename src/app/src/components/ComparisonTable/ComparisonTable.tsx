@@ -30,6 +30,7 @@ const emptyArray = [];
 const ComparisonTable = (props: Props): React.ReactElement => {
   const {
     activeArtifacts,
+    colorScale,
     comparator,
     disabledArtifactsVisible,
     hoveredArtifacts,
@@ -41,7 +42,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
     onRemoveRevision,
     sizeKey
   } = props;
-  const colorScale = props.colorScale.domain([0, comparator.artifactNames.length]);
+
   const matrix = comparator.toJSON();
 
   const handleMouseOut = React.useCallback(() => {

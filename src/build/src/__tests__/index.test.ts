@@ -9,11 +9,11 @@ const burritoArtifact = { name: 'burritos', hash: '123', sizes: { stat: 3, gzip:
 describe('Build', () => {
   let baseMeta;
   beforeEach(() => {
-    jest.spyOn(Date, 'now').mockReturnValue(1550528708828);
+    jest.spyOn(Date, 'now').mockReturnValue(1550528708000);
     baseMeta = {
       revision: '123',
       parentRevision: { value: 'abc', url: 'https://build-tracker.local' },
-      timestamp: Date.now()
+      timestamp: 1550528708
     };
   });
 
@@ -28,7 +28,7 @@ describe('Build', () => {
     test('gets the timestamp as a Date', () => {
       const build = new Build(baseMeta, []);
       expect(build.timestamp).toBeInstanceOf(Date);
-      expect(build.timestamp).toEqual(new Date(Date.now()));
+      expect(build.timestamp).toEqual(new Date(1550528708000));
     });
   });
 

@@ -3,15 +3,32 @@
  */
 import { AppRegistry } from 'react-native-web';
 import Main from '../screens/Main';
+import makeStore from '../store';
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { Store } from 'redux';
+import { StoreContext } from 'redux-react-hook';
 import toSource from 'tosource';
+import { Actions, State } from '../store/types';
 import { Request, RequestHandler, Response } from 'express';
 
-AppRegistry.registerComponent('App', () => Main);
+interface AppProps {
+  store: Store<State, Actions>;
+}
 
-export function getPageHTML(nonce: string, props: React.ComponentProps<typeof Main>, scripts: Array<string>): string {
+const App = (props: AppProps): React.ReactElement => (
+  <StoreContext.Provider value={props.store}>
+    <Main />
+  </StoreContext.Provider>
+);
+
+AppRegistry.registerComponent('App', () => App);
+
+export function getPageHTML(nonce: string, state: Partial<State>, scripts: Array<string>): string {
+  const store = makeStore(state);
+
   // @ts-ignore
-  const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: props });
+  const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: { store } });
   const html = ReactDOMServer.renderToString(element);
   const css = ReactDOMServer.renderToStaticMarkup(getStyleElement({ nonce }));
 
@@ -27,7 +44,7 @@ ${css}
 <div id="menuPortal"></div>
 <div id="tooltipPortal"></div>
 <div id="snackbarPortal"></div>
-<script nonce="${nonce}">window.__PROPS__=${toSource(props)}</script>
+<script nonce="${nonce}">window.__PROPS__=${toSource(state)}</script>
 ${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;
 }

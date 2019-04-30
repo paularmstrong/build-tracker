@@ -1,4 +1,6 @@
 {
+  "name": "@build-tracker/docs",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "examples": "docusaurus-examples",

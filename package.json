@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",
+    "docs": "cd docs/website && yarn start",
     "prebuild": "yarnpkg clean",
     "build": "lerna run build --stream --parallel",
     "clean": "lerna run clean --stream --parallel",

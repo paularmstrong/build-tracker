@@ -2,21 +2,21 @@
 <rss version="2.0">
     <channel>
         <title>Build Tracker Blog</title>
-        <link>https://paularmstrong.github.io/build-tracker/blog</link>
+        <link>https://buildtracker.dev/blog</link>
         <description>The best place to stay up-to-date with the latest Build Tracker news and events.</description>
         <lastBuildDate>Fri, 22 Mar 2019 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
             <title>Build Tracker Blog</title>
-            <url>https://paularmstrong.github.io/build-tracker/img/logo.svg</url>
-            <link>https://paularmstrong.github.io/build-tracker/blog</link>
+            <url>https://buildtracker.dev/img/logo.svg</url>
+            <link>https://buildtracker.dev/blog</link>
         </image>
         <copyright>Copyright © 2019 Paul Armstrong</copyright>
         <item>
             <title><![CDATA[Build Tracker v1.0.0]]></title>
-            <link>https://paularmstrong.github.io/build-tracker/blog/2019/03/22/version-1.html</link>
-            <guid>https://paularmstrong.github.io/build-tracker/blog/2019/03/22/version-1.html</guid>
+            <link>https://buildtracker.dev/blog/2019/03/22/version-1.html</link>
+            <guid>https://buildtracker.dev/blog/2019/03/22/version-1.html</guid>
             <pubDate>Fri, 22 Mar 2019 06:00:00 GMT</pubDate>
             <description><![CDATA[<p>It's finally here</p> ]]></description>
         </item>

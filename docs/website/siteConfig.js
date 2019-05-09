@@ -24,7 +24,10 @@ const siteConfig = {
   title: 'Build Tracker',
   tagline: "Track your application's performance budgets",
   url: 'https://buildtracker.dev',
+  cname: 'buildtracker.dev',
   baseUrl: '/',
+
+  editUrl: 'https://github.com/paularmstrong/build-tracker/tree/next/docs/docs/',
 
   // Used for publishing and more
   projectName: 'build-tracker',

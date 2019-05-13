@@ -23,21 +23,6 @@
     "test:cmd": "jest",
     "tsc": "tsc -p ./tsconfig.test.json"
   },
-  "husky": {
-    "hooks": {
-      "post-merge": "yarn",
-      "pre-commit": "yarn tsc && lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,md}": [
-      "yarn lint",
-      "git add"
-    ],
-    "*.{ts,tsx}": [
-      "jest --bail --findRelatedTests"
-    ]
-  },
   "devDependencies": {
     "@types/jest": "^24.0.11",
     "@typescript-eslint/eslint-plugin": "^1.4.2",

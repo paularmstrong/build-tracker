@@ -10,6 +10,7 @@ import Drawer from '../components/Drawer';
 import DrawerLink from '../components/DrawerLink';
 import endOfDay from 'date-fns/end_of_day';
 import HeartIcon from '../icons/Heart';
+import Logo from '../icons/Logo';
 import OpenInExternalIcon from '../icons/OpenInExternal';
 import React from 'react';
 import SizeKeyPicker from '../components/SizeKeyPicker';
@@ -57,6 +58,7 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
   return (
     <Drawer hidden ref={ref}>
       <View style={styles.header}>
+        <Logo style={styles.logo} />
         <Text style={styles.title}>Build Tracker</Text>
       </View>
 
@@ -119,7 +121,13 @@ const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElemen
 
 const styles = StyleSheet.create({
   header: {
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingVertical: Theme.Spacing.Large
+  },
+  logo: {
+    height: Theme.FontSize.Xlarge,
+    marginEnd: Theme.Spacing.Small
   },
   // @ts-ignore
   title: {

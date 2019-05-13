@@ -5,7 +5,7 @@ import formatDate from 'date-fns/format';
 import isValid from 'date-fns/is_valid';
 import React from 'react';
 import TextField from '../components/TextField';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { NativeSyntheticEvent, StyleProp, TextInputKeyPressEventData, View, ViewStyle } from 'react-native';
 
 const DatePicker = React.lazy(() => import(/* webpackChunkName: "DatePicker" */ '../components/DatePicker'));
 
@@ -56,16 +56,19 @@ const DateTextField = (props: Props): React.ReactElement => {
     [onSet]
   );
 
-  const handleBlur = React.useCallback((): void => {
-    setDatePickerVisible(false);
+  const handleKeypress = React.useCallback((event: NativeSyntheticEvent<TextInputKeyPressEventData>): void => {
+    // @ts-ignore
+    if (event.key === 'Tab') {
+      setDatePickerVisible(false);
+    }
   }, []);
 
   return (
     <View ref={startDateRef} style={style}>
       <TextField
         label={label}
-        onBlur={handleBlur}
         onChangeText={handleChangeText}
+        onKeyPress={handleKeypress}
         onFocus={toggleDatePicker}
         value={stringValue}
       />

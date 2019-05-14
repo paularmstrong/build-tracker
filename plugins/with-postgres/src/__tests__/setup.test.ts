@@ -28,7 +28,9 @@ describe('withPostgres', () => {
 
   test('creates a multi-index', () => {
     return setupFn().then(() => {
-      expect(query).toHaveBeenCalledWith('CREATE INDEX IF NOT EXISTS parent ON builds (revision, parentRevision)');
+      expect(query).toHaveBeenCalledWith(
+        'CREATE INDEX IF NOT EXISTS parent ON builds (revision, parentRevision, branch)'
+      );
     });
   });
 

@@ -9,12 +9,13 @@ export default function setup(pool: Pool): () => Promise<boolean> {
     try {
       await client.query(`CREATE TABLE IF NOT EXISTS builds(
   revision char(64) PRIMARY KEY NOT NULL,
+  branch char(64) NOT NULL,
   parentRevision char(64),
   timestamp int NOT NULL,
   meta jsonb NOT NULL,
   artifacts jsonb NOT NULL
 )`);
-      await client.query('CREATE INDEX IF NOT EXISTS parent ON builds (revision, parentRevision)');
+      await client.query('CREATE INDEX IF NOT EXISTS parent ON builds (revision, parentRevision, branch)');
       await client.query('CREATE INDEX IF NOT EXISTS timestamp ON builds (timestamp)');
     } catch (err) {
       client.release();

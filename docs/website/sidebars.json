@@ -1,0 +1,8 @@
+{
+  "docs": {
+    "Getting Started": ["installation", "budgets"],
+    "Configuration": ["configuration", "artifacts"],
+    "Plugins": ["withPosgres"],
+    "Contributing": ["contributing"]
+  }
+}

@@ -23,6 +23,11 @@ export interface BuildMeta {
    * @type {number}
    */
   timestamp: number;
+  /**
+   * Branch name for this revision. Helps for in-progress work to be filtered from the default UI
+   * @type {string}
+   */
+  branch: BuildMetaItem;
 }
 
 export interface Artifact<AS extends ArtifactSizes> {

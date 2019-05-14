@@ -41,6 +41,7 @@ describe('withPostgres', () => {
       const now = Date.now();
       const build = {
         meta: {
+          branch: 'master',
           revision: { value: '12345', url: 'https://build-tracker.local' },
           timestamp: now,
           parentRevision: 'abcdef'
@@ -61,11 +62,7 @@ describe('withPostgres', () => {
       const queries = new Queries(new Pool());
       const now = Date.now();
       const build = {
-        meta: {
-          revision: 'abcdef',
-          timestamp: now,
-          parentRevision: '12345'
-        },
+        meta: { branch: 'master', revision: 'abcdef', timestamp: now, parentRevision: '12345' },
         artifacts: []
       };
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
@@ -77,8 +74,8 @@ describe('withPostgres', () => {
 
   describe('getByRevisions', () => {
     test('selects meta and artifacts', () => {
-      const row1 = { meta: { revision: '12345' }, artifacts: [] };
-      const row2 = { meta: { revision: 'abcde' }, artifacts: [] };
+      const row1 = { meta: { branch: 'master', revision: '12345' }, artifacts: [] };
+      const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getByRevisions('12345', 'abcde').then(res => {
@@ -109,8 +106,8 @@ describe('withPostgres', () => {
 
   describe('getByTimeRange', () => {
     test('selects meta and artifacts', () => {
-      const row1 = { meta: { revision: '12345' }, artifacts: [] };
-      const row2 = { meta: { revision: 'abcde' }, artifacts: [] };
+      const row1 = { meta: { branch: 'master', revision: '12345' }, artifacts: [] };
+      const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getByTimeRange(12345, 67890).then(res => {
@@ -133,8 +130,8 @@ describe('withPostgres', () => {
 
   describe('getRecent', () => {
     test('returns N most recent', () => {
-      const row1 = { meta: { revision: '12345' }, artifacts: [] };
-      const row2 = { meta: { revision: 'abcde' }, artifacts: [] };
+      const row1 = { meta: { branch: 'master', revision: '12345' }, artifacts: [] };
+      const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getRecent(2).then(res => {

@@ -11,14 +11,24 @@ describe('BuildDelta', () => {
     jest.spyOn(Date, 'now').mockReturnValue(1550528708828);
 
     buildA = new Build(
-      { revision: { value: '123', url: 'https://build-tracker.local' }, parentRevision: 'abc', timestamp: Date.now() },
+      {
+        branch: 'master',
+        revision: { value: '123', url: 'https://build-tracker.local' },
+        parentRevision: 'abc',
+        timestamp: Date.now()
+      },
       [
         { name: 'tacos', hash: '123', sizes: { stat: 2, gzip: 1 } },
         { name: 'burritos', hash: '123', sizes: { stat: 3, gzip: 2 } }
       ]
     );
     buildB = new Build(
-      { revision: { value: '456', url: 'https://build-tracker.local' }, parentRevision: 'abc', timestamp: Date.now() },
+      {
+        branch: 'master',
+        revision: { value: '456', url: 'https://build-tracker.local' },
+        parentRevision: 'abc',
+        timestamp: Date.now()
+      },
       [
         { name: 'tacos', hash: '123', sizes: { stat: 1, gzip: 1 } },
         { name: 'burritos', hash: 'abc', sizes: { stat: 6, gzip: 4 } },
@@ -52,6 +62,7 @@ describe('BuildDelta', () => {
         buildA,
         new Build(
           {
+            branch: 'master',
             revision: { value: '123', url: 'https://build-tracker.local' },
             parentRevision: 'abc',
             timestamp: Date.now()

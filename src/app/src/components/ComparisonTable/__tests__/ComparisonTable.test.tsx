@@ -11,11 +11,11 @@ import { Table } from '../../Table';
 import { fireEvent, render } from 'react-native-testing-library';
 
 const builds = [
-  new Build({ revision: '123', parentRevision: '000', timestamp: 0 }, [
+  new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
     { name: 'vendor', hash: '123', sizes: { gzip: 123 } }
   ]),
-  new Build({ revision: 'abc', parentRevision: '123', timestamp: 0 }, [
+  new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
     { name: 'vendor', hash: '123', sizes: { gzip: 123 } }
   ])

@@ -8,8 +8,8 @@ import express from 'express';
 import { insertBuild } from '../insert';
 import request from 'supertest';
 
-const build = new Build({ revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, []);
-const parentBuild = new Build({ revision: 'def', parentRevision: '123', timestamp: Date.now() }, []);
+const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, []);
+const parentBuild = new Build({ branch: 'master', revision: 'def', parentRevision: '123', timestamp: Date.now() }, []);
 
 describe('insert build handler', () => {
   let queries, app;

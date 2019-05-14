@@ -24,10 +24,10 @@ const initialState: State = Object.freeze({
   url: 'https://build-tracker.local'
 });
 
-const buildA = new Build({ revision: '123', parentRevision: '000', timestamp: Date.now() - 400 }, [
+const buildA = new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: Date.now() - 400 }, [
   { name: 'tacos', hash: '123', sizes: { stat: 123, gzip: 45 } }
 ]);
-const buildB = new Build({ revision: 'abc', parentRevision: '123', timestamp: Date.now() }, [
+const buildB = new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: Date.now() }, [
   { name: 'tacos', hash: 'abc', sizes: { stat: 125, gzip: 47 } }
 ]);
 

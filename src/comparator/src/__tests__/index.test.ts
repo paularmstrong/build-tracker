@@ -12,15 +12,21 @@ import BuildComparator, {
   TotalDeltaCell
 } from '..';
 
-const build1 = new Build({ revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 }, [
-  { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
-  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
-]);
+const build1 = new Build(
+  { branch: 'master', revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 },
+  [
+    { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
+    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
+  ]
+);
 
-const build2 = new Build({ revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 }, [
-  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
-  { name: 'churros', hash: 'def', sizes: { stat: 469, gzip: 120 } }
-]);
+const build2 = new Build(
+  { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
+  [
+    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
+    { name: 'churros', hash: 'def', sizes: { stat: 469, gzip: 120 } }
+  ]
+);
 
 const artifactFilters = [/burritos/, /churros/];
 

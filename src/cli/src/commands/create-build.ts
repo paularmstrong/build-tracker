@@ -68,14 +68,16 @@ export const handler = async (args: Args): Promise<{}> => {
   const parentRevision = await Git.getParentRevision(defaultBranch, config.cwd);
   const revision = await Git.getCurrentRevision(config.cwd);
   const { timestamp, name, subject } = await Git.getRevisionDetails(revision, config.cwd);
+  const branch = await Git.getBranch(config.cwd);
 
   const build = {
     meta: {
+      author: name,
+      branch,
       parentRevision,
       revision,
-      timestamp,
-      author: name,
-      subject
+      subject,
+      timestamp
     },
     artifacts
   };

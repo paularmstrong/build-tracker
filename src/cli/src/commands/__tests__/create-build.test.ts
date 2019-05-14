@@ -65,6 +65,7 @@ describe('create-build', () => {
 
     test('returns a JSON representation of a build', () => {
       jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
       jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
       jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
       jest
@@ -74,6 +75,7 @@ describe('create-build', () => {
       return Command.handler({ config, out: false, 'skip-dirty-check': true }).then(res => {
         expect(res).toMatchObject({
           meta: {
+            branch: 'tacobranch',
             parentRevision: '1234567',
             revision: 'abcdefg',
             timestamp: 1234567890,

@@ -69,6 +69,35 @@ describe('git', () => {
     });
   });
 
+  describe('getBranch', () => {
+    test('gets the branch name', () => {
+      jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from(' \n\ttacosaregreat\n')));
+      return Git.getBranch().then(branch => {
+        expect(branch).toBe('tacosaregreat');
+      });
+    });
+
+    test('uses the process cwd', () => {
+      const spawn = jest
+        .spyOn(Spawn, 'default')
+        .mockImplementation(() => Promise.resolve(Buffer.from(' \n\ttacosaregreat\n')));
+
+      return Git.getBranch().then(() => {
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
+      });
+    });
+
+    test('uses given cwd', () => {
+      const spawn = jest
+        .spyOn(Spawn, 'default')
+        .mockImplementation(() => Promise.resolve(Buffer.from(' \n\ttacosaregreat\n')));
+
+      return Git.getBranch('tacos').then(() => {
+        expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: 'tacos' });
+      });
+    });
+  });
+
   describe('getParentRevision', () => {
     test('returns the merge base for the current revision', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('123556')));

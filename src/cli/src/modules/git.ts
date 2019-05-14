@@ -20,6 +20,14 @@ export function getDefaultBranch(cwd: string = process.cwd()): Promise<string> {
   );
 }
 
+export function getBranch(cwd: string = process.cwd()): Promise<string> {
+  return spawn('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd }).then(
+    (buffer: Buffer): string => {
+      return buffer.toString().trim();
+    }
+  );
+}
+
 export function getParentRevision(branch: string, cwd: string = process.cwd()): Promise<string> {
   return spawn('git', ['merge-base', 'HEAD', `origin/${branch}`], { cwd }).then(
     (buffer: Buffer): string => {

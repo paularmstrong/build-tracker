@@ -28,7 +28,7 @@ workflow "On push" {
     "Verify tests",
     "Verify types",
     "Upload build",
-    "clay/docusaurus-github-action@master",
+    "Deploy documentation",
   ]
   on = "push"
 }
@@ -97,8 +97,8 @@ action "Verify types PR" {
   args = "tsc"
 }
 
-action "clay/docusaurus-github-action@master" {
-  uses = "clay/docusaurus-github-action@master"
+action "Deploy documentation" {
+  uses = "paularmstrong/docusaurus-github-action@master"
   needs = ["Install dependencies"]
   env = {
     BUILD_DIR = "docs/website"

@@ -11,6 +11,7 @@ module.exports = withPostgres({
       }
     ]
   },
+  defaultBranch: 'next',
   pg: {
     connectionString: process.env.DATABASE_URL,
     ssl: true

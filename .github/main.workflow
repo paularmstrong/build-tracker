@@ -102,6 +102,7 @@ action "clay/docusaurus-github-action@master" {
   needs = ["Install dependencies"]
   env = {
     BUILD_DIR = "docs/website"
+    PROJECT_NAME = "build-tracker"
   }
   secrets = ["DEPLOY_SSH_KEY"]
 }

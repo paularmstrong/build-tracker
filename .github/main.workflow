@@ -23,8 +23,14 @@ action "Add labels" {
 }
 
 workflow "On push" {
+  resolves = [
+    "Lint",
+    "Verify tests",
+    "Verify types",
+    "Upload build",
+    "clay/docusaurus-github-action@master",
+  ]
   on = "push"
-  resolves = ["Lint", "Verify tests", "Verify types", "Upload build"]
 }
 
 action "Filters for GitHub Actions" {
@@ -89,4 +95,13 @@ action "Verify types PR" {
   uses = "nuxt/actions-yarn@master"
   needs = ["Install PR dependencies"]
   args = "tsc"
+}
+
+action "clay/docusaurus-github-action@master" {
+  uses = "clay/docusaurus-github-action@master"
+  needs = ["Install dependencies"]
+  env = {
+    BUILD_DIR = "docs/website"
+  }
+  secrets = ["DEPLOY_SSH_KEY"]
 }

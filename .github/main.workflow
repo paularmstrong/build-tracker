@@ -23,8 +23,14 @@ action "Add labels" {
 }
 
 workflow "On push" {
+  resolves = [
+    "Lint",
+    "Verify tests",
+    "Verify types",
+    "Upload build",
+    "Deploy documentation",
+  ]
   on = "push"
-  resolves = ["Lint", "Verify tests", "Verify types", "Upload build"]
 }
 
 action "Filters for GitHub Actions" {
@@ -89,4 +95,14 @@ action "Verify types PR" {
   uses = "nuxt/actions-yarn@master"
   needs = ["Install PR dependencies"]
   args = "tsc"
+}
+
+action "Deploy documentation" {
+  uses = "paularmstrong/docusaurus-github-action@master"
+  needs = ["Install dependencies"]
+  env = {
+    BUILD_DIR = "docs/website"
+    PROJECT_NAME = "build-tracker"
+  }
+  secrets = ["DEPLOY_SSH_KEY"]
 }

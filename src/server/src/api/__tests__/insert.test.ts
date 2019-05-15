@@ -12,11 +12,15 @@ const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'de
 const parentBuild = new Build({ branch: 'master', revision: 'def', parentRevision: '123', timestamp: Date.now() }, []);
 
 describe('insert build handler', () => {
-  let queries, app;
+  let app, config, queries;
   beforeEach(() => {
     queries = {
       byRevision: jest.fn(() => Promise.resolve(parentBuild)),
       insert: jest.fn(() => Promise.resolve('1234'))
+    };
+    config = {
+      artifacts: {},
+      queries
     };
     app = express();
     app.use(bodyParser.json());
@@ -24,7 +28,7 @@ describe('insert build handler', () => {
 
   describe('insert', () => {
     test('inserts the build', () => {
-      const handler = insertBuild(queries, { artifacts: {} });
+      const handler = insertBuild(queries, config);
       app.post('/test', handler);
 
       return request(app)
@@ -40,7 +44,7 @@ describe('insert build handler', () => {
 
   describe('response', () => {
     test('includes the comparator JSON', () => {
-      const handler = insertBuild(queries, { artifacts: {} });
+      const handler = insertBuild(queries, config);
       app.post('/test', handler);
 
       return request(app)
@@ -57,7 +61,7 @@ describe('insert build handler', () => {
   describe('onInserted', () => {
     test('called with a comparator of the inserted branch against its parentRevision', () => {
       const handleInsert = jest.fn(() => Promise.resolve());
-      const handler = insertBuild(queries, { artifacts: {} }, handleInsert);
+      const handler = insertBuild(queries, config, handleInsert);
       app.post('/test', handler);
 
       return request(app)

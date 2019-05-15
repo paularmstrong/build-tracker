@@ -14,6 +14,7 @@ import express, { Application, NextFunction, Request, RequestHandler, Response }
 import { Handlers, Queries } from './types';
 
 export interface ServerConfig extends AppConfig {
+  defaultBranch?: string;
   dev?: boolean;
   handlers?: Handlers;
   port?: number;
@@ -44,12 +45,12 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
 };
 
 export default function runBuildTracker(config: ServerConfig): Application {
-  const { handlers, port = 3000, queries, url, ...appConfig } = config;
+  const { handlers, port = 3000, url, ...appConfig } = config;
   const IN_DEV = process.env.NODE_ENV !== 'production' && config.dev;
   app.use(reqLogger);
   app.use(bodyParser.json());
 
-  app.use(api(express.Router(), queries, config, handlers));
+  app.use(api(express.Router(), config, handlers));
 
   app.use(nonce);
   app.use(props(appConfig, url));

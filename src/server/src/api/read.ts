@@ -2,7 +2,10 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Queries } from '../types';
+import { ServerConfig } from '../server';
 import { Request, RequestHandler, Response } from 'express';
+
+const DEFAULT_BRANCH = 'master';
 
 export const queryByRevision = (queries: Queries['build']): RequestHandler => (req: Request, res: Response): void => {
   const { revision } = req.params;
@@ -33,10 +36,18 @@ export const queryByRevisionRange = (queries: Queries['builds']): RequestHandler
     });
 };
 
-export const queryByTimeRange = (queries: Queries['builds']): RequestHandler => (req: Request, res: Response): void => {
+export const queryByTimeRange = (queries: Queries['builds'], config: ServerConfig): RequestHandler => (
+  req: Request,
+  res: Response
+): void => {
   const { startTimestamp, endTimestamp } = req.params;
+  const { branch } = req.query;
   queries
-    .byTimeRange(parseInt(startTimestamp, 10), parseInt(endTimestamp, 10))
+    .byTimeRange(
+      parseInt(startTimestamp, 10),
+      parseInt(endTimestamp, 10),
+      branch || config.defaultBranch || DEFAULT_BRANCH
+    )
     .then(builds => {
       res.send(builds);
     })
@@ -59,10 +70,14 @@ export const queryByRevisions = (queries: Queries['builds']): RequestHandler => 
     });
 };
 
-export const queryByRecent = (queries: Queries['builds']): RequestHandler => (req: Request, res: Response): void => {
+export const queryByRecent = (queries: Queries['builds'], config: ServerConfig): RequestHandler => (
+  req: Request,
+  res: Response
+): void => {
   const { limit } = req.params;
+  const { branch } = req.query;
   queries
-    .recent(limit)
+    .recent(limit ? parseInt(limit, 10) : undefined, branch || config.defaultBranch || DEFAULT_BRANCH)
     .then(builds => {
       res.send(builds);
     })

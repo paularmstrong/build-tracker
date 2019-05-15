@@ -110,10 +110,10 @@ describe('withPostgres', () => {
       const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
-      return queries.getByTimeRange(12345, 67890).then(res => {
+      return queries.getByTimeRange(12345, 67890, 'tacos').then(res => {
         expect(query).toHaveBeenCalledWith(
-          'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 ORDER BY timestamp',
-          [12345, 67890]
+          'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 AND branch = $3 ORDER BY timestamp',
+          [12345, 67890, 'tacos']
         );
         expect(res).toEqual([row1, row2]);
       });
@@ -122,7 +122,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getByTimeRange(12345, 67890).catch(err => {
+      return queries.getByTimeRange(12345, 67890, 'tacos').catch(err => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });
@@ -134,8 +134,11 @@ describe('withPostgres', () => {
       const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
-      return queries.getRecent(2).then(res => {
-        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds ORDER BY timestamp LIMIT $1', [2]);
+      return queries.getRecent(2, 'master').then(res => {
+        expect(query).toHaveBeenCalledWith(
+          'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp LIMIT $2',
+          ['master', 2]
+        );
         expect(res).toEqual([row1, row2]);
       });
     });
@@ -143,7 +146,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getRecent().catch(err => {
+      return queries.getRecent(undefined, 'tacos').catch(err => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });

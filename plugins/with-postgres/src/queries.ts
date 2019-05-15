@@ -56,10 +56,14 @@ export default class Queries {
     throw new UnimplementedError(`revision range ${startRevision} - ${endRevision}`);
   };
 
-  public getByTimeRange = async (startTimestamp: number, endTimestamp: number): Promise<Array<BuildStruct>> => {
+  public getByTimeRange = async (
+    startTimestamp: number,
+    endTimestamp: number,
+    branch: string
+  ): Promise<Array<BuildStruct>> => {
     const res = await this._pool.query(
-      'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 ORDER BY timestamp',
-      [startTimestamp, endTimestamp]
+      'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 AND branch = $3 ORDER BY timestamp',
+      [startTimestamp, endTimestamp, branch]
     );
     if (res.rowCount === 0) {
       throw new NotFoundError();
@@ -68,8 +72,11 @@ export default class Queries {
     return Promise.resolve(res.rows);
   };
 
-  public getRecent = async (limit: number = 20): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds ORDER BY timestamp LIMIT $1', [limit]);
+  public getRecent = async (limit: number = 20, branch: string): Promise<Array<BuildStruct>> => {
+    const res = await this._pool.query(
+      'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp LIMIT $2',
+      [branch, limit]
+    );
     if (res.rowCount === 0) {
       throw new NotFoundError();
     }

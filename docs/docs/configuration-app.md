@@ -1,10 +1,8 @@
 ---
-id: configuration
-title: Configuration
-sidebar_label: Configuration
+id: configuration-app
+title: App configuration
+sidebar_label: Application
 ---
-
-# `build-tracker.config.js`
 
 Create a `build-tracker.config.js` file.
 

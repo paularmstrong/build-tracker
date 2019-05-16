@@ -21,5 +21,9 @@ export default async function getConfig(path?: string): Promise<Config> {
     throw new Error('Could not find configuration file');
   }
 
-  return result.config;
+  return {
+    baseDir: process.cwd(),
+    cwd: process.cwd(),
+    ...result.config
+  };
 }

@@ -1,5 +1,5 @@
 ---
-id: withPosgres
+id: withPostgres
 title: Postgres
 ---
 

@@ -20,14 +20,6 @@ Once one of these is found and parsed, the search will stop and that object will
 
 The configuration search can also be short-circuited by passing a `--config` argument with a path to your configuration file.
 
-## Example
-
-```js
-module.exports = {
-  defaultBranch: 'master'
-};
-```
-
 ## Options
 
 ### `applicationUrl: string`

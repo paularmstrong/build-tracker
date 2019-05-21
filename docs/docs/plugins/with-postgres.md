@@ -25,8 +25,8 @@ module.exports = withPostgres({
     connectionString: '', // default: process.env.DATABASE_URL
     user: '', // default: process.env.PGUSER
     host: '', // default: process.env.PGHOST
-    database: '', // default: process.env.PGPASSWORD
-    password: '', // default: process.env.PGDATABASE
+    database: '', // default: process.env.PGDATABASE
+    password: '', // default: process.env.PGPASSWORD
     port: 5432, // default: process.env.PGPORT
     ssl: true
   }

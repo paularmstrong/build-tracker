@@ -14,7 +14,7 @@ export default class Queries {
   }
 
   public getByRevision = async (revision: string): Promise<BuildStruct> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = $1', [revision]);
+    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = ?', [revision]);
     if (res.rowCount !== 1) {
       throw new NotFoundError();
     }
@@ -25,7 +25,7 @@ export default class Queries {
   public insert = async ({ meta, artifacts }: BuildStruct): Promise<string> => {
     const build = new Build(meta, artifacts);
     const res = await this._pool.query(
-      'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4, $5, $6)',
+      'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES (?, ?, ?, ?, ?, ?)',
       [
         build.getMetaValue('branch'),
         build.getMetaValue('revision'),
@@ -44,7 +44,7 @@ export default class Queries {
   };
 
   public getByRevisions = async (...revisions: Array<string>): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision in $1', [revisions]);
+    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision in ?', [revisions]);
     if (res.rowCount === 0) {
       throw new NotFoundError();
     }
@@ -62,7 +62,7 @@ export default class Queries {
     branch: string
   ): Promise<Array<BuildStruct>> => {
     const res = await this._pool.query(
-      'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 AND branch = $3 ORDER BY timestamp',
+      'SELECT meta, artifacts FROM builds WHERE timestamp >= ? AND timestamp <= ? AND branch = ? ORDER BY timestamp',
       [startTimestamp, endTimestamp, branch]
     );
     if (res.rowCount === 0) {
@@ -74,7 +74,7 @@ export default class Queries {
 
   public getRecent = async (limit: number = 20, branch: string): Promise<Array<BuildStruct>> => {
     const res = await this._pool.query(
-      'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp LIMIT $2',
+      'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp LIMIT ?',
       [branch, limit]
     );
     if (res.rowCount === 0) {

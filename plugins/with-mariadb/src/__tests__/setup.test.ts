@@ -15,7 +15,7 @@ describe('withPostgres', () => {
       getConnection: () => Promise.resolve({ query, release })
     }));
 
-    setupFn = setup(Mariadb.createPool({}));
+    setupFn = setup(Mariadb.createPool({}), 'tacos');
   });
 
   test('creates the table if not exists', () => {

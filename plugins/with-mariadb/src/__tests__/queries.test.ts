@@ -19,7 +19,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 1, rows: [row] }));
       const queries = new Queries(Mariadb.createPool({}));
       return queries.getByRevision('12345').then(res => {
-        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision = $1', ['12345']);
+        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision = ?', ['12345']);
         expect(res).toEqual(row);
       });
     });
@@ -49,7 +49,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 1, rows: [build] }));
       return queries.insert(build).then(res => {
         expect(query).toHaveBeenCalledWith(
-          'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4, $5, $6)',
+          'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES (?, ?, ?, ?, ?, ?)',
           ['master', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
         );
         expect(res).toEqual('12345');
@@ -77,7 +77,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(Mariadb.createPool({}));
       return queries.getByRevisions('12345', 'abcde').then(res => {
-        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision in $1', [
+        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision in ?', [
           ['12345', 'abcde']
         ]);
         expect(res).toEqual([row1, row2]);
@@ -110,7 +110,7 @@ describe('withPostgres', () => {
       const queries = new Queries(Mariadb.createPool({}));
       return queries.getByTimeRange(12345, 67890, 'tacos').then(res => {
         expect(query).toHaveBeenCalledWith(
-          'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 AND branch = $3 ORDER BY timestamp',
+          'SELECT meta, artifacts FROM builds WHERE timestamp >= ? AND timestamp <= ? AND branch = ? ORDER BY timestamp',
           [12345, 67890, 'tacos']
         );
         expect(res).toEqual([row1, row2]);
@@ -134,7 +134,7 @@ describe('withPostgres', () => {
       const queries = new Queries(Mariadb.createPool({}));
       return queries.getRecent(2, 'master').then(res => {
         expect(query).toHaveBeenCalledWith(
-          'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp LIMIT $2',
+          'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp LIMIT ?',
           ['master', 2]
         );
         expect(res).toEqual([row1, row2]);

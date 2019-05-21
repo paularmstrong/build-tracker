@@ -2,7 +2,7 @@
   "docs": {
     "Getting Started": ["installation", "budgets"],
     "Configuration": ["configuration-app", "configuration-cli"],
-    "Plugins": ["plugins", "withPostgres"],
+    "Plugins": ["plugins/plugins", "plugins/withPostgres", "plugins/withMariadb"],
     "Contributing": ["contributing"]
   }
 }

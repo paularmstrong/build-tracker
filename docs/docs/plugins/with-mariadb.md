@@ -1,6 +1,7 @@
-# @build-tracker/plugin-with-postgres
-
-A server-configuration plugin for Build Tracker to enable reading build data from a MariaDB database.
+---
+id: withMariadb
+title: MariaDB
+---
 
 Connecting your Build Tracker application to a Maria database is easy with the help of `@build-tracker/plugin-with-mariadb`
 

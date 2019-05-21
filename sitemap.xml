@@ -7,6 +7,7 @@
 <url> <loc>https://buildtracker.dev/docs/configuration-cli</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/configuration-cli" /> </url>
 <url> <loc>https://buildtracker.dev/docs/contributing</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/contributing" /> </url>
 <url> <loc>https://buildtracker.dev/docs/installation</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/installation" /> </url>
-<url> <loc>https://buildtracker.dev/docs/plugins</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/plugins" /> </url>
-<url> <loc>https://buildtracker.dev/docs/withPostgres</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/withPostgres" /> </url>
+<url> <loc>https://buildtracker.dev/docs/plugins/plugins</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/plugins/plugins" /> </url>
+<url> <loc>https://buildtracker.dev/docs/plugins/withMariadb</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/plugins/withMariadb" /> </url>
+<url> <loc>https://buildtracker.dev/docs/plugins/withPostgres</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://buildtracker.dev/docs/plugins/withPostgres" /> </url>
 </urlset>

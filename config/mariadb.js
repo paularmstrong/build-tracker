@@ -2,7 +2,7 @@ const withMaria = require('@build-tracker/plugin-with-mariadb').default;
 const { BudgetLevel, BudgetType } = require('@build-tracker/types');
 
 module.exports = withMaria({
-  defaultBranch: 'next',
+  defaultBranch: 'master',
   dev: true,
   artifacts: {
     groups: [

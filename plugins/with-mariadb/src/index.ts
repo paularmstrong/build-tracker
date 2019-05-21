@@ -27,7 +27,7 @@ export default function withMariadb(config: Omit<ServerConfig, 'queries'> & { ma
 
   return {
     ...config,
-    setup: setup(pool, database),
+    setup: setup(pool),
     queries: {
       build: {
         byRevision: queries.getByRevision,

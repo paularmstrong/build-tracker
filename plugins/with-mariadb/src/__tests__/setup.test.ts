@@ -4,7 +4,7 @@
 import * as Mariadb from 'mariadb';
 import setup from '../setup';
 
-describe('withPostgres', () => {
+describe('withMariadb setup', () => {
   let query, release, setupFn;
   beforeEach(() => {
     query = jest.fn();
@@ -15,7 +15,7 @@ describe('withPostgres', () => {
       getConnection: () => Promise.resolve({ query, release })
     }));
 
-    setupFn = setup(Mariadb.createPool({}), 'tacos');
+    setupFn = setup(Mariadb.createPool({}));
   });
 
   test('creates the table if not exists', () => {

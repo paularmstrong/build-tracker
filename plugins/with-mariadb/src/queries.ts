@@ -14,42 +14,38 @@ export default class Queries {
   }
 
   public getByRevision = async (revision: string): Promise<BuildStruct> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = ?', [revision]);
-    if (res.rowCount !== 1) {
+    const rows = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = ?', [revision]);
+    if (rows.length !== 1) {
       throw new NotFoundError();
     }
 
-    return Promise.resolve(res.rows[0]);
+    return Promise.resolve(this._formatRow(rows[0]));
   };
 
   public insert = async ({ meta, artifacts }: BuildStruct): Promise<string> => {
     const build = new Build(meta, artifacts);
-    const res = await this._pool.query(
+    await this._pool.query(
       'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES (?, ?, ?, ?, ?, ?)',
       [
         build.getMetaValue('branch'),
         build.getMetaValue('revision'),
         build.meta.timestamp,
         build.getMetaValue('parentRevision'),
-        JSON.stringify(build.meta),
-        JSON.stringify(build.artifacts)
+        build.meta,
+        build.artifacts
       ]
     );
-
-    if (res.rowCount !== 1) {
-      throw new Error('Unable to insert build');
-    }
 
     return Promise.resolve(build.getMetaValue('revision'));
   };
 
   public getByRevisions = async (...revisions: Array<string>): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision in ?', [revisions]);
-    if (res.rowCount === 0) {
+    const rows = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision in ?', [revisions]);
+    if (!rows.length) {
       throw new NotFoundError();
     }
 
-    return Promise.resolve(res.rows);
+    return Promise.resolve(rows.map(this._formatRow));
   };
 
   public getByRevisionRange = async (startRevision: string, endRevision: string): Promise<Array<BuildStruct>> => {
@@ -61,26 +57,31 @@ export default class Queries {
     endTimestamp: number,
     branch: string
   ): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query(
+    const rows = await this._pool.query(
       'SELECT meta, artifacts FROM builds WHERE timestamp >= ? AND timestamp <= ? AND branch = ? ORDER BY timestamp',
       [startTimestamp, endTimestamp, branch]
     );
-    if (res.rowCount === 0) {
+    if (!rows.length) {
       throw new NotFoundError();
     }
 
-    return Promise.resolve(res.rows);
+    return Promise.resolve(rows.map(this._formatRow));
   };
 
   public getRecent = async (limit: number = 20, branch: string): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query(
+    const rows = await this._pool.query(
       'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp LIMIT ?',
       [branch, limit]
     );
-    if (res.rowCount === 0) {
+
+    if (!rows.length) {
       throw new NotFoundError();
     }
 
-    return Promise.resolve(res.rows);
+    return Promise.resolve(rows.map(this._formatRow));
   };
+
+  private _formatRow(row: { meta: Buffer; artifacts: Buffer }): BuildStruct {
+    return { meta: JSON.parse(row.meta.toString()), artifacts: JSON.parse(row.artifacts.toString()) };
+  }
 }

@@ -39,5 +39,8 @@
     "webpack-dev-middleware": "^3.6.1",
     "webpack-hot-middleware": "^2.24.3",
     "webpack-hot-server-middleware": "^0.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

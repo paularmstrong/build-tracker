@@ -11,5 +11,8 @@
     "build": "tsc",
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

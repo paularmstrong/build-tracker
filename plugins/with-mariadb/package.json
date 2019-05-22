@@ -20,5 +20,8 @@
   "devDependencies": {
     "@build-tracker/types": "^1.0.0-alpha.0",
     "@types/dotenv": "^6.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

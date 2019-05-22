@@ -21,5 +21,8 @@
     "@build-tracker/types": "^1.0.0-alpha.0",
     "@types/dotenv": "^6.1.0",
     "@types/pg": "^7.4.13"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

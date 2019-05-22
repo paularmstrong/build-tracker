@@ -14,5 +14,8 @@
   },
   "dependencies": {
     "ascii-table": "^0.0.9"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

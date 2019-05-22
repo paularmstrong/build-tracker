@@ -1,3 +1,4 @@
+#!/usr/bin/env Node
 /**
  * Copyright (c) 2019 Paul Armstrong
  */

@@ -48,9 +48,9 @@ function Versions(props) {
           <table className="versions">
             <tbody>
               <tr>
-                <th>master</th>
+                <th>next</th>
                 <td>
-                  <a href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/${props.language}/next/installation`}>
+                  <a href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/${props.language}next/installation`}>
                     Documentation
                   </a>
                 </td>

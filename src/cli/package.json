@@ -5,7 +5,9 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
   "license": "MIT",
-  "bin": "dist/bin",
+  "bin": {
+    "bt-cli": "dist/bin"
+  },
   "main": "dist",
   "scripts": {
     "build": "tsc",

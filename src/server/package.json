@@ -5,7 +5,9 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
   "license": "MIT",
-  "bin": "dist/index.js",
+  "bin": {
+    "bt-server": "dist/index.js"
+  },
   "main": "dist/server.js",
   "types": "index.ts",
   "scripts": {

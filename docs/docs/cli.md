@@ -1,8 +1,22 @@
 ---
-id: configuration-cli
+id: cli
 title: CLI configuration
 sidebar_label: CLI
 ---
+
+## Install the CLI
+
+```sh
+yarn add @build-tracker/cli
+# or
+npm install --save @build-tracker/cli
+```
+
+Adding the `@build-tracker/cli` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`
+
+To list all commands and help, run `yarn bt-cli --help`
+
+## Configuration
 
 The Build Tracker CLI is easily configured using a [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) compatible file.
 
@@ -20,9 +34,9 @@ Once one of these is found and parsed, the search will stop and that object will
 
 The configuration search can also be short-circuited by passing a `--config` argument with a path to your configuration file.
 
-## Options
+### Options
 
-### `applicationUrl: string`
+#### `applicationUrl: string`
 
 The full URL (with scheme) to your application. New builds will be posted to the API available at this URL
 
@@ -34,7 +48,7 @@ module.exports = {
 };
 ```
 
-### `artifacts: Array<string>`
+#### `artifacts: Array<string>`
 
 An array of [glob](https://github.com/isaacs/node-glob#readme) paths to search for your artifacts.
 
@@ -44,7 +58,7 @@ module.exports = {
 };
 ```
 
-### `baseDir?: string = process.cwd()`
+#### `baseDir?: string = process.cwd()`
 
 A base directory option to calculate relative paths for your artifacts. This is most often useful for stripping off unwanted paths, like `dist`, though it must be an absolute path on your system. This can be most easily accomplished by using the `path` node API:
 
@@ -54,7 +68,7 @@ module.exports = {
 };
 ```
 
-### `cwd?: string = process.cwd()`
+#### `cwd?: string = process.cwd()`
 
 The command working directory. Set this to change the script working path to something else other than `process.cwd()`
 
@@ -64,7 +78,7 @@ module.exports = {
 };
 ```
 
-### `getFilenameHash?: (filename: string) => string | void`
+#### `getFilenameHash?: (filename: string) => string | void`
 
 This optional method allows you to extract a filename hash from the built artifact filename. Many applications built with webpack will include a chunk hash in the filename for cache-busting reasons.
 
@@ -88,7 +102,7 @@ module.exports = {
 };
 ```
 
-### `nameMapper?: (filename: string) => string`
+#### `nameMapper?: (filename: string) => string`
 
 Similar to the `getFilenameHash` method above, you may want to strip out parts of the artifact filenames to make them more legible in reports and the application.
 
@@ -107,7 +121,7 @@ module.exports = {
 };
 ```
 
-### `onCompare?: (data: APIResponse) => Promise<void>`
+#### `onCompare?: (data: APIResponse) => Promise<void>`
 
 Take any action on the response from the API.
 
@@ -120,3 +134,21 @@ module.exports = {
   }
 };
 ```
+
+## Commands
+
+### `upload-build`
+
+This command will read your configuration file, and upload the current build meta and artifact stats to your server. In most scenarios, this should be all you need.
+
+### `create-build`
+
+This command will create a Build object for the current available build. If run independently, it will only output information, but not upload it anywhere. For that, you only need to run `yarn bt-cli upload-build`.
+
+### `stat-artifacts`
+
+Lower-level than `create-build`, this command will get artifact stats for the current build files and output a JSON representation of them.
+
+### `version`
+
+Output the version number of the `bt-cli`.

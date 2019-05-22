@@ -26,7 +26,7 @@ module.exports = {
 ### Run the server
 
 ```sh
-yarn build-tracker
+yarn bt-server
 ```
 
 ### Upload your builds
@@ -49,5 +49,5 @@ module.exports = {
 
 ```sh
 yarn build # build your application
-yarn build-tracker upload-build
+yarn bt-cli upload-build
 ```

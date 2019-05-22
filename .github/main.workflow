@@ -24,9 +24,6 @@ action "Add labels" {
 
 workflow "On push" {
   resolves = [
-    "Lint",
-    "Verify tests",
-    "Verify types",
     "Upload build",
     "Deploy documentation",
   ]
@@ -44,27 +41,15 @@ action "Install dependencies" {
   args = "install --frozen-lockfile"
 }
 
-action "Lint" {
+action "Verify code" {
   uses = "nuxt/actions-yarn@master"
   needs = ["Install dependencies"]
-  args = "lint:ci"
-}
-
-action "Verify tests" {
-  uses = "nuxt/actions-yarn@master"
-  needs = ["Install dependencies"]
-  args = "test:ci"
-}
-
-action "Verify types" {
-  uses = "nuxt/actions-yarn@master"
-  needs = ["Install dependencies"]
-  args = "tsc"
+  args = "ci"
 }
 
 action "Build" {
   uses = "nuxt/actions-yarn@master"
-  needs = ["Install dependencies"]
+  needs = ["Verify code"]
   args = "build"
 }
 

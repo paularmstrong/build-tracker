@@ -20,18 +20,25 @@ export const insertBuild = (
     queries
       .byRevision(build.getMetaValue('parentRevision'))
       .then(parentBuild => {
-        return new Comparator({
-          artifactBudgets: artifactConfig.budgets,
-          artifactFilters: artifactConfig.filters,
-          builds: [build, new Build(parentBuild.meta, parentBuild.artifacts)]
-        });
+        return {
+          comparator: new Comparator({
+            artifactBudgets: artifactConfig.budgets,
+            artifactFilters: artifactConfig.filters,
+            builds: [build, new Build(parentBuild.meta, parentBuild.artifacts)]
+          }),
+          parentBuild
+        };
       })
-      .then(comparator => {
-        return onInserted(comparator).then(() => comparator);
+      .then(context => {
+        return onInserted(context.comparator).then(() => context);
       })
-      .then(comparator => {
+      .then(({ comparator, parentBuild }) => {
         res.send({
-          comparator: comparator.toJSON()
+          build,
+          parentBuild,
+          json: comparator.toJSON(),
+          markdown: comparator.toMarkdown(),
+          csv: comparator.toCsv()
         });
       })
       .catch(error => {

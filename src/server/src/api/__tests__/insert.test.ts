@@ -8,8 +8,12 @@ import express from 'express';
 import { insertBuild } from '../insert';
 import request from 'supertest';
 
-const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, []);
-const parentBuild = new Build({ branch: 'master', revision: 'def', parentRevision: '123', timestamp: Date.now() }, []);
+const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, [
+  { hash: '123', name: 'tacos', sizes: { stat: 123 } }
+]);
+const parentBuild = new Build({ branch: 'master', revision: 'def', parentRevision: '123', timestamp: Date.now() }, [
+  { hash: '123', name: 'tacos', sizes: { stat: 123 } }
+]);
 
 describe('insert build handler', () => {
   let app, config, queries;
@@ -43,7 +47,27 @@ describe('insert build handler', () => {
   });
 
   describe('response', () => {
-    test('includes the comparator JSON', () => {
+    test('includes the comparator output in readable formats', () => {
+      const handler = insertBuild(queries, config);
+      app.post('/test', handler);
+
+      const comparator = new Comparator({ builds: [build, parentBuild] });
+
+      return request(app)
+        .post('/test')
+        .send({ meta: build.meta, artifacts: build.artifacts })
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .then(res => {
+          expect(res.body).toMatchObject({
+            json: comparator.toJSON(),
+            markdown: comparator.toMarkdown(),
+            csv: comparator.toCsv()
+          });
+        });
+    });
+
+    test('includes the build and parentBuild', () => {
       const handler = insertBuild(queries, config);
       app.post('/test', handler);
 
@@ -53,7 +77,10 @@ describe('insert build handler', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .then(res => {
-          expect(res.body).toMatchObject({ comparator: new Comparator({ builds: [build, parentBuild] }).toJSON() });
+          expect(res.body).toMatchObject({
+            build,
+            parentBuild
+          });
         });
     });
   });

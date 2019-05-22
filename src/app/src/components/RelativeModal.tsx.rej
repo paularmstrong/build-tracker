@@ -1,4 +1,0 @@
-diff a/src/app/src/components/RelativeModal.tsx b/src/app/src/components/RelativeModal.tsx	(rejected hunks)
-@@ -25 +25 @@ const Menu = (props: Props): React.ReactElement => {
--  }, []);
-+  }, [onDismiss]);

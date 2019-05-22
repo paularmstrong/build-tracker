@@ -45,7 +45,7 @@ export const handler = async (args: Args): Promise<void> => {
   const body = JSON.stringify(build);
   const requestOptions = {
     host: url.hostname.replace(`${httpProtocol}//`, ''),
-    port: url.port || config.applicationUrl.startsWith('https:') ? 443 : 80,
+    port: url.port,
     path: url.pathname,
     method: 'POST',
     headers: {
@@ -56,14 +56,22 @@ export const handler = async (args: Args): Promise<void> => {
 
   return new Promise((resolve, reject) => {
     const req = httpProtocol.request(requestOptions, (res: http.IncomingMessage) => {
+      const output = [];
       res.setEncoding('utf8');
 
       res.on('data', data => {
+        output.push(data);
         process.stdout.write(data);
       });
 
       res.on('end', () => {
-        resolve();
+        const response = Buffer.from(output).toJSON();
+        if (config.onCompare) {
+          // @ts-ignore
+          config.onCompare(response).then(resolve);
+        } else {
+          resolve();
+        }
       });
     });
 

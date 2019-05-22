@@ -106,3 +106,17 @@ module.exports = {
   }
 };
 ```
+
+### `onCompare?: (data: APIResponse) => Promise<void>`
+
+Take any action on the response from the API.
+
+```js
+module.exports = {
+  onCompare: data => {
+    // send markdown response somewhere…
+    GithubApi.postComment(data.markdown);
+    return Promise.resolve();
+  }
+};
+```

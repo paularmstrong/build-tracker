@@ -1,7 +1,22 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import { ComparisonMatrix } from '@build-tracker/comparator';
 import cosmiconfig from 'cosmiconfig';
+import { Artifact, ArtifactSizes, BuildMeta } from '@build-tracker/build';
+
+interface BuildJson {
+  meta: BuildMeta;
+  artifacts: Array<Artifact<ArtifactSizes>>;
+}
+
+interface ApiReturn {
+  build: BuildJson;
+  parentBuild: BuildJson;
+  json: ComparisonMatrix;
+  markdown: string;
+  csv: string;
+}
 
 interface Config {
   applicationUrl: string;
@@ -10,6 +25,7 @@ interface Config {
   cwd: string;
   getFilenameHash?: (filename: string) => string | void;
   nameMapper?: (filename: string) => string;
+  onCompare?: (data: ApiReturn) => Promise<void>;
 }
 
 export default async function getConfig(path?: string): Promise<Config> {

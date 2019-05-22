@@ -17,5 +17,9 @@ module.exports = {
     const hash = filenameHash(fileName);
     let out = fileName.replace(/\.js$/, '').replace(/(plugins|src|dist)\//g, '');
     return hash ? out.replace(`.${hash}`, '') : out;
+  },
+  onCompare: ({ markdown }) => {
+    console.log(markdown);
+    return Promise.resolve();
   }
 };

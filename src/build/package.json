@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/build",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "Build Tracker tools for interacting with individual Builds",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -13,8 +13,7 @@
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@build-tracker/types": "1.0.0"
+    "@build-tracker/types": "^1.0.0-alpha.0"
   }
 }

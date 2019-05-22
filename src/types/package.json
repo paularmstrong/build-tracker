@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/types",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "Build Tracker typescript types",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

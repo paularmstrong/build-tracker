@@ -50,6 +50,19 @@ describe('RevisionCell', () => {
       expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
     });
 
+    test('dismisses the menu when item is pressed', () => {
+      const { getByProps, queryAllByProps } = render(
+        <RevisionCell
+          cell={{ type: CellType.REVISION, revision: '1234567' }}
+          onFocus={jest.fn()}
+          onRemove={jest.fn()}
+        />
+      );
+      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
+      fireEvent.press(queryAllByProps({ accessibilityRole: 'menuitem' })[0]);
+      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+    });
+
     test('allows removing the revision', () => {
       const handleRemove = jest.fn();
       const { getByProps } = render(

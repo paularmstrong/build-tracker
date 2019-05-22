@@ -31,11 +31,13 @@ export const RevisionCell = (props: Props): React.ReactElement => {
 
   const handleRemove = React.useCallback((): void => {
     onRemove(cell.revision);
-  }, [cell.revision, onRemove]);
+    handleToggleMenu();
+  }, [cell.revision, handleToggleMenu, onRemove]);
 
   const handleFocus = React.useCallback((): void => {
     onFocus(cell.revision);
-  }, [cell.revision, onFocus]);
+    handleToggleMenu();
+  }, [cell.revision, handleToggleMenu, onFocus]);
 
   return (
     <>

@@ -2,6 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as VersionCommand from '../version';
+import packageJson from '../../../package.json';
 import yargs from 'yargs';
 
 describe('version command', () => {
@@ -16,7 +17,7 @@ describe('version command', () => {
     test('runs the server with the given config', () => {
       const mockWrite = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
       VersionCommand.handler();
-      expect(mockWrite).toHaveBeenCalledWith('1.0.0\n');
+      expect(mockWrite).toHaveBeenCalledWith(`${packageJson.version}\n`);
     });
   });
 });

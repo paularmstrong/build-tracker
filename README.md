@@ -4,7 +4,7 @@ This is a work-in-progress branch tracking a full rewrite of build-tracker.
 
 ## Documentation
 
-All documentation can be found at [buildtracker.dev/docs](https://buildtracker.dev/docs).
+All documentation can be found at [buildtracker.dev](https://buildtracker.dev).
 
 ## Contributing
 

@@ -18,58 +18,70 @@ interface Props {
   overflowItems?: React.ReactElement;
 }
 
-export const AppBar = (props: Props): React.ReactElement => {
-  const { actionItems, navigationIcon, onPressNavigationIcon, overflowItems, style, title } = props;
-  const overflowRef = React.useRef<View>(null);
-  const [showOverflow, setShowOverflow] = React.useState(false);
+export interface Handles {
+  dismissOverflow: () => void;
+}
 
-  const handleShowOverflow = React.useCallback(() => {
-    setShowOverflow(showOverflow => !showOverflow);
-  }, []);
+export const AppBar = React.forwardRef<Handles, Props>(
+  (props: Props, ref: React.Ref<Handles>): React.ReactElement => {
+    const { actionItems, navigationIcon, onPressNavigationIcon, overflowItems, style, title } = props;
+    const overflowRef = React.useRef<View>(null);
+    const [showOverflow, setShowOverflow] = React.useState(false);
 
-  React.useEffect(() => {
-    if (!overflowItems) {
-      setShowOverflow(false);
-    }
-  }, [overflowItems]);
+    React.useImperativeHandle(ref, () => ({
+      dismissOverflow: () => {
+        setShowOverflow(false);
+      }
+    }));
 
-  return (
-    <View style={[styles.root, style]}>
-      {navigationIcon ? (
-        <Button
-          color="primary"
-          icon={navigationIcon}
-          iconOnly
-          onPress={onPressNavigationIcon}
-          style={styles.icon}
-          title="Menu"
-        />
-      ) : null}
-      {typeof title === 'string' ? (
-        <Text
-          // @ts-ignore
-          accessibilityRole="heading"
-          style={styles.title}
-        >
-          {title}
-        </Text>
-      ) : (
-        title || null
-      )}
-      <View style={styles.actionItems}>{React.Children.toArray(actionItems)}</View>
-      {overflowItems ? (
-        <View ref={overflowRef}>
-          <Button icon={MoreIcon} iconOnly onPress={handleShowOverflow} title="More actions" />
-        </View>
-      ) : null}
-      {showOverflow && overflowItems ? (
-        <Menu onDismiss={handleShowOverflow} relativeTo={overflowRef}>
-          {overflowItems}
-        </Menu>
-      ) : null}
-    </View>
-  );
-};
+    const handleShowOverflow = React.useCallback(() => {
+      setShowOverflow(showOverflow => !showOverflow);
+    }, []);
+
+    React.useEffect(() => {
+      if (!overflowItems) {
+        setShowOverflow(false);
+      }
+    }, [overflowItems]);
+
+    return (
+      <View style={[styles.root, style]}>
+        {navigationIcon ? (
+          <Button
+            color="primary"
+            icon={navigationIcon}
+            iconOnly
+            onPress={onPressNavigationIcon}
+            style={styles.icon}
+            title="Menu"
+          />
+        ) : null}
+        {typeof title === 'string' ? (
+          <Text
+            // @ts-ignore
+            accessibilityRole="heading"
+            style={styles.title}
+          >
+            {title}
+          </Text>
+        ) : (
+          title || null
+        )}
+        <View style={styles.actionItems}>{React.Children.toArray(actionItems)}</View>
+        {overflowItems ? (
+          <View ref={overflowRef}>
+            <Button icon={MoreIcon} iconOnly onPress={handleShowOverflow} title="More actions" />
+          </View>
+        ) : null}
+        {showOverflow && overflowItems ? (
+          <Menu onDismiss={handleShowOverflow} relativeTo={overflowRef}>
+            {overflowItems}
+          </Menu>
+        ) : null}
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   root: {

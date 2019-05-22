@@ -1,7 +1,6 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import AppBar from '../components/AppBar';
 import { ArtifactRow } from '@build-tracker/comparator';
 import { Clipboard } from 'react-native';
 import Drawer from '../components/Drawer';
@@ -10,6 +9,7 @@ import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { State } from '../store/types';
 import { addSnack, clearComparedRevisions } from '../store/actions';
+import AppBar, { Handles as AppBarHandles } from '../components/AppBar';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 interface MappedState {
@@ -37,12 +37,15 @@ const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactE
   const { activeArtifacts, activeComparator, comparedRevisions, sizeKey } = useMappedState(mapState);
   const dispatch = useDispatch();
 
+  const appBarRef = React.useRef<AppBarHandles>(null);
+
   const showDrawer = React.useCallback((): void => {
     drawerRef.current && drawerRef.current.show();
   }, [drawerRef]);
 
   const handleClearRevisions = React.useCallback((): void => {
     dispatch(clearComparedRevisions());
+    appBarRef.current.dismissOverflow();
   }, [dispatch]);
 
   const artifactFilter = React.useCallback(
@@ -61,6 +64,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactE
       })
     );
     dispatch(addSnack('Copied table as markdown'));
+    appBarRef.current.dismissOverflow();
   }, [activeComparator, artifactFilter, dispatch, sizeKey]);
 
   const handleCopyAsCsv = React.useCallback((): void => {
@@ -71,6 +75,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactE
       })
     );
     dispatch(addSnack('Copied table as CSV'));
+    appBarRef.current.dismissOverflow();
   }, [activeComparator, artifactFilter, dispatch, sizeKey]);
 
   return (
@@ -86,6 +91,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactE
           </>
         ) : null
       }
+      ref={appBarRef}
       title="Build Tracker"
     />
   );

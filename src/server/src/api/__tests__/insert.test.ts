@@ -78,8 +78,8 @@ describe('insert build handler', () => {
         .set('Accept', 'application/json')
         .then(res => {
           expect(res.body).toMatchObject({
-            build,
-            parentBuild
+            build: build.toJSON(),
+            parentBuild: parentBuild.toJSON()
           });
         });
     });

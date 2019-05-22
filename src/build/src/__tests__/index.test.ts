@@ -118,4 +118,14 @@ describe('Build', () => {
       expect(build.getTotals([/tacos/])).toEqual({ stat: 3, gzip: 2 });
     });
   });
+
+  describe('toJSON', () => {
+    test('outputs a JSON friendly version of the meta and artifacts', () => {
+      const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
+      expect(build.toJSON()).toEqual({
+        meta: baseMeta,
+        artifacts: expect.arrayContaining([burritoArtifact, tacoArtifact])
+      });
+    });
+  });
 });

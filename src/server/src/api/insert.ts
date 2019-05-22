@@ -19,12 +19,13 @@ export const insertBuild = (
   queries.insert(build).then(() =>
     queries
       .byRevision(build.getMetaValue('parentRevision'))
-      .then(parentBuild => {
+      .then(parentBuildData => {
+        const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
         return {
           comparator: new Comparator({
             artifactBudgets: artifactConfig.budgets,
             artifactFilters: artifactConfig.filters,
-            builds: [build, new Build(parentBuild.meta, parentBuild.artifacts)]
+            builds: [build, parentBuild]
           }),
           parentBuild
         };
@@ -34,8 +35,8 @@ export const insertBuild = (
       })
       .then(({ comparator, parentBuild }) => {
         res.send({
-          build,
-          parentBuild,
+          build: build.toJSON(),
+          parentBuild: parentBuild.toJSON(),
           json: comparator.toJSON(),
           markdown: comparator.toMarkdown(),
           csv: comparator.toCsv()

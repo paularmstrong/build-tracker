@@ -1,20 +1,12 @@
 {
   "version-1.0.0-docs": {
-    "Getting Started": [
-      "version-1.0.0-installation",
-      "version-1.0.0-budgets"
-    ],
-    "Configuration": [
-      "version-1.0.0-configuration-app",
-      "version-1.0.0-configuration-cli"
-    ],
+    "Getting Started": ["version-1.0.0-installation", "version-1.0.0-budgets"],
+    "Configuration": ["version-1.0.0-app", "version-1.0.0-cli"],
     "Plugins": [
       "version-1.0.0-plugins/plugins",
       "version-1.0.0-plugins/withPostgres",
       "version-1.0.0-plugins/withMariadb"
     ],
-    "Contributing": [
-      "version-1.0.0-contributing"
-    ]
+    "Contributing": ["version-1.0.0-contributing"]
   }
 }

@@ -19,7 +19,7 @@ const getCSP = (allowUnsafeEval: boolean = false): IHelmetContentSecurityPolicyD
   manifestSrc: ["'self'"],
   mediaSrc: ["'self'"],
   objectSrc: ["'self'"],
-  scriptSrc: [allowUnsafeEval && "'unsafe-eval'", "'strict-dynamic'", getNonce].filter(Boolean),
+  scriptSrc: ["'self'", allowUnsafeEval && "'unsafe-eval'", "'strict-dynamic'", getNonce].filter(Boolean),
   styleSrc: ["'self'", "'unsafe-inline'"],
   upgradeInsecureRequests: false,
   workerSrc: ["'self'"]

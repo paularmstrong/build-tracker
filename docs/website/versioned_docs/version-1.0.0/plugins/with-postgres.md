@@ -9,9 +9,9 @@ Connecting your Build Tracker application to a PostgreSQL database is easy with 
 ## Installation
 
 ```sh
-yarn add @build-tracker/plugin-with-postgres
+yarn add @build-tracker/plugin-with-postgres@latest
 # or
-npm install --save @build-tracker/plugin-with-postgres
+npm install --save @build-tracker/plugin-with-postgres@latest
 ```
 
 ## Configuration

@@ -9,9 +9,9 @@ Connecting your Build Tracker application to a Maria database is easy with the h
 ## Installation
 
 ```sh
-yarn add @build-tracker/plugin-with-mariadb
+yarn add @build-tracker/plugin-with-mariadb@latest
 # or
-npm install --save @build-tracker/plugin-with-mariadb
+npm install --save @build-tracker/plugin-with-mariadb@latest
 ```
 
 ## Configuration

@@ -8,9 +8,9 @@ original_id: app
 ## Install
 
 ```sh
-yarn add @build-tracker/server
+yarn add @build-tracker/server@latest
 # or
-npm install --save @build-tracker/server
+npm install --save @build-tracker/server@latest
 ```
 
 Adding the `@build-tracker/server` package will install a binary available as `bt-server`. It can be run with `yarn bt-server` or `npx bt-server`

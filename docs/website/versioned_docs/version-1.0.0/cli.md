@@ -8,9 +8,9 @@ original_id: cli
 ## Install the CLI
 
 ```sh
-yarn add @build-tracker/cli
+yarn add @build-tracker/cli@latest
 # or
-npm install --save @build-tracker/cli
+npm install --save @build-tracker/cli@latest
 ```
 
 Adding the `@build-tracker/cli` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`

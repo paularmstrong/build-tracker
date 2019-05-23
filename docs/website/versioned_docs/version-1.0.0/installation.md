@@ -12,7 +12,7 @@ original_id: installation
 Install the Build Tracker server:
 
 ```sh
-yarn add @build-tracker/server
+yarn add @build-tracker/server@latest
 ```
 
 Create a configuration file, `build-tracker.config.js`
@@ -34,7 +34,7 @@ yarn bt-server
 Along with your application code, install the Build Tracker CLI:
 
 ```sh
-yarn add @build-tracker/cli
+yarn add @build-tracker/cli@latest
 ```
 
 Create a configuration file, `build-tracker.config.js`

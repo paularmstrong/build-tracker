@@ -20,6 +20,7 @@
     "@build-tracker/app": "^1.0.0-alpha.1",
     "@build-tracker/build": "^1.0.0-alpha.1",
     "@build-tracker/comparator": "^1.0.0-alpha.1",
+    "@build-tracker/formatting": "^1.0.0-alpha.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-pino-logger": "^4.0.0",

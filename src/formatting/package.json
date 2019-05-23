@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/formatting",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "Build Tracker number and string formatting tools",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

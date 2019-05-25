@@ -82,5 +82,18 @@ describe('Server', () => {
 `);
         });
     });
+
+    test('sets the page title from the name', () => {
+      app.use((_req: Request, res: Response, next: NextFunction) => {
+        res.locals.props = { artifactConfig: {}, name: 'Tacos!' };
+        next();
+      });
+      app.get('/', serverRenderer({ children: [{ name: 'client', assetsByChunkName: { app: 'app.js' } }] }));
+      return request(app)
+        .get('/')
+        .then(res => {
+          expect(res.text).toMatch('<title>Tacos! : Build Tracker</title>');
+        });
+    });
   });
 });

@@ -23,6 +23,7 @@ export interface State {
   disabledArtifactsVisible: boolean;
   focusedRevision?: string;
   hoveredArtifacts: Array<string>;
+  name: string;
   snacks: Array<string>;
   sizeKey: string;
   url: string;

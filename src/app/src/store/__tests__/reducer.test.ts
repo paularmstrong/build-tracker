@@ -19,6 +19,7 @@ const initialState: State = Object.freeze({
   dateRange: undefined,
   disabledArtifactsVisible: true,
   hoveredArtifacts: [],
+  name: 'Tacos!',
   snacks: [],
   sizeKey: '',
   url: 'https://build-tracker.local'

@@ -18,6 +18,7 @@ export default function makeStore(initialState: Partial<State> = {}): Store<Stat
     comparedRevisions: [],
     disabledArtifactsVisible: true,
     hoveredArtifacts: [],
+    name: 'Build Tracker',
     snacks: [],
     sizeKey: '',
     ...initialState

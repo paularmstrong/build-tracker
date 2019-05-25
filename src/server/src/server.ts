@@ -39,7 +39,8 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
 ): void => {
   res.locals.props = {
     url,
-    artifactConfig: config.artifacts
+    artifactConfig: config.artifacts,
+    name: config.name
   };
   next();
 };

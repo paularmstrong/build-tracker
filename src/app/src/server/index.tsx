@@ -26,6 +26,7 @@ AppRegistry.registerComponent('App', () => App);
 
 export function getPageHTML(nonce: string, state: Partial<State>, scripts: Array<string>): string {
   const store = makeStore(state);
+  const { name } = store.getState();
 
   // @ts-ignore
   const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: { store } });
@@ -36,7 +37,7 @@ export function getPageHTML(nonce: string, state: Partial<State>, scripts: Array
 <html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Build Tracker</title>
+<title>${name === 'Build Tracker' ? name : `${name} : Build Tracker`}</title>
 <style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
 <body>

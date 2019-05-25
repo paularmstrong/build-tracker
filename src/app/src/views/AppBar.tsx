@@ -15,8 +15,8 @@ import { useDispatch, useMappedState } from 'redux-react-hook';
 interface MappedState {
   activeComparator: State['activeComparator'];
   activeArtifacts: State['activeArtifacts'];
-  comparator: State['comparator'];
   comparedRevisions: State['comparedRevisions'];
+  name: State['name'];
   sizeKey: string;
   url: string;
 }
@@ -25,8 +25,8 @@ const mapState = (state: State): MappedState => {
   return {
     activeComparator: state.activeComparator,
     activeArtifacts: state.activeArtifacts,
-    comparator: state.comparator,
     comparedRevisions: state.comparedRevisions,
+    name: state.name,
     sizeKey: state.sizeKey || state.comparator.sizeKeys[0],
     url: state.url
   };
@@ -34,7 +34,7 @@ const mapState = (state: State): MappedState => {
 
 const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactElement => {
   const { drawerRef } = props;
-  const { activeArtifacts, activeComparator, comparedRevisions, sizeKey } = useMappedState(mapState);
+  const { activeArtifacts, activeComparator, comparedRevisions, name, sizeKey } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const appBarRef = React.useRef<AppBarHandles>(null);
@@ -92,7 +92,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactE
         ) : null
       }
       ref={appBarRef}
-      title="Build Tracker"
+      title={name}
     />
   );
 };

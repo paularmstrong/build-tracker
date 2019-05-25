@@ -71,4 +71,5 @@ export interface AppConfig {
    * @type {Array<Budget>}
    */
   budgets?: Array<Budget>;
+  name?: string;
 }

@@ -25,6 +25,7 @@ module.exports = {
       }
     ]
   },
+  name: 'Static Fixtures',
   queries: {
     build: {
       byRevision: async revision => {

@@ -9,12 +9,12 @@
     <logo>https://buildtracker.dev/img/logo.svg</logo>
     <rights>Copyright © 2019 Paul Armstrong</rights>
     <entry>
-        <title type="html"><![CDATA[Build Tracker v1.0.0]]></title>
+        <title type="html"><![CDATA[Build Tracker v1.0.0 Roadmap]]></title>
         <id>https://buildtracker.dev/blog/2019/03/22/version-1.html</id>
         <link href="https://buildtracker.dev/blog/2019/03/22/version-1.html">
         </link>
         <updated>2019-03-22T06:00:00Z</updated>
-        <summary type="html"><![CDATA[<p>It's finally here</p> ]]></summary>
+        <summary type="html"><![CDATA[<p>It's finally here! Well, sort of.</p> <p>Build Tracker is currently testing at v1.0.0-alpha.x. Much of the 1.0.0 API is finalized, but there are a few <a href="https://github.com/paularmstrong/build-tracker/issues?q=is%3Aopen+is%3Aissue+milestone%3Av1.0.0">features and bugs</a> to get finished up before it can be declared final.</p> <p>In general, the main pieces currentl...</p>]]></summary>
         <author>
             <name>Paul Armstrong</name>
             <uri>http://twitter.com/paularmstrong</uri>

@@ -7,6 +7,7 @@
       "version-1.0.0-plugins/withPostgres",
       "version-1.0.0-plugins/withMariadb"
     ],
+    "Guides": ["version-1.0.0-guides/guides"],
     "Contributing": ["version-1.0.0-contributing/contributing", "version-1.0.0-contributing/docs"]
   }
 }

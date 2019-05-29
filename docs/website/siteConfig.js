@@ -36,6 +36,7 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     { doc: 'installation', label: 'Docs' },
+    { doc: 'guides/guides', label: 'Guides' },
     { href: 'https://build-tracker-demo.herokuapp.com', label: 'Demo' },
     { href: 'https://github.com/paularmstrong/build-tracker', label: 'GitHub' },
     { blog: true, label: 'Blog' }

@@ -3,7 +3,6 @@
     "Getting Started": ["installation", "budgets"],
     "Configuration": ["app", "cli"],
     "Plugins": ["plugins/plugins", "plugins/withPostgres", "plugins/withMariadb"],
-    "Guides": ["guides/guides"],
-    "Contributing": ["contributing/contributing", "contributing/docs"]
+    "Guides": ["guides/guides", "guides/writing-docs", "guides/development"]
   }
 }

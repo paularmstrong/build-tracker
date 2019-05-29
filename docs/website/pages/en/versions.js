@@ -26,6 +26,7 @@ function Versions(props) {
           <header className="postHeader">
             <h1>{siteConfig.title} Versions</h1>
           </header>
+          {/*
           <h3 id="latest">Current version (Stable)</h3>
           <p>Latest version of Build Tracker.</p>
           <table className="versions">
@@ -33,9 +34,7 @@ function Versions(props) {
               <tr>
                 <th>{latestVersion}</th>
                 <td>
-                  <a href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/${props.language}/installation`}>
-                    Documentation
-                  </a>
+                  <a href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/${props.language}installation`}>Documentation</a>
                 </td>
                 <td>
                   <a href={`${repoUrl}/releases/tag/v${latestVersion}`}>Release Notes</a>
@@ -43,8 +42,10 @@ function Versions(props) {
               </tr>
             </tbody>
           </table>
+        */}
           <h3 id="rc">Latest Version</h3>
-          Here you can find the latest documentation and unreleased code.
+          Here you can find the latest documentation and unreleased code. The current version is available via NPM using
+          the version <code>@latest</code>
           <table className="versions">
             <tbody>
               <tr>

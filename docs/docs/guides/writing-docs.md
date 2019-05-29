@@ -1,7 +1,10 @@
 ---
-id: docs
-title: Contributing Documentation
-sidebar_label: Documentation
+id: writing-docs
+title: Writing documentation
+---
+
+Thank you for your interest in helping out with Build Tracker! This is a project done with joy and care, out of our free time. Before getting started, please familiarize yourself with the [Contributor Covenant Code of Conduct](https://github.com/paularmstrong/build-tracker/blob/next/CODE_OF_CONDUCT.md).
+
 ---
 
 Documentation is a great place to get started contributing to the Build Tracker project because writing good docs is difficult. For that reason, your help is _always_ appreciated.

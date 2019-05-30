@@ -6,7 +6,7 @@ import Build from '@build-tracker/build';
 import ColorScale from '../../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import { stack } from 'd3-shape';
 import { timerFlush } from 'd3-timer';
 import { scaleLinear, scalePoint } from 'd3-scale';

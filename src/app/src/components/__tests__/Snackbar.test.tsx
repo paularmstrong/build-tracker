@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import Snackbar from '../Snackbar';
 
 describe('Snackbar', () => {

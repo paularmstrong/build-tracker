@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import Tooltip from '../Tooltip';
 import { Dimensions, MeasureOnSuccessCallback, View } from 'react-native';
 

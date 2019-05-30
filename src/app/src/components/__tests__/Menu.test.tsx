@@ -4,7 +4,7 @@
 import Menu from '../Menu';
 import MenuItem from '../MenuItem';
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import { View } from 'react-native';
 
 describe('Menu', () => {

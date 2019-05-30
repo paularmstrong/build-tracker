@@ -2,20 +2,17 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import AppBar from '../AppBar';
-import Button from '../Button';
-import Menu from '../Menu';
 import MenuIcon from '../../icons/Menu';
 import MenuItem from '../MenuItem';
-import MoreIcon from '../../icons/More';
 import React from 'react';
-import { fireEvent, render } from 'react-native-testing-library';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('AppBar', () => {
   describe('rendering', () => {
     test('renders a blank bar', () => {
-      const { getByType } = render(<AppBar />);
-      expect(() => getByType(Text)).toThrow();
+      const { getByText } = render(<AppBar />);
+      expect(() => getByText(/.*/)).toThrow();
     });
 
     test('renders a basic bar with a title when given a string', () => {
@@ -29,10 +26,10 @@ describe('AppBar', () => {
       expect(getByTestId('foo')).not.toBeUndefined();
     });
 
-    test('renders a button when provided a navigationIcon', () => {
-      const { getByType } = render(<AppBar navigationIcon={MenuIcon} />);
-      const button = getByType(Button);
-      expect(button.props).toEqual(expect.objectContaining({ color: 'primary', icon: MenuIcon, title: 'Menu' }));
+    test('renders a button without text when provided a navigationIcon', () => {
+      const { queryAllByRole, queryAllByText } = render(<AppBar navigationIcon={MenuIcon} />);
+      expect(queryAllByRole('button')).toHaveLength(1);
+      expect(queryAllByText('Menu')).toHaveLength(0);
     });
 
     test('renders action items', () => {
@@ -43,41 +40,43 @@ describe('AppBar', () => {
     });
 
     test('renders a button for overflow items', () => {
-      const { getByType } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
-      expect(getByType(Button).props).toMatchObject({
-        icon: MoreIcon,
-        iconOnly: true,
-        title: 'More actions'
-      });
+      const { queryAllByRole } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
+      expect(queryAllByRole('button')).toHaveLength(1);
     });
   });
 
   describe('overflow items', () => {
     test('shows a menu on button press', () => {
-      const { getByType, queryAllByProps } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
-      fireEvent.press(getByType(Button));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(2);
+      const { getByRole, queryAllByRole } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
+      expect(queryAllByRole('menu')).toHaveLength(0);
+      fireEvent.touchStart(getByRole('button'));
+      fireEvent.touchEnd(getByRole('button'));
+      expect(queryAllByRole('menu')).toHaveLength(1);
     });
 
     test('hides the menu on dismiss', () => {
-      const { getByType, queryAllByProps } = render(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
-      fireEvent.press(getByType(Button));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(2);
-      fireEvent(getByType(Menu), 'dismiss');
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+      const { getByRole, getByTestId, queryAllByRole } = render(
+        <AppBar overflowItems={<MenuItem key={0} label="tacos" />} />
+      );
+      fireEvent.touchStart(getByRole('button'));
+      fireEvent.touchEnd(getByRole('button'));
+      expect(queryAllByRole('menu')).toHaveLength(1);
+      fireEvent.touchStart(getByTestId('overlay'));
+      fireEvent.touchEnd(getByTestId('overlay'));
+      expect(queryAllByRole('menu')).toHaveLength(0);
     });
 
     test('does not re-show the menu when overflowItems changes', () => {
-      const { getByType, queryAllByProps, update } = render(
+      const { getByRole, queryAllByRole, rerender } = render(
         <AppBar overflowItems={<MenuItem key={0} label="tacos" />} />
       );
-      fireEvent.press(getByType(Button));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(2);
-      update(<AppBar overflowItems={null} />);
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
-      update(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+      fireEvent.touchStart(getByRole('button'));
+      fireEvent.touchEnd(getByRole('button'));
+      expect(queryAllByRole('menu')).toHaveLength(1);
+      rerender(<AppBar overflowItems={null} />);
+      expect(queryAllByRole('menu')).toHaveLength(0);
+      rerender(<AppBar overflowItems={<MenuItem key={0} label="tacos" />} />);
+      expect(queryAllByRole('menu')).toHaveLength(0);
     });
   });
 });

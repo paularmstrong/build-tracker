@@ -8,7 +8,7 @@ import Comparator from '@build-tracker/comparator';
 import HoverOverlay from '../HoverOverlay';
 import React from 'react';
 import { stack } from 'd3-shape';
-import { fireEvent, render } from 'react-testing-library';
+import { fireEvent, render } from '@testing-library/react';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
 const xScale = scalePoint()

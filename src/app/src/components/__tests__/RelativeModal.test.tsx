@@ -4,7 +4,7 @@
 import React from 'react';
 import RelativeModal from '../RelativeModal';
 import { Dimensions, MeasureOnSuccessCallback, Text, View } from 'react-native';
-import { fireEvent, render } from 'react-testing-library';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('RelativeModal', () => {
   let viewRef;

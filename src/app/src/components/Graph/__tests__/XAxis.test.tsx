@@ -4,7 +4,7 @@
 import * as Axes from 'd3-axis';
 import * as Selection from 'd3-selection';
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import { scalePoint } from 'd3-scale';
 import XAxis from '../XAxis';
 

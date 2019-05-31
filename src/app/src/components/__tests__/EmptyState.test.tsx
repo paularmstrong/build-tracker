@@ -3,7 +3,7 @@
  */
 import EmptyState from '../EmptyState';
 import React from 'react';
-import { render } from 'react-native-testing-library';
+import { render } from '@testing-library/react';
 
 describe('EmptyState', () => {
   test('renders a message', () => {

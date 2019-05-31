@@ -4,7 +4,7 @@
 import DatePicker from '../DatePicker';
 import React from 'react';
 import { View } from 'react-native';
-import { fireEvent, render } from 'react-native-testing-library';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('DatePicker', () => {
   let viewRef;
@@ -15,47 +15,68 @@ describe('DatePicker', () => {
 
   describe('minDate', () => {
     test('disables days before the minDate', () => {
-      const { queryAllByProps } = render(
-        <DatePicker minDate={new Date(2019, 2, 26)} relativeTo={viewRef} selectedDate={new Date(2019, 2, 27)} />
+      const handleSelect = jest.fn();
+      const { getByLabelText } = render(
+        <DatePicker
+          minDate={new Date(2019, 2, 26)}
+          onSelect={handleSelect}
+          relativeTo={viewRef}
+          selectedDate={new Date(2019, 2, 27)}
+        />
       );
-      expect(queryAllByProps({ accessibilityLabel: '2019-03-25', disabled: true, type: 'text' })).toHaveLength(1);
+      const beforeDay = getByLabelText('2019-03-25');
+      fireEvent.touchStart(beforeDay);
+      fireEvent.touchEnd(beforeDay);
+      expect(handleSelect).not.toHaveBeenCalled();
     });
   });
 
   describe('maxDate', () => {
     test('disables days after the maxDate', () => {
-      const { queryAllByProps } = render(
-        <DatePicker maxDate={new Date(2019, 2, 26)} relativeTo={viewRef} selectedDate={new Date(2019, 2, 23)} />
+      const handleSelect = jest.fn();
+      const { getByLabelText } = render(
+        <DatePicker
+          maxDate={new Date(2019, 2, 26)}
+          onSelect={handleSelect}
+          relativeTo={viewRef}
+          selectedDate={new Date(2019, 2, 23)}
+        />
       );
-      expect(queryAllByProps({ accessibilityLabel: '2019-03-27', disabled: true, type: 'text' })).toHaveLength(1);
+      const afterDay = getByLabelText('2019-03-27');
+      fireEvent.touchStart(afterDay);
+      fireEvent.touchEnd(afterDay);
+      expect(handleSelect).not.toHaveBeenCalled();
     });
   });
 
   describe('selectedDate', () => {
     test('sets a different style for the selected date', () => {
-      const { queryAllByProps } = render(<DatePicker relativeTo={viewRef} selectedDate={new Date(2019, 2, 23)} />);
-      expect(queryAllByProps({ accessibilityLabel: '2019-03-23', disabled: false, type: 'unelevated' })).toHaveLength(
-        1
-      );
+      const { getByLabelText } = render(<DatePicker relativeTo={viewRef} selectedDate={new Date(2019, 2, 23)} />);
+      const today = getByLabelText('2019-03-23');
+      const yesterday = getByLabelText('2019-03-22');
+      // @ts-ignore
+      expect(yesterday.style).not.toEqual(today.style);
     });
   });
 
   describe('navigation', () => {
     test('next month moves forward', () => {
-      const { getByProps, queryAllByText } = render(
+      const { getByLabelText, queryAllByText } = render(
         <DatePicker relativeTo={viewRef} selectedDate={new Date(2019, 2, 23)} />
       );
       expect(queryAllByText('March')).toHaveLength(1);
-      fireEvent.press(getByProps({ title: 'Next month' }));
+      fireEvent.touchStart(getByLabelText('Next month'));
+      fireEvent.touchEnd(getByLabelText('Next month'));
       expect(queryAllByText('April')).toHaveLength(1);
     });
 
     test('previous month moves forward', () => {
-      const { getByProps, queryAllByText } = render(
+      const { getByLabelText, queryAllByText } = render(
         <DatePicker relativeTo={viewRef} selectedDate={new Date(2019, 2, 23)} />
       );
       expect(queryAllByText('March')).toHaveLength(1);
-      fireEvent.press(getByProps({ title: 'Previous month' }));
+      fireEvent.touchStart(getByLabelText('Previous month'));
+      fireEvent.touchEnd(getByLabelText('Previous month'));
       expect(queryAllByText('February')).toHaveLength(1);
     });
   });
@@ -63,10 +84,11 @@ describe('DatePicker', () => {
   describe('onSelect', () => {
     test('fires when day button is pressed', () => {
       const handleSelect = jest.fn();
-      const { getByProps } = render(
+      const { getByLabelText } = render(
         <DatePicker onSelect={handleSelect} relativeTo={viewRef} selectedDate={new Date(2019, 2, 23)} />
       );
-      fireEvent.press(getByProps({ accessibilityLabel: '2019-03-24', disabled: false }));
+      fireEvent.touchStart(getByLabelText('2019-03-24'));
+      fireEvent.touchEnd(getByLabelText('2019-03-24'));
       expect(handleSelect).toHaveBeenCalledWith(new Date(2019, 2, 24));
     });
   });

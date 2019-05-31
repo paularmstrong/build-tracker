@@ -13,6 +13,7 @@ import getDaysInMonth from 'date-fns/get_days_in_month';
 import isSameDay from 'date-fns/is_same_day';
 import isSameMonth from 'date-fns/is_same_month';
 import isToday from 'date-fns/is_today';
+import isValidDate from 'date-fns/is_valid';
 import React from 'react';
 import RelativeModal from './RelativeModal';
 import startOfMonth from 'date-fns/start_of_month';
@@ -38,7 +39,13 @@ const DatePicker = (props: Props): React.ReactElement => {
     selectedDate = startOfToday()
   } = props;
 
+  const [propSelectedDate, setPropSelectedDate] = React.useState<Date>(selectedDate);
   const [currentMonth, setCurrentMonth] = React.useState<Date>(startOfMonth(selectedDate));
+
+  if (isValidDate(selectedDate) && !isSameDay(propSelectedDate, selectedDate)) {
+    setPropSelectedDate(selectedDate);
+    setCurrentMonth(startOfMonth(selectedDate));
+  }
 
   const daysInMonth = getDaysInMonth(currentMonth);
   const startDate = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 0 });

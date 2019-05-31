@@ -3,49 +3,48 @@
  */
 import Drawer from '../Drawer';
 import React from 'react';
-import { fireEvent, render } from 'react-native-testing-library';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('Drawer', () => {
   describe('hidden', () => {
     test('is hidden initially', () => {
-      const { getByType } = render(
+      const { getByRole } = render(
         <Drawer hidden>
           <div />
         </Drawer>
       );
-      expect(getByType(ScrollView).props['aria-hidden']).toBe(true);
-      const styles = StyleSheet.flatten(getByType(ScrollView).props.style);
-      expect(styles).toMatchObject({ maxWidth: 300, left: -300, position: 'absolute' });
+      expect(getByRole('nav').getAttribute('aria-hidden')).toBe('true');
     });
   });
 
   describe('show', () => {
     test('makes the drawer visible', () => {
-      const { getByType } = render(
-        <Drawer hidden>
+      const ref = React.createRef<Drawer>();
+      const { getByRole } = render(
+        // @ts-ignore
+        <Drawer hidden ref={ref}>
           <div />
         </Drawer>
       );
-      getByType(Drawer).instance.show();
-      expect(getByType(ScrollView).props['aria-hidden']).toBe(false);
-      const styles = StyleSheet.flatten(getByType(ScrollView).props.style);
-      expect(styles).toMatchObject({ maxWidth: 300, left: 0 });
+      ref.current.show();
+      expect(getByRole('nav').getAttribute('aria-hidden')).toBe('false');
     });
   });
 
   describe('scrim', () => {
-    test('hides the drawer when presse3d', () => {
-      const { getByType } = render(
-        <Drawer hidden>
+    test('hides the drawer when pressed', () => {
+      const ref = React.createRef<Drawer>();
+      const { getByLabelText, getByRole } = render(
+        // @ts-ignore
+        <Drawer hidden ref={ref}>
           <div />
         </Drawer>
       );
-      getByType(Drawer).instance.show();
-      fireEvent.press(getByType(TouchableOpacity));
-      expect(getByType(ScrollView).props['aria-hidden']).toBe(true);
-      const styles = StyleSheet.flatten(getByType(ScrollView).props.style);
-      expect(styles).toMatchObject({ maxWidth: 300, left: -300, position: 'absolute' });
+      ref.current.show();
+
+      fireEvent.touchStart(getByLabelText('Dismiss navigation'));
+      fireEvent.touchEnd(getByLabelText('Dismiss navigation'));
+      expect(getByRole('nav').getAttribute('aria-hidden')).toBe('true');
     });
   });
 });

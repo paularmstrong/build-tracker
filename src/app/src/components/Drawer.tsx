@@ -38,6 +38,7 @@ class Drawer extends React.Component<Props, State> {
         {
           // @ts-ignore pointerEvents is web-only
           <TouchableOpacity
+            accessibilityLabel="Dismiss navigation"
             activeOpacity={0.32}
             onPress={this._hideDrawer}
             pointerEvents={forceShow ? 'box-only' : 'none'}

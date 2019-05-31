@@ -4,7 +4,7 @@
 import Hoverable from '../Hoverable';
 import React from 'react';
 import { View } from 'react-native';
-import { fireEvent, render } from 'react-native-testing-library';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('Hoverable', () => {
   describe('when hover is supported', () => {
@@ -18,7 +18,7 @@ describe('Hoverable', () => {
         const hoverFn = jest.fn(() => <View testID="foo" />);
         const TestHover = (): React.ReactElement => <Hoverable>{hoverFn}</Hoverable>;
         const { getByTestId } = render(<TestHover />);
-        fireEvent(getByTestId('foo'), 'mouseEnter');
+        fireEvent.mouseEnter(getByTestId('foo'));
         expect(hoverFn).toHaveBeenCalledWith(true);
       });
 
@@ -26,8 +26,8 @@ describe('Hoverable', () => {
         const hoverFn = jest.fn(() => <View testID="foo" />);
         const TestHover = (): React.ReactElement => <Hoverable>{hoverFn}</Hoverable>;
         const { getByTestId } = render(<TestHover />);
-        fireEvent(getByTestId('foo'), 'mouseEnter');
-        fireEvent(getByTestId('foo'), 'mouseLeave');
+        fireEvent.mouseEnter(getByTestId('foo'));
+        fireEvent.mouseLeave(getByTestId('foo'));
         expect(hoverFn).toHaveBeenNthCalledWith(1, false);
         expect(hoverFn).toHaveBeenNthCalledWith(2, true);
         expect(hoverFn).toHaveBeenNthCalledWith(3, false);
@@ -43,7 +43,7 @@ describe('Hoverable', () => {
           </Hoverable>
         );
         const { getByTestId } = render(<TestHover />);
-        fireEvent(getByTestId('foo'), 'mouseEnter');
+        fireEvent.mouseEnter(getByTestId('foo'));
         expect(hoverFn).toHaveBeenCalled();
       });
 
@@ -55,8 +55,8 @@ describe('Hoverable', () => {
           </Hoverable>
         );
         const { getByTestId } = render(<TestHover />);
-        fireEvent(getByTestId('foo'), 'mouseEnter');
-        fireEvent(getByTestId('foo'), 'mouseLeave');
+        fireEvent.mouseEnter(getByTestId('foo'));
+        fireEvent.mouseLeave(getByTestId('foo'));
         expect(hoverFn).toHaveBeenCalled();
       });
     });
@@ -72,7 +72,7 @@ describe('Hoverable', () => {
       const hoverFn = jest.fn(() => <View testID="foo" />);
       const TestHover = (): React.ReactElement => <Hoverable>{hoverFn}</Hoverable>;
       const { getByTestId } = render(<TestHover />);
-      fireEvent(getByTestId('foo'), 'mouseEnter');
+      fireEvent.mouseEnter(getByTestId('foo'));
       expect(hoverFn).not.toHaveBeenCalledWith(true);
     });
 
@@ -80,8 +80,8 @@ describe('Hoverable', () => {
       const hoverFn = jest.fn(() => <View testID="foo" />);
       const TestHover = (): React.ReactElement => <Hoverable>{hoverFn}</Hoverable>;
       const { getByTestId } = render(<TestHover />);
-      fireEvent(getByTestId('foo'), 'mouseEnter');
-      fireEvent(getByTestId('foo'), 'mouseLeave');
+      fireEvent.mouseEnter(getByTestId('foo'));
+      fireEvent.mouseLeave(getByTestId('foo'));
       expect(hoverFn).not.toHaveBeenCalledWith(true);
     });
   });

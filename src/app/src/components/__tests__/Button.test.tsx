@@ -3,16 +3,15 @@
  */
 import Button from '../Button';
 import React from 'react';
-import Ripple from '../Ripple';
-import { fireEvent, render } from 'react-native-testing-library';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { fireEvent, render } from '@testing-library/react';
 
 describe('Button', () => {
   describe('icon', () => {
     test('renders an icon before the title', () => {
-      const FakeIcon = (): React.ReactElement => <div />;
-      const { getByType } = render(<Button icon={FakeIcon} title="tacos" />);
-      expect(getByType(FakeIcon)).not.toBeUndefined();
+      const FakeIcon = (): React.ReactElement => <div data-testid="icon" />;
+      const { getByTestId, queryAllByText } = render(<Button icon={FakeIcon} title="tacos" />);
+      expect(getByTestId('icon')).not.toBeUndefined();
+      expect(queryAllByText('tacos')).toHaveLength(1);
     });
 
     test('does not render the title when iconOnly', () => {
@@ -25,15 +24,17 @@ describe('Button', () => {
   describe('onPress', () => {
     test('property is called when button is pressed', () => {
       const handlePress = jest.fn();
-      const { getByType } = render(<Button onPress={handlePress} title="tacos" />);
-      fireEvent.press(getByType(TouchableOpacity));
+      const { getByRole } = render(<Button onPress={handlePress} title="tacos" />);
+      fireEvent.touchStart(getByRole('button'));
+      fireEvent.touchEnd(getByRole('button'));
       expect(handlePress).toHaveBeenCalled();
     });
 
     test('property is not called when disabled', () => {
       const handlePress = jest.fn();
-      const { getByType } = render(<Button disabled onPress={handlePress} title="tacos" />);
-      fireEvent.press(getByType(TouchableOpacity));
+      const { getByRole } = render(<Button disabled onPress={handlePress} title="tacos" />);
+      fireEvent.touchStart(getByRole('button'));
+      fireEvent.touchEnd(getByRole('button'));
       expect(handlePress).not.toHaveBeenCalled();
     });
   });
@@ -41,36 +42,29 @@ describe('Button', () => {
   describe('styles', () => {
     describe('active', () => {
       test('sets active styles while press inside', () => {
-        const { getByType } = render(<Button title="tacos" type="raised" />);
-        fireEvent(getByType(TouchableOpacity), 'pressIn', { nativeEvent: { locationX: 0, locationY: 0 } });
-        expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 3
-        });
+        const { getByRole } = render(<Button title="tacos" type="raised" />);
+        fireEvent.touchStart(getByRole('button'), { locationX: 0, locationY: 0 });
+        // @ts-ignore
+        expect(getByRole('button').firstChild.style.boxShadow).toEqual('0px 2px 3px rgba(0,0,0,0.30)');
+        fireEvent.touchEnd(getByRole('button'), { locationX: 0, locationY: 0 });
       });
 
       test('removes active styles after press out', () => {
-        const { getByType } = render(<Button title="tacos" type="raised" />);
-        fireEvent(getByType(TouchableOpacity), 'pressIn', { nativeEvent: { locationX: 0, locationY: 0 } });
-        fireEvent(getByType(TouchableOpacity), 'pressOut', { nativeEvent: { locationX: 0, locationY: 0 } });
-        expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5
-        });
+        const { getByRole } = render(<Button title="tacos" type="raised" />);
+        fireEvent.touchStart(getByRole('button'), { locationX: 0, locationY: 0 });
+        fireEvent.touchEnd(getByRole('button'), { locationX: 0, locationY: 0 });
+        // @ts-ignore
+        expect(getByRole('button').firstChild.style.boxShadow).toEqual('0px 2px 5px rgba(0,0,0,0.30)');
       });
 
       test('when disabled, does not set active styles', () => {
-        const { getByType } = render(<Button disabled title="tacos" type="raised" />);
-        fireEvent(getByType(TouchableOpacity), 'pressIn', { nativeEvent: { locationX: 0, locationY: 0 } });
-        expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5
-        });
-        fireEvent(getByType(TouchableOpacity), 'pressOut', { nativeEvent: { locationX: 0, locationY: 0 } });
-        expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5
-        });
+        const { getByRole } = render(<Button disabled title="tacos" type="raised" />);
+        fireEvent.touchStart(getByRole('button'), { locationX: 0, locationY: 0 });
+        // @ts-ignore
+        expect(getByRole('button').firstChild.style.boxShadow).toEqual('0px 2px 5px rgba(0,0,0,0.30)');
+        fireEvent.touchEnd(getByRole('button'), { locationX: 0, locationY: 0 });
+        // @ts-ignore
+        expect(getByRole('button').firstChild.style.boxShadow).toEqual('0px 2px 5px rgba(0,0,0,0.30)');
       });
     });
   });

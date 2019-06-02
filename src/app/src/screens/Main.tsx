@@ -4,7 +4,7 @@
 import * as Theme from '../theme';
 import AppBarView from '../views/AppBar';
 import Build from '@build-tracker/build';
-import Drawer from '../components/Drawer';
+import { Handles as DrawerHandles } from '../components/Drawer';
 import DrawerView from '../views/Drawer';
 import { fetch } from 'cross-fetch';
 import Graph from '../views/Graph';
@@ -41,7 +41,7 @@ enum FetchState {
 }
 
 const Main = (): React.ReactElement => {
-  const drawerRef: React.RefObject<Drawer> = React.useRef(null);
+  const drawerRef = React.useRef<DrawerHandles>(null);
 
   const { buildsCount, dateRange, showComparisonTable, url } = useMappedState(mapState);
   const [fetchState, setFetchState] = React.useState<FetchState>(FetchState.NONE);

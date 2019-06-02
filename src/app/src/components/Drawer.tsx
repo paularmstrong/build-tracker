@@ -12,60 +12,50 @@ interface Props {
   hidden?: boolean;
 }
 
-interface State {
-  forceShow: boolean;
+export interface Handles {
+  show: () => void;
 }
+const Drawer: React.RefForwardingComponent<Handles, Props> = (
+  props: Props,
+  ref: React.RefObject<Handles>
+): React.ReactElement => {
+  const { children, header, hidden = false } = props;
+  const [forceShow, setForceShow] = React.useState(false);
 
-class Drawer extends React.Component<Props, State> {
-  public static defaultProps = {
-    hidden: false
-  };
-  public state = { forceShow: false };
+  React.useImperativeHandle(ref, () => ({
+    show: () => {
+      setForceShow(true);
+    }
+  }));
 
-  public shouldComponentUpdate(_: Props, prevState: State): boolean {
-    const { hidden } = this.props;
-    const { forceShow } = this.state;
-    return !hidden || forceShow || forceShow !== prevState.forceShow;
-  }
+  const hideDrawerHandler = React.useCallback(() => {
+    setForceShow(false);
+  }, []);
 
-  // TODO: on route change, hide the drawer
+  return (
+    <React.Fragment>
+      {
+        // @ts-ignore pointerEvents is web-only
+        <TouchableOpacity
+          activeOpacity={0.32}
+          onPress={hideDrawerHandler}
+          pointerEvents={forceShow ? 'box-only' : 'none'}
+          style={[styles.scrim, hidden && forceShow && styles.showScrim]}
+        />
+      }
 
-  public render(): React.ReactNode {
-    const { children, header, hidden } = this.props;
-    const { forceShow } = this.state;
-    return (
-      <React.Fragment>
-        {
-          // @ts-ignore pointerEvents is web-only
-          <TouchableOpacity
-            activeOpacity={0.32}
-            onPress={this._hideDrawer}
-            pointerEvents={forceShow ? 'box-only' : 'none'}
-            style={[styles.scrim, hidden && forceShow && styles.showScrim]}
-          />
-        }
-
-        <ScrollView
-          // @ts-ignore
-          accessibilityRole="nav"
-          aria-hidden={hidden && !forceShow}
-          style={[styles.root, hidden && styles.hidden, forceShow && styles.forceShow]}
-        >
-          {header || null}
-          <>{children}</>
-        </ScrollView>
-      </React.Fragment>
-    );
-  }
-
-  public show = () => {
-    this.setState({ forceShow: true });
-  };
-
-  private _hideDrawer = () => {
-    this.setState({ forceShow: false });
-  };
-}
+      <ScrollView
+        // @ts-ignore
+        accessibilityRole="nav"
+        aria-hidden={hidden && !forceShow}
+        style={[styles.root, hidden && styles.hidden, forceShow && styles.forceShow]}
+      >
+        {header || null}
+        <>{children}</>
+      </ScrollView>
+    </React.Fragment>
+  );
+};
 
 const styles = StyleSheet.create({
   root: {
@@ -117,4 +107,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Drawer;
+export default React.forwardRef(Drawer);

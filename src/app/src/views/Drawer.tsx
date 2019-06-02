@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import ColorScalePicker from '../components/ColorScalePicker';
 import DateTextField from '../components/DateTextField';
 import Divider from '../components/Divider';
-import Drawer from '../components/Drawer';
 import DrawerLink from '../components/DrawerLink';
 import endOfDay from 'date-fns/end_of_day';
 import HeartIcon from '../icons/Heart';
@@ -17,6 +16,7 @@ import SizeKeyPicker from '../components/SizeKeyPicker';
 import startOfDay from 'date-fns/start_of_day';
 import { State } from '../store/types';
 import Subtitle from '../components/Subtitle';
+import Drawer, { Handles as DrawerHandles } from '../components/Drawer';
 import { setDateRange, setDisabledArtifactsVisible } from '../store/actions';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import { useDispatch, useMappedState } from 'redux-react-hook';
@@ -37,7 +37,7 @@ const mapState = (state: State): MappedState => ({
   storeStart: state.dateRange ? state.dateRange.start : null
 });
 
-const DrawerView = (_props: {}, ref: React.RefObject<Drawer>): React.ReactElement => {
+const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.ReactElement => {
   const { comparator, disabledArtifactsVisible, storeEnd, storeStart } = useMappedState(mapState);
   const dispatch = useDispatch();
 

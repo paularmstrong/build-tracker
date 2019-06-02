@@ -3,7 +3,7 @@
  */
 import { ArtifactRow } from '@build-tracker/comparator';
 import { Clipboard } from 'react-native';
-import Drawer from '../components/Drawer';
+import { Handles as DrawerHandles } from '../components/Drawer';
 import MenuIcon from '../icons/Menu';
 import MenuItem from '../components/MenuItem';
 import React from 'react';
@@ -32,7 +32,7 @@ const mapState = (state: State): MappedState => {
   };
 };
 
-const AppBarView = (props: { drawerRef: React.RefObject<Drawer> }): React.ReactElement => {
+const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React.ReactElement => {
   const { drawerRef } = props;
   const { activeArtifacts, activeComparator, comparedRevisions, name, sizeKey } = useMappedState(mapState);
   const dispatch = useDispatch();

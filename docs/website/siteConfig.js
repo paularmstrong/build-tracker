@@ -37,6 +37,7 @@ const siteConfig = {
   headerLinks: [
     { doc: 'installation', label: 'Docs' },
     { doc: 'guides/guides', label: 'Guides' },
+    { search: true },
     { href: 'https://build-tracker-demo.herokuapp.com', label: 'Demo' },
     { href: 'https://github.com/paularmstrong/build-tracker', label: 'GitHub' },
     { blog: true, label: 'Blog' }
@@ -84,7 +85,13 @@ const siteConfig = {
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
-  repoUrl: 'https://github.com/paularmstrong/build-tracker'
+  repoUrl: 'https://github.com/paularmstrong/build-tracker',
+
+  algolia: {
+    apiKey: '8dd64bd9bb779b8908147f675d6684e7',
+    indexName: 'buildtracker',
+    algoliaOptions: {}
+  }
 };
 
 module.exports = siteConfig;

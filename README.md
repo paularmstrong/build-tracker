@@ -2,6 +2,8 @@
 
 This is a work-in-progress branch tracking a full rewrite of build-tracker.
 
+<img src="https://buildtracker.dev/img/logo.svg" alt="Build Tracker logo" width=200 />
+
 ## Documentation
 
 All documentation can be found at [buildtracker.dev](https://buildtracker.dev).

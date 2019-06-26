@@ -4,6 +4,7 @@
 import * as Git from '../modules/git';
 import { Argv } from 'yargs';
 import getConfig from '../modules/config';
+import pathToRegexp from 'path-to-regexp';
 import { handler as statArtifacts } from './stat-artifacts';
 
 export const command = 'create-build';
@@ -41,6 +42,8 @@ export const builder = (yargs): Argv<Args> =>
       type: 'boolean'
     });
 
+type BuildMetaItem = string | { value: string; url: string };
+
 export const handler = async (args: Args): Promise<{}> => {
   const config = await getConfig(args.config);
   if (!args['skip-dirty-check']) {
@@ -70,12 +73,26 @@ export const handler = async (args: Args): Promise<{}> => {
   const { timestamp, name, subject } = await Git.getRevisionDetails(revision, config.cwd);
   const branch = await Git.getBranch(config.cwd);
 
+  const getRevisionItem = (): BuildMetaItem => {
+    if (config.buildUrlFormat) {
+      const toPath = pathToRegexp.compile(config.buildUrlFormat);
+      const url = toPath({ revision });
+      return {
+        value: revision,
+        url
+      };
+    }
+    return revision;
+  };
+
+  const revisionItem = getRevisionItem();
+
   const build = {
     meta: {
       author: name,
       branch,
       parentRevision,
-      revision,
+      revision: revisionItem,
       subject,
       timestamp
     },

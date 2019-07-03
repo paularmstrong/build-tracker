@@ -4,6 +4,7 @@
 import * as Command from '../create-build';
 import * as Git from '../../modules/git';
 import * as path from 'path';
+import { BuildMetaItem } from '@build-tracker/build';
 import yargs from 'yargs';
 
 const config = path.join(
@@ -120,41 +121,14 @@ describe('create-build', () => {
         .spyOn(Git, 'getRevisionDetails')
         .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
 
-      return Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true }).then(res => {
-        expect(res).toMatchObject({
-          meta: {
-            branch: 'tacobranch',
-            parentRevision: '1234567',
-            revision: {
-              url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg',
-              value: 'abcdefg'
-            },
-            timestamp: 1234567890,
-            author: 'Jimmy',
-            subject: 'tacos'
-          },
-          artifacts: [
-            {
-              hash: '631a500f31d7602a386b4f858338dd6f',
-              name: '../../fakedist/main.1234567.js',
-              sizes: {
-                brotli: 49,
-                gzip: 73,
-                stat: 64
-              }
-            },
-            {
-              hash: 'fc4bcd175441f89862f9d81e37599416',
-              name: '../../fakedist/vendor.js',
-              sizes: {
-                brotli: 62,
-                gzip: 82,
-                stat: 82
-              }
-            }
-          ]
-        });
-      });
+      return Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true }).then(
+        (res: { meta: { revision: BuildMetaItem } }) => {
+          expect(res.meta.revision).toMatchObject({
+            url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg',
+            value: 'abcdefg'
+          });
+        }
+      );
     });
   });
 });

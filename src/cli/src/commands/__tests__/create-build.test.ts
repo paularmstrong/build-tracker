@@ -4,11 +4,17 @@
 import * as Command from '../create-build';
 import * as Git from '../../modules/git';
 import * as path from 'path';
+import { BuildMetaItem } from '@build-tracker/build';
 import yargs from 'yargs';
 
 const config = path.join(
   path.dirname(require.resolve('@build-tracker/fixtures')),
   'cli-configs/rc/.build-trackerrc.js'
+);
+
+const configWithFormatUrl = path.join(
+  path.dirname(require.resolve('@build-tracker/fixtures')),
+  'cli-configs/rc/.build-tracker-build-url-rc.js'
 );
 
 describe('create-build', () => {
@@ -104,6 +110,25 @@ describe('create-build', () => {
           ]
         });
       });
+    });
+
+    test('returns a revision url if buildUrlFormat is provided', () => {
+      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
+      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      jest
+        .spyOn(Git, 'getRevisionDetails')
+        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+
+      return Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true }).then(
+        (res: { meta: { revision: BuildMetaItem } }) => {
+          expect(res.meta.revision).toMatchObject({
+            url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg',
+            value: 'abcdefg'
+          });
+        }
+      );
     });
   });
 });

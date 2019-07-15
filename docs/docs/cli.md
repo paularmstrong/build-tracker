@@ -121,6 +121,16 @@ module.exports = {
 };
 ```
 
+#### `buildUrlFormat?: string`
+
+You may want to link each build to a commit. Provide `buildUrlFormat` in the following format to map revision value to an url.
+
+```js
+module.exports = {
+  buildUrlFormat: 'https://github.com/paularmstrong/build-tracker/commit/:revision'
+};
+```
+
 #### `onCompare?: (data: APIResponse) => Promise<void>`
 
 Take any action on the response from the API.

@@ -23,6 +23,7 @@ interface Config {
   artifacts: Array<string>;
   baseDir: string;
   cwd: string;
+  buildUrlFormat?: string;
   getFilenameHash?: (filename: string) => string | void;
   nameMapper?: (filename: string) => string;
   onCompare?: (data: ApiReturn) => Promise<void>;

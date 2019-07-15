@@ -25,7 +25,6 @@
   "devDependencies": {
     "@types/cosmiconfig": "^5.0.3",
     "@types/glob": "^7.1.1",
-    "@types/gzip-size": "^5.1.1",
     "@types/node": "^11.10.4",
     "@types/request": "^2.48.1",
     "@types/request-promise-native": "^1.0.15",

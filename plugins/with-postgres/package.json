@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/plugin-with-postgres",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Build Tracker server plugin for PostgreSQL",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -13,17 +13,17 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/api-errors": "^1.0.0-alpha.1",
+    "@build-tracker/api-errors": "^1.0.0-alpha.3",
     "dotenv": "^7.0.0",
     "pg": "^7.8.2"
   },
   "devDependencies": {
-    "@build-tracker/types": "^1.0.0-alpha.2",
+    "@build-tracker/types": "^1.0.0-alpha.3",
     "@types/dotenv": "^6.1.0",
     "@types/pg": "^7.4.13"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "6c5cd0948348d6eda531eeb0178c054a253a6ec7"
+  "gitHead": "fc5443c746fb03f29f7c64815cc67e7b7a0b355d"
 }

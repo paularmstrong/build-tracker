@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/app",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Build Tracker client side application for tracking builds over time",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -35,10 +35,10 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@build-tracker/build": "^1.0.0-alpha.2",
-    "@build-tracker/comparator": "^1.0.0-alpha.2",
-    "@build-tracker/fixtures": "^1.0.0-alpha.2",
-    "@build-tracker/types": "^1.0.0-alpha.2",
+    "@build-tracker/build": "^1.0.0-alpha.3",
+    "@build-tracker/comparator": "^1.0.0-alpha.3",
+    "@build-tracker/fixtures": "^1.0.0-alpha.3",
+    "@build-tracker/types": "^1.0.0-alpha.3",
     "@testing-library/react": "^8.0.0",
     "@types/d3-axis": "^1.0.12",
     "@types/d3-color": "^1.2.2",
@@ -66,5 +66,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "6c5cd0948348d6eda531eeb0178c054a253a6ec7"
+  "gitHead": "fc5443c746fb03f29f7c64815cc67e7b7a0b355d"
 }

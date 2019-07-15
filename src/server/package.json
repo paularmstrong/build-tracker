@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Build Tracker node.js web server",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -16,11 +16,11 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/api-errors": "^1.0.0-alpha.1",
-    "@build-tracker/app": "^1.0.0-alpha.2",
-    "@build-tracker/build": "^1.0.0-alpha.2",
-    "@build-tracker/comparator": "^1.0.0-alpha.2",
-    "@build-tracker/formatting": "^1.0.0-alpha.1",
+    "@build-tracker/api-errors": "^1.0.0-alpha.3",
+    "@build-tracker/app": "^1.0.0-alpha.3",
+    "@build-tracker/build": "^1.0.0-alpha.3",
+    "@build-tracker/comparator": "^1.0.0-alpha.3",
+    "@build-tracker/formatting": "^1.0.0-alpha.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-pino-logger": "^4.0.0",
@@ -29,7 +29,7 @@
     "yargs": "^13.2.1"
   },
   "devDependencies": {
-    "@build-tracker/types": "^1.0.0-alpha.2",
+    "@build-tracker/types": "^1.0.0-alpha.3",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
     "@types/helmet": "^0.0.43",
@@ -46,5 +46,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "6c5cd0948348d6eda531eeb0178c054a253a6ec7"
+  "gitHead": "fc5443c746fb03f29f7c64815cc67e7b7a0b355d"
 }

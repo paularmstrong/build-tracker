@@ -8,6 +8,7 @@ import { StyleProp, StyleSheet, TouchableOpacity, TouchableOpacityProps, View, V
 interface Props {
   children: React.ReactElement;
   disabled?: boolean;
+  nativeID?: string;
   rippleColor?: string | 'primary' | 'secondary';
   style?: StyleProp<ViewStyle>;
 }

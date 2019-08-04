@@ -15,5 +15,8 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@build-tracker/types": "^1.0.0-alpha.3"
+  },
   "gitHead": "6c5cd0948348d6eda531eeb0178c054a253a6ec7"
 }

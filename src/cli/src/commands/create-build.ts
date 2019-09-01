@@ -13,6 +13,7 @@ export const command = 'create-build';
 export const description = 'Construct a build for the current commit';
 
 interface Args {
+  branch?: string;
   config?: string;
   out: boolean;
   'skip-dirty-check': boolean;
@@ -23,6 +24,12 @@ const group = 'Create a build';
 export const builder = (yargs): Argv<Args> =>
   yargs
     .usage(`Usage: $0 ${command}`)
+    .option('branch', {
+      alias: 'b',
+      description: 'Set the branch name and do not attempt to read from git',
+      group,
+      type: 'string'
+    })
     .option('config', {
       alias: 'c',
       description: 'Override path to the build-tracker CLI config file',
@@ -70,7 +77,7 @@ export const handler = async (args: Args): Promise<{}> => {
   const parentRevision = await Git.getParentRevision(defaultBranch, config.cwd);
   let revision: BuildMetaItem = await Git.getCurrentRevision(config.cwd);
   const { timestamp, name, subject } = await Git.getRevisionDetails(revision, config.cwd);
-  const branch = await Git.getBranch(config.cwd);
+  const branch = args.branch ? args.branch : await Git.getBranch(config.cwd);
 
   if (config.buildUrlFormat) {
     const toPath = pathToRegexp.compile(config.buildUrlFormat);

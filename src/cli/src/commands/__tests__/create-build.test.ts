@@ -32,14 +32,20 @@ describe('create-build', () => {
   });
 
   describe('handler', () => {
-    test('writes the artifact stats to stdout', async () => {
-      const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
+    let isDirtySpy, getBranchSpy;
+    beforeEach(() => {
+      isDirtySpy = jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(false));
       jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
       jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
       jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      getBranchSpy = jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('master'));
       jest
         .spyOn(Git, 'getRevisionDetails')
         .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+    });
+
+    test('writes the artifact stats to stdout', async () => {
+      const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
 
       await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toEqual(
         expect.any(Object)
@@ -47,16 +53,19 @@ describe('create-build', () => {
       expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"1234567\\"'));
     });
 
+    test('allows overriding the git branch name check', async () => {
+      isDirtySpy.mockReturnValue(Promise.resolve(true));
+
+      await expect(
+        Command.handler({ branch: 'burritos', config, out: false, 'skip-dirty-check': true })
+      ).resolves.toMatchObject({ meta: expect.objectContaining({ branch: 'burritos' }) });
+      expect(getBranchSpy).not.toHaveBeenCalled();
+    });
+
     test('allows skipping the git worktree check', async () => {
       jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      jest
-        .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
 
-      await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toEqual(
+      await expect(Command.handler({ config, out: false, 'skip-dirty-check': true })).resolves.toEqual(
         expect.any(Object)
       );
     });
@@ -71,13 +80,7 @@ describe('create-build', () => {
     });
 
     test('returns a JSON representation of a build', async () => {
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      jest
-        .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+      getBranchSpy.mockReturnValue(Promise.resolve('tacobranch'));
 
       await expect(Command.handler({ config, out: false, 'skip-dirty-check': true })).resolves.toMatchObject({
         meta: {
@@ -112,13 +115,7 @@ describe('create-build', () => {
     });
 
     test('returns a revision url if buildUrlFormat is provided', async () => {
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      jest
-        .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+      getBranchSpy.mockReturnValue(Promise.resolve('tacobranch'));
 
       await expect(
         Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true })

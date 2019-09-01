@@ -36,7 +36,7 @@ jobs:
       - name: Build all
         run: yarn build
       - name: Upload build
-        run: yarn ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js
+        run: yarn ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js -b next
 
   deploy:
     name: Deploy docs

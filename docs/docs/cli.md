@@ -151,13 +151,31 @@ module.exports = {
 
 This command will read your configuration file, and upload the current build meta and artifact stats to your server. In most scenarios, this should be all you need.
 
+| option, alias        | description                                             | default                     |
+| -------------------- | ------------------------------------------------------- | --------------------------- |
+| `--branch`, `-b`     | Set the branch name and do not attempt to read from git | Current git working branch  |
+| `--config`, `-c`     | Set path to the build-tracker CLI config file           | `./build-tracker.config.js` |
+| `--out`, `-o`        | Write the build to stdout                               | `true`                      |
+| `--skip-dirty-check` | Skip the git work tree state check                      | `false`                     |
+
 ### `create-build`
 
 This command will create a Build object for the current available build. If run independently, it will only output information, but not upload it anywhere. For that, you only need to run `yarn bt-cli upload-build`.
 
+| option, alias        | description                                             | default                     |
+| -------------------- | ------------------------------------------------------- | --------------------------- |
+| `--branch`, `-b`     | Set the branch name and do not attempt to read from git | Current git working branch  |
+| `--config`, `-c`     | Set path to the build-tracker CLI config file           | `./build-tracker.config.js` |
+| `--skip-dirty-check` | Skip the git work tree state check                      | `false`                     |
+
 ### `stat-artifacts`
 
 Lower-level than `create-build`, this command will get artifact stats for the current build files and output a JSON representation of them.
+
+| option, alias    | description                                   | default                     |
+| ---------------- | --------------------------------------------- | --------------------------- |
+| `--config`, `-c` | Set path to the build-tracker CLI config file | `./build-tracker.config.js` |
+| `--out`, `-o`    | Write the stats to stdout                     | `true`                      |
 
 ### `version`
 

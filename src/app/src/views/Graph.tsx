@@ -5,18 +5,10 @@ import EmptyState from '../components/EmptyState';
 import Graph from '../components/Graph';
 import React from 'react';
 import { State } from '../store/types';
-import { useMappedState } from 'redux-react-hook';
-
-interface MappedState {
-  comparator: State['comparator'];
-}
-
-const mapState = (state: State): MappedState => ({
-  comparator: state.comparator
-});
+import { useSelector } from 'react-redux';
 
 const GraphView = (): React.ReactElement => {
-  const { comparator } = useMappedState(mapState);
+  const comparator = useSelector((state: State) => state.comparator);
 
   if (comparator.builds.length) {
     return <Graph comparator={comparator} />;

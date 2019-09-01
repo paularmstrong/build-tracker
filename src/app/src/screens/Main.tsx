@@ -13,23 +13,9 @@ import { setBuilds } from '../store/actions';
 import Snacks from '../views/Snacks';
 import { State } from '../store/types';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
-
-interface MappedState {
-  buildsCount: number;
-  dateRange: { start: Date; end: Date };
-  showComparisonTable: boolean;
-  url: string;
-}
-
-const mapState = (state: State): MappedState => ({
-  buildsCount: state.builds.length,
-  dateRange: state.dateRange,
-  showComparisonTable: !!state.comparedRevisions.length,
-  url: state.url
-});
 
 const dateToSeconds = (date: Date): number => Math.round(date.valueOf() / 1000);
 
@@ -43,13 +29,16 @@ enum FetchState {
 const Main = (): React.ReactElement => {
   const drawerRef = React.useRef<DrawerHandles>(null);
 
-  const { buildsCount, dateRange, showComparisonTable, url } = useMappedState(mapState);
+  const buildsCount = useSelector((state: State) => state.builds.length);
+  const dateRange = useSelector((state: State) => state.dateRange);
+  const showComparisonTable = useSelector((state: State) => !!state.comparedRevisions.length);
+  const url = useSelector((state: State) => state.url);
   const [fetchState, setFetchState] = React.useState<FetchState>(FetchState.NONE);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    setFetchState(FetchState.FETCHING);
     if (dateRange) {
+      setFetchState(FetchState.FETCHING);
       fetch(`${url}/api/builds/time/${dateToSeconds(dateRange.start)}...${dateToSeconds(dateRange.end)}`)
         .then(response => response.json())
         .then(builds => {
@@ -64,6 +53,7 @@ const Main = (): React.ReactElement => {
       return;
     }
     if (buildsCount === 0) {
+      setFetchState(FetchState.FETCHING);
       fetch(`${url}/api/builds`)
         .then(response => response.json())
         .then(builds => {

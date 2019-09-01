@@ -6,23 +6,15 @@ import { setSizeKey } from '../../store/actions';
 import SizeKey from './Key';
 import { State } from '../../store/types';
 import { StyleSheet, View } from 'react-native';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Props {
   keys: Array<string>;
 }
 
-interface MappedState {
-  selected: string;
-}
-
-const mapState = (state: State): MappedState => ({
-  selected: state.sizeKey
-});
-
 const SizeKeyPicker = (props: Props): React.ReactElement => {
   const { keys } = props;
-  const { selected } = useMappedState(mapState);
+  const selected = useSelector((state: State) => state.sizeKey);
   const dispatch = useDispatch();
   const handleSelect = React.useCallback(
     (key: string): void => {

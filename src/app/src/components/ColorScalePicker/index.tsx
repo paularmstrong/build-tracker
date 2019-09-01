@@ -5,17 +5,12 @@ import * as Theme from '../../theme';
 import ColorScale from './ColorScale';
 import ColorScales from '../../modules/ColorScale';
 import React from 'react';
-import { ScaleSequential } from 'd3-scale';
 import { State } from '../../store/types';
-import { useMappedState } from 'redux-react-hook';
+import { useSelector } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 
-const mapState = (state: State): { activeColorScale: ScaleSequential<string> } => ({
-  activeColorScale: ColorScales[state.colorScale]
-});
-
 export const ColorScalePicker = (): React.ReactElement => {
-  const { activeColorScale } = useMappedState(mapState);
+  const activeColorScale = useSelector((state: State) => ColorScales[state.colorScale]);
   return (
     <View style={styles.root}>
       {Object.entries(ColorScales).map(([name, scale]) => {

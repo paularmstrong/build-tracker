@@ -3,16 +3,16 @@
  */
 import { ColorScalePicker } from '../';
 import mockStore from '../../../store/mock';
+import { Provider } from 'react-redux';
 import React from 'react';
 import { render } from 'react-native-testing-library';
-import { StoreContext } from 'redux-react-hook';
 
 describe('ColorScalePicker', () => {
   test('sets the active scale to selected', () => {
     const { queryAllByProps } = render(
-      <StoreContext.Provider value={mockStore({ colorScale: 'Magma' })}>
+      <Provider store={mockStore({ colorScale: 'Magma' })}>
         <ColorScalePicker />
-      </StoreContext.Provider>
+      </Provider>
     );
     const selected = queryAllByProps({ isSelected: true });
     expect(selected).toHaveLength(1);

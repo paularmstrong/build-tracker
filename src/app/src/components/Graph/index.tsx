@@ -8,7 +8,6 @@ import ColorScales from '../../modules/ColorScale';
 import HoverOverlay from './HoverOverlay';
 import { Offset } from './Offset';
 import React from 'react';
-import { ScaleSequential } from 'd3-scale';
 import { stack } from 'd3-shape';
 import { State } from '../../store/types';
 import XAxis from './XAxis';
@@ -16,7 +15,7 @@ import YAxis from './YAxis';
 import { addComparedRevision, setHoveredArtifacts } from '../../store/actions';
 import { createElement, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleLinear, scalePoint } from 'd3-scale';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch, useSelector } from 'react-redux';
 
 export class SVG extends React.Component<{ height: number; width: number }> {
   public render(): React.ReactElement {
@@ -28,25 +27,15 @@ interface Props {
   comparator: State['comparator'];
 }
 
-interface MappedState {
-  activeArtifacts: State['activeArtifacts'];
-  colorScale: ScaleSequential<string>;
-  hoveredArtifacts: State['hoveredArtifacts'];
-  selectedRevisions: State['comparedRevisions'];
-  sizeKey: string;
-}
-
-const mapState = (state: State): MappedState => ({
-  activeArtifacts: state.activeArtifacts,
-  colorScale: ColorScales[state.colorScale].domain([0, state.comparator.artifactNames.length]),
-  hoveredArtifacts: state.hoveredArtifacts,
-  selectedRevisions: state.comparedRevisions,
-  sizeKey: state.sizeKey
-});
-
 const Graph = (props: Props): React.ReactElement => {
   const { comparator } = props;
-  const { activeArtifacts, colorScale, hoveredArtifacts, selectedRevisions, sizeKey } = useMappedState(mapState);
+  const activeArtifacts = useSelector((state: State) => state.activeArtifacts);
+  const colorScale = useSelector((state: State) =>
+    ColorScales[state.colorScale].domain([0, state.comparator.artifactNames.length])
+  );
+  const hoveredArtifacts = useSelector((state: State) => state.hoveredArtifacts);
+  const selectedRevisions = useSelector((state: State) => state.comparedRevisions);
+  const sizeKey = useSelector((state: State) => state.sizeKey);
   const dispatch = useDispatch();
 
   const [{ width, height }, setDimensions] = React.useState({ width: 0, height: 0 });

@@ -11,6 +11,5 @@ module.exports = {
   rootDir: './',
   roots: ['<rootDir>/src'],
   setupFiles: ['<rootDir>/../../node_modules/react-native-web/jest/setup.js', '<rootDir>/config/jest/setup.js'],
-  setupFilesAfterEnv: ['@testing-library/react/cleanup-after-each'],
   testEnvironment: 'jsdom'
 };

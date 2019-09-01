@@ -11,8 +11,8 @@ import Comparator from '@build-tracker/comparator';
 import Comparison from '../../views/Comparison';
 import Main from '../Main';
 import mockStore from '../../store/mock';
+import { Provider } from 'react-redux';
 import React from 'react';
-import { StoreContext } from 'redux-react-hook';
 import { flushMicrotasksQueue, render } from 'react-native-testing-library';
 
 // React.memo components are not findable by type
@@ -71,8 +71,8 @@ describe('Main', () => {
     test('fetches builds and updates', async () => {
       const setBuildsSpy = jest.spyOn(Actions, 'setBuilds');
       const component = (
-        <StoreContext.Provider
-          value={mockStore({
+        <Provider
+          store={mockStore({
             builds: [],
             comparedRevisions: [],
             comparator: new Comparator({ builds: [] }),
@@ -81,7 +81,7 @@ describe('Main', () => {
           })}
         >
           <Main />
-        </StoreContext.Provider>
+        </Provider>
       );
       const { update } = render(component);
       update(component);
@@ -103,9 +103,9 @@ describe('Main', () => {
         url
       });
       const component = (
-        <StoreContext.Provider value={store}>
+        <Provider store={store}>
           <Main />
-        </StoreContext.Provider>
+        </Provider>
       );
       const { queryAllByType } = render(component);
       await flushMicrotasksQueue();

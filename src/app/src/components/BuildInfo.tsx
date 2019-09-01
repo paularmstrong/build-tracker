@@ -9,7 +9,7 @@ import { setFocusedRevision } from '../store/actions';
 import { State } from '../store/types';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Table, Tbody, Td, Th, Tr } from './Table';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Props {
   focusedRevision: string;
@@ -23,13 +23,9 @@ const titleCase = (value: string): string => {
 const BuildInfo = (props: Props): React.ReactElement => {
   const { focusedRevision, style } = props;
 
-  const mapState = React.useCallback(
-    (state: State) => ({
-      build: state.comparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)
-    }),
-    [focusedRevision]
+  const build = useSelector((state: State) =>
+    state.comparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)
   );
-  const { build } = useMappedState(mapState);
   const revision = build.getMetaValue('revision');
 
   const dispatch = useDispatch();

@@ -6,7 +6,7 @@ import ColorScales from '../../modules/ColorScale';
 import RadioSelect from '../RadioSelect';
 import React from 'react';
 import { setColorScale } from '../../store/actions';
-import { useDispatch } from 'redux-react-hook';
+import { useDispatch } from 'react-redux';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 interface Props {

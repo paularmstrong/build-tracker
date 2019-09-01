@@ -9,44 +9,22 @@ import React from 'react';
 import { State } from '../store/types';
 import { removeComparedRevision, setArtifactActive, setFocusedRevision, setHoveredArtifacts } from '../store/actions';
 import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-interface MappedState {
-  activeArtifacts: State['activeArtifacts'];
-  colorScaleName: State['colorScale'];
-  comparator: State['comparator'];
-  disabledArtifactsVisible: boolean;
-  focusedRevision: string;
-  hoveredArtifacts: Array<string>;
-  sizeKey: string;
-}
-
-const mapState = (state: State): MappedState => ({
-  activeArtifacts: state.activeArtifacts,
-  colorScaleName: state.colorScale,
-  comparator: state.activeComparator,
-  disabledArtifactsVisible: state.disabledArtifactsVisible,
-  focusedRevision: state.focusedRevision,
-  hoveredArtifacts: state.hoveredArtifacts,
-  sizeKey: state.sizeKey
-});
-
 const Comparison = (props: Props): React.ReactElement => {
   const { style } = props;
 
-  const {
-    activeArtifacts,
-    colorScaleName,
-    comparator,
-    disabledArtifactsVisible,
-    focusedRevision,
-    hoveredArtifacts,
-    sizeKey
-  } = useMappedState(mapState);
+  const activeArtifacts = useSelector((state: State) => state.activeArtifacts);
+  const colorScaleName = useSelector((state: State) => state.colorScale);
+  const comparator = useSelector((state: State) => state.activeComparator);
+  const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
+  const focusedRevision = useSelector((state: State) => state.focusedRevision);
+  const hoveredArtifacts = useSelector((state: State) => state.hoveredArtifacts);
+  const sizeKey = useSelector((state: State) => state.sizeKey);
   const dispatch = useDispatch();
 
   const colorScale = React.useMemo(() => ColorScales[colorScaleName].domain([0, comparator.artifactNames.length]), [

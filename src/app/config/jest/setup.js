@@ -5,7 +5,10 @@ process.on('unhandledRejection', error => {
   console.error(error);
 });
 
-const ignoredErrors = [/An update to [^ ]+ inside a test was not wrapped in act/];
+const ignoredErrors = [
+  /An update to [^ ]+ inside a test was not wrapped in act/,
+  /Warning: useLayoutEffect does nothing on the server/
+];
 
 console.error = (...args) => {
   if (ignoredErrors.some(err => err.test(args[0]))) {

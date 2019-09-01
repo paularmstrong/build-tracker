@@ -10,31 +10,15 @@ import React from 'react';
 import { State } from '../store/types';
 import { addSnack, clearComparedRevisions } from '../store/actions';
 import AppBar, { Handles as AppBarHandles } from '../components/AppBar';
-import { useDispatch, useMappedState } from 'redux-react-hook';
-
-interface MappedState {
-  activeComparator: State['activeComparator'];
-  activeArtifacts: State['activeArtifacts'];
-  comparedRevisions: State['comparedRevisions'];
-  name: State['name'];
-  sizeKey: string;
-  url: string;
-}
-
-const mapState = (state: State): MappedState => {
-  return {
-    activeComparator: state.activeComparator,
-    activeArtifacts: state.activeArtifacts,
-    comparedRevisions: state.comparedRevisions,
-    name: state.name,
-    sizeKey: state.sizeKey || state.comparator.sizeKeys[0],
-    url: state.url
-  };
-};
+import { useDispatch, useSelector } from 'react-redux';
 
 const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React.ReactElement => {
   const { drawerRef } = props;
-  const { activeArtifacts, activeComparator, comparedRevisions, name, sizeKey } = useMappedState(mapState);
+  const activeComparator = useSelector((state: State) => state.activeComparator);
+  const activeArtifacts = useSelector((state: State) => state.activeArtifacts);
+  const comparedRevisions = useSelector((state: State) => state.comparedRevisions);
+  const name = useSelector((state: State) => state.name);
+  const sizeKey = useSelector((state: State) => state.sizeKey || state.comparator.sizeKeys[0]);
   const dispatch = useDispatch();
 
   const appBarRef = React.useRef<AppBarHandles>(null);

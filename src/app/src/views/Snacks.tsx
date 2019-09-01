@@ -7,19 +7,11 @@ import ReactDOM from 'react-dom';
 import { removeSnack } from '../store/actions';
 import Snackbar from '../components/Snackbar';
 import { State } from '../store/types';
-import { useDispatch, useMappedState } from 'redux-react-hook';
-
-interface MappedState {
-  message: string;
-}
-
-const mapState = (state: State): MappedState => ({
-  message: state.snacks[0]
-});
+import { useDispatch, useSelector } from 'react-redux';
 
 const SnacksView = (): React.ReactElement => {
   const dispatch = useDispatch();
-  const { message } = useMappedState(mapState);
+  const message = useSelector((state: State) => state.snacks[0]);
 
   const portalRoot = canUseDOM && document.getElementById('snackbarPortal');
 

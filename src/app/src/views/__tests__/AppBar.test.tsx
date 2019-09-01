@@ -11,8 +11,8 @@ import { Clipboard } from 'react-native';
 import Comparator from '@build-tracker/comparator';
 import Drawer from '../../components/Drawer';
 import mockStore from '../../store/mock';
+import { Provider } from 'react-redux';
 import React from 'react';
-import { StoreContext } from 'redux-react-hook';
 import { fireEvent, render } from 'react-native-testing-library';
 
 jest.mock('../../components/Drawer', () => {
@@ -52,9 +52,9 @@ describe('AppBarView', () => {
     test('shows the drawer when AppBar pressNavigationIcon hit', () => {
       const showSpy = jest.spyOn(Drawer.prototype, 'show');
       const { getByType } = render(
-        <StoreContext.Provider value={mockStore(initialState)}>
+        <Provider store={mockStore(initialState)}>
           <AppBarView drawerRef={drawerRef} />
-        </StoreContext.Provider>
+        </Provider>
       );
       fireEvent(getByType(AppBar), 'pressNavigationIcon');
       expect(showSpy).toHaveBeenCalled();
@@ -87,9 +87,9 @@ describe('AppBarView', () => {
     test('can clear selected revisions', () => {
       const clearComparedSpy = jest.spyOn(Actions, 'clearComparedRevisions');
       const { getByProps } = render(
-        <StoreContext.Provider value={mockStore(seededState)}>
+        <Provider store={mockStore(seededState)}>
           <AppBarView drawerRef={drawerRef} />
-        </StoreContext.Provider>
+        </Provider>
       );
 
       fireEvent.press(getByProps({ title: 'More actions' }));
@@ -99,9 +99,9 @@ describe('AppBarView', () => {
 
     test('can copy as markdown', () => {
       const { getByProps } = render(
-        <StoreContext.Provider value={mockStore(seededState)}>
+        <Provider store={mockStore(seededState)}>
           <AppBarView drawerRef={drawerRef} />
-        </StoreContext.Provider>
+        </Provider>
       );
 
       fireEvent.press(getByProps({ title: 'More actions' }));
@@ -113,9 +113,9 @@ describe('AppBarView', () => {
     test('shows a message when copied as markdown', () => {
       const addSnackSpy = jest.spyOn(Actions, 'addSnack');
       const { getByProps } = render(
-        <StoreContext.Provider value={mockStore(seededState)}>
+        <Provider store={mockStore(seededState)}>
           <AppBarView drawerRef={drawerRef} />
-        </StoreContext.Provider>
+        </Provider>
       );
 
       fireEvent.press(getByProps({ title: 'More actions' }));
@@ -125,9 +125,9 @@ describe('AppBarView', () => {
 
     test('can copy as csv', () => {
       const { getByProps } = render(
-        <StoreContext.Provider value={mockStore(seededState)}>
+        <Provider store={mockStore(seededState)}>
           <AppBarView drawerRef={drawerRef} />
-        </StoreContext.Provider>
+        </Provider>
       );
 
       fireEvent.press(getByProps({ title: 'More actions' }));
@@ -139,9 +139,9 @@ describe('AppBarView', () => {
     test('shows a message when copied as csv', () => {
       const addSnackSpy = jest.spyOn(Actions, 'addSnack');
       const { getByProps } = render(
-        <StoreContext.Provider value={mockStore(seededState)}>
+        <Provider store={mockStore(seededState)}>
           <AppBarView drawerRef={drawerRef} />
-        </StoreContext.Provider>
+        </Provider>
       );
 
       fireEvent.press(getByProps({ title: 'More actions' }));

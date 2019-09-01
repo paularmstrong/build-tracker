@@ -4,10 +4,10 @@
 import { AppRegistry } from 'react-native-web';
 import Main from '../screens/Main';
 import makeStore from '../store';
+import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Store } from 'redux';
-import { StoreContext } from 'redux-react-hook';
 import toSource from 'tosource';
 import { Actions, State } from '../store/types';
 import { Request, RequestHandler, Response } from 'express';
@@ -17,9 +17,9 @@ interface AppProps {
 }
 
 const App = (props: AppProps): React.ReactElement => (
-  <StoreContext.Provider value={props.store}>
+  <Provider store={props.store}>
     <Main />
-  </StoreContext.Provider>
+  </Provider>
 );
 
 AppRegistry.registerComponent('App', () => App);

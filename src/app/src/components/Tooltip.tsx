@@ -59,7 +59,10 @@ const Tooltip = (props: Props): React.ReactElement => {
     return () => {
       mounted = false;
     };
-  }, [ref, relativeTo]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+    // Tests break if you pass the ref/relativeTo higher object in and not the actual value we're using
+  }, [ref.current, relativeTo.current]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const tooltip = (
     <View

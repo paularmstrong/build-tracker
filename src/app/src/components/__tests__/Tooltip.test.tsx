@@ -23,7 +23,7 @@ describe('Tooltip', () => {
         fn(0, 0, 45, 20, 0, 0);
       }
     );
-    jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+    jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
       (fn: (x: number, y: number, width: number, height: number) => void): void => {
         fn(20, 100, 40, 30);
       }
@@ -46,7 +46,8 @@ describe('Tooltip', () => {
         fn(0, 0, 45, 20, 0, 0);
       }
     );
-    jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+
+    jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
       (fn: (x: number, y: number, width: number, height: number) => void): void => {
         fn(20, 100, 40, 30);
       }
@@ -69,7 +70,7 @@ describe('Tooltip', () => {
           fn(0, 0, 45, 30, 0, 0);
         }
       );
-      jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+      jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
         (fn: (x: number, y: number, width: number, height: number) => void): void => {
           fn(10, 200, 20, 10);
         }
@@ -90,7 +91,7 @@ describe('Tooltip', () => {
           fn(0, 0, 45, 30, 0, 0);
         }
       );
-      jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+      jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
         (fn: (x: number, y: number, width: number, height: number) => void): void => {
           fn(380, 200, 50, 10);
         }
@@ -111,7 +112,7 @@ describe('Tooltip', () => {
           fn(0, 0, 45, 30, 0, 0);
         }
       );
-      jest.spyOn(viewRef.current, 'measureInWindow').mockImplementation(
+      jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
         (fn: (x: number, y: number, width: number, height: number) => void): void => {
           fn(200, 380, 50, 10);
         }

@@ -19,26 +19,15 @@ import Subtitle from '../components/Subtitle';
 import Drawer, { Handles as DrawerHandles } from '../components/Drawer';
 import { setDateRange, setDisabledArtifactsVisible } from '../store/actions';
 import { StyleSheet, Switch, Text, View } from 'react-native';
-import { useDispatch, useMappedState } from 'redux-react-hook';
-
-interface MappedState {
-  comparator: State['comparator'];
-  disabledArtifactsVisible: State['disabledArtifactsVisible'];
-  storeEnd: Date;
-  storeStart: Date;
-}
+import { useDispatch, useSelector } from 'react-redux';
 
 const today = new Date();
 
-const mapState = (state: State): MappedState => ({
-  comparator: state.comparator,
-  disabledArtifactsVisible: state.disabledArtifactsVisible,
-  storeEnd: state.dateRange ? state.dateRange.end : null,
-  storeStart: state.dateRange ? state.dateRange.start : null
-});
-
 const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.ReactElement => {
-  const { comparator, disabledArtifactsVisible, storeEnd, storeStart } = useMappedState(mapState);
+  const comparator = useSelector((state: State) => state.comparator);
+  const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
+  const storeEnd = useSelector((state: State) => (state.dateRange ? state.dateRange.end : null));
+  const storeStart = useSelector((state: State) => (state.dateRange ? state.dateRange.start : null));
   const dispatch = useDispatch();
 
   const [startDate, setStartDate] = React.useState<Date>(storeStart);

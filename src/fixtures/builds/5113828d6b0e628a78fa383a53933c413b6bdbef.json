@@ -1,7 +1,10 @@
 {
   "meta": {
     "branch": "master",
-    "revision": "5113828d6b0e628a78fa383a53933c413b6bdbef",
+    "revision": {
+      "value": "5113828d6b0e628a78fa383a53933c413b6bdbef",
+      "url": "https://github.com/paularmstrong/build-tracker/commit/5113828d6b0e628a78fa383a53933c413b6bdbef"
+    },
     "timestamp": 1501964802,
     "parentRevision": "000000"
   },

@@ -7,6 +7,7 @@ import CloseIcon from '../icons/Close';
 import React from 'react';
 import { setFocusedRevision } from '../store/actions';
 import { State } from '../store/types';
+import TextLink from './TextLink';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Table, Tbody, Td, Th, Tr } from './Table';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,6 +28,7 @@ const BuildInfo = (props: Props): React.ReactElement => {
     state.comparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)
   );
   const revision = build.getMetaValue('revision');
+  const revisionUrl = build.getMetaUrl('revision');
 
   const dispatch = useDispatch();
 
@@ -47,7 +49,7 @@ const BuildInfo = (props: Props): React.ReactElement => {
               <Text>Revision</Text>
             </Th>
             <Td style={styles.infoCell}>
-              <Text>{revision}</Text>
+              {revisionUrl ? <TextLink href={revisionUrl} text={revision} /> : <Text>{revision}</Text>}
             </Td>
           </Tr>
           <Tr>

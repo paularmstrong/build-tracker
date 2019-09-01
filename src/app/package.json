@@ -27,7 +27,7 @@
     "memoize-one": "^5.0.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-native-web": "^0.11.2",
+    "react-native-web": "^0.11.7",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "tosource": "^1.0.0",

@@ -40,7 +40,7 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
   res.locals.props = {
     url,
     artifactConfig: config.artifacts,
-    name: config.name
+    name: config.name || 'Build Tracker'
   };
   next();
 };

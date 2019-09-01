@@ -29,17 +29,61 @@ describe('server', () => {
         });
     });
 
-    test('props', () => {
+    describe('props', () => {
+      test('sets artifactConfig', () => {
+        const app = express();
+        const config = { artifacts: {} };
+        app.use(props(config, 'https://build-tracker.local'));
+        app.get('/', localsToBody);
+        return request(app)
+          .get('/')
+          .then(res => {
+            expect(res.body.props).toMatchObject({
+              artifactConfig: config.artifacts,
+              url: 'https://build-tracker.local'
+            });
+          });
+      });
+
+      test('sets url', () => {
+        const app = express();
+        const config = { artifacts: {} };
+        app.use(props(config, 'https://build-tracker.local'));
+        app.get('/', localsToBody);
+        return request(app)
+          .get('/')
+          .then(res => {
+            expect(res.body.props).toMatchObject({
+              url: 'https://build-tracker.local'
+            });
+          });
+      });
+
+      test('defaults name to "Build Tracker"', () => {
+        const app = express();
+        const config = { artifacts: {} };
+        app.use(props(config, 'https://build-tracker.local'));
+        app.get('/', localsToBody);
+        return request(app)
+          .get('/')
+          .then(res => {
+            expect(res.body.props).toMatchObject({
+              name: 'Build Tracker'
+            });
+          });
+      });
+    });
+
+    test('overrides name if set in config', () => {
       const app = express();
-      const config = { artifacts: {} };
+      const config = { artifacts: {}, name: 'Tacos' };
       app.use(props(config, 'https://build-tracker.local'));
       app.get('/', localsToBody);
       return request(app)
         .get('/')
         .then(res => {
           expect(res.body.props).toMatchObject({
-            artifactConfig: config.artifacts,
-            url: 'https://build-tracker.local'
+            name: 'Tacos'
           });
         });
     });

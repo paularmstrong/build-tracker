@@ -30,6 +30,7 @@ const Main = (): React.ReactElement => {
   const drawerRef = React.useRef<DrawerHandles>(null);
 
   const buildsCount = useSelector((state: State) => state.builds.length);
+  const requestedBuildsCount = useSelector((state: State) => state.buildCount);
   const dateRange = useSelector((state: State) => state.dateRange);
   const showComparisonTable = useSelector((state: State) => !!state.comparedRevisions.length);
   const url = useSelector((state: State) => state.url);
@@ -54,7 +55,7 @@ const Main = (): React.ReactElement => {
     }
     if (buildsCount === 0) {
       setFetchState(FetchState.FETCHING);
-      fetch(`${url}/api/builds`)
+      fetch(`${url}/api/builds/${requestedBuildsCount}`)
         .then(response => response.json())
         .then(builds => {
           dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
@@ -66,7 +67,7 @@ const Main = (): React.ReactElement => {
           setFetchState(FetchState.ERROR);
         });
     }
-  }, [buildsCount, dateRange, dispatch, url]);
+  }, [buildsCount, dateRange, dispatch, requestedBuildsCount, url]);
 
   return (
     <View style={styles.layout}>

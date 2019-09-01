@@ -10,6 +10,7 @@ import {
   RemoveComparedRevision,
   RemoveSnack,
   SetArtifactsActiveAction,
+  SetBuildCount,
   SetBuildsAction,
   SetColorScaleAction,
   SetDateRange,
@@ -78,3 +79,5 @@ export const setDateRange = (start: Date, end: Date): SetDateRange => ({
   type: 'SET_DATE_RANGE',
   payload: { start, end }
 });
+
+export const setBuildCount = (count: number): SetBuildCount => ({ type: 'SET_BUILD_COUNT', payload: count });

@@ -74,6 +74,7 @@ describe('Main', () => {
         <Provider
           store={mockStore({
             builds: [],
+            buildCount: 10,
             comparedRevisions: [],
             comparator: new Comparator({ builds: [] }),
             snacks: [],
@@ -86,10 +87,59 @@ describe('Main', () => {
       const { update } = render(component);
       update(component);
       await flushMicrotasksQueue();
-      expect(fetchSpy).toHaveBeenCalledWith(`${url}/api/builds`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${url}/api/builds/10`);
       expect(setBuildsSpy).toHaveBeenCalledWith(
         expect.arrayContaining([expect.any(Build), expect.any(Build), expect.any(Build)])
       );
+    });
+
+    test('fetches builds by date and updates', async () => {
+      const setBuildsSpy = jest.spyOn(Actions, 'setBuilds');
+      const component = (
+        <Provider
+          store={mockStore({
+            builds: [],
+            buildCount: 10,
+            comparedRevisions: [],
+            comparator: new Comparator({ builds: [] }),
+            dateRange: { start: new Date(2019, 8, 1), end: new Date(2019, 8, 15) },
+            snacks: [],
+            url
+          })}
+        >
+          <Main />
+        </Provider>
+      );
+      const { update } = render(component);
+      update(component);
+      await flushMicrotasksQueue();
+      expect(fetchSpy).toHaveBeenCalledWith(`${url}/api/builds/time/1567321200...1568530800`);
+      expect(setBuildsSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([expect.any(Build), expect.any(Build), expect.any(Build)])
+      );
+    });
+
+    test('does not fetch builds if they already exist', async () => {
+      const setBuildsSpy = jest.spyOn(Actions, 'setBuilds');
+      const component = (
+        <Provider
+          store={mockStore({
+            builds: [buildA, buildB],
+            buildCount: 10,
+            comparedRevisions: [],
+            comparator: new Comparator({ builds: [] }),
+            snacks: [],
+            url
+          })}
+        >
+          <Main />
+        </Provider>
+      );
+      const { update } = render(component);
+      update(component);
+      await flushMicrotasksQueue();
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(setBuildsSpy).not.toHaveBeenCalled();
     });
   });
 

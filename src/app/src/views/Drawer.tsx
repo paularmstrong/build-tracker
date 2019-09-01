@@ -16,8 +16,9 @@ import SizeKeyPicker from '../components/SizeKeyPicker';
 import startOfDay from 'date-fns/start_of_day';
 import { State } from '../store/types';
 import Subtitle from '../components/Subtitle';
+import TextField from '../components/TextField';
 import Drawer, { Handles as DrawerHandles } from '../components/Drawer';
-import { setDateRange, setDisabledArtifactsVisible } from '../store/actions';
+import { setBuildCount, setDateRange, setDisabledArtifactsVisible } from '../store/actions';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -44,6 +45,11 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
     dispatch(setDateRange(startOfDay(startDate), endOfDay(endDate)));
   }, [dispatch, startDate, endDate]);
 
+  const [buildCountValue, setBuildCountValue] = React.useState<string>('');
+  const handleSetLastNBuilds = React.useCallback((): void => {
+    dispatch(setBuildCount(parseInt(buildCountValue, 10)));
+  }, [buildCountValue, dispatch]);
+
   return (
     <Drawer hidden ref={ref}>
       <View style={styles.header}>
@@ -53,9 +59,21 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
 
       <Divider />
 
+      <Subtitle title="Get latest builds" />
+      <TextField
+        keyboardType="numeric"
+        label="Number of builds"
+        onChangeText={setBuildCountValue}
+        style={styles.textinput}
+        value={buildCountValue}
+      />
+      <Button onPress={handleSetLastNBuilds} title="Get builds" type="unelevated" />
+
+      <Divider />
+
       <Subtitle title="Date range" />
-      <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.date} />
-      <DateTextField minDate={startDate} maxDate={today} label="End date" onSet={setEndDate} style={styles.date} />
+      <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.textinput} />
+      <DateTextField minDate={startDate} maxDate={today} label="End date" onSet={setEndDate} style={styles.textinput} />
       <View style={styles.date}>
         <Button disabled={!startDate || !endDate} onPress={handleSetDateRange} title="Get range" type="unelevated" />
       </View>
@@ -132,7 +150,7 @@ const styles = StyleSheet.create({
   switch: {
     marginEnd: Theme.Spacing.Small
   },
-  date: {
+  textinput: {
     marginBottom: Theme.Spacing.Small
   },
   attribution: {

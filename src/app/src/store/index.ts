@@ -12,6 +12,7 @@ export default function makeStore(initialState: Partial<State> = {}): Store<Stat
     activeArtifacts: {},
     activeComparator: null,
     artifactConfig: {},
+    buildCount: 30,
     builds: [],
     colorScale: Object.keys(ColorScale)[0],
     comparator: new Comparator({ builds: [] }),

@@ -1,0 +1,35 @@
+name: On pull request
+
+on: pull_request
+
+jobs:
+  test:
+    name: Test changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Add labels
+        uses: adamzolyak/monorepo-pr-labeler-action@patching
+        env:
+          BASE_DIRS: src|plugins|docs
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set status
+        uses: wip/action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        uses: nuxt/actions-yarn@master
+        with:
+          args: install --frozen-lockfile
+      - name: Verify types
+        uses: nuxt/actions-yarn@master
+        with:
+          args: tsc
+      - name: Verify tests
+        uses: nuxt/actions-yarn@master
+        with:
+          args: test:ci
+      - name: Lint
+        uses: nuxt/actions-yarn@master
+        with:
+          args: lint:ci

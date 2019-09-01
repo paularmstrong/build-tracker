@@ -1,0 +1,43 @@
+name: On push
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+  testAndDeploy:
+    name: Test and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install dependencies
+        uses: nuxt/actions-yarn@master
+        with:
+          args: install --frozen-lockfile
+      - name: Verify types
+        uses: nuxt/actions-yarn@master
+        with:
+          args: tsc
+      - name: Verify tests
+        uses: nuxt/actions-yarn@master
+        with:
+          args: test:ci
+      - name: Lint
+        uses: nuxt/actions-yarn@master
+        with:
+          args: lint:ci
+      - name: Build
+        uses: nuxt/actions-yarn@master
+        with:
+          args: build
+      - name: Deploy documentation
+        uses: paularmstrong/docusaurus-github-action@master
+        env:
+          BUILD_DIR: docs/website
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          PROJECT_NAME: build-tracker
+      - name: Upload build
+        uses: nuxt/actions-yarn@master
+        with:
+          args: ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js

@@ -6,11 +6,11 @@ import Queries from '../queries';
 import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 
 const row1Result = {
-  meta: { branch: 'master', revision: '12345' },
+  meta: { branch: 'master', revision: '12345', timestamp: 1111 },
   artifacts: []
 };
 const row2Result = {
-  meta: { branch: 'master', revision: 'abcde' },
+  meta: { branch: 'master', revision: 'abcde', timestamp: 2222 },
   artifacts: []
 };
 const row1 = {
@@ -111,11 +111,11 @@ describe('withMariadb queries', () => {
 
   describe('getRecent', () => {
     test('returns N most recent', async () => {
-      query.mockReturnValue(Promise.resolve([row1, row2]));
+      query.mockReturnValue(Promise.resolve([row2, row1]));
       const queries = new Queries(Mariadb.createPool({}));
       await expect(queries.getRecent(2, 'master')).resolves.toEqual([row1Result, row2Result]);
       expect(query).toHaveBeenCalledWith(
-        'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp LIMIT ?',
+        'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp DESC LIMIT ?',
         ['master', 2]
       );
     });

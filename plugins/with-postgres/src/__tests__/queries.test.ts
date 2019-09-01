@@ -130,13 +130,13 @@ describe('withPostgres', () => {
 
   describe('getRecent', () => {
     test('returns N most recent', () => {
-      const row1 = { meta: { branch: 'master', revision: '12345' }, artifacts: [] };
-      const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
-      query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
+      const row1 = { meta: { branch: 'master', revision: '12345', timestamp: 1111 }, artifacts: [] };
+      const row2 = { meta: { branch: 'master', revision: 'abcde', timestamp: 2222 }, artifacts: [] };
+      query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row2, row1] }));
       const queries = new Queries(new Pool());
       return queries.getRecent(2, 'master').then(res => {
         expect(query).toHaveBeenCalledWith(
-          'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp LIMIT $2',
+          'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp DESC LIMIT $2',
           ['master', 2]
         );
         expect(res).toEqual([row1, row2]);

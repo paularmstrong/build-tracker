@@ -6,38 +6,53 @@ on:
       - next
 
 jobs:
-  testAndDeploy:
-    name: Test and deploy
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install dependencies
-        uses: nuxt/actions-yarn@master
+      - uses: actions/setup-node@master
         with:
-          args: install --frozen-lockfile
-      - name: Verify types
-        uses: nuxt/actions-yarn@master
-        with:
-          args: tsc
-      - name: Verify tests
-        uses: nuxt/actions-yarn@master
-        with:
-          args: test:ci
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - name: Typecheck
+        run: yarn tsc
+      - name: Tests
+        run: yarn test:ci
       - name: Lint
-        uses: nuxt/actions-yarn@master
+        run: yarn lint:ci=
+
+  upload-build:
+    name: Upload build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
-          args: lint:ci
-      - name: Build
-        uses: nuxt/actions-yarn@master
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - name: Build all
+        run: yarn build
+      - name: Upload build
+        run: yarn ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js
+
+  deploy:
+    name: Deploy docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
-          args: build
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - name: Build docs
+        run: yarn workspace @build-tracker/docs build
       - name: Deploy documentation
         uses: paularmstrong/docusaurus-github-action@master
         env:
           BUILD_DIR: docs/website
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           PROJECT_NAME: build-tracker
-      - name: Upload build
-        uses: nuxt/actions-yarn@master
-        with:
-          args: ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js

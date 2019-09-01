@@ -21,7 +21,7 @@ jobs:
       - name: Tests
         run: yarn test:ci
       - name: Lint
-        run: yarn lint:ci=
+        run: yarn lint:ci
 
   upload-build:
     name: Upload build

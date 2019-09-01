@@ -13,6 +13,7 @@ module.exports = {
   baseDir: repoRoot,
   cwd: repoRoot,
   filenameHash,
+  buildUrlFormat: 'https://github.com/paularmstrong/build-tracker/commit/:revision',
   nameMapper: fileName => {
     const hash = filenameHash(fileName);
     let out = fileName.replace(/\.js$/, '').replace(/(plugins|src|dist)\//g, '');

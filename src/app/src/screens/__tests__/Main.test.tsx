@@ -113,7 +113,7 @@ describe('Main', () => {
       const { update } = render(component);
       update(component);
       await flushMicrotasksQueue();
-      expect(fetchSpy).toHaveBeenCalledWith(`${url}/api/builds/time/1567321200...1568530800`);
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringMatching(/\/api\/builds\/time\/\d+\.\.\.\d+/));
       expect(setBuildsSpy).toHaveBeenCalledWith(
         expect.arrayContaining([expect.any(Build), expect.any(Build), expect.any(Build)])
       );

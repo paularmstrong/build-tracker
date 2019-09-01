@@ -38,11 +38,11 @@ describe('run command', () => {
       expect(setupSpy).toHaveBeenCalled();
     });
 
-    test('exits if no setup found', () => {
+    test('exits if no setup found', async () => {
       const configPath = require.resolve('@build-tracker/fixtures/server-configs/build-tracker.config.js');
       const config = require(configPath);
       delete config.setup;
-      expect(Command.handler({ config: configPath })).rejects.toThrow();
+      await expect(Command.handler({ config: configPath })).rejects.toThrow();
     });
   });
 });

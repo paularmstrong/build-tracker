@@ -4,7 +4,6 @@
 import * as Command from '../create-build';
 import * as Git from '../../modules/git';
 import * as path from 'path';
-import { BuildMetaItem } from '@build-tracker/build';
 import yargs from 'yargs';
 
 const config = path.join(
@@ -33,7 +32,7 @@ describe('create-build', () => {
   });
 
   describe('handler', () => {
-    test('writes the artifact stats to stdout', () => {
+    test('writes the artifact stats to stdout', async () => {
       const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
       jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
       jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
@@ -42,93 +41,90 @@ describe('create-build', () => {
         .spyOn(Git, 'getRevisionDetails')
         .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
 
-      return Command.handler({ config, out: true, 'skip-dirty-check': true }).then(() => {
-        expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"1234567\\"'));
-      });
-    });
-
-    test('allows skipping the git worktree check', () => {
-      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      jest
-        .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
-
-      return Command.handler({ config, out: false, 'skip-dirty-check': true }).then(res => {
-        expect(res).toEqual(expect.any(Object));
-      });
-    });
-
-    test('throws if the working tree is dirty', () => {
-      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
-      return Command.handler({ config, out: false, 'skip-dirty-check': false }).catch(err => {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toEqual('Current work tree is dirty. Please commit all changes before proceeding');
-      });
-    });
-
-    test('returns a JSON representation of a build', () => {
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      jest
-        .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
-
-      return Command.handler({ config, out: false, 'skip-dirty-check': true }).then(res => {
-        expect(res).toMatchObject({
-          meta: {
-            branch: 'tacobranch',
-            parentRevision: '1234567',
-            revision: 'abcdefg',
-            timestamp: 1234567890,
-            author: 'Jimmy',
-            subject: 'tacos'
-          },
-          artifacts: [
-            {
-              hash: '631a500f31d7602a386b4f858338dd6f',
-              name: '../../fakedist/main.1234567.js',
-              sizes: {
-                brotli: 49,
-                gzip: 73,
-                stat: 64
-              }
-            },
-            {
-              hash: 'fc4bcd175441f89862f9d81e37599416',
-              name: '../../fakedist/vendor.js',
-              sizes: {
-                brotli: 62,
-                gzip: 82,
-                stat: 82
-              }
-            }
-          ]
-        });
-      });
-    });
-
-    test('returns a revision url if buildUrlFormat is provided', () => {
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      jest
-        .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
-
-      return Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true }).then(
-        (res: { meta: { revision: BuildMetaItem } }) => {
-          expect(res.meta.revision).toMatchObject({
-            url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg',
-            value: 'abcdefg'
-          });
-        }
+      await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toEqual(
+        expect.any(Object)
       );
+      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"1234567\\"'));
+    });
+
+    test('allows skipping the git worktree check', async () => {
+      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
+      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      jest
+        .spyOn(Git, 'getRevisionDetails')
+        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+
+      await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toEqual(
+        expect.any(Object)
+      );
+    });
+
+    test('throws if the working tree is dirty', async () => {
+      jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(true));
+      await expect(
+        Command.handler({ config, out: false, 'skip-dirty-check': false })
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"Current work tree is dirty. Please commit all changes before proceeding"`
+      );
+    });
+
+    test('returns a JSON representation of a build', async () => {
+      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
+      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      jest
+        .spyOn(Git, 'getRevisionDetails')
+        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+
+      await expect(Command.handler({ config, out: false, 'skip-dirty-check': true })).resolves.toMatchObject({
+        meta: {
+          branch: 'tacobranch',
+          parentRevision: '1234567',
+          revision: 'abcdefg',
+          timestamp: 1234567890,
+          author: 'Jimmy',
+          subject: 'tacos'
+        },
+        artifacts: [
+          {
+            hash: '631a500f31d7602a386b4f858338dd6f',
+            name: '../../fakedist/main.1234567.js',
+            sizes: {
+              brotli: 49,
+              gzip: 73,
+              stat: 64
+            }
+          },
+          {
+            hash: 'fc4bcd175441f89862f9d81e37599416',
+            name: '../../fakedist/vendor.js',
+            sizes: {
+              brotli: 62,
+              gzip: 82,
+              stat: 82
+            }
+          }
+        ]
+      });
+    });
+
+    test('returns a revision url if buildUrlFormat is provided', async () => {
+      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
+      jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('tacobranch'));
+      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
+      jest
+        .spyOn(Git, 'getRevisionDetails')
+        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+
+      await expect(
+        Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true })
+      ).resolves.toMatchObject({
+        meta: { revision: { url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg', value: 'abcdefg' } }
+      });
     });
   });
 });

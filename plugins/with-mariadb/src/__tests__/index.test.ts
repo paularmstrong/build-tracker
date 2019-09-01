@@ -1,17 +1,13 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Mariadb from 'mariadb';
 import withMariadb from '../';
 
 const url = 'https://build-tracker.local';
 
-describe('withMariadb', () => {
-  beforeAll(() => {
-    // @ts-ignore
-    jest.spyOn(Mariadb, 'createPool').mockImplementation(() => ({}));
-  });
+jest.mock('mariadb');
 
+describe('withMariadb', () => {
   test('preserves user-set config', () => {
     expect(withMariadb({ mariadb: {}, port: 1234, url })).toMatchObject({ port: 1234 });
   });

@@ -3,8 +3,8 @@ name: On pull request
 on: pull_request
 
 jobs:
-  test:
-    name: Test changes
+  housekeeping:
+    name: Housekeeping
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -17,19 +17,42 @@ jobs:
         uses: wip/action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install dependencies
-        uses: nuxt/actions-yarn@master
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
-          args: install --frozen-lockfile
-      - name: Verify types
-        uses: nuxt/actions-yarn@master
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - name: Typecheck
+        run: yarn tsc
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
-          args: tsc
-      - name: Verify tests
-        uses: nuxt/actions-yarn@master
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - name: Tests
+        run: yarn test:ci
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
-          args: test:ci
+          node-version: 10.x
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
       - name: Lint
-        uses: nuxt/actions-yarn@master
-        with:
-          args: lint:ci
+        run: yarn lint:ci

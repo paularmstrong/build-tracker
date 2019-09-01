@@ -91,6 +91,7 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
       <Divider />
       <View style={styles.footer}>
         <Subtitle title="Links" />
+        <DrawerLink href="https://buildtracker.dev" icon={OpenInExternalIcon} text="Documentation" />
         <DrawerLink href="https://github.com/paularmstrong/build-tracker" icon={OpenInExternalIcon} text="Github" />
       </View>
       <View style={styles.attribution}>

@@ -2,6 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { AppRegistry } from 'react-native-web';
+import Favicon from '../images/favicon.png';
 import Main from '../screens/Main';
 import makeStore from '../store';
 import { Provider } from 'react-redux';
@@ -38,6 +39,7 @@ export function getPageHTML(nonce: string, state: Partial<State>, scripts: Array
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${name === 'Build Tracker' ? name : `${name} : Build Tracker`}</title>
+<link rel="shortcut icon" href="${Favicon}">
 <style nonce="${nonce}">html,body{height:100%;overflow-y:hidden;}#root{display:flex;height:100%;}</style>
 ${css}
 <body>

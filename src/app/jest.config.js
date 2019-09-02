@@ -5,8 +5,8 @@ module.exports = {
   preset: '../../config/jest.js',
   displayName: 'app',
   moduleNameMapper: {
-    'react-art': '<rootDir>/config/jest/react-art-stub.js',
-    '^react-native$': '<rootDir>/../../node_modules/react-native-web/dist/cjs'
+    '\\.png$': '<rootDir>/config/jest/fileMock.js',
+    '^react-native$': require.resolve('react-native-web')
   },
   rootDir: './',
   roots: ['<rootDir>/src'],

@@ -19,7 +19,14 @@ module.exports = (env, reporter) => ({
   },
   devtool: IS_PROD ? 'source-map' : 'cheap-module-eval-source-map',
   module: {
-    rules: [{ test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }]
+    rules: [
+      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+      {
+        test: /\.(png)$/i,
+        loader: 'file-loader',
+        options: { outputPath: '../client/static', name: '[name].[hash:8].[ext]' }
+      }
+    ]
   },
   resolve: {
     alias: {
@@ -28,14 +35,15 @@ module.exports = (env, reporter) => ({
     extensions: ['.tsx', '.ts', '.js']
   },
   node: {
-    global: false
+    global: false,
+    __dirname: true
   },
   optimization: {
     minimize: false,
     splitChunks: {}
   },
   output: {
-    filename: `[name].js`,
+    filename: '[name].js',
     libraryTarget: 'commonjs2',
     path: path.join(DIST_ROOT, 'server')
   },

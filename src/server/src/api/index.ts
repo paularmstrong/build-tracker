@@ -4,6 +4,7 @@
 import express from 'express';
 import { Handlers } from '../types';
 import { insertBuild } from './insert';
+import protectedMiddleware from './protected';
 import { ServerConfig } from '../server';
 import { queryByRecent, queryByRevision, queryByRevisionRange, queryByRevisions, queryByTimeRange } from './read';
 
@@ -11,6 +12,7 @@ const defaultBuildInsert = (): Promise<void> => Promise.resolve();
 
 const middleware = (router: express.Router, config: ServerConfig, handlers?: Handlers): express.Router => {
   const { onBuildInsert = defaultBuildInsert } = handlers || {};
+  router.use(protectedMiddleware);
   router.post('/api/builds', insertBuild(config.queries.build, config, onBuildInsert));
   router.get('/api/builds/:limit?', queryByRecent(config.queries.builds, config));
   router.get('/api/builds/range/:startRevision..:endRevision', queryByRevisionRange(config.queries.builds));

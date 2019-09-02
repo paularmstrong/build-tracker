@@ -1,6 +1,16 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+
+export class AuthError extends Error {
+  public readonly status = 401;
+
+  public constructor(message?: string) {
+    super(`Unauthorized access${message ? `: ${message}` : ''}`);
+    Object.setPrototypeOf(this, AuthError.prototype);
+  }
+}
+
 export class NotFoundError extends Error {
   public readonly status = 404;
 

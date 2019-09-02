@@ -37,6 +37,8 @@ jobs:
         run: yarn build
       - name: Upload build
         run: yarn ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js -b next
+        env:
+          BT_API_AUTH_TOKEN: ${{ secrets.BT_API_AUTH_TOKEN }}
 
   deploy:
     name: Deploy docs

@@ -200,13 +200,33 @@ interface Queries {
 }
 ```
 
+### Securing your API
+
+It's easy to see that the API POST endpoint `/api/builds` is left completely open. To secure this and ensure that bad actors don't have an easy way to write random data to your database, you can do the following:
+
+When running your server, ensure you have an environment variable set, `BT_API_AUTH_TOKEN=my-super-secret-token`.
+
+```
+BT_API_AUTH_TOKEN=my-secret-token bt-server run
+```
+
+When your CI system uploads new builds using the [`bt-cli upload-build`](./cli#upload-build) command, ensure the token is set in that environment as well.
+
+```
+BT_API_AUTH_TOKEN=my-secret-token bt-cli upload-build
+```
+
 ## Commands
 
 The `bt-server` command has a few commands available. For the most part, you should only ever need `run`.
 
 ### `run`
 
-Run the server application.
+Run the server application. Remember to ensure that an API token environment variable is set to add a layer of security to the API.
+
+```
+BT_API_AUTH_TOKEN=my-secret-token bt-server run
+```
 
 ### `setup`
 

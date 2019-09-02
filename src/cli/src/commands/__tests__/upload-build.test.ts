@@ -37,49 +37,67 @@ describe('upload-build', () => {
   });
 
   describe('handler', () => {
-    test('uploads the current build', () => {
+    test('uploads the current build', async () => {
       jest.spyOn(CreateBuild, 'handler').mockImplementation(() => Promise.resolve(postData));
       const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
       const configValues = require(config);
 
-      nock(`${configValues.applicationUrl}/`, { allowUnmocked: true })
+      nock(`${configValues.applicationUrl}/`)
         .post('/api/builds')
         .reply(200, { success: 'yep' });
 
-      return Command.handler({ config, out: true, 'skip-dirty-check': true }).then(() => {
-        expect(writeSpy).toHaveBeenCalledWith('{"success":"yep"}');
-      });
+      await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toBeUndefined();
+      expect(writeSpy).toHaveBeenCalledWith('{"success":"yep"}');
     });
 
-    test('uploads the current build over http', () => {
+    test('uploads the current build over http', async () => {
       jest.spyOn(CreateBuild, 'handler').mockImplementation(() => Promise.resolve(postData));
       const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
       const configValues = require(httpConfig);
 
-      nock(`${configValues.applicationUrl}/`, { allowUnmocked: true })
+      nock(`${configValues.applicationUrl}/`)
         .post('/api/builds')
         .reply(200, { success: 'yep' });
 
-      return Command.handler({ config: httpConfig, out: true, 'skip-dirty-check': true }).then(() => {
-        expect(writeSpy).toHaveBeenCalledWith('{"success":"yep"}');
-      });
+      await expect(
+        Command.handler({ config: httpConfig, out: true, 'skip-dirty-check': true })
+      ).resolves.toBeUndefined();
+      expect(writeSpy).toHaveBeenCalledWith('{"success":"yep"}');
     });
 
-    test('rejects on error response', () => {
+    test('sends the BT_API_AUTH_TOKEN', async () => {
+      const prevToken = process.env.BT_API_AUTH_TOKEN;
+      process.env.BT_API_AUTH_TOKEN = 'test-token';
+
+      jest.spyOn(CreateBuild, 'handler').mockImplementation(() => Promise.resolve(postData));
+      const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
+      const configValues = require(httpConfig);
+
+      nock(`${configValues.applicationUrl}/`)
+        .matchHeader('x-bt-auth', 'test-token')
+        .post('/api/builds')
+        .reply(200, { success: 'yep' });
+
+      await expect(
+        Command.handler({ config: httpConfig, out: true, 'skip-dirty-check': true })
+      ).resolves.toBeUndefined();
+      expect(writeSpy).toHaveBeenCalledWith('{"success":"yep"}');
+      process.env.BT_API_AUTH_TOKEN = prevToken;
+    });
+
+    test('rejects on error response', async () => {
       jest.spyOn(CreateBuild, 'handler').mockImplementation(() => Promise.resolve(postData));
       const writeSpy = jest.spyOn(process.stderr, 'write').mockImplementationOnce(() => true);
       const configValues = require(config);
 
       const responseError = new Error('some error');
 
-      nock(`${configValues.applicationUrl}/`, { allowUnmocked: true })
+      nock(`${configValues.applicationUrl}/`)
         .post('/api/builds')
         .replyWithError(responseError);
 
-      return Command.handler({ config, out: true, 'skip-dirty-check': true }).catch(error => {
-        expect(writeSpy).toHaveBeenCalledWith(responseError.toString());
-        expect(error).toBe(responseError);
-      });
+      await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).rejects.toBe(responseError);
+      expect(writeSpy).toHaveBeenCalledWith(responseError.toString());
     });
   });
 });

@@ -61,6 +61,10 @@ export const handler = async (args: Args): Promise<void> => {
     }
   };
 
+  if (process.env.BT_API_AUTH_TOKEN) {
+    requestOptions.headers['x-bt-auth'] = process.env.BT_API_AUTH_TOKEN;
+  }
+
   return new Promise((resolve, reject) => {
     const req = httpProtocol.request(requestOptions, (res: http.IncomingMessage) => {
       const output = [];

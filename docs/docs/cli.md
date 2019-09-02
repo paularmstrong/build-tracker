@@ -151,6 +151,12 @@ module.exports = {
 
 This command will read your configuration file, and upload the current build meta and artifact stats to your server. In most scenarios, this should be all you need.
 
+Beside the arguments below, if you're running your server with a [`BT_API_AUTH_TOKEN` environment variable](./app#securing-your-api), ensure you run this command with that variable available as well.
+
+```
+BT_API_AUTH_TOKEN=my-secret-token bt-cli upload-build
+```
+
 | option, alias        | description                                             | default                     |
 | -------------------- | ------------------------------------------------------- | --------------------------- |
 | `--branch`, `-b`     | Set the branch name and do not attempt to read from git | Current git working branch  |

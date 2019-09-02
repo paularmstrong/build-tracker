@@ -104,11 +104,11 @@ Here are some things to keep in mind while working in a monorepo:
 
 ### Adding a dependency to a package
 
-To add a third-party dependency to a sub-package in the Build Tracker repository, ensure that it's done from the specific sub-package:
+To add a third-party dependency to a sub-package in the Build Tracker repository, ensure that it's done from the specific sub-package using the `yarn workspace` command:
 
 ```sh
 # To add to the @build-tracker/app package
-$ (cd src/app && yarn add some-third-party-module)
+$ yarn workspace @build-tracker/app add <some-third-party-module>
 ```
 
 ### Don't abstract too early

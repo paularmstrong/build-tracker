@@ -98,11 +98,11 @@ describe('git', () => {
     });
   });
 
-  describe('getParentRevision', () => {
+  describe('getMergeBase', () => {
     test('returns the merge base for the current revision', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('123556')));
 
-      return Git.getParentRevision('tacos').then(branch => {
+      return Git.getMergeBase('tacos').then(branch => {
         expect(spawn).toHaveBeenCalledWith(
           expect.any(String),
           ['merge-base', 'HEAD', 'origin/tacos'],
@@ -115,7 +115,7 @@ describe('git', () => {
     test('uses the process cwd', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
-      return Git.getParentRevision('master').then(() => {
+      return Git.getMergeBase('master').then(() => {
         expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: process.cwd() });
       });
     });
@@ -123,8 +123,35 @@ describe('git', () => {
     test('uses given cwd', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
-      return Git.getParentRevision('master', 'tacos').then(() => {
+      return Git.getMergeBase('master', 'tacos').then(() => {
         expect(spawn).toHaveBeenCalledWith(expect.any(String), expect.any(Array), { cwd: 'tacos' });
+      });
+    });
+  });
+
+  describe('getParentRevision', () => {
+    test('returns the parent sha for the given sha', () => {
+      const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('123556')));
+
+      return Git.getParentRevision('tacos').then(branch => {
+        expect(spawn).toHaveBeenCalledWith('git', ['log', '--pretty=%P', '-n', '1', 'tacos'], expect.any(Object));
+        expect(branch).toBe('123556');
+      });
+    });
+
+    test('uses the process cwd', () => {
+      const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
+
+      return Git.getParentRevision('master').then(() => {
+        expect(spawn).toHaveBeenCalledWith('git', expect.any(Array), { cwd: process.cwd() });
+      });
+    });
+
+    test('uses given cwd', () => {
+      const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
+
+      return Git.getParentRevision('master', 'tacos').then(() => {
+        expect(spawn).toHaveBeenCalledWith('git', expect.any(Array), { cwd: 'tacos' });
       });
     });
   });

@@ -32,25 +32,38 @@ describe('create-build', () => {
   });
 
   describe('handler', () => {
-    let isDirtySpy, getBranchSpy;
+    let isDirtySpy, getBranchSpy, writeSpy;
     beforeEach(() => {
-      isDirtySpy = jest.spyOn(Git, 'isDirty').mockReturnValue(Promise.resolve(false));
-      jest.spyOn(Git, 'getDefaultBranch').mockReturnValue(Promise.resolve('master'));
-      jest.spyOn(Git, 'getParentRevision').mockReturnValue(Promise.resolve('1234567'));
-      jest.spyOn(Git, 'getCurrentRevision').mockReturnValue(Promise.resolve('abcdefg'));
-      getBranchSpy = jest.spyOn(Git, 'getBranch').mockReturnValue(Promise.resolve('master'));
+      writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
+      isDirtySpy = jest.spyOn(Git, 'isDirty').mockImplementation(() => Promise.resolve(false));
+      jest.spyOn(Git, 'getDefaultBranch').mockImplementation(() => Promise.resolve('master'));
+      jest.spyOn(Git, 'getMergeBase').mockImplementation(() => Promise.resolve('1234567'));
+      jest.spyOn(Git, 'getParentRevision').mockImplementation(() => Promise.resolve('7654321'));
+      jest.spyOn(Git, 'getCurrentRevision').mockImplementation(() => Promise.resolve('abcdefg'));
+      getBranchSpy = jest.spyOn(Git, 'getBranch').mockImplementation(() => Promise.resolve('master'));
       jest
         .spyOn(Git, 'getRevisionDetails')
-        .mockReturnValue(Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+        .mockImplementation(() => Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
     });
 
     test('writes the artifact stats to stdout', async () => {
-      const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);
-
       await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toEqual(
         expect.any(Object)
       );
-      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"1234567\\"'));
+      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"7654321\\"'));
+    });
+
+    test('gets parent revision if branch is same as default branch', async () => {
+      await expect(Command.handler({ config, out: false, 'skip-dirty-check': true })).resolves.toMatchObject({
+        meta: { parentRevision: '7654321' }
+      });
+    });
+
+    test('gets the merge base if not on the default branch', async () => {
+      getBranchSpy.mockReturnValue(Promise.resolve('tacos'));
+      await expect(Command.handler({ config, out: false, 'skip-dirty-check': true })).resolves.toMatchObject({
+        meta: { parentRevision: '1234567' }
+      });
     });
 
     test('allows overriding the git branch name check', async () => {

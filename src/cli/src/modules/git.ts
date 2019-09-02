@@ -28,8 +28,16 @@ export function getBranch(cwd: string = process.cwd()): Promise<string> {
   );
 }
 
-export function getParentRevision(branch: string, cwd: string = process.cwd()): Promise<string> {
+export function getMergeBase(branch: string, cwd: string = process.cwd()): Promise<string> {
   return spawn('git', ['merge-base', 'HEAD', `origin/${branch}`], { cwd }).then(
+    (buffer: Buffer): string => {
+      return buffer.toString().trim();
+    }
+  );
+}
+
+export function getParentRevision(sha: string, cwd: string = process.cwd()): Promise<string> {
+  return spawn('git', ['log', '--pretty=%P', '-n', '1', sha], { cwd }).then(
     (buffer: Buffer): string => {
       return buffer.toString().trim();
     }

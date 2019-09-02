@@ -3,71 +3,22 @@
  */
 import * as Theme from '../theme';
 import AppBarView from '../views/AppBar';
-import Build from '@build-tracker/build';
 import { Handles as DrawerHandles } from '../components/Drawer';
 import DrawerView from '../views/Drawer';
-import { fetch } from 'cross-fetch';
 import Graph from '../views/Graph';
 import React from 'react';
-import { setBuilds } from '../store/actions';
 import Snacks from '../views/Snacks';
-import { State } from '../store/types';
+import { useSelector } from 'react-redux';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { FetchState, State } from '../store/types';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
-
-const dateToSeconds = (date: Date): number => Math.round(date.valueOf() / 1000);
-
-enum FetchState {
-  NONE,
-  FETCHING,
-  FETCHED,
-  ERROR
-}
 
 const Main = (): React.ReactElement => {
   const drawerRef = React.useRef<DrawerHandles>(null);
 
-  const buildsCount = useSelector((state: State) => state.builds.length);
-  const requestedBuildsCount = useSelector((state: State) => state.buildCount);
-  const dateRange = useSelector((state: State) => state.dateRange);
   const showComparisonTable = useSelector((state: State) => !!state.comparedRevisions.length);
-  const url = useSelector((state: State) => state.url);
-  const [fetchState, setFetchState] = React.useState<FetchState>(FetchState.NONE);
-  const dispatch = useDispatch();
-
-  React.useEffect(() => {
-    if (dateRange) {
-      setFetchState(FetchState.FETCHING);
-      fetch(`${url}/api/builds/time/${dateToSeconds(dateRange.start)}...${dateToSeconds(dateRange.end)}`)
-        .then(response => response.json())
-        .then(builds => {
-          dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
-        })
-        .then(() => {
-          setFetchState(FetchState.FETCHED);
-        })
-        .catch(() => {
-          setFetchState(FetchState.ERROR);
-        });
-      return;
-    }
-    if (buildsCount === 0) {
-      setFetchState(FetchState.FETCHING);
-      fetch(`${url}/api/builds/${requestedBuildsCount}`)
-        .then(response => response.json())
-        .then(builds => {
-          dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
-        })
-        .then(() => {
-          setFetchState(FetchState.FETCHED);
-        })
-        .catch(() => {
-          setFetchState(FetchState.ERROR);
-        });
-    }
-  }, [buildsCount, dateRange, dispatch, requestedBuildsCount, url]);
+  const fetchState = useSelector((state: State) => state.fetchState);
 
   return (
     <View style={styles.layout}>

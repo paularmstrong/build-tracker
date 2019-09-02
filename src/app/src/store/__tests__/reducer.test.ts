@@ -6,19 +6,18 @@ import Build from '@build-tracker/build';
 import ColorScale from '../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import reducer from '../reducer';
-import { State } from '../types';
+import { FetchState, State } from '../types';
 
 const initialState: State = Object.freeze({
   activeArtifacts: {},
   activeComparator: null,
   artifactConfig: {},
-  buildCount: 10,
   builds: [],
   colorScale: Object.keys(ColorScale)[0],
   comparator: new Comparator({ builds: [] }),
   comparedRevisions: [],
-  dateRange: undefined,
   disabledArtifactsVisible: true,
+  fetchState: FetchState.NONE,
   hoveredArtifacts: [],
   name: 'Tacos!',
   snacks: [],
@@ -170,56 +169,6 @@ describe('reducer', () => {
       const mockState = { ...initialState, hoveredArtifacts: ['tacos', 'burritos'] };
       const state = reducer(mockState, Actions.setHoveredArtifacts(['burritos', 'tacos']));
       expect(state).toBe(mockState);
-    });
-  });
-
-  describe('date range', () => {
-    test('sets the date range', () => {
-      const start = new Date(2018);
-      const end = new Date(2019);
-      const state = reducer(initialState, Actions.setDateRange(start, end));
-      expect(state.dateRange).toEqual({ start, end });
-    });
-
-    test('clears the comparedRevisions', () => {
-      const state = reducer(
-        { ...initialState, comparedRevisions: ['123', '456', '789'] },
-        Actions.setDateRange(new Date(2017), new Date(2019))
-      );
-      expect(state.comparedRevisions).toHaveLength(0);
-    });
-
-    test('clears the builds', () => {
-      const state = reducer(
-        { ...initialState, builds: [buildA, buildB] },
-        Actions.setDateRange(new Date(2017), new Date(2019))
-      );
-      expect(state.builds).toHaveLength(0);
-    });
-  });
-
-  describe('build count', () => {
-    test('sets the build count', () => {
-      const state = reducer(initialState, Actions.setBuildCount(4));
-      expect(state.buildCount).toEqual(4);
-    });
-
-    test('clears the date range', () => {
-      const state = reducer(
-        { ...initialState, dateRange: { start: new Date(), end: new Date() } },
-        Actions.setBuildCount(4)
-      );
-      expect(state.dateRange).toBeUndefined();
-    });
-
-    test('clears the builds', () => {
-      const state = reducer({ ...initialState, builds: [buildA, buildB] }, Actions.setBuildCount(4));
-      expect(state.builds).toHaveLength(0);
-    });
-
-    test('clears the comparedRevisions', () => {
-      const state = reducer({ ...initialState, comparedRevisions: ['123', '456', '789'] }, Actions.setBuildCount(5));
-      expect(state.comparedRevisions).toHaveLength(0);
     });
   });
 

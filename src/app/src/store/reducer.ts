@@ -88,11 +88,8 @@ export default function reducer(state: State, action: Actions): State {
       }
       return { ...state, hoveredArtifacts: action.payload };
 
-    case 'SET_DATE_RANGE':
-      return { ...state, builds: [], comparedRevisions: [], dateRange: action.payload };
-
-    case 'SET_BUILD_COUNT':
-      return { ...state, builds: [], comparedRevisions: [], dateRange: undefined, buildCount: action.payload };
+    case 'SET_FETCH_STATE':
+      return { ...state, fetchState: action.payload };
 
     default:
       return state;

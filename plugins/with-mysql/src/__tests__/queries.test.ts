@@ -80,7 +80,7 @@ describe('withMysql queries', () => {
       query.mockImplementation((_query, _args, cb) => {
         cb(null, [row1, row2]);
       });
-      await expect(queries.getByRevisions('12345', 'abcde')).resolves.toEqual([row1Result, row2Result]);
+      await expect(queries.getByRevisions(['12345', 'abcde'])).resolves.toEqual([row1Result, row2Result]);
       expect(query).toHaveBeenCalledWith(
         'SELECT meta, artifacts FROM builds WHERE revision in ?',
         [['12345', 'abcde']],
@@ -89,7 +89,7 @@ describe('withMysql queries', () => {
     });
 
     test('throws with no results', async () => {
-      await expect(queries.getByRevisions('12345', 'abcde')).rejects.toThrow(NotFoundError);
+      await expect(queries.getByRevisions(['12345', 'abcde'])).rejects.toThrow(NotFoundError);
     });
   });
 

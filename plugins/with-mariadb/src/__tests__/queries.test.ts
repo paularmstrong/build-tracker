@@ -68,7 +68,7 @@ describe('withMariadb queries', () => {
   describe('getByRevisions', () => {
     test('selects meta and artifacts', async () => {
       query.mockReturnValue(Promise.resolve([row1, row2]));
-      await expect(queries.getByRevisions('12345', 'abcde')).resolves.toEqual([row1Result, row2Result]);
+      await expect(queries.getByRevisions(['12345', 'abcde'])).resolves.toEqual([row1Result, row2Result]);
       expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision in ?', [
         ['12345', 'abcde']
       ]);
@@ -76,7 +76,7 @@ describe('withMariadb queries', () => {
 
     test('throws with no results', async () => {
       query.mockReturnValue(Promise.resolve([]));
-      await expect(queries.getByRevisions('12345', 'abcde')).rejects.toThrow(NotFoundError);
+      await expect(queries.getByRevisions(['12345', 'abcde'])).rejects.toThrow(NotFoundError);
     });
   });
 

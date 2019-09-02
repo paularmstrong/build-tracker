@@ -13,7 +13,10 @@
   ],
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",
-    "dev:maria": "ts-node src/server/src/index.ts run -c ./config/mariadb.js",
+    "dev:setup": "ts-node src/server/src/index.ts setup",
+    "dev:seed": "ts-node src/server/src/index.ts seed",
+    "dev:mariadb": "ts-node src/server/src/index.ts run -c ./config/mariadb.js",
+    "dev:mysql": "ts-node src/server/src/index.ts run -c ./config/mysql.js",
     "dev:postgres": "ts-node src/server/src/index.ts run -c ./config/postgres.js",
     "docs": "cd docs/website && yarn start",
     "prebuild": "yarnpkg clean",

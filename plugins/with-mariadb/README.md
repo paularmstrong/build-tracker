@@ -1,4 +1,4 @@
-# @build-tracker/plugin-with-postgres
+# @build-tracker/plugin-with-mariadb
 
 A server-configuration plugin for Build Tracker to enable reading build data from a MariaDB database.
 
@@ -20,7 +20,7 @@ Edit your `build-tracker.config.js` file and compose your output configuration:
 const withMariadb = require('@build-tracker/plugin-with-mariadb');
 
 module.exports = withMariadb({
-  pg: {
+  mariadb: {
     user: '', // default: process.env.MARIAUSER
     host: '', // default: process.env.MARIAHOST
     database: '', // default: process.env.MARIADATABASE

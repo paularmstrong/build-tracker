@@ -25,7 +25,8 @@ export const insertBuild = (
           comparator: new Comparator({
             artifactBudgets: artifactConfig.budgets,
             artifactFilters: artifactConfig.filters,
-            builds: [build, parentBuild]
+            builds: [build, parentBuild],
+            groups: artifactConfig.groups
           }),
           parentBuild
         };
@@ -34,12 +35,15 @@ export const insertBuild = (
         return onInserted(context.comparator).then(() => context);
       })
       .then(({ comparator, parentBuild }) => {
+        const buildDelta = comparator.buildDeltas[1][0];
         res.send({
           build: build.toJSON(),
           parentBuild: parentBuild.toJSON(),
           json: comparator.toJSON(),
           markdown: comparator.toMarkdown(),
-          csv: comparator.toCsv()
+          csv: comparator.toCsv(),
+          groupDeltas: Array.from(buildDelta.groupDeltas.values()).map(delta => delta.toObject()),
+          artifactDeltas: buildDelta.artifactDeltas.map(delta => delta.toObject())
         });
       })
       .catch(error => {

@@ -15,7 +15,7 @@ export interface Queries {
     insert: (build: Build) => Promise<string>;
   };
   builds: {
-    byRevisions: (...revisions: Array<string>) => Promise<Array<Build>>;
+    byRevisions: (revisions: Array<string>) => Promise<Array<Build>>;
     byRevisionRange: (startRevision: string, endRevision: string) => Promise<Array<Build>>;
     byTimeRange: (startTimestamp: number, endTimestamp: number, branch: string) => Promise<Array<Build>>;
     recent: (limit: number, branch: string) => Promise<Array<Build>>;

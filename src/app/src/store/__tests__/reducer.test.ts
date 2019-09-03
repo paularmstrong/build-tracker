@@ -6,19 +6,18 @@ import Build from '@build-tracker/build';
 import ColorScale from '../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import reducer from '../reducer';
-import { State } from '../types';
+import { FetchState, State } from '../types';
 
 const initialState: State = Object.freeze({
   activeArtifacts: {},
   activeComparator: null,
   artifactConfig: {},
-  buildCount: 10,
   builds: [],
   colorScale: Object.keys(ColorScale)[0],
   comparator: new Comparator({ builds: [] }),
   comparedRevisions: [],
-  dateRange: undefined,
   disabledArtifactsVisible: true,
+  fetchState: FetchState.NONE,
   hoveredArtifacts: [],
   name: 'Tacos!',
   snacks: [],
@@ -59,6 +58,39 @@ describe('reducer', () => {
     test('activates all artifacts', () => {
       const state = reducer(initialState, Actions.setBuilds([buildA, buildB]));
       expect(state.activeArtifacts).toEqual({ tacos: true });
+    });
+
+    test('carries over active artifacts, disables inactive or unknown', () => {
+      const buildA = new Build(
+        { branch: 'master', revision: '123', parentRevision: '000', timestamp: Date.now() - 400 },
+        [
+          { name: 'tacos', hash: '123', sizes: { stat: 123, gzip: 45 } },
+          { name: 'burritos', hash: '123', sizes: { stat: 123, gzip: 45 } }
+        ]
+      );
+
+      const state = reducer({ ...initialState, activeArtifacts: { tacos: true } }, Actions.setBuilds([buildA, buildB]));
+      expect(state.activeArtifacts).toEqual({ tacos: true, burritos: false });
+    });
+
+    test('creates an activeComparator if all current compared revisions are in the new builds', () => {
+      const state = reducer({ ...initialState, comparedRevisions: ['123'] }, Actions.setBuilds([buildA, buildB]));
+      expect(state.activeComparator).toBeInstanceOf(Comparator);
+    });
+
+    test('nulls out activeComparator if current compared revisions are not in the new builds', () => {
+      const state = reducer({ ...initialState, comparedRevisions: ['foobar'] }, Actions.setBuilds([buildA, buildB]));
+      expect(state.activeComparator).toBeNull();
+    });
+
+    test('keeps the current sizeKey if it is in the new set', () => {
+      const state = reducer({ ...initialState, sizeKey: 'stat' }, Actions.setBuilds([buildA, buildB]));
+      expect(state.sizeKey).toBe('stat');
+    });
+
+    test('resets the sizeKey if it the current is not in the new set', () => {
+      const state = reducer({ ...initialState, sizeKey: 'foobar' }, Actions.setBuilds([buildA, buildB]));
+      expect(state.sizeKey).toBe('gzip');
     });
   });
 
@@ -170,56 +202,6 @@ describe('reducer', () => {
       const mockState = { ...initialState, hoveredArtifacts: ['tacos', 'burritos'] };
       const state = reducer(mockState, Actions.setHoveredArtifacts(['burritos', 'tacos']));
       expect(state).toBe(mockState);
-    });
-  });
-
-  describe('date range', () => {
-    test('sets the date range', () => {
-      const start = new Date(2018);
-      const end = new Date(2019);
-      const state = reducer(initialState, Actions.setDateRange(start, end));
-      expect(state.dateRange).toEqual({ start, end });
-    });
-
-    test('clears the comparedRevisions', () => {
-      const state = reducer(
-        { ...initialState, comparedRevisions: ['123', '456', '789'] },
-        Actions.setDateRange(new Date(2017), new Date(2019))
-      );
-      expect(state.comparedRevisions).toHaveLength(0);
-    });
-
-    test('clears the builds', () => {
-      const state = reducer(
-        { ...initialState, builds: [buildA, buildB] },
-        Actions.setDateRange(new Date(2017), new Date(2019))
-      );
-      expect(state.builds).toHaveLength(0);
-    });
-  });
-
-  describe('build count', () => {
-    test('sets the build count', () => {
-      const state = reducer(initialState, Actions.setBuildCount(4));
-      expect(state.buildCount).toEqual(4);
-    });
-
-    test('clears the date range', () => {
-      const state = reducer(
-        { ...initialState, dateRange: { start: new Date(), end: new Date() } },
-        Actions.setBuildCount(4)
-      );
-      expect(state.dateRange).toBeUndefined();
-    });
-
-    test('clears the builds', () => {
-      const state = reducer({ ...initialState, builds: [buildA, buildB] }, Actions.setBuildCount(4));
-      expect(state.builds).toHaveLength(0);
-    });
-
-    test('clears the comparedRevisions', () => {
-      const state = reducer({ ...initialState, comparedRevisions: ['123', '456', '789'] }, Actions.setBuildCount(5));
-      expect(state.comparedRevisions).toHaveLength(0);
     });
   });
 

@@ -59,7 +59,7 @@ export default class Queries {
     });
   };
 
-  public getByRevisions = (...revisions: Array<string>): Promise<Array<BuildStruct>> => {
+  public getByRevisions = (revisions: Array<string>): Promise<Array<BuildStruct>> => {
     return new Promise((resolve, reject) => {
       this._pool.query(
         'SELECT meta, artifacts FROM builds WHERE revision in ?',

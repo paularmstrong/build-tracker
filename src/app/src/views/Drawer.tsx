@@ -9,30 +9,29 @@ import Divider from '../components/Divider';
 import DrawerLink from '../components/DrawerLink';
 import endOfDay from 'date-fns/end_of_day';
 import HeartIcon from '../icons/Heart';
+import history from '../client/history';
 import Logo from '../icons/Logo';
 import OpenInExternalIcon from '../icons/OpenInExternal';
-import React from 'react';
 import SizeKeyPicker from '../components/SizeKeyPicker';
 import startOfDay from 'date-fns/start_of_day';
 import { State } from '../store/types';
 import Subtitle from '../components/Subtitle';
 import TextField from '../components/TextField';
+import { clearComparedRevisions, setDisabledArtifactsVisible } from '../store/actions';
 import Drawer, { Handles as DrawerHandles } from '../components/Drawer';
-import { setBuildCount, setDateRange, setDisabledArtifactsVisible } from '../store/actions';
+import React, { FunctionComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 const today = new Date();
 
-const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.ReactElement => {
+const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<DrawerHandles>): React.ReactElement => {
   const comparator = useSelector((state: State) => state.comparator);
   const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
-  const storeEnd = useSelector((state: State) => (state.dateRange ? state.dateRange.end : null));
-  const storeStart = useSelector((state: State) => (state.dateRange ? state.dateRange.start : null));
   const dispatch = useDispatch();
 
-  const [startDate, setStartDate] = React.useState<Date>(storeStart);
-  const [endDate, setEndDate] = React.useState<Date>(storeEnd);
+  const [startDate, setStartDate] = React.useState<Date>();
+  const [endDate, setEndDate] = React.useState<Date>();
 
   const handleToggleDisabled = React.useCallback(
     (showDisabled: boolean): void => {
@@ -42,12 +41,16 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
   );
 
   const handleSetDateRange = React.useCallback((): void => {
-    dispatch(setDateRange(startOfDay(startDate), endOfDay(endDate)));
-  }, [dispatch, startDate, endDate]);
+    const startTimestamp = Math.floor(startOfDay(startDate).valueOf() / 1000);
+    const endTimestamp = Math.floor(endOfDay(endDate).valueOf() / 1000);
+    dispatch(clearComparedRevisions());
+    history.push(`/builds/dates/${startTimestamp}..${endTimestamp}`);
+  }, [startDate, endDate, dispatch]);
 
   const [buildCountValue, setBuildCountValue] = React.useState<string>('');
   const handleSetLastNBuilds = React.useCallback((): void => {
-    dispatch(setBuildCount(parseInt(buildCountValue, 10)));
+    dispatch(clearComparedRevisions());
+    history.push(buildCountValue ? `/builds/limit/${buildCountValue}` : '/');
   }, [buildCountValue, dispatch]);
 
   return (
@@ -57,7 +60,7 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
         <Text style={styles.title}>Build Tracker</Text>
       </View>
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       <Subtitle title="Get latest builds" />
       <TextField
@@ -69,7 +72,7 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
       />
       <Button onPress={handleSetLastNBuilds} title="Get builds" type="unelevated" />
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       <Subtitle title="Date range" />
       <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.textinput} />
@@ -78,13 +81,13 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
         <Button disabled={!startDate || !endDate} onPress={handleSetDateRange} title="Get range" type="unelevated" />
       </View>
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       {comparator.sizeKeys.length > 1 ? (
         <>
           <Subtitle title="Compare artifacts by" />
           <SizeKeyPicker keys={comparator.sizeKeys} />
-          <Divider />
+          <Divider style={styles.divider} />
         </>
       ) : null}
 
@@ -102,11 +105,11 @@ const DrawerView = (_props: {}, ref: React.RefObject<DrawerHandles>): React.Reac
         <Text>Show disabled artifacts</Text>
       </View>
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       <Subtitle title="Color scale" />
       <ColorScalePicker />
-      <Divider />
+      <Divider style={styles.divider} />
       <View style={styles.footer}>
         <Subtitle title="Links" />
         <DrawerLink href="https://buildtracker.dev" icon={OpenInExternalIcon} text="Documentation" />
@@ -143,6 +146,9 @@ const styles = StyleSheet.create({
     fontWeight: Theme.FontWeight.Bold,
     fontSize: Theme.FontSize.Large
   },
+  divider: {
+    marginBottom: Theme.Spacing.Normal
+  },
   switchRoot: {
     flexDirection: 'row',
     marginBottom: Theme.Spacing.Normal
@@ -165,4 +171,5 @@ const styles = StyleSheet.create({
   }
 });
 
+// @ts-ignore
 export default React.forwardRef(DrawerView);

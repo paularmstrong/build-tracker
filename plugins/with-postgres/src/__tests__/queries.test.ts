@@ -78,7 +78,7 @@ describe('withPostgres', () => {
       const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
-      return queries.getByRevisions('12345', 'abcde').then(res => {
+      return queries.getByRevisions(['12345', 'abcde']).then(res => {
         expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision in $1', [
           ['12345', 'abcde']
         ]);
@@ -89,7 +89,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getByRevisions('12345', 'abcde').catch(err => {
+      return queries.getByRevisions(['12345', 'abcde']).catch(err => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });

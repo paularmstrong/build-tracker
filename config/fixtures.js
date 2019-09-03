@@ -42,8 +42,8 @@ module.exports = {
       }
     },
     builds: {
-      byRevisions: async (...revisions) => {
-        return Promise.resolve(Array.from(builds.values()).filter(build => revisions.includes(build.meta.revision)));
+      byRevisions: async revisions => {
+        return Promise.resolve(revisions.map(revision => builds.get(revision)).filter(Boolean));
       },
       byRevisionRange: async () => {
         throw new UnimplementedError();

@@ -3,23 +3,23 @@
  */
 import * as Theme from '../theme';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 interface Props {
   color?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Divider = (props: Props): React.ReactElement => {
-  const { color } = props;
-  return <View style={[styles.root, color && { backgroundColor: color }]} />;
+  const { color, style } = props;
+  return <View style={[styles.root, color && { backgroundColor: color }, style]} />;
 };
 
 const styles = StyleSheet.create({
   root: {
     height: StyleSheet.hairlineWidth,
     overflow: 'hidden',
-    backgroundColor: Theme.Color.Gray20,
-    marginBottom: Theme.Spacing.Normal
+    backgroundColor: Theme.Color.Gray20
   }
 });
 

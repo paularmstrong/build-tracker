@@ -7,14 +7,14 @@ import {
   AddComparedRevision,
   AddSnack,
   ClearComparedRevision,
+  FetchState,
   RemoveComparedRevision,
   RemoveSnack,
   SetArtifactsActiveAction,
-  SetBuildCount,
   SetBuildsAction,
   SetColorScaleAction,
-  SetDateRange,
   SetDisabledArtifactsVisible,
+  SetFetchState,
   SetFocusedRevision,
   SetHoveredArtifacts,
   SetSizeKey
@@ -75,9 +75,4 @@ export const setHoveredArtifacts = (artifactNames: Array<string>): SetHoveredArt
 
 export const setSizeKey = (key: string): SetSizeKey => ({ type: 'SET_SIZE_KEY', payload: key });
 
-export const setDateRange = (start: Date, end: Date): SetDateRange => ({
-  type: 'SET_DATE_RANGE',
-  payload: { start, end }
-});
-
-export const setBuildCount = (count: number): SetBuildCount => ({ type: 'SET_BUILD_COUNT', payload: count });
+export const setFetchState = (status: FetchState): SetFetchState => ({ type: 'SET_FETCH_STATE', payload: status });

@@ -1,13 +1,19 @@
 const glob = require('glob');
 const path = require('path');
+const subDays = require('date-fns/sub_days');
 const { UnimplementedError } = require('@build-tracker/api-errors');
 const { BudgetLevel, BudgetType } = require('@build-tracker/types');
 
 const builds = new Map();
-glob.sync(`${path.join(__dirname, '../src/fixtures/builds')}/*.json`).forEach(fileName => {
-  const build = require(fileName);
-  builds.set(build.meta.revision.value || build.meta.revision, build);
-});
+const today = new Date();
+glob
+  .sync(`${path.join(__dirname, '../src/fixtures/builds')}/*.json`)
+  .map(buildPath => ({ ...require(buildPath) }))
+  .sort((a, b) => b.meta.timestamp - a.meta.timestamp)
+  .forEach((build, i) => {
+    build.meta.timestamp = Math.floor(subDays(today, i).valueOf() / 1000);
+    builds.set(build.meta.revision.value || build.meta.revision, build);
+  });
 
 module.exports = {
   dev: true,

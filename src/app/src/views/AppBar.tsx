@@ -99,8 +99,8 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
           <>
             <MenuItem key="clear" icon={ClearIcon} label="Clear selected revisions" onPress={handleClearRevisions} />
             <Divider />
-            <MenuItem key="md" icon={DocumentIcon} label="Copy as markdown" onPress={handleCopyAsMarkdown} />
-            <MenuItem key="csv" icon={TableIcon} label="Copy as CSV" onPress={handleCopyAsCsv} />
+            <MenuItem key="md" icon={TableIcon} label="Copy as markdown" onPress={handleCopyAsMarkdown} />
+            <MenuItem key="csv" icon={DocumentIcon} label="Copy as CSV" onPress={handleCopyAsCsv} />
             <MenuItem key="link" icon={LinkIcon} label="Copy link" onPress={handleCopyLink} />
           </>
         ) : null

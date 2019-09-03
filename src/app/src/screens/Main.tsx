@@ -17,7 +17,9 @@ const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ 
 const Main = (): React.ReactElement => {
   const drawerRef = React.useRef<DrawerHandles>(null);
 
-  const showComparisonTable = useSelector((state: State) => !!state.comparedRevisions.length);
+  const showComparisonTable = useSelector(
+    (state: State) => !!state.comparedRevisions.length && !!state.activeComparator
+  );
   const fetchState = useSelector((state: State) => state.fetchState);
 
   return (

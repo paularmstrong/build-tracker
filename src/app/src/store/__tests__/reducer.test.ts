@@ -59,6 +59,39 @@ describe('reducer', () => {
       const state = reducer(initialState, Actions.setBuilds([buildA, buildB]));
       expect(state.activeArtifacts).toEqual({ tacos: true });
     });
+
+    test('carries over active artifacts, disables inactive or unknown', () => {
+      const buildA = new Build(
+        { branch: 'master', revision: '123', parentRevision: '000', timestamp: Date.now() - 400 },
+        [
+          { name: 'tacos', hash: '123', sizes: { stat: 123, gzip: 45 } },
+          { name: 'burritos', hash: '123', sizes: { stat: 123, gzip: 45 } }
+        ]
+      );
+
+      const state = reducer({ ...initialState, activeArtifacts: { tacos: true } }, Actions.setBuilds([buildA, buildB]));
+      expect(state.activeArtifacts).toEqual({ tacos: true, burritos: false });
+    });
+
+    test('creates an activeComparator if all current compared revisions are in the new builds', () => {
+      const state = reducer({ ...initialState, comparedRevisions: ['123'] }, Actions.setBuilds([buildA, buildB]));
+      expect(state.activeComparator).toBeInstanceOf(Comparator);
+    });
+
+    test('nulls out activeComparator if current compared revisions are not in the new builds', () => {
+      const state = reducer({ ...initialState, comparedRevisions: ['foobar'] }, Actions.setBuilds([buildA, buildB]));
+      expect(state.activeComparator).toBeNull();
+    });
+
+    test('keeps the current sizeKey if it is in the new set', () => {
+      const state = reducer({ ...initialState, sizeKey: 'stat' }, Actions.setBuilds([buildA, buildB]));
+      expect(state.sizeKey).toBe('stat');
+    });
+
+    test('resets the sizeKey if it the current is not in the new set', () => {
+      const state = reducer({ ...initialState, sizeKey: 'foobar' }, Actions.setBuilds([buildA, buildB]));
+      expect(state.sizeKey).toBe('gzip');
+    });
   });
 
   describe('set color scale', () => {

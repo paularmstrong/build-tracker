@@ -50,6 +50,7 @@ describe('Main', () => {
   describe('comparison view', () => {
     test('shows when there are compared revisions', async () => {
       const store = mockStore({
+        activeComparator: new Comparator({ builds: [new Build(buildA.meta, buildA.artifacts)] }),
         builds: [new Build(buildA.meta, buildA.artifacts)],
         comparedRevisions: [buildA.meta.revision],
         comparator: new Comparator({ builds: [new Build(buildA.meta, buildA.artifacts)] }),

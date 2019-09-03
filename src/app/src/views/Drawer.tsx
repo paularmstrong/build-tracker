@@ -44,7 +44,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
     const startTimestamp = Math.floor(startOfDay(startDate).valueOf() / 1000);
     const endTimestamp = Math.floor(endOfDay(endDate).valueOf() / 1000);
     dispatch(clearComparedRevisions());
-    history.push(`/dates/${startTimestamp}..${endTimestamp}`);
+    history.push(`/builds/dates/${startTimestamp}..${endTimestamp}`);
   }, [startDate, endDate, dispatch]);
 
   const [buildCountValue, setBuildCountValue] = React.useState<string>('');
@@ -60,7 +60,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
         <Text style={styles.title}>Build Tracker</Text>
       </View>
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       <Subtitle title="Get latest builds" />
       <TextField
@@ -72,7 +72,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
       />
       <Button onPress={handleSetLastNBuilds} title="Get builds" type="unelevated" />
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       <Subtitle title="Date range" />
       <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.textinput} />
@@ -81,13 +81,13 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
         <Button disabled={!startDate || !endDate} onPress={handleSetDateRange} title="Get range" type="unelevated" />
       </View>
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       {comparator.sizeKeys.length > 1 ? (
         <>
           <Subtitle title="Compare artifacts by" />
           <SizeKeyPicker keys={comparator.sizeKeys} />
-          <Divider />
+          <Divider style={styles.divider} />
         </>
       ) : null}
 
@@ -105,11 +105,11 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
         <Text>Show disabled artifacts</Text>
       </View>
 
-      <Divider />
+      <Divider style={styles.divider} />
 
       <Subtitle title="Color scale" />
       <ColorScalePicker />
-      <Divider />
+      <Divider style={styles.divider} />
       <View style={styles.footer}>
         <Subtitle title="Links" />
         <DrawerLink href="https://buildtracker.dev" icon={OpenInExternalIcon} text="Documentation" />
@@ -145,6 +145,9 @@ const styles = StyleSheet.create({
     color: Theme.Color.Primary40,
     fontWeight: Theme.FontWeight.Bold,
     fontSize: Theme.FontSize.Large
+  },
+  divider: {
+    marginBottom: Theme.Spacing.Normal
   },
   switchRoot: {
     flexDirection: 'row',

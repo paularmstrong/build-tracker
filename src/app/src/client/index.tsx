@@ -13,7 +13,17 @@ import Routes from './Routes';
 
 // @ts-ignore
 const initialProps = window.__PROPS__ || {};
-const store = makeStore(initialProps);
+const params = new URLSearchParams(window.location.search.replace(/^\?/, ''));
+const objParams = {
+  activeArtifacts: params
+    .getAll('activeArtifacts')
+    .reduce((memo, artifactName) => ({ ...memo, [artifactName]: true }), {}),
+  sizeKey: params.get('sizeKey'),
+  disabledArtifactsVisible: params.get('disabledArtifactsVisible') === 'false' ? false : true,
+  comparedRevisions: params.getAll('comparedRevisions') || []
+};
+
+const store = makeStore({ ...initialProps, ...objParams });
 
 const App = (): React.ReactElement => (
   <Provider store={store}>

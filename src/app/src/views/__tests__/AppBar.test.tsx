@@ -30,8 +30,10 @@ jest.mock('../../components/Drawer', () => {
 });
 
 const initialState = Object.freeze({
+  activeArtifacts: {},
   comparator: new Comparator({ builds: [] }),
   comparedRevisions: [],
+  disabledArtifactsVisible: true,
   sizeKey: '',
   url: 'https://build-tracker.local'
 });
@@ -147,6 +149,34 @@ describe('AppBarView', () => {
       fireEvent.press(getByProps({ title: 'More actions' }));
       fireEvent.press(getByProps({ label: 'Copy as CSV' }));
       expect(addSnackSpy).toHaveBeenCalledWith('Copied table as CSV');
+    });
+
+    test('can copy link and adds query params', () => {
+      const { getByProps } = render(
+        <Provider store={mockStore({ ...seededState, activeArtifacts: { main: true, vendor: false, shared: true } })}>
+          <AppBarView drawerRef={drawerRef} />
+        </Provider>
+      );
+
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy link' }));
+
+      expect(clipboardSpy).toHaveBeenCalledWith(
+        'https://build-tracker.local/?sizeKey=gzip&disabledArtifactsVisible=true&comparedRevisions=22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04&comparedRevisions=01141f29743fb2bdd7e176cf919fc964025cea5a&activeArtifacts=main&activeArtifacts=shared'
+      );
+    });
+
+    test('shows a message when link is copied', () => {
+      const addSnackSpy = jest.spyOn(Actions, 'addSnack');
+      const { getByProps } = render(
+        <Provider store={mockStore(seededState)}>
+          <AppBarView drawerRef={drawerRef} />
+        </Provider>
+      );
+
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy link' }));
+      expect(addSnackSpy).toHaveBeenCalledWith('Copied link to clipboard');
     });
   });
 });

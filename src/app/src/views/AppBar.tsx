@@ -4,8 +4,10 @@
 import { ArtifactRow } from '@build-tracker/comparator';
 import ClearIcon from '../icons/Clear';
 import { Clipboard } from 'react-native';
+import Divider from '../components/Divider';
 import DocumentIcon from '../icons/Document';
 import { Handles as DrawerHandles } from '../components/Drawer';
+import LinkIcon from '../icons/Link';
 import MenuIcon from '../icons/Menu';
 import MenuItem from '../components/MenuItem';
 import React from 'react';
@@ -22,6 +24,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
   const comparedRevisions = useSelector((state: State) => state.comparedRevisions);
   const name = useSelector((state: State) => state.name);
   const sizeKey = useSelector((state: State) => state.sizeKey || state.comparator.sizeKeys[0]);
+  const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
   const dispatch = useDispatch();
 
   const appBarRef = React.useRef<AppBarHandles>(null);
@@ -65,6 +68,28 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     appBarRef.current.dismissOverflow();
   }, [activeComparator, artifactFilter, dispatch, sizeKey]);
 
+  const handleCopyLink = React.useCallback((): void => {
+    const params = new URLSearchParams();
+    params.append('sizeKey', sizeKey);
+    params.append('disabledArtifactsVisible', `${disabledArtifactsVisible}`);
+    comparedRevisions.forEach(rev => {
+      params.append('comparedRevisions', rev);
+    });
+    if (Object.values(activeArtifacts).some(v => !v)) {
+      Object.entries(activeArtifacts).forEach(([artifactName, active]) => {
+        if (active) {
+          params.append('activeArtifacts', artifactName);
+        }
+      });
+    }
+
+    const newUrl = new URL(window.location.href);
+    newUrl.search = params.toString();
+    Clipboard.setString(newUrl.toString());
+    dispatch(addSnack('Copied link to clipboard'));
+    appBarRef.current.dismissOverflow();
+  }, [disabledArtifactsVisible, dispatch, sizeKey, activeArtifacts, comparedRevisions]);
+
   return (
     <AppBar
       navigationIcon={MenuIcon}
@@ -73,8 +98,10 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
         comparedRevisions.length ? (
           <>
             <MenuItem key="clear" icon={ClearIcon} label="Clear selected revisions" onPress={handleClearRevisions} />
+            <Divider />
             <MenuItem key="md" icon={DocumentIcon} label="Copy as markdown" onPress={handleCopyAsMarkdown} />
             <MenuItem key="csv" icon={TableIcon} label="Copy as CSV" onPress={handleCopyAsCsv} />
+            <MenuItem key="link" icon={LinkIcon} label="Copy link" onPress={handleCopyLink} />
           </>
         ) : null
       }

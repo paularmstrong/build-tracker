@@ -32,11 +32,20 @@ export default function reducer(state: State, action: Actions): State {
     case 'BUILDS_SET': {
       const builds = action.payload;
       const comparator = new Comparator({ builds });
+
+      const currentKeys = Object.keys(state.activeArtifacts).some(key => comparator.artifactNames.includes(key));
       const activeArtifacts = comparator.artifactNames.reduce((memo, artifactName) => {
-        memo[artifactName] = true;
+        memo[artifactName] = currentKeys ? !!state.activeArtifacts[artifactName] : true;
         return memo;
       }, {});
-      return { ...state, activeArtifacts, builds, comparator, sizeKey: comparator.sizeKeys[0] };
+
+      const newRevisions = comparator.builds.map(build => build.getMetaValue('revision'));
+      const activeComparator = state.comparedRevisions.every(rev => newRevisions.includes(rev))
+        ? getActiveComparator(state.comparedRevisions, builds, state.artifactConfig)
+        : null;
+
+      const sizeKey = comparator.sizeKeys.includes(state.sizeKey) ? state.sizeKey : comparator.sizeKeys[0];
+      return { ...state, activeComparator, activeArtifacts, builds, comparator, sizeKey };
     }
 
     case 'COLOR_SCALE_SET':

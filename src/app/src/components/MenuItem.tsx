@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
   root: {
     height: '100%',
     width: 'auto',
-    maxWidth: 300,
+    maxWidth: 280,
+    minWidth: 112,
     transitionProperty: 'background-color',
     transitionDuration: '0.2s',
     transitionTimingFunction: Theme.MotionTiming.Standard
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
   icon: {
     color: Theme.Color.Gray30,
     flexGrow: 0,
-    fontSize: Theme.FontSize.Medium,
-    marginEnd: Theme.Spacing.Normal,
+    fontSize: Theme.FontSize.Normal,
+    marginEnd: Theme.Spacing.Small,
     transitionProperty: 'color',
     transitionDuration: '0.2s',
     transitionTimingFunction: Theme.MotionTiming.Standard

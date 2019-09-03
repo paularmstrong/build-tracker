@@ -2,12 +2,15 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { ArtifactRow } from '@build-tracker/comparator';
+import ClearIcon from '../icons/Clear';
 import { Clipboard } from 'react-native';
+import DocumentIcon from '../icons/Document';
 import { Handles as DrawerHandles } from '../components/Drawer';
 import MenuIcon from '../icons/Menu';
 import MenuItem from '../components/MenuItem';
 import React from 'react';
 import { State } from '../store/types';
+import TableIcon from '../icons/Table';
 import { addSnack, clearComparedRevisions } from '../store/actions';
 import AppBar, { Handles as AppBarHandles } from '../components/AppBar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,9 +72,9 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
       overflowItems={
         comparedRevisions.length ? (
           <>
-            <MenuItem key="clear" label="Clear selected revisions" onPress={handleClearRevisions} />
-            <MenuItem key="md" label="Copy as markdown" onPress={handleCopyAsMarkdown} />
-            <MenuItem key="csv" label="Copy as CSV" onPress={handleCopyAsCsv} />
+            <MenuItem key="clear" icon={ClearIcon} label="Clear selected revisions" onPress={handleClearRevisions} />
+            <MenuItem key="md" icon={DocumentIcon} label="Copy as markdown" onPress={handleCopyAsMarkdown} />
+            <MenuItem key="csv" icon={TableIcon} label="Copy as CSV" onPress={handleCopyAsCsv} />
           </>
         ) : null
       }

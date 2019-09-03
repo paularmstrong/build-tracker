@@ -4,6 +4,8 @@ const { BudgetLevel, BudgetType } = require('@build-tracker/types');
 /**
  * To run a mysql docker container:
  * docker run -p 3306:3306 --name bt-mysql -e MYSQL_ROOT_PASSWORD=tacos -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=buildtracker -d mysql --default-authentication-plugin=mysql_native_password
+ * yarn ts-node src/server/src/index.ts setup -c ./config/mysql.js
+ * yarn ts-node src/server/src/index.ts seed -c ./config/mysql.js
  */
 
 module.exports = withMysql({

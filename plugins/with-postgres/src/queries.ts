@@ -44,7 +44,7 @@ export default class Queries {
   };
 
   public getByRevisions = async (revisions: Array<string>): Promise<Array<BuildStruct>> => {
-    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision in $1', [revisions]);
+    const res = await this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = ANY($1)', [revisions]);
     if (res.rowCount === 0) {
       throw new NotFoundError();
     }

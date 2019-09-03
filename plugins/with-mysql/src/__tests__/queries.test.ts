@@ -82,7 +82,7 @@ describe('withMysql queries', () => {
       });
       await expect(queries.getByRevisions(['12345', 'abcde'])).resolves.toEqual([row1Result, row2Result]);
       expect(query).toHaveBeenCalledWith(
-        'SELECT meta, artifacts FROM builds WHERE revision in ?',
+        'SELECT meta, artifacts FROM builds WHERE revision IN (?)',
         [['12345', 'abcde']],
         expect.any(Function)
       );

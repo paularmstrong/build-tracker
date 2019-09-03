@@ -60,7 +60,7 @@ describe('withMariadb queries', () => {
       await expect(queries.insert(build)).resolves.toEqual('12345');
       expect(query).toHaveBeenCalledWith(
         'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES (?, ?, ?, ?, ?, ?)',
-        ['master', '12345', now, 'abcdef', build.meta, build.artifacts]
+        ['master', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
       );
     });
   });

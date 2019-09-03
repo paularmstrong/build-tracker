@@ -79,7 +79,7 @@ describe('withPostgres', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getByRevisions(['12345', 'abcde']).then(res => {
-        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision in $1', [
+        expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision = ANY($1)', [
           ['12345', 'abcde']
         ]);
         expect(res).toEqual([row1, row2]);

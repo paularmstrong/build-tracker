@@ -13,6 +13,11 @@ export enum FetchState {
   ERROR
 }
 
+export enum GraphType {
+  AREA = 'area',
+  STACKED_BAR = 'bar'
+}
+
 export interface State {
   activeArtifacts: { [key: string]: boolean };
   activeComparator: Comparator;
@@ -24,6 +29,7 @@ export interface State {
   disabledArtifactsVisible: boolean;
   fetchState: FetchState;
   focusedRevision?: string;
+  graphType: GraphType;
   hoveredArtifacts: Array<string>;
   name: string;
   snacks: Array<string>;
@@ -49,6 +55,7 @@ export type AddSnack = Action<'ADD_SNACK', string>;
 export type RemoveSnack = Action<'REMOVE_SNACK', string>;
 export type SetHoveredArtifacts = Action<'HOVER_ARTIFACTS', Array<string>>;
 export type SetFetchState = Action<'SET_FETCH_STATE', FetchState>;
+export type SetGraphType = Action<'SET_GRAPH_TYPE', GraphType>;
 
 export type Actions =
   | SetArtifactsActiveAction
@@ -63,4 +70,5 @@ export type Actions =
   | AddSnack
   | RemoveSnack
   | SetHoveredArtifacts
-  | SetFetchState;
+  | SetFetchState
+  | SetGraphType;

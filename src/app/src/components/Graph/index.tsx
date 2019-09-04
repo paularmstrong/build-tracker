@@ -9,12 +9,13 @@ import HoverOverlay from './HoverOverlay';
 import { Offset } from './Offset';
 import React from 'react';
 import { stack } from 'd3-shape';
-import { State } from '../../store/types';
+import StackedBar from './StackedBar';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { addComparedRevision, setHoveredArtifacts } from '../../store/actions';
 import { createElement, LayoutChangeEvent, StyleSheet, View } from 'react-native';
-import { scaleLinear, scalePoint } from 'd3-scale';
+import { GraphType, State } from '../../store/types';
+import { scaleBand, scaleLinear, scalePoint } from 'd3-scale';
 import { useDispatch, useSelector } from 'react-redux';
 
 export class SVG extends React.Component<{ height: number; width: number }> {
@@ -33,6 +34,7 @@ const Graph = (props: Props): React.ReactElement => {
   const colorScale = useSelector((state: State) =>
     ColorScales[state.colorScale].domain([0, state.comparator.artifactNames.length])
   );
+  const graphType = useSelector((state: State) => state.graphType);
   const hoveredArtifacts = useSelector((state: State) => state.hoveredArtifacts);
   const selectedRevisions = useSelector((state: State) => state.comparedRevisions);
   const sizeKey = useSelector((state: State) => state.sizeKey);
@@ -49,12 +51,18 @@ const Graph = (props: Props): React.ReactElement => {
     const domain = comparator.builds
       .sort((a, b) => a.timestamp.valueOf() - b.timestamp.valueOf())
       .map(build => build.getMetaValue('revision'));
-    return scalePoint()
-      .range([0, width - Offset.LEFT - Offset.RIGHT])
-      .padding(0.05)
-      .round(true)
-      .domain(domain);
-  }, [comparator, width]);
+
+    return graphType === GraphType.AREA
+      ? scalePoint()
+          .range([0, width - Offset.LEFT - Offset.RIGHT])
+          .padding(0.05)
+          .round(true)
+          .domain(domain)
+      : scaleBand()
+          .rangeRound([0, width - Offset.LEFT - Offset.RIGHT])
+          .padding(0.05)
+          .domain(domain);
+  }, [comparator, graphType, width]);
 
   const yScale = React.useMemo(() => {
     const totals = comparator.builds.map(build => build.getSum(activeArtifactNames)[sizeKey]);
@@ -106,15 +114,30 @@ const Graph = (props: Props): React.ReactElement => {
             <>
               <XAxis height={height - Offset.TOP - Offset.BOTTOM} scale={xScale} />
               <YAxis scale={yScale} />
-              <Area
-                activeArtifactNames={activeArtifactNames}
-                artifactNames={comparator.artifactNames}
-                colorScale={colorScale}
-                data={data}
-                hoveredArtifacts={hoveredArtifacts}
-                xScale={xScale}
-                yScale={yScale}
-              />
+              {graphType === GraphType.AREA ? (
+                <Area
+                  activeArtifactNames={activeArtifactNames}
+                  artifactNames={comparator.artifactNames}
+                  colorScale={colorScale}
+                  data={data}
+                  hoveredArtifacts={hoveredArtifacts}
+                  xScale={xScale}
+                  yScale={yScale}
+                />
+              ) : (
+                <StackedBar
+                  activeArtifactNames={activeArtifactNames}
+                  artifactNames={comparator.artifactNames}
+                  colorScale={colorScale}
+                  data={data}
+                  height={height}
+                  hoveredArtifacts={hoveredArtifacts}
+                  // @ts-ignore
+                  xScale={xScale}
+                  yScale={yScale}
+                />
+              )}
+
               <HoverOverlay
                 data={data}
                 height={height - Offset.TOP - Offset.BOTTOM}

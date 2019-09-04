@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import Comparator from '@build-tracker/comparator';
-import { Actions, State } from './types';
+import { Actions, GraphType, State } from './types';
 
 const getActiveComparator = (
   comparedRevisions: State['comparedRevisions'],
@@ -44,8 +44,10 @@ export default function reducer(state: State, action: Actions): State {
         ? getActiveComparator(state.comparedRevisions, builds, state.artifactConfig)
         : null;
 
+      const graphType = builds.length <= 10 ? GraphType.STACKED_BAR : state.graphType;
+
       const sizeKey = comparator.sizeKeys.includes(state.sizeKey) ? state.sizeKey : comparator.sizeKeys[0];
-      return { ...state, activeComparator, activeArtifacts, builds, comparator, sizeKey };
+      return { ...state, activeComparator, activeArtifacts, builds, comparator, graphType, sizeKey };
     }
 
     case 'COLOR_SCALE_SET':
@@ -99,6 +101,9 @@ export default function reducer(state: State, action: Actions): State {
 
     case 'SET_FETCH_STATE':
       return { ...state, fetchState: action.payload };
+
+    case 'SET_GRAPH_TYPE':
+      return { ...state, graphType: action.payload };
 
     default:
       return state;

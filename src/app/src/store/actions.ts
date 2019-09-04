@@ -8,6 +8,7 @@ import {
   AddSnack,
   ClearComparedRevision,
   FetchState,
+  GraphType,
   RemoveComparedRevision,
   RemoveSnack,
   SetArtifactsActiveAction,
@@ -16,6 +17,7 @@ import {
   SetDisabledArtifactsVisible,
   SetFetchState,
   SetFocusedRevision,
+  SetGraphType,
   SetHoveredArtifacts,
   SetSizeKey
 } from './types';
@@ -76,3 +78,5 @@ export const setHoveredArtifacts = (artifactNames: Array<string>): SetHoveredArt
 export const setSizeKey = (key: string): SetSizeKey => ({ type: 'SET_SIZE_KEY', payload: key });
 
 export const setFetchState = (status: FetchState): SetFetchState => ({ type: 'SET_FETCH_STATE', payload: status });
+
+export const setGraphType = (graphType: GraphType): SetGraphType => ({ type: 'SET_GRAPH_TYPE', payload: graphType });

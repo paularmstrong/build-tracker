@@ -5,7 +5,7 @@ import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import ColorScale from '../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import reducer from './reducer';
-import { Actions, FetchState, State } from './types';
+import { Actions, FetchState, GraphType, State } from './types';
 import { createStore, Store } from 'redux';
 
 export default function makeStore(initialState: Partial<State> = {}): Store<State, Actions> {
@@ -19,6 +19,7 @@ export default function makeStore(initialState: Partial<State> = {}): Store<Stat
     comparedRevisions: [],
     disabledArtifactsVisible: true,
     fetchState: FetchState.NONE,
+    graphType: GraphType.AREA,
     hoveredArtifacts: [],
     name: 'Build Tracker',
     snacks: [],

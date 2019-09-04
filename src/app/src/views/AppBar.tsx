@@ -25,6 +25,8 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
   const name = useSelector((state: State) => state.name);
   const sizeKey = useSelector((state: State) => state.sizeKey || state.comparator.sizeKeys[0]);
   const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
+  const graphType = useSelector((state: State) => state.graphType);
+
   const dispatch = useDispatch();
 
   const appBarRef = React.useRef<AppBarHandles>(null);
@@ -72,6 +74,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     const params = new URLSearchParams();
     params.append('sizeKey', sizeKey);
     params.append('disabledArtifactsVisible', `${disabledArtifactsVisible}`);
+    params.append('graphType', `${graphType}`);
     comparedRevisions.forEach(rev => {
       params.append('comparedRevisions', rev);
     });
@@ -88,7 +91,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     Clipboard.setString(newUrl.toString());
     dispatch(addSnack('Copied link to clipboard'));
     appBarRef.current.dismissOverflow();
-  }, [disabledArtifactsVisible, dispatch, sizeKey, activeArtifacts, comparedRevisions]);
+  }, [sizeKey, disabledArtifactsVisible, graphType, comparedRevisions, activeArtifacts, dispatch]);
 
   return (
     <AppBar

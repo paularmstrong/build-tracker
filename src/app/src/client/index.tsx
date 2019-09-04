@@ -18,6 +18,7 @@ const objParams = {
   activeArtifacts: params
     .getAll('activeArtifacts')
     .reduce((memo, artifactName) => ({ ...memo, [artifactName]: true }), {}),
+  graphType: params.get('graphType'),
   sizeKey: params.get('sizeKey'),
   disabledArtifactsVisible: params.get('disabledArtifactsVisible') === 'false' ? false : true,
   comparedRevisions: params.getAll('comparedRevisions') || []

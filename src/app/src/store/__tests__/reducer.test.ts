@@ -6,7 +6,7 @@ import Build from '@build-tracker/build';
 import ColorScale from '../../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
 import reducer from '../reducer';
-import { FetchState, State } from '../types';
+import { FetchState, GraphType, State } from '../types';
 
 const initialState: State = Object.freeze({
   activeArtifacts: {},
@@ -18,6 +18,7 @@ const initialState: State = Object.freeze({
   comparedRevisions: [],
   disabledArtifactsVisible: true,
   fetchState: FetchState.NONE,
+  graphType: GraphType.AREA,
   hoveredArtifacts: [],
   name: 'Tacos!',
   snacks: [],
@@ -91,6 +92,11 @@ describe('reducer', () => {
     test('resets the sizeKey if it the current is not in the new set', () => {
       const state = reducer({ ...initialState, sizeKey: 'foobar' }, Actions.setBuilds([buildA, buildB]));
       expect(state.sizeKey).toBe('gzip');
+    });
+
+    test('sets graph type to bar if 10 or fewer builds', () => {
+      const state = reducer({ ...initialState, sizeKey: 'foobar' }, Actions.setBuilds([buildA, buildB]));
+      expect(state.graphType).toBe(GraphType.STACKED_BAR);
     });
   });
 
@@ -202,6 +208,13 @@ describe('reducer', () => {
       const mockState = { ...initialState, hoveredArtifacts: ['tacos', 'burritos'] };
       const state = reducer(mockState, Actions.setHoveredArtifacts(['burritos', 'tacos']));
       expect(state).toBe(mockState);
+    });
+  });
+
+  describe('set graph type', () => {
+    test('can be set', () => {
+      const state = reducer(initialState, Actions.setGraphType(GraphType.STACKED_BAR));
+      expect(state.graphType).toEqual(GraphType.STACKED_BAR);
     });
   });
 

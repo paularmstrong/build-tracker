@@ -8,7 +8,7 @@ import { Offset } from './Offset';
 import React from 'react';
 import { select } from 'd3-selection';
 import { Series } from 'd3-shape';
-import { ScaleLinear, ScalePoint } from 'd3-scale';
+import { ScaleBand, ScaleLinear, ScalePoint } from 'd3-scale';
 
 interface Props {
   data: Array<Series<Build, string>>;
@@ -17,7 +17,7 @@ interface Props {
   onSelectRevision: (revision: string) => void;
   selectedRevisions: Array<string>;
   width: number;
-  xScale: ScalePoint<string>;
+  xScale: ScalePoint<string> | ScaleBand<string>;
   yScale: ScaleLinear<number, number>;
 }
 
@@ -36,11 +36,18 @@ const HoverOverlay = (props: Props): React.ReactElement => {
   const lineRef = React.useRef(null);
   const domain = xScale.domain();
 
+  const xGetter = React.useMemo(
+    () => (revision: string): number => {
+      return xScale.bandwidth ? xScale(revision) + xScale.bandwidth() / 2 : xScale(revision);
+    },
+    [xScale]
+  );
+
   const buildRevisionFromX = React.useCallback(
     (x: number): { index: number; value: string } => {
       return domain.reduce(
         (prev, curr, index) => {
-          const isPrev = Math.abs(xScale(curr) - x) > Math.abs(xScale(prev.value) - x);
+          const isPrev = Math.abs(xGetter(curr) - x) > Math.abs(xGetter(prev.value) - x);
           return {
             index: isPrev ? prev.index : index,
             value: isPrev ? prev.value : curr
@@ -49,7 +56,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         { index: 0, value: domain[0] }
       );
     },
-    [domain, xScale]
+    [domain, xGetter]
   );
 
   const handleClick = React.useCallback(
@@ -75,7 +82,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       } = event;
 
       const revision = buildRevisionFromX(offsetX - Offset.LEFT);
-      const xPos = xScale(revision.value);
+      const xPos = xGetter(revision.value);
       handleMoveLine(lineRef.current, xPos);
 
       const yValue = yScale.invert(offsetY - Offset.TOP);
@@ -84,7 +91,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       });
       onHoverArtifacts(hoveredArtifact ? [hoveredArtifact.key] : []);
     },
-    [buildRevisionFromX, data, onHoverArtifacts, xScale, yScale]
+    [buildRevisionFromX, data, onHoverArtifacts, xGetter, yScale]
   );
 
   const handleMouseOut = React.useCallback((): void => {
@@ -110,7 +117,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         width={width}
       />
       {selectedRevisions.map(revision => {
-        const x = xScale(revision);
+        const x = xGetter(revision);
         return (
           <line
             data-testid="selectedline"

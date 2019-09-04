@@ -10,6 +10,7 @@ import buildB from '@build-tracker/fixtures/builds/01141f29743fb2bdd7e176cf919fc
 import { Clipboard } from 'react-native';
 import Comparator from '@build-tracker/comparator';
 import Drawer from '../../components/Drawer';
+import { GraphType } from '../../store/types';
 import mockStore from '../../store/mock';
 import { Provider } from 'react-redux';
 import React from 'react';
@@ -34,6 +35,7 @@ const initialState = Object.freeze({
   comparator: new Comparator({ builds: [] }),
   comparedRevisions: [],
   disabledArtifactsVisible: true,
+  graphType: GraphType.AREA,
   sizeKey: '',
   url: 'https://build-tracker.local'
 });
@@ -162,7 +164,7 @@ describe('AppBarView', () => {
       fireEvent.press(getByProps({ label: 'Copy link' }));
 
       expect(clipboardSpy).toHaveBeenCalledWith(
-        'https://build-tracker.local/?sizeKey=gzip&disabledArtifactsVisible=true&comparedRevisions=22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04&comparedRevisions=01141f29743fb2bdd7e176cf919fc964025cea5a&activeArtifacts=main&activeArtifacts=shared'
+        'https://build-tracker.local/?sizeKey=gzip&disabledArtifactsVisible=true&graphType=area&comparedRevisions=22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04&comparedRevisions=01141f29743fb2bdd7e176cf919fc964025cea5a&activeArtifacts=main&activeArtifacts=shared'
       );
     });
 

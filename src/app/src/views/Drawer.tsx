@@ -2,6 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
+import BarChartIcon from '../icons/BarChart';
 import Button from '../components/Button';
 import ColorScalePicker from '../components/ColorScalePicker';
 import DateTextField from '../components/DateTextField';
@@ -10,15 +11,16 @@ import DrawerLink from '../components/DrawerLink';
 import endOfDay from 'date-fns/end_of_day';
 import HeartIcon from '../icons/Heart';
 import history from '../client/history';
+import LineChartIcon from '../icons/LineChart';
 import Logo from '../icons/Logo';
 import OpenInExternalIcon from '../icons/OpenInExternal';
 import SizeKeyPicker from '../components/SizeKeyPicker';
 import startOfDay from 'date-fns/start_of_day';
-import { State } from '../store/types';
 import Subtitle from '../components/Subtitle';
 import TextField from '../components/TextField';
-import { clearComparedRevisions, setDisabledArtifactsVisible } from '../store/actions';
+import { clearComparedRevisions, setDisabledArtifactsVisible, setGraphType } from '../store/actions';
 import Drawer, { Handles as DrawerHandles } from '../components/Drawer';
+import { GraphType, State } from '../store/types';
 import React, { FunctionComponent } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,6 +30,8 @@ const today = new Date();
 const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<DrawerHandles>): React.ReactElement => {
   const comparator = useSelector((state: State) => state.comparator);
   const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
+  const graphType = useSelector((state: State) => state.graphType);
+
   const dispatch = useDispatch();
 
   const [startDate, setStartDate] = React.useState<Date>();
@@ -52,6 +56,13 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
     dispatch(clearComparedRevisions());
     history.push(buildCountValue ? `/builds/limit/${buildCountValue}` : '/');
   }, [buildCountValue, dispatch]);
+
+  const handleSetGraphArea = React.useCallback((): void => {
+    dispatch(setGraphType(GraphType.AREA));
+  }, [dispatch]);
+  const handleSetGraphBar = React.useCallback((): void => {
+    dispatch(setGraphType(GraphType.STACKED_BAR));
+  }, [dispatch]);
 
   return (
     <Drawer hidden ref={ref}>
@@ -107,6 +118,25 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
 
       <Divider style={styles.divider} />
 
+      <View style={styles.buttonRow}>
+        <Button
+          disabled={graphType === GraphType.AREA}
+          icon={LineChartIcon}
+          onPress={handleSetGraphArea}
+          title="Area"
+          type={graphType === GraphType.AREA ? 'unelevated' : 'text'}
+        />
+        <Button
+          disabled={graphType === GraphType.STACKED_BAR}
+          icon={BarChartIcon}
+          onPress={handleSetGraphBar}
+          title="Stacked Bar"
+          type={graphType === GraphType.STACKED_BAR ? 'unelevated' : 'text'}
+        />
+      </View>
+
+      <Divider style={styles.divider} />
+
       <Subtitle title="Color scale" />
       <ColorScalePicker />
       <Divider style={styles.divider} />
@@ -155,6 +185,11 @@ const styles = StyleSheet.create({
   },
   switch: {
     marginEnd: Theme.Spacing.Small
+  },
+  buttonRow: {
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginBottom: Theme.Spacing.Normal
   },
   textinput: {
     marginBottom: Theme.Spacing.Small

@@ -34,9 +34,7 @@ Once one of these is found and parsed, the search will stop and that object will
 
 The configuration search can also be short-circuited by passing a `--config` argument with a path to your configuration file.
 
-### Options
-
-#### `applicationUrl: string`
+### `applicationUrl: string`
 
 The full URL (with scheme) to your application. New builds will be posted to the API available at this URL
 
@@ -48,7 +46,7 @@ module.exports = {
 };
 ```
 
-#### `artifacts: Array<string>`
+### `artifacts: Array<string>`
 
 An array of [glob](https://github.com/isaacs/node-glob#readme) paths to search for your artifacts.
 
@@ -58,7 +56,7 @@ module.exports = {
 };
 ```
 
-#### `baseDir?: string = process.cwd()`
+### `baseDir?: string = process.cwd()`
 
 A base directory option to calculate relative paths for your artifacts. This is most often useful for stripping off unwanted paths, like `dist`, though it must be an absolute path on your system. This can be most easily accomplished by using the `path` node API:
 
@@ -68,7 +66,7 @@ module.exports = {
 };
 ```
 
-#### `cwd?: string = process.cwd()`
+### `cwd?: string = process.cwd()`
 
 The command working directory. Set this to change the script working path to something else other than `process.cwd()`
 
@@ -78,7 +76,7 @@ module.exports = {
 };
 ```
 
-#### `getFilenameHash?: (filename: string) => string | void`
+### `getFilenameHash?: (filename: string) => string | void`
 
 This optional method allows you to extract a filename hash from the built artifact filename. Many applications built with webpack will include a chunk hash in the filename for cache-busting reasons.
 
@@ -102,7 +100,7 @@ module.exports = {
 };
 ```
 
-#### `nameMapper?: (filename: string) => string`
+### `nameMapper?: (filename: string) => string`
 
 Similar to the `getFilenameHash` method above, you may want to strip out parts of the artifact filenames to make them more legible in reports and the application.
 
@@ -121,7 +119,7 @@ module.exports = {
 };
 ```
 
-#### `buildUrlFormat?: string`
+### `buildUrlFormat?: string`
 
 You may want to link each build to a commit. Provide `buildUrlFormat` in the following format to map revision value to an url.
 
@@ -131,7 +129,7 @@ module.exports = {
 };
 ```
 
-#### `onCompare?: (data: APIResponse) => Promise<void>`
+### `onCompare?: (data: APIResponse) => Promise<void>`
 
 Take any action on the response from the API.
 
@@ -143,6 +141,46 @@ module.exports = {
     return Promise.resolve();
   }
 };
+```
+
+The data response consists of a lot of useful data. Depending on how you want to report information, you may only need part of it.
+
+```ts
+interface APIResponse {
+  build: { meta: BuildMeta; artifacts: Array<Artifact> };
+  parentBuild: { meta: BuildMeta; artifacts: Array<Artifact> };
+  groupDeltas: Array<ArtifactDelta>;
+  artifactDeltas: Array<ArtifactDelta>;
+  json: ComparisonMatrix; // Object representation of the build comparison chart
+  markdown: string; // Markdown table of the build comparison chart
+  csv: string; // CSV formatted string of the build comparison chart
+}
+```
+
+Most likely, you'll care about `groupDeltas` and `artifactDeltas`. These contain information about every group and artifact in your build, compared to its parent.
+
+```ts
+interface ArtifactDelta {
+  name: string;
+  sizes: { [key: string]: number };
+  percents: { [key: string]: number };
+  hashChanged: boolean;
+  budgets: Array<BudgetResult>;
+  failingBudgets: Array<BudgetResult>;
+}
+```
+
+The `failingBudgets` on each `ArtifactDelta` will be an array of budgets that you have configured that have been exceeded in this change.
+
+```ts
+interface BudgetResult {
+  sizeKey: string;
+  passing: boolean;
+  expected: number;
+  actual: number;
+  type: Budget['type'];
+  level: Budget['level'];
+}
 ```
 
 ## Commands

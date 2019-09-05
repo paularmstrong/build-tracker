@@ -8,6 +8,7 @@ import makeStore from '../store';
 import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { searchParamsToStore } from '../store/utils';
 import { Store } from 'redux';
 import toSource from 'tosource';
 import { Actions, State } from '../store/types';
@@ -67,7 +68,7 @@ const getAssetByName = (asset: Array<string> | string): Array<string> => {
   return Array.isArray(asset) ? asset : [asset];
 };
 
-const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Request, res: Response): void => {
+const serverRender = (stats: ProdStats | DevStats): RequestHandler => (req: Request, res: Response): void => {
   const { nonce, props } = res.locals;
   const appStats =
     'clientStats' in stats
@@ -82,11 +83,13 @@ const serverRender = (stats: ProdStats | DevStats): RequestHandler => (_req: Req
     return;
   }
 
+  const state = { ...props, ...searchParamsToStore(req.originalUrl.split('?')[1] || '') };
+
   const { assetsByChunkName } = appStats;
   res.send(
     getPageHTML(
       nonce,
-      props,
+      state,
       [...getAssetByName(assetsByChunkName.vendor), ...getAssetByName(assetsByChunkName.app)].filter(Boolean)
     )
   );

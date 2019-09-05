@@ -164,7 +164,7 @@ describe('AppBarView', () => {
       fireEvent.press(getByProps({ label: 'Copy link' }));
 
       expect(clipboardSpy).toHaveBeenCalledWith(
-        'https://build-tracker.local/?sizeKey=gzip&disabledArtifactsVisible=true&graphType=area&comparedRevisions=22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04&comparedRevisions=01141f29743fb2bdd7e176cf919fc964025cea5a&activeArtifacts=main&activeArtifacts=shared'
+        'https://build-tracker.local/?sizeKey=gzip&disabledArtifactsVisible=true&graphType=AREA&comparedRevisions=22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04&comparedRevisions=01141f29743fb2bdd7e176cf919fc964025cea5a&activeArtifacts=main&activeArtifacts=shared'
       );
     });
 

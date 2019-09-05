@@ -77,9 +77,9 @@ describe('Server', () => {
         .then(res => {
           const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
           expect(match[1]).toMatchInlineSnapshot(`
-"={ artifactConfig:{ groups:[ { name:\\"Foo\\",
-        artifactMatch:/foo/ } ] } }"
-`);
+            "={ artifactConfig:{ groups:[ { name:\\"Foo\\",
+                    artifactMatch:/foo/ } ] } }"
+          `);
         });
     });
 
@@ -93,6 +93,21 @@ describe('Server', () => {
         .get('/')
         .then(res => {
           expect(res.text).toMatch('<title>Tacos! : Build Tracker</title>');
+        });
+    });
+
+    test('sets initial props from query params', () => {
+      app.get('/', serverRenderer({ children: [{ name: 'client', assetsByChunkName: { app: 'app.js' } }] }));
+
+      return request(app)
+        .get('/')
+        .query({ sizeKey: 'tacos', comparedRevisions: '123' })
+        .then(res => {
+          const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
+          expect(match[1]).toMatchInlineSnapshot(`
+            "={ sizeKey:\\"tacos\\",
+              comparedRevisions:[ \\"123\\" ] }"
+          `);
         });
     });
   });

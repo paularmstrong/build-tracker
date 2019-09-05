@@ -14,8 +14,8 @@ export enum FetchState {
 }
 
 export enum GraphType {
-  AREA = 'area',
-  STACKED_BAR = 'bar'
+  AREA = 'AREA',
+  STACKED_BAR = 'STACKED_BAR'
 }
 
 export interface State {

@@ -10,21 +10,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router';
 import Routes from './Routes';
+import { searchParamsToStore } from '../store/utils';
 
 // @ts-ignore
 const initialProps = window.__PROPS__ || {};
-const params = new URLSearchParams(window.location.search.replace(/^\?/, ''));
-const objParams = {
-  activeArtifacts: params
-    .getAll('activeArtifacts')
-    .reduce((memo, artifactName) => ({ ...memo, [artifactName]: true }), {}),
-  graphType: params.get('graphType'),
-  sizeKey: params.get('sizeKey'),
-  disabledArtifactsVisible: params.get('disabledArtifactsVisible') === 'false' ? false : true,
-  comparedRevisions: params.getAll('comparedRevisions') || []
-};
 
-const store = makeStore({ ...initialProps, ...objParams });
+const store = makeStore({ ...initialProps, ...searchParamsToStore(window.location.search) });
 
 const App = (): React.ReactElement => (
   <Provider store={store}>

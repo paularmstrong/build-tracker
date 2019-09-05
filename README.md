@@ -1,4 +1,4 @@
-# Build Tracker ![Action status](https://github.com/paularmstrong/build-tracker/workflows/On%20push/badge.svg)
+# Build Tracker [![Action status](https://github.com/paularmstrong/build-tracker/workflows/On%20push/badge.svg)](https://github.com/paularmstrong/build-tracker/actions)
 
 This is a work-in-progress branch tracking a full rewrite of build-tracker.
 

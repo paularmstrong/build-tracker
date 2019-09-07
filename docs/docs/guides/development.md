@@ -94,6 +94,32 @@ All implementation-specific code for various integrations should be kept here, i
 
 All folder names should be mapped as the publishable name without the `@build-tracker/plugin-` scope. For example: `@build-tracker/plugin-with-mariadb` is in the path `plugins/with-mariadb`.
 
+Some local configs are available for development purposes. To use them, it's recommended to use a Docker container, since it's easy to seed and throw away:
+
+##### MariaDB
+```shell
+docker run -p 3307:3306 --name bt-mariadb -e MYSQL_ROOT_PASSWORD=tacos -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=buildtracker -d mariadb --default-authentication-plugin=mysql_native_password
+yarn ts-node src/server/src/index.ts setup -c ./config/mariadb.js
+yarn ts-node src/server/src/index.ts seed -c ./config/mariadb.js
+yarn dev:mariadb
+```
+
+##### MySQL
+```shell
+docker run -p 3306:3306 --name bt-mysql -e MYSQL_ROOT_PASSWORD=tacos -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=buildtracker -d mysql --default-authentication-plugin=mysql_native_password
+yarn ts-node src/server/src/index.ts setup -c ./config/mysql.js
+yarn ts-node src/server/src/index.ts seed -c ./config/mysql.js
+yarn dev:mysql
+```
+
+##### Postgres
+```shell
+docker run --name pg -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=buildtracker -p 54320:5432 -d postgres
+yarn ts-node src/server/src/index.ts setup -c ./config/postgres.js
+yarn ts-node src/server/src/index.ts seed -c ./config/postgres.js
+yarn dev:postgres
+```
+
 #### Docs `./docs`
 
 This directory holds packages related to the documentation website

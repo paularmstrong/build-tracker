@@ -31,8 +31,8 @@ jobs:
       - name: Typecheck
         run: yarn tsc
 
-  test:
-    name: Test
+  run_tests:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

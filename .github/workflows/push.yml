@@ -6,8 +6,8 @@ on:
       - next
 
 jobs:
-  test:
-    name: Test
+  run_tests:
+    name: Typecheck, Test, Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

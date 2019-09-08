@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import Build from '@build-tracker/build';
-import { Build as BuildStruct } from '@build-tracker/server/src/types';
+import { Build as BuildStruct } from '@build-tracker/server';
 import { Pool } from 'pg';
 import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 

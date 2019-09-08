@@ -78,3 +78,5 @@ export default function runBuildTracker(config: ServerConfig): Application {
   logger.info(`Build Tracker server running on port ${port}`);
   return app;
 }
+
+export * from './types';

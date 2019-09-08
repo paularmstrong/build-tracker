@@ -3,5 +3,4 @@
  */
 import Build from './src';
 export * from './src';
-
 export default Build;

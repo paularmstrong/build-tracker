@@ -43,7 +43,7 @@ const levelToEmoji = {
 };
 
 export function formatBudgetResult(budgetResult: BudgetResult, itemName: string, useEmoji: boolean = false): string {
-  const { actual, expected, level, type } = budgetResult;
+  const { actual, expected, level, sizeKey, type } = budgetResult;
   const actualFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(actual) : formatBytes(actual);
   const expectedFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(expected) : formatBytes(expected);
   const diffFormatted =
@@ -53,10 +53,10 @@ export function formatBudgetResult(budgetResult: BudgetResult, itemName: string,
 
   switch (type) {
     case BudgetType.DELTA:
-      return `${prefix} failed budget delta limit. Expected to increase no more than ${expectedFormatted}, but increased by ${actualFormatted}`;
+      return `${prefix} failed the ${sizeKey} budget delta limit. Expected to increase no more than ${expectedFormatted}, but increased by ${actualFormatted}`;
     case BudgetType.PERCENT_DELTA:
-      return `${prefix} failed budget percent change limit. Expected no increase by no more than ${expectedFormatted}, but increased by ${actualFormatted}`;
+      return `${prefix} failed the ${sizeKey} budget percent change limit. Expected no increase by no more than ${expectedFormatted}, but increased by ${actualFormatted}`;
     case BudgetType.SIZE:
-      return `${prefix} failed budget size limit of ${expectedFormatted} by ${diffFormatted}`;
+      return `${prefix} failed the ${sizeKey} budget size limit of ${expectedFormatted} by ${diffFormatted}`;
   }
 }

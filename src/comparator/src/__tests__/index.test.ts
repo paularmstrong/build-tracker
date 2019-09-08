@@ -550,9 +550,9 @@ describe('BuildComparator', () => {
         }
       });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
-        "⚠️: \`churros\` failed budget size limit of 0.1 KiB by 0.02 KiB
-        ⚠️: \`tacos\` failed budget size limit of 0 KiB by 0.04 KiB
-        🚫: \`tacos\` failed budget size limit of 0.03 KiB by 0.01 KiB"
+        "⚠️: \`churros\` failed the gzip budget size limit of 0.1 KiB by 0.02 KiB
+        ⚠️: \`tacos\` failed the gzip budget size limit of 0 KiB by 0.04 KiB
+        🚫: \`tacos\` failed the gzip budget size limit of 0.03 KiB by 0.01 KiB"
       `);
     });
 
@@ -574,9 +574,9 @@ describe('BuildComparator', () => {
         ]
       });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
-        "⚠️: \`Group \\"All\\"\` failed budget size limit of 0 KiB by 0.16 KiB
-        ⚠️: \`Group \\"warning\\"\` failed budget size limit of 0 KiB by 0.12 KiB
-        🚫: \`Group \\"error\\"\` failed budget size limit of 0 KiB by 0.16 KiB"
+        "⚠️: \`Group \\"All\\"\` failed the gzip budget size limit of 0 KiB by 0.16 KiB
+        ⚠️: \`Group \\"warning\\"\` failed the gzip budget size limit of 0 KiB by 0.12 KiB
+        🚫: \`Group \\"error\\"\` failed the gzip budget size limit of 0 KiB by 0.16 KiB"
       `);
     });
 
@@ -590,8 +590,8 @@ describe('BuildComparator', () => {
       });
 
       expect(comparator.toSummary(false).join('\n')).toMatchInlineSnapshot(`
-        "Warning: \`Group \\"All\\"\` failed budget size limit of 0 KiB by 0.16 KiB
-        Error: \`tacos\` failed budget size limit of 0.03 KiB by 0.01 KiB"
+        "Warning: \`Group \\"All\\"\` failed the gzip budget size limit of 0 KiB by 0.16 KiB
+        Error: \`tacos\` failed the gzip budget size limit of 0.03 KiB by 0.01 KiB"
       `);
     });
 

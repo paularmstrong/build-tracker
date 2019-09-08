@@ -60,7 +60,7 @@ describe('formatBudgetResult', () => {
           'tacos',
           true
         )
-      ).toEqual('🚫: `tacos` failed budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('🚫: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('size', () => {
@@ -76,7 +76,7 @@ describe('formatBudgetResult', () => {
           },
           'tacos'
         )
-      ).toEqual('Error: `tacos` failed budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('Error: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('delta', () => {
@@ -93,7 +93,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Error: `tacos` failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+        'Error: `tacos` failed the stat budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
       );
     });
 
@@ -111,7 +111,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Error: `tacos` failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+        'Error: `tacos` failed the stat budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
       );
     });
   });
@@ -131,14 +131,14 @@ describe('formatBudgetResult', () => {
           'tacos',
           true
         )
-      ).toEqual('⚠️: `tacos` failed budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('⚠️: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('size', () => {
       expect(
         formatBudgetResult(
           {
-            sizeKey: 'stat',
+            sizeKey: 'brotli',
             passing: false,
             expected: 2048,
             actual: 4096,
@@ -147,14 +147,14 @@ describe('formatBudgetResult', () => {
           },
           'tacos'
         )
-      ).toEqual('Warning: `tacos` failed budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('Warning: `tacos` failed the brotli budget size limit of 2 KiB by 2 KiB');
     });
 
     test('delta', () => {
       expect(
         formatBudgetResult(
           {
-            sizeKey: 'stat',
+            sizeKey: 'gzip',
             passing: false,
             expected: 2048,
             actual: 4096,
@@ -164,7 +164,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Warning: `tacos` failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+        'Warning: `tacos` failed the gzip budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
       );
     });
 
@@ -182,7 +182,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Warning: `tacos` failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+        'Warning: `tacos` failed the stat budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
       );
     });
   });

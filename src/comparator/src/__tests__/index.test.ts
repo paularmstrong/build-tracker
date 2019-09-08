@@ -3,6 +3,7 @@
  */
 import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
+import { BudgetLevel, BudgetType } from '@build-tracker/types';
 import BuildComparator, {
   ArtifactRow,
   DeltaCell,
@@ -313,25 +314,25 @@ describe('BuildComparator', () => {
     test('gets a markdown-formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
-"|          |  1234567 |  8901234 |                  Δ1 |
-| :------- | -------: | -------: | ------------------: |
-| All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
-| churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
-| burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-| tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
-`);
+        "|          |  1234567 |  8901234 |                  Δ1 |
+        | :------- | -------: | -------: | ------------------: |
+        | All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
+        | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
+        | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
+        | tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+      `);
     });
 
     test('can specify a different size key', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toMarkdown({ sizeKey: 'stat' })).toMatchInlineSnapshot(`
-"|          |  1234567 |  8901234 |                  Δ1 |
-| :------- | -------: | -------: | ------------------: |
-| All      | 0.57 KiB | 0.58 KiB |     0.01 KiB (2.2%) |
-| churros  |    0 KiB | 0.46 KiB |   0.46 KiB (100.0%) |
-| burritos | 0.45 KiB |    0 KiB | -0.45 KiB (-100.0%) |
-| tacos    | 0.12 KiB | 0.12 KiB |        0 KiB (0.0%) |"
-`);
+        "|          |  1234567 |  8901234 |                  Δ1 |
+        | :------- | -------: | -------: | ------------------: |
+        | All      | 0.57 KiB | 0.58 KiB |     0.01 KiB (2.2%) |
+        | churros  |    0 KiB | 0.46 KiB |   0.46 KiB (100.0%) |
+        | burritos | 0.45 KiB |    0 KiB | -0.45 KiB (-100.0%) |
+        | tacos    | 0.12 KiB | 0.12 KiB |        0 KiB (0.0%) |"
+      `);
     });
 
     test('can filter artifacts', () => {
@@ -345,22 +346,22 @@ describe('BuildComparator', () => {
         });
       };
       expect(comparator.toMarkdown({ artifactFilter })).toMatchInlineSnapshot(`
-"|          |  1234567 |  8901234 |                  Δ1 |
-| :------- | -------: | -------: | ------------------: |
-| All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
-| churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
-| burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |"
-`);
+        "|          |  1234567 |  8901234 |                  Δ1 |
+        | :------- | -------: | -------: | ------------------: |
+        | All      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
+        | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
+        | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |"
+      `);
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
-"|       |  1234567 |  8901234 |            Δ1 |
-| :---- | -------: | -------: | ------------: |
-| All   | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |
-| tacos | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |"
-`);
+        "|       |  1234567 |  8901234 |            Δ1 |
+        | :---- | -------: | -------: | ------------: |
+        | All   | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |
+        | tacos | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |"
+      `);
     });
 
     test('accepts formatting and filtering options', () => {
@@ -375,12 +376,94 @@ describe('BuildComparator', () => {
       const artifactFilter = (row: ArtifactRow): boolean => row[0].text !== 'burritos';
       expect(comparator.toMarkdown({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, artifactFilter }))
         .toMatchInlineSnapshot(`
-"|         |  12 |  89 |    d1 |
-| :------ | --: | --: | ----: |
-| All     | 579 | 592 |  0.21 |
-| churros |   0 | 469 |  1.00 |
-| tacos   | 123 | 123 | -0.04 |"
-`);
+        "|         |  12 |  89 |    d1 |
+        | :------ | --: | --: | ----: |
+        | All     | 579 | 592 |  0.21 |
+        | churros |   0 | 469 |  1.00 |
+        | tacos   | 123 | 123 | -0.04 |"
+      `);
+    });
+
+    test('includes emoji for failing artifact budgets', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        artifactBudgets: {
+          churros: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 100, sizeKey: 'gzip' }],
+          tacos: [
+            { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' },
+            { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }
+          ]
+        }
+      });
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+        "|          |  1234567 |  8901234 |                   Δ1 |
+        | :------- | -------: | -------: | -------------------: |
+        | All      | 0.13 KiB | 0.16 KiB |     0.03 KiB (20.7%) |
+        | churros  |    0 KiB | 0.12 KiB | ⚠️ 0.12 KiB (100.0%) |
+        | burritos | 0.09 KiB |    0 KiB |  -0.09 KiB (-100.0%) |
+        | tacos    | 0.04 KiB | 0.04 KiB |     🚨 0 KiB (-4.4%) |"
+      `);
+    });
+
+    test('includes error emoji for total budget failures', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [
+          { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' },
+          { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }
+        ]
+      });
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+        "|          |  1234567 |  8901234 |                  Δ1 |
+        | :------- | -------: | -------: | ------------------: |
+        | All      | 0.13 KiB | 0.16 KiB | 🚨 0.03 KiB (20.7%) |
+        | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
+        | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
+        | tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+      `);
+    });
+
+    test('includes warning emoji for total budget failures', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }]
+      });
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+        "|          |  1234567 |  8901234 |                  Δ1 |
+        | :------- | -------: | -------: | ------------------: |
+        | All      | 0.13 KiB | 0.16 KiB | ⚠️ 0.03 KiB (20.7%) |
+        | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
+        | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
+        | tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+      `);
+    });
+
+    test('includes emoji for failing group budgets', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [
+          {
+            artifactNames: ['churros', 'burritos'],
+            budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+            name: 'warning'
+          },
+          {
+            artifactNames: ['churros', 'tacos'],
+            budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+            name: 'error'
+          }
+        ]
+      });
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+        "|          |  1234567 |  8901234 |                   Δ1 |
+        | :------- | -------: | -------: | -------------------: |
+        | All      | 0.13 KiB | 0.16 KiB |     0.03 KiB (20.7%) |
+        | warning  | 0.09 KiB | 0.12 KiB |  ⚠️ 0.03 KiB (33.3%) |
+        | error    | 0.04 KiB | 0.16 KiB | 🚨 0.12 KiB (262.2%) |
+        | churros  |    0 KiB | 0.12 KiB |    0.12 KiB (100.0%) |
+        | burritos | 0.09 KiB |    0 KiB |  -0.09 KiB (-100.0%) |
+        | tacos    | 0.04 KiB | 0.04 KiB |        0 KiB (-4.4%) |"
+      `);
     });
   });
 
@@ -388,23 +471,23 @@ describe('BuildComparator', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toCsv()).toMatchInlineSnapshot(`
-",1234567,8901234,Δ1
-All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
-churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
-burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)
-tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
-`);
+        ",1234567,8901234,Δ1
+        All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
+        churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
+        burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)
+        tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
+      `);
     });
 
     test('can specify a different size key', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toCsv({ sizeKey: 'stat' })).toMatchInlineSnapshot(`
-",1234567,8901234,Δ1
-All,0.57 KiB,0.58 KiB,0.01 KiB (2.2%)
-churros,0 KiB,0.46 KiB,0.46 KiB (100.0%)
-burritos,0.45 KiB,0 KiB,-0.45 KiB (-100.0%)
-tacos,0.12 KiB,0.12 KiB,0 KiB (0.0%)"
-`);
+        ",1234567,8901234,Δ1
+        All,0.57 KiB,0.58 KiB,0.01 KiB (2.2%)
+        churros,0 KiB,0.46 KiB,0.46 KiB (100.0%)
+        burritos,0.45 KiB,0 KiB,-0.45 KiB (-100.0%)
+        tacos,0.12 KiB,0.12 KiB,0 KiB (0.0%)"
+      `);
     });
 
     test('can filter artifacts', () => {
@@ -418,20 +501,20 @@ tacos,0.12 KiB,0.12 KiB,0 KiB (0.0%)"
         });
       };
       expect(comparator.toCsv({ artifactFilter })).toMatchInlineSnapshot(`
-",1234567,8901234,Δ1
-All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
-churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
-burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)"
-`);
+        ",1234567,8901234,Δ1
+        All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
+        churros,0 KiB,0.12 KiB,0.12 KiB (100.0%)
+        burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)"
+      `);
     });
 
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
       expect(comparator.toCsv()).toMatchInlineSnapshot(`
-",1234567,8901234,Δ1
-All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
-tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
-`);
+        ",1234567,8901234,Δ1
+        All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
+        tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
+      `);
     });
 
     test('accepts formatting and filtering options', () => {
@@ -446,11 +529,11 @@ tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
       const artifactFilter = (row: ArtifactRow): boolean => row[0].text !== 'burritos';
       expect(comparator.toCsv({ formatRevision, formatRevisionDelta, formatTotal, formatDelta, artifactFilter }))
         .toMatchInlineSnapshot(`
-",12,89,d1
-All,579,592,0.21
-churros,0,469,1.00
-tacos,123,123,-0.04"
-`);
+        ",12,89,d1
+        All,579,592,0.21
+        churros,0,469,1.00
+        tacos,123,123,-0.04"
+      `);
     });
   });
 });

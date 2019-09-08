@@ -4,7 +4,7 @@
 import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
 import markdownTable from 'markdown-table';
-import { ArtifactBudgets, ArtifactFilters, BudgetResult, Group } from '@build-tracker/types';
+import { ArtifactBudgets, ArtifactFilters, Budget, BudgetLevel, BudgetResult, Group } from '@build-tracker/types';
 import { formatBytes, formatSha } from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
@@ -109,13 +109,19 @@ const flatten = (arrays: Array<any>): Array<any> => arrays.reduce((memo: Array<a
 const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.revision);
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatBytes(cell.sizes[sizeKey] || 0);
-const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string =>
-  `${formatBytes(cell.sizes[sizeKey] || 0)} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
+const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string => {
+  const errorFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.ERROR);
+  const warningFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.WARN);
+  return `${errorFailingBudgets ? '🚨 ' : warningFailingBudgets ? '⚠️ ' : ''}${formatBytes(
+    cell.sizes[sizeKey] || 0
+  )} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
+};
 const defaultArtifactFilter = (): boolean => true;
 
 interface ComparatorOptions {
   artifactBudgets?: ArtifactBudgets;
   artifactFilters?: ArtifactFilters;
+  budgets?: Array<Budget>;
   builds: Array<Build>;
   groups?: Array<Group>;
 }
@@ -136,11 +142,11 @@ export default class BuildComparator {
   private _matrixGroups: ComparisonMatrix['groups'];
   private _matrixArtifacts: ComparisonMatrix['artifacts'];
 
-  public constructor({ artifactBudgets, artifactFilters, builds, groups }: ComparatorOptions) {
+  public constructor({ artifactBudgets, artifactFilters, budgets, builds, groups }: ComparatorOptions) {
     this.builds = builds;
     this._artifactFilters = artifactFilters || [];
     this._artifactBudgets = artifactBudgets || emptyObject;
-    this._groups = [{ name: 'All', artifactNames: this.artifactNames }, ...groups].filter(Boolean);
+    this._groups = [{ name: 'All', artifactNames: this.artifactNames, budgets }, ...groups].filter(Boolean);
     this._emptySizes = Object.freeze(
       this.sizeKeys.reduce((memo, key) => {
         memo[key] = 0;

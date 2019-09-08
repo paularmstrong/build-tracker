@@ -37,14 +37,19 @@ const levelToString = {
   [BudgetLevel.ERROR]: 'Error'
 };
 
-export function formatBudgetResult(budgetResult: BudgetResult, itemName: string): string {
+const levelToEmoji = {
+  [BudgetLevel.WARN]: '⚠️',
+  [BudgetLevel.ERROR]: '🚫'
+};
+
+export function formatBudgetResult(budgetResult: BudgetResult, itemName: string, useEmoji: boolean = false): string {
   const { actual, expected, level, type } = budgetResult;
   const actualFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(actual) : formatBytes(actual);
   const expectedFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(expected) : formatBytes(expected);
   const diffFormatted =
     type === BudgetType.PERCENT_DELTA ? formatPercent(actual - expected) : formatBytes(actual - expected);
 
-  const prefix = `${levelToString[level]}: "${itemName}"`;
+  const prefix = `${(useEmoji ? levelToEmoji : levelToString)[level]}: \`${itemName}\``;
 
   switch (type) {
     case BudgetType.DELTA:

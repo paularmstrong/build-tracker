@@ -536,4 +536,53 @@ describe('BuildComparator', () => {
       `);
     });
   });
+
+  describe('summary', () => {
+    test('returns a list of errors and warnings for artifacts', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        artifactBudgets: {
+          churros: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 100, sizeKey: 'gzip' }],
+          tacos: [
+            { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' },
+            { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }
+          ]
+        }
+      });
+      expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
+        "⚠️: \`churros\` failed budget size limit of 0.1 KiB by 0.02 KiB
+        ⚠️: \`tacos\` failed budget size limit of 0 KiB by 0.04 KiB
+        🚫: \`tacos\` failed budget size limit of 0.03 KiB by 0.01 KiB"
+      `);
+    });
+
+    test('returns a list of errors and warnings for groups', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+        groups: [
+          {
+            artifactNames: ['churros', 'burritos'],
+            budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+            name: 'warning'
+          },
+          {
+            artifactNames: ['churros', 'tacos'],
+            budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+            name: 'error'
+          }
+        ]
+      });
+      expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
+        "⚠️: \`Group \\"All\\"\` failed budget size limit of 0 KiB by 0.16 KiB
+        ⚠️: \`Group \\"warning\\"\` failed budget size limit of 0 KiB by 0.12 KiB
+        🚫: \`Group \\"error\\"\` failed budget size limit of 0 KiB by 0.16 KiB"
+      `);
+    });
+
+    test('returns success if no failing budgets', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`"✅ No failing budgets"`);
+    });
+  });
 });

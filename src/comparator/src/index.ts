@@ -5,7 +5,7 @@ import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
 import markdownTable from 'markdown-table';
 import { ArtifactBudgets, ArtifactFilters, Budget, BudgetLevel, BudgetResult, Group } from '@build-tracker/types';
-import { formatBytes, formatSha } from '@build-tracker/formatting';
+import { formatBudgetResult, formatBytes, formatSha } from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
   [key: string]: number;
@@ -399,5 +399,37 @@ export default class BuildComparator {
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
 
     return [header, ...groups, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
+  }
+
+  public toSummary(useEmoji: boolean = true): Array<string> {
+    const groupResults = this.matrixGroups.reduce((memo, row): Array<string> => {
+      row.forEach(cell => {
+        if (cell.type !== CellType.TOTAL_DELTA) {
+          return;
+        }
+        cell.failingBudgets.forEach(budget => {
+          memo.push(formatBudgetResult(budget, `Group "${row[0].text}"`, useEmoji));
+        });
+      });
+      return memo;
+    }, []);
+
+    const artifactResults = this.matrixArtifacts.reduce((memo, row): Array<string> => {
+      row.forEach(cell => {
+        if (cell.type !== CellType.DELTA) {
+          return;
+        }
+        cell.failingBudgets.forEach(budget => {
+          memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
+        });
+      });
+      return memo;
+    }, []);
+
+    const output = [...groupResults, ...artifactResults].filter(Boolean);
+    if (output.length === 0) {
+      return [`${useEmoji ? '✅' : 'Success:'} No failing budgets`];
+    }
+    return output;
   }
 }

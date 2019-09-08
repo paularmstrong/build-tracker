@@ -46,6 +46,23 @@ describe('formatSha', () => {
 
 describe('formatBudgetResult', () => {
   describe('error', () => {
+    test('can use emoji label', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.SIZE,
+            level: BudgetLevel.ERROR
+          },
+          'tacos',
+          true
+        )
+      ).toEqual('🚫: `tacos` failed budget size limit of 2 KiB by 2 KiB');
+    });
+
     test('size', () => {
       expect(
         formatBudgetResult(
@@ -59,7 +76,7 @@ describe('formatBudgetResult', () => {
           },
           'tacos'
         )
-      ).toEqual('Error: "tacos" failed budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('Error: `tacos` failed budget size limit of 2 KiB by 2 KiB');
     });
 
     test('delta', () => {
@@ -76,7 +93,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Error: "tacos" failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+        'Error: `tacos` failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
       );
     });
 
@@ -94,12 +111,29 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Error: "tacos" failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+        'Error: `tacos` failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
       );
     });
   });
 
   describe('warning', () => {
+    test('can use emoji label', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.SIZE,
+            level: BudgetLevel.WARN
+          },
+          'tacos',
+          true
+        )
+      ).toEqual('⚠️: `tacos` failed budget size limit of 2 KiB by 2 KiB');
+    });
+
     test('size', () => {
       expect(
         formatBudgetResult(
@@ -113,7 +147,7 @@ describe('formatBudgetResult', () => {
           },
           'tacos'
         )
-      ).toEqual('Warning: "tacos" failed budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('Warning: `tacos` failed budget size limit of 2 KiB by 2 KiB');
     });
 
     test('delta', () => {
@@ -130,7 +164,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Warning: "tacos" failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+        'Warning: `tacos` failed budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
       );
     });
 
@@ -148,7 +182,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Warning: "tacos" failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+        'Warning: `tacos` failed budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
       );
     });
   });

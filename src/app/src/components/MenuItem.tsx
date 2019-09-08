@@ -6,14 +6,14 @@ import Hoverable from './Hoverable';
 import React from 'react';
 import Ripple from './Ripple';
 import { v4 as uuid } from 'uuid';
-import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { GestureResponderEvent, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 
 interface Props {
   icon?: React.ComponentType<{ style?: StyleProp<ViewStyle & TextStyle> }>;
   isHighlighted?: boolean;
   label: string;
   nativeID?: string;
-  onPress?: () => void;
+  onPress?: (event?: GestureResponderEvent) => void;
 }
 
 const Item = (props: Props): React.ReactElement => {

@@ -3,11 +3,13 @@
  */
 import * as Theme from '../theme';
 import Button from './Button';
-import CloseIcon from '../icons/Close';
+import CollapseIcon from '../icons/Collapse';
+import { formatSha } from '@build-tracker/formatting';
 import React from 'react';
-import { setFocusedRevision } from '../store/actions';
+import RemoveIcon from '../icons/Remove';
 import { State } from '../store/types';
 import TextLink from './TextLink';
+import { removeComparedRevision, setFocusedRevision } from '../store/actions';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Table, Tbody, Td, Th, Tr } from './Table';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,11 +38,15 @@ const BuildInfo = (props: Props): React.ReactElement => {
     dispatch(setFocusedRevision(undefined));
   }, [dispatch]);
 
+  const handleRemove = React.useCallback(() => {
+    dispatch(removeComparedRevision(focusedRevision));
+  }, [dispatch, focusedRevision]);
+
   return (
     <View style={[styles.root, style]}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Revision details</Text>
-        <Button icon={CloseIcon} iconOnly onPress={handleClose} title="Close" />
+        <Text style={styles.headerText}>Build: {formatSha(revision)}</Text>
+        <Button icon={CollapseIcon} iconOnly onPress={handleClose} title="Collapse details" />
       </View>
       <Table>
         <Tbody>
@@ -78,14 +84,17 @@ const BuildInfo = (props: Props): React.ReactElement => {
             })}
         </Tbody>
       </Table>
+      <View style={styles.footer}>
+        <Button color="secondary" icon={RemoveIcon} onPress={handleRemove} title="Remove build" />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   root: {
-    padding: Theme.Spacing.Normal,
-    paddingBottom: Theme.Spacing.Large
+    paddingVertical: Theme.Spacing.Normal,
+    paddingHorizontal: Theme.Spacing.Large
   },
   header: {
     flexDirection: 'row',
@@ -95,10 +104,14 @@ const styles = StyleSheet.create({
   // @ts-ignore
   headerText: {
     fontWeight: Theme.FontWeight.Bold,
-    fontSize: Theme.FontSize.Medium
+    fontSize: Theme.FontSize.Normal
   },
   infoCell: {
     textAlign: 'left'
+  },
+  footer: {
+    alignItems: 'flex-start',
+    paddingTop: Theme.Spacing.Normal
   }
 });
 

@@ -4,12 +4,12 @@
 import * as Theme from '../theme';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dimensions, StyleSheet, TouchableOpacity, View, ViewProps } from 'react-native';
+import { Dimensions, GestureResponderEvent, StyleSheet, TouchableOpacity, View, ViewProps } from 'react-native';
 
 interface Props {
   accessibilityRole?: ViewProps['accessibilityRole'] | 'menu';
   children?: React.ReactElement | Array<React.ReactElement>;
-  onDismiss?: () => void;
+  onDismiss?: (event: GestureResponderEvent) => void;
   portalRootID?: string;
   relativeTo: React.RefObject<View>;
 }
@@ -20,9 +20,12 @@ const Menu = (props: Props): React.ReactElement => {
   const portalRoot = portalRootID && document.getElementById(portalRootID);
   const ref = React.useRef<View>(null);
 
-  const handlePressOutside = React.useCallback((): void => {
-    onDismiss && onDismiss();
-  }, [onDismiss]);
+  const handlePressOutside = React.useCallback(
+    (event: GestureResponderEvent): void => {
+      onDismiss && onDismiss(event);
+    },
+    [onDismiss]
+  );
 
   React.useEffect(() => {
     if (ref.current && relativeTo.current) {

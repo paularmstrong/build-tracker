@@ -1,119 +1,136 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Theme from '../../../theme';
 import { CellType } from '@build-tracker/comparator';
 import React from 'react';
 import { RevisionCell } from '../RevisionCell';
-import { Th } from '../../Table';
-import { fireEvent, render } from 'react-native-testing-library';
-import { StyleSheet, View } from 'react-native';
+import { fireEvent, render } from '@testing-library/react';
 
-jest.mock('../../Menu', () => {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  return (props: any): React.ReactElement => {
-    const { children, onDismiss, ...other } = props;
-    return (
-      <View accessibilityRole="menu" onPress={onDismiss} {...other}>
-        {children}
-      </View>
-    );
-  };
-  /* eslint-enable @typescript-eslint/no-explicit-any */
-});
+const wrapCell = (content): React.ReactElement => {
+  return (
+    <>
+      <table>
+        <tbody>
+          <tr>{content}</tr>
+        </tbody>
+      </table>
+      <div id="menuPortal" />
+    </>
+  );
+};
 
 describe('RevisionCell', () => {
   describe('menu', () => {
     test('shows a menu on press', () => {
-      const { getByProps, queryAllByProps } = render(
-        <RevisionCell
-          cell={{ type: CellType.REVISION, revision: '1234567' }}
-          onFocus={jest.fn()}
-          onRemove={jest.fn()}
-        />
+      const { getByRole, queryAllByRole } = render(
+        wrapCell(
+          <RevisionCell
+            cell={{ type: CellType.REVISION, revision: '1234567' }}
+            onFocus={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        )
       );
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
-      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(1);
-    });
-
-    test('dismisses the menu', () => {
-      const { getByProps, queryAllByProps } = render(
-        <RevisionCell
-          cell={{ type: CellType.REVISION, revision: '1234567' }}
-          onFocus={jest.fn()}
-          onRemove={jest.fn()}
-        />
-      );
-      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
-      fireEvent.press(getByProps({ accessibilityRole: 'menu' }));
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+      expect(queryAllByRole('menu')).toHaveLength(0);
+      fireEvent.contextMenu(getByRole('button'));
+      expect(queryAllByRole('menu')).toHaveLength(1);
     });
 
     test('dismisses the menu when item is pressed', () => {
-      const { getByProps, queryAllByProps } = render(
-        <RevisionCell
-          cell={{ type: CellType.REVISION, revision: '1234567' }}
-          onFocus={jest.fn()}
-          onRemove={jest.fn()}
-        />
+      const { getByRole, queryAllByRole } = render(
+        wrapCell(
+          <RevisionCell
+            cell={{ type: CellType.REVISION, revision: '1234567' }}
+            onFocus={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        )
       );
-      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
-      fireEvent.press(queryAllByProps({ accessibilityRole: 'menuitem' })[0]);
-      expect(queryAllByProps({ accessibilityRole: 'menu' })).toHaveLength(0);
+      fireEvent.contextMenu(getByRole('button'));
+      fireEvent.touchStart(queryAllByRole('menuitem')[0]);
+      fireEvent.touchEnd(queryAllByRole('menuitem')[0]);
+      expect(queryAllByRole('menu')).toHaveLength(0);
     });
 
     test('allows removing the revision', () => {
       const handleRemove = jest.fn();
-      const { getByProps } = render(
-        <RevisionCell
-          cell={{ type: CellType.REVISION, revision: '1234567' }}
-          onFocus={jest.fn()}
-          onRemove={handleRemove}
-        />
+      const { getByLabelText, getByRole } = render(
+        wrapCell(
+          <RevisionCell
+            cell={{ type: CellType.REVISION, revision: '1234567' }}
+            onFocus={jest.fn()}
+            onRemove={handleRemove}
+          />
+        )
       );
-      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
-      fireEvent.press(getByProps({ label: 'Remove' }));
+      fireEvent.contextMenu(getByRole('button'));
+      fireEvent.touchStart(getByLabelText('Remove'));
+      fireEvent.touchEnd(getByLabelText('Remove'));
       expect(handleRemove).toHaveBeenCalledWith('1234567');
     });
 
     test('allows focusing the revision', () => {
       const handleFocus = jest.fn();
-      const { getByProps } = render(
-        <RevisionCell
-          cell={{ type: CellType.REVISION, revision: '1234567' }}
-          onFocus={handleFocus}
-          onRemove={jest.fn()}
-        />
+      const { getByLabelText, getByRole } = render(
+        wrapCell(
+          <RevisionCell
+            cell={{ type: CellType.REVISION, revision: '1234567' }}
+            onFocus={handleFocus}
+            onRemove={jest.fn()}
+          />
+        )
       );
-      fireEvent.press(getByProps({ accessibilityRole: 'button' }));
-      fireEvent.press(getByProps({ label: 'More info' }));
+      fireEvent.contextMenu(getByRole('button'));
+      fireEvent.touchStart(getByLabelText('More info'));
+      fireEvent.touchEnd(getByLabelText('More info'));
+      expect(handleFocus).toHaveBeenCalledWith('1234567');
+    });
+  });
+
+  describe('pressing', () => {
+    test('allows focusing the revision', () => {
+      const handleFocus = jest.fn();
+      const { getByRole } = render(
+        wrapCell(
+          <RevisionCell
+            cell={{ type: CellType.REVISION, revision: '1234567' }}
+            onFocus={handleFocus}
+            onRemove={jest.fn()}
+          />
+        )
+      );
+      fireEvent.touchStart(getByRole('button'));
+      fireEvent.touchEnd(getByRole('button'));
       expect(handleFocus).toHaveBeenCalledWith('1234567');
     });
   });
 
   describe('hovering', () => {
     beforeEach(() => {
-      // reset to no hover available
+      // increase date now aggressively to allow mousemove to enable hover events
+      jest.spyOn(Date, 'now').mockReturnValue(100000000000000);
       document.dispatchEvent(new Event('mousemove'));
     });
 
     test('sets hover styles', () => {
-      const { getByType } = render(
-        <RevisionCell
-          cell={{ type: CellType.REVISION, revision: '1234567' }}
-          onFocus={jest.fn()}
-          onRemove={jest.fn()}
-        />
+      const { getByLabelText } = render(
+        wrapCell(
+          <RevisionCell
+            cell={{ type: CellType.REVISION, revision: '1234567' }}
+            onFocus={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        )
       );
-      fireEvent(getByType(Th), 'mouseEnter');
-      expect(StyleSheet.flatten(getByType(Th).props.style)).toMatchObject({
-        backgroundColor: Theme.Color.Primary00
+
+      fireEvent.mouseEnter(getByLabelText('Build 1234567'));
+      expect(getByLabelText('Build 1234567').style).toMatchObject({
+        'background-color': 'rgb(199, 235, 255)'
       });
 
-      fireEvent(getByType(Th), 'mouseLeave');
-      expect(StyleSheet.flatten(getByType(Th).props.style)).not.toMatchObject({
-        backgroundColor: Theme.Color.Primary00
+      fireEvent.mouseLeave(getByLabelText('Build 1234567'));
+      expect(getByLabelText('Build 1234567').style).not.toMatchObject({
+        'background-color': 'rgb(199, 235, 255)'
       });
     });
   });

@@ -11,7 +11,7 @@ import MenuItem from '../MenuItem';
 import React from 'react';
 import RemoveIcon from '../../icons/Remove';
 import { Th } from '../Table';
-import { StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import { GestureResponderEvent, StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Props {
   cell: Cell;
@@ -25,39 +25,54 @@ export const RevisionCell = (props: Props): React.ReactElement => {
   const contentRef = React.useRef(null);
   const [showMenu, toggleMenu] = React.useState(false);
 
-  const handleToggleMenu = React.useCallback((): void => {
+  const handleToggleMenu = React.useCallback((event: GestureResponderEvent): void => {
+    event.preventDefault();
     toggleMenu(showMenu => !showMenu);
   }, []);
 
-  const handleRemove = React.useCallback((): void => {
-    onRemove(cell.revision);
-    handleToggleMenu();
-  }, [cell.revision, handleToggleMenu, onRemove]);
+  const handleRemove = React.useCallback(
+    (event: GestureResponderEvent): void => {
+      onRemove(cell.revision);
+      handleToggleMenu(event);
+    },
+    [cell.revision, handleToggleMenu, onRemove]
+  );
 
   const handleFocus = React.useCallback((): void => {
     onFocus(cell.revision);
-    handleToggleMenu();
-  }, [cell.revision, handleToggleMenu, onFocus]);
+  }, [cell.revision, onFocus]);
+
+  const handleFocusFromMenu = React.useCallback(
+    (event: GestureResponderEvent): void => {
+      onFocus(cell.revision);
+      handleToggleMenu(event);
+    },
+    [cell.revision, handleToggleMenu, onFocus]
+  );
 
   return (
     <>
       <Hoverable>
         {isHovered => (
-          <Th style={[style, isHovered && styles.hovered]}>
-            <TouchableOpacity
-              accessibilityRole="button"
-              onPress={handleToggleMenu}
-              ref={contentRef}
-              style={styles.content}
-            >
-              <Text style={styles.revision}>{formatSha(cell.revision)}</Text>
-            </TouchableOpacity>
+          <Th accessibilityLabel={`Build ${cell.revision}`} style={[style, isHovered && styles.hovered]}>
+            {
+              // @ts-ignore
+              <TouchableOpacity
+                accessibilityRole="button"
+                onContextMenu={handleToggleMenu}
+                onPress={handleFocus}
+                ref={contentRef}
+                style={styles.content}
+              >
+                <Text style={styles.revision}>{formatSha(cell.revision)}</Text>
+              </TouchableOpacity>
+            }
           </Th>
         )}
       </Hoverable>
       {showMenu ? (
         <Menu onDismiss={handleToggleMenu} relativeTo={contentRef}>
-          <MenuItem icon={InfoIcon} label="More info" onPress={handleFocus} />
+          <MenuItem icon={InfoIcon} label="More info" onPress={handleFocusFromMenu} />
           <MenuItem icon={RemoveIcon} label="Remove" onPress={handleRemove} />
         </Menu>
       ) : null}

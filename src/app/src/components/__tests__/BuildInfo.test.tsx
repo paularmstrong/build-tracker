@@ -21,7 +21,7 @@ describe('BuildInfo', () => {
         <BuildInfo focusedRevision="1234565" />
       </Provider>
     );
-    fireEvent.press(getByProps({ title: 'Close' }));
+    fireEvent.press(getByProps({ title: 'Collapse details' }));
     expect(focusRevisionSpy).toHaveBeenCalledWith(undefined);
   });
 
@@ -47,5 +47,16 @@ describe('BuildInfo', () => {
       href: 'https://github.com/paularmstrong/build-tracker/commit/123456',
       text: '123456'
     });
+  });
+
+  test('removes the build focus on button press', () => {
+    const removeComparedRevisionSpy = jest.spyOn(Actions, 'removeComparedRevision');
+    const { getByProps } = render(
+      <Provider store={mockStore({ comparator: new Comparator({ builds: [build] }) })}>
+        <BuildInfo focusedRevision="1234565" />
+      </Provider>
+    );
+    fireEvent.press(getByProps({ title: 'Remove build' }));
+    expect(removeComparedRevisionSpy).toHaveBeenCalledWith('1234565');
   });
 });

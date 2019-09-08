@@ -580,9 +580,29 @@ describe('BuildComparator', () => {
       `);
     });
 
+    test('can render budgets without emoji', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+        artifactBudgets: {
+          tacos: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }]
+        }
+      });
+
+      expect(comparator.toSummary(false).join('\n')).toMatchInlineSnapshot(`
+        "Warning: \`Group \\"All\\"\` failed budget size limit of 0 KiB by 0.16 KiB
+        Error: \`tacos\` failed budget size limit of 0.03 KiB by 0.01 KiB"
+      `);
+    });
+
     test('returns success if no failing budgets', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`"✅ No failing budgets"`);
+    });
+
+    test('can render success without emoji', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.toSummary(false).join('\n')).toMatchInlineSnapshot(`"Success: No failing budgets"`);
     });
   });
 });

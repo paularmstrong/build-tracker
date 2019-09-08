@@ -401,14 +401,14 @@ export default class BuildComparator {
     return [header, ...groups, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }
 
-  public toSummary(): Array<string> {
+  public toSummary(useEmoji: boolean = true): Array<string> {
     const groupResults = this.matrixGroups.reduce((memo, row): Array<string> => {
       row.forEach(cell => {
         if (cell.type !== CellType.TOTAL_DELTA) {
           return;
         }
         cell.failingBudgets.forEach(budget => {
-          memo.push(formatBudgetResult(budget, `Group "${row[0].text}"`, true));
+          memo.push(formatBudgetResult(budget, `Group "${row[0].text}"`, useEmoji));
         });
       });
       return memo;
@@ -420,7 +420,7 @@ export default class BuildComparator {
           return;
         }
         cell.failingBudgets.forEach(budget => {
-          memo.push(formatBudgetResult(budget, row[0].text, true));
+          memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
         });
       });
       return memo;
@@ -428,7 +428,7 @@ export default class BuildComparator {
 
     const output = [...groupResults, ...artifactResults].filter(Boolean);
     if (output.length === 0) {
-      return ['✅ No failing budgets'];
+      return [`${useEmoji ? '✅' : 'Success:'} No failing budgets`];
     }
     return output;
   }

@@ -6,7 +6,7 @@
   "repository": "git@github.com:paularmstrong/build-tracker.git",
   "license": "MIT",
   "main": "dist",
-  "module": "index.ts",
+  "module": "./",
   "types": "index.ts",
   "scripts": {
     "build": "tsc",

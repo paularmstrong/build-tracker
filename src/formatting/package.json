@@ -13,11 +13,11 @@
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@build-tracker/types": "^1.0.0-alpha.4"
   },
-  "gitHead": "6c5cd0948348d6eda531eeb0178c054a253a6ec7"
+  "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -24,8 +24,8 @@
     "@build-tracker/types": "^1.0.0-alpha.4",
     "@types/dotenv": "^6.1.0"
   },
+  "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "fc5443c746fb03f29f7c64815cc67e7b7a0b355d"
+  }
 }

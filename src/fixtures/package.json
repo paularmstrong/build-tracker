@@ -8,5 +8,9 @@
   "types": "index.ts",
   "dependencies": {
     "glob": "^7.1.3"
+  },
+  "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
+  "publishConfig": {
+    "access": "public"
   }
 }

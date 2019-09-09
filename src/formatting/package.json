@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/formatting",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Build Tracker number and string formatting tools",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -17,7 +17,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@build-tracker/types": "^1.0.0-alpha.3"
+    "@build-tracker/types": "^1.0.0-alpha.4"
   },
   "gitHead": "6c5cd0948348d6eda531eeb0178c054a253a6ec7"
 }

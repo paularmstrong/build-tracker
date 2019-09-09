@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/fixtures",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Build Tracker build fixtures",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

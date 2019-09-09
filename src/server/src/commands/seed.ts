@@ -9,8 +9,6 @@ import { ServerConfig } from '../server';
 
 export const command = 'seed';
 
-export const description = 'Seed your database with fixture data';
-
 interface Args {
   config: string;
 }

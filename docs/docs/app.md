@@ -236,7 +236,7 @@ This is typically unnecessary to run individually, as `run` will also execute th
 
 ### `seed` _dev-only_
 
-For development purposes only! This function will seed your database with fake data so that it's easier to integrate new plugins.
+For development purposes only! This function will seed your database with fake data so that it's easier to build and test new plugins. This command also requires the package `@build-tracker/fixtures`, which is not installed by default. You will need to install it manually.
 
 ### `version`
 

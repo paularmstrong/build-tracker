@@ -7,10 +7,10 @@ import fs from 'fs';
 import gzipSize from 'gzip-size';
 
 interface SizeDef {
+  brotli?: number;
+  gzip: number;
   hash: string;
   stat: number;
-  gzip: number;
-  brotli: number;
 }
 
 type GetFileNameHash = (fileName: string) => string | void;
@@ -20,12 +20,19 @@ export default function readfile(filePath: string, getFilenameHash: GetFileNameH
   const stat = fs.statSync(filePath).size;
   const contents = fs.readFileSync(filePath);
   const gzip = gzipSize.sync(contents);
-  const brotli = brotliSize.sync(contents);
+
   let hash = getFilenameHash(filePath);
   if (!hash) {
     const md5sum = crypto.createHash('md5');
     md5sum.update(contents);
     hash = md5sum.digest('hex');
   }
-  return { hash, stat, gzip, brotli };
+
+  const output: SizeDef = { stat, gzip, hash };
+
+  try {
+    output.brotli = brotliSize.sync(contents);
+  } catch (e) {}
+
+  return output;
 }

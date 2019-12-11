@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as brotliSize from 'brotli-size';
 import * as Command from '../create-build';
 import * as Git from '../../modules/git';
 import * as path from 'path';
@@ -44,6 +45,7 @@ describe('create-build', () => {
       jest
         .spyOn(Git, 'getRevisionDetails')
         .mockImplementation(() => Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+      jest.spyOn(brotliSize, 'sync').mockImplementation(() => 49);
     });
 
     test('writes the artifact stats to stdout', async () => {
@@ -126,7 +128,7 @@ describe('create-build', () => {
             hash: 'fc4bcd175441f89862f9d81e37599416',
             name: '../../fakedist/vendor.js',
             sizes: {
-              brotli: 62,
+              brotli: 49,
               gzip: 82,
               stat: 82
             }

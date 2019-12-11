@@ -30,21 +30,19 @@ describe('stat-artifacts command', () => {
           out: true
         }).then(() => {
           expect(writeSpy.mock.calls[writeSpy.mock.calls.length - 1][0]).toMatchInlineSnapshot(`
-"{
-  \\"../../fakedist/main.1234567.js\\": {
-    \\"hash\\": \\"631a500f31d7602a386b4f858338dd6f\\",
-    \\"stat\\": 64,
-    \\"gzip\\": 73,
-    \\"brotli\\": 49
-  },
-  \\"../../fakedist/vendor.js\\": {
-    \\"hash\\": \\"fc4bcd175441f89862f9d81e37599416\\",
-    \\"stat\\": 82,
-    \\"gzip\\": 82,
-    \\"brotli\\": 62
-  }
-}"
-`);
+            "{
+              \\"../../fakedist/main.1234567.js\\": {
+                \\"stat\\": 64,
+                \\"gzip\\": 73,
+                \\"hash\\": \\"631a500f31d7602a386b4f858338dd6f\\"
+              },
+              \\"../../fakedist/vendor.js\\": {
+                \\"stat\\": 82,
+                \\"gzip\\": 82,
+                \\"hash\\": \\"fc4bcd175441f89862f9d81e37599416\\"
+              }
+            }"
+          `);
         });
       });
     });

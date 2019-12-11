@@ -11,11 +11,12 @@ const fixturePath = require.resolve('@build-tracker/fixtures');
 const main = path.join(path.dirname(fixturePath), 'cli-configs/fakedist/main.1234567.js');
 
 describe('readfile', () => {
+  let brotliSizeMock;
   beforeEach(() => {
     // @ts-ignore
-    jest.spyOn(fs, 'statSync').mockImplementationOnce(() => ({ size: 64 }));
-    jest.spyOn(brotliSize, 'sync').mockImplementationOnce(() => 49);
-    jest.spyOn(gzipSize, 'sync').mockImplementationOnce(() => 73);
+    jest.spyOn(fs, 'statSync').mockImplementation(() => ({ size: 64 }));
+    brotliSizeMock = jest.spyOn(brotliSize, 'sync').mockImplementation(() => 49);
+    jest.spyOn(gzipSize, 'sync').mockImplementation(() => 73);
   });
 
   describe('hash', () => {
@@ -48,6 +49,13 @@ describe('readfile', () => {
 
     test('returns a brotli size', () => {
       expect(readfile(main).brotli).toEqual(49);
+    });
+
+    test('if brotli throws, does not fail', () => {
+      brotliSizeMock.mockImplementation(() => {
+        throw new Error('not implemented');
+      });
+      expect(readfile(main)).not.toMatchObject({ brotli: expect.any(Number) });
     });
   });
 });

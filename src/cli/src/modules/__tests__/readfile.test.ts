@@ -15,8 +15,8 @@ describe('readfile', () => {
   beforeEach(() => {
     // @ts-ignore
     jest.spyOn(fs, 'statSync').mockImplementationOnce(() => ({ size: 64 }));
-    brotliSizeMock = jest.spyOn(brotliSize, 'sync').mockImplementation(() => 49);
-    jest.spyOn(gzipSize, 'sync').mockImplementation(() => 73);
+    brotliSizeMock = jest.spyOn(brotliSize, 'sync').mockImplementationOnce(() => 49);
+    jest.spyOn(gzipSize, 'sync').mockImplementationOnce(() => 73);
   });
 
   describe('hash', () => {
@@ -52,7 +52,7 @@ describe('readfile', () => {
     });
 
     test('if brotli throws, does not fail', () => {
-      brotliSizeMock.mockImplementation(() => {
+      brotliSizeMock.mockReset().mockImplementationOnce(() => {
         throw new Error('not implemented');
       });
       expect(readfile(main)).not.toMatchObject({ brotli: expect.any(Number) });

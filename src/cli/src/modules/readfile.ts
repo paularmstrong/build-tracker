@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import brotliSize from 'brotli-size';
+import * as brotliSize from 'brotli-size';
 import crypto from 'crypto';
 import fs from 'fs';
 import gzipSize from 'gzip-size';

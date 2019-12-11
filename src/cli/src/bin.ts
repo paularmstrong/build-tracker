@@ -1,4 +1,4 @@
-#!/usr/bin/env Node
+#!/usr/bin/env node
 /**
  * Copyright (c) 2019 Paul Armstrong
  */

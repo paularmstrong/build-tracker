@@ -14,7 +14,7 @@ describe('readfile', () => {
   let brotliSizeMock;
   beforeEach(() => {
     // @ts-ignore
-    jest.spyOn(fs, 'statSync').mockImplementation(() => ({ size: 64 }));
+    jest.spyOn(fs, 'statSync').mockImplementationOnce(() => ({ size: 64 }));
     brotliSizeMock = jest.spyOn(brotliSize, 'sync').mockImplementation(() => 49);
     jest.spyOn(gzipSize, 'sync').mockImplementation(() => 73);
   });

@@ -13,9 +13,6 @@
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {
     "access": "public"

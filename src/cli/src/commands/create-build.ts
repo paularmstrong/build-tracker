@@ -16,6 +16,7 @@ interface Args {
   branch?: string;
   config?: string;
   out: boolean;
+  'parent-revision'?: string;
   'skip-dirty-check': boolean;
 }
 
@@ -42,6 +43,11 @@ export const builder = (yargs): Argv<Args> =>
       description: 'Write the build to stdout',
       group,
       type: 'boolean'
+    })
+    .option('parent-revision', {
+      description: 'Manually provide the parent revision instead of reading it automatically',
+      group,
+      type: 'string'
     })
     .option('skip-dirty-check', {
       default: false,
@@ -77,9 +83,10 @@ export const handler = async (args: Args): Promise<{}> => {
   const branch = args.branch ? args.branch : await Git.getBranch(config.cwd);
   let revision: BuildMetaItem = await Git.getCurrentRevision(config.cwd);
   const parentRevision =
-    branch !== defaultBranch
+    args['parent-revision'] ||
+    (branch !== defaultBranch
       ? await Git.getMergeBase(defaultBranch, config.cwd)
-      : await Git.getParentRevision(revision);
+      : await Git.getParentRevision(revision));
   const { timestamp, name, subject } = await Git.getRevisionDetails(revision, config.cwd);
 
   if (config.buildUrlFormat) {

@@ -66,6 +66,14 @@ describe('create-build', () => {
       });
     });
 
+    test('uses the provided parent-revision', async () => {
+      await expect(
+        Command.handler({ config, out: false, 'parent-revision': 'abcdefg', 'skip-dirty-check': true })
+      ).resolves.toMatchObject({
+        meta: { parentRevision: 'abcdefg' }
+      });
+    });
+
     test('allows overriding the git branch name check', async () => {
       isDirtySpy.mockReturnValue(Promise.resolve(true));
 

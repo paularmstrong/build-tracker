@@ -195,12 +195,13 @@ Beside the arguments below, if you're running your server with a [`BT_API_AUTH_T
 BT_API_AUTH_TOKEN=my-secret-token bt-cli upload-build
 ```
 
-| option, alias        | description                                             | default                     |
-| -------------------- | ------------------------------------------------------- | --------------------------- |
-| `--branch`, `-b`     | Set the branch name and do not attempt to read from git | Current git working branch  |
-| `--config`, `-c`     | Set path to the build-tracker CLI config file           | `./build-tracker.config.js` |
-| `--out`, `-o`        | Write the build to stdout                               | `true`                      |
-| `--skip-dirty-check` | Skip the git work tree state check                      | `false`                     |
+| option, alias        | description                                             | default                       |
+| -------------------- | ------------------------------------------------------- | ----------------------------- |
+| `--branch`, `-b`     | Set the branch name and do not attempt to read from git | Current git working branch    |
+| `--config`, `-c`     | Set path to the build-tracker CLI config file           | `./build-tracker.config.js`   |
+| `--out`, `-o`        | Write the build to stdout                               | `true`                        |
+| `--parent-revision`  | Manually set the parent revision for the comparison.    | Determined via git-merge-base |
+| `--skip-dirty-check` | Skip the git work tree state check                      | `false`                       |
 
 ### `create-build`
 

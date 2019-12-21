@@ -45,6 +45,21 @@ describe('server', () => {
           });
       });
 
+      test('defaults artifactConfig to empty object', () => {
+        const app = express();
+        const config = {};
+        app.use(props(config, 'https://build-tracker.local'));
+        app.get('/', localsToBody);
+        return request(app)
+          .get('/')
+          .then(res => {
+            expect(res.body.props).toMatchObject({
+              artifactConfig: {},
+              url: 'https://build-tracker.local'
+            });
+          });
+      });
+
       test('sets url', () => {
         const app = express();
         const config = { artifacts: {} };

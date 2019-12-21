@@ -30,6 +30,7 @@ export interface State {
   fetchState: FetchState;
   focusedRevision?: string;
   graphType: GraphType;
+  hideAttribution: boolean;
   hoveredArtifacts: Array<string>;
   name: string;
   snacks: Array<string>;

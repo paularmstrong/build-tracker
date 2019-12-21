@@ -31,6 +31,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
   const comparator = useSelector((state: State) => state.comparator);
   const disabledArtifactsVisible = useSelector((state: State) => state.disabledArtifactsVisible);
   const graphType = useSelector((state: State) => state.graphType);
+  const hideAttribution = useSelector((state: State) => state.hideAttribution);
 
   const dispatch = useDispatch();
 
@@ -145,17 +146,19 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
         <DrawerLink href="https://buildtracker.dev" icon={OpenInExternalIcon} text="Documentation" />
         <DrawerLink href="https://github.com/paularmstrong/build-tracker" icon={OpenInExternalIcon} text="Github" />
       </View>
-      <View style={styles.attribution}>
-        <Text style={styles.attrText}>
-          Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by{' '}
-          {
-            // @ts-ignore
-            <Text accessibilityRole="link" href="https://twitter.com/paularmstrong" target="_blank">
-              Paul Armstrong
-            </Text>
-          }
-        </Text>
-      </View>
+      {hideAttribution ? null : (
+        <View style={styles.attribution}>
+          <Text style={styles.attrText}>
+            Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by{' '}
+            {
+              // @ts-ignore
+              <Text accessibilityRole="link" href="https://twitter.com/paularmstrong" target="_blank">
+                Paul Armstrong
+              </Text>
+            }
+          </Text>
+        </View>
+      )}
     </Drawer>
   );
 };

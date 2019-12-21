@@ -71,5 +71,6 @@ export interface AppConfig {
    * @type {Array<Budget>}
    */
   budgets?: Array<Budget>;
+  hideAttribution?: boolean;
   name?: string;
 }

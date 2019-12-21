@@ -17,7 +17,7 @@ module.exports = (env, reporter) => ({
     hot: true,
     noInfo: true
   },
-  devtool: IS_PROD ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: IS_PROD ? false : 'cheap-module-eval-source-map',
   module: {
     rules: [
       { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },

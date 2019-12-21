@@ -20,6 +20,7 @@ export default function makeStore(initialState: Partial<State> = {}): Store<Stat
     disabledArtifactsVisible: true,
     fetchState: FetchState.NONE,
     graphType: GraphType.AREA,
+    hideAttribution: false,
     hoveredArtifacts: [],
     name: 'Build Tracker',
     snacks: [],

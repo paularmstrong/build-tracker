@@ -109,7 +109,7 @@ module.exports = {
 };
 ```
 
-#### `budgets? Array<Budget>`
+#### `budgets?: Array<Budget>`
 
 Separate from individual artifacts, budgets can be set across the sum of all artifacts.
 
@@ -138,6 +138,14 @@ module.exports = {
   budgets: [{ level: 'error', sizeKey: 'brotli', type: 'size', maximum: 1000000 }]
 };
 ```
+
+#### `hideAttribution?: boolean = false`
+
+Set to `true` to hide the attribution and link in the Drawer.
+
+#### `name?: string = 'Build Tracker'`
+
+If provided, replaces the title _Build Tracker_ in the top application bar.
 
 #### `url: string`
 

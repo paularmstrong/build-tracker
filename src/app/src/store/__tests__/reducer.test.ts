@@ -20,6 +20,7 @@ const initialState: State = Object.freeze({
   fetchState: FetchState.NONE,
   graphType: GraphType.AREA,
   hoveredArtifacts: [],
+  hideAttribution: false,
   name: 'Tacos!',
   snacks: [],
   sizeKey: '',

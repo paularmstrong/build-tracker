@@ -2,7 +2,7 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/src/**/*.{ts,tsx}'],
   globals: {
     'ts-jest': {
-      diagnostics: false
+      isolatedModules: true
     }
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],

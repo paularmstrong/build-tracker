@@ -16,3 +16,13 @@ console.error = (...args) => {
   }
   throw new Error(`Console error, ${args.join(' ')}`);
 };
+
+const ignoredWarnings = [/Warning: \w+ has been renamed, and is not recommended for use. See https:\/\/fb\.me/];
+const consoleWarn = console.warn.bind(console);
+
+console.warn = (...args) => {
+  if (ignoredWarnings.some(warning => warning.test(args[0]))) {
+    return;
+  }
+  consoleWarn(...args);
+};

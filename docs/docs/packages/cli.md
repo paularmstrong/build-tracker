@@ -1,18 +1,20 @@
 ---
 id: cli
-title: CLI configuration
-sidebar_label: CLI
+title: @build-tracker/cli
+sidebar_label: @build-tracker/cli
 ---
 
-## Install the CLI
+Adding the `@build-tracker/cli` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`
+
+> **Important note:** Set up the Build Tracker CLI close to your application's code (in the same repository and workspace). Remember that the configuration for the CLI is **not** the same as the configuration for the [server](./server.md).
+
+## Install
 
 ```sh
 yarn add @build-tracker/cli@latest
 # or
 npm install --save @build-tracker/cli@latest
 ```
-
-Adding the `@build-tracker/cli` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`
 
 To list all commands and help, run `yarn bt-cli --help`
 
@@ -143,7 +145,7 @@ module.exports = {
 };
 ```
 
-The data response consists of a lot of useful data. Depending on how you want to report information, you may only need part of it.
+The data response consists of a lot of useful information. Depending on how you want to report information, you may only need part of it.
 
 ```ts
 interface APIResponse {
@@ -189,7 +191,7 @@ interface BudgetResult {
 
 This command will read your configuration file, and upload the current build meta and artifact stats to your server. In most scenarios, this should be all you need.
 
-Beside the arguments below, if you're running your server with a [`BT_API_AUTH_TOKEN` environment variable](./app#securing-your-api), ensure you run this command with that variable available as well.
+Beside the arguments below, if you're running your server with a [`BT_API_AUTH_TOKEN` environment variable](./server#securing-your-api), ensure you run this command with that variable available as well.
 
 ```
 BT_API_AUTH_TOKEN=my-secret-token bt-cli upload-build

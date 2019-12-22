@@ -20,38 +20,45 @@ The response from the Build Tracker API is sent back to the [`onCompare`](../cli
 There are two items that are particularly useful here: `groupDeltas` and `artifactDeltas`. We can use these and filter on those with failing budgets to format a nice message.
 
 ```js
+const Build = require('@build-tracker/build').default;
+const Comparator = require('@build-tracker/comparator').default;
+
+const applicationUrl = 'https://my-application-url.local';
+
 module.exports = {
-  // other config options
-  onCompare: result => {
-    const failingGroupDeltas = result.groupDeltas.filter(delta => delta.failingBudgets.length > 0);
-    const failingArtifactDeltas = result.artifactDeltas.filter(delta => delta.failingBudgets.length > 0);
+  applicationUrl,
+  // ... other config options
+  onCompare: async data => {
+    const { build: buildData, parentBuild: parentData } = data;
+    // Reconstruct a comparator
+    const build = new Build(buildData.meta, buildData.artifacts);
+    const parentBuild = new Build(parentData.meta, parentData.artifacts);
+    const comparator = new Comparator({ artifactBudgets, builds: [parentBuild, build] });
 
-    if (failingGroupBudgets.length === 0 && failingArtifactDeltas.length === 0) {
-      process.stdout.write('✅ All clear!');
-      return;
-    }
+    // Get the general summary of your build
+    const summary = comparator.toSummary();
 
-    failingGroupDeltas.map(delta => {
-      const { warn, error } = delta.failingBudgets.reduce(
-        (memo, budget) => {
-          memo[budget.level] = budget;
-          return memo;
-        },
-        { warn: [], error: [] }
-      );
-      if (error.length) {
-        process.stdout.write(`🚫 ${delta.name} failed the following budgets:`);
-        error.forEach(
-          budget =>
-            `* expected ${budget.type} to be less than ${budget.expected} but received${delta.sizes[budget.sizeKey]}`
-        );
-      }
-      if (warn.length) {
-        process.stdout.write(`⚠️ ${delta.name} failed the following budgets:`);
-      }
-      // etc
-    });
+    const table = comparator.toMarkdown({ artifactFilter });
+    const revisions = `${parentBuild.getMetaValue('revision')}/${build.getMetaValue('revision')}`;
+    const output = `${summary.join('\n')}
+
+${table}
+
+See the full comparison at [${applicationUrl}/revisions/${revisions}](${applicationUrl}/revisions/${revisions})`;
+
+    // Post the constructed markdown as a comment
+    return await GithubApi.postComment(output);
   }
+};
+
+// Filter out any rows from the markdown table that are not failing or did not have a hash change
+const artifactFilter = row => {
+  return row.some(cell => {
+    if (cell.type === 'delta') {
+      return cell.failingBudgets.length > 0 || cell.hashChanged;
+    }
+    return false;
+  });
 };
 ```
 

@@ -8,7 +8,7 @@ sidebar_label: Getting Started
 
 ### Set up your server
 
-Install the Build Tracker server:
+Install the Build Tracker server in a new repository, separate from your application code that you wish to track:
 
 ```sh
 yarn add @build-tracker/server@latest
@@ -41,11 +41,11 @@ yarn bt-server
 
 When the server is run, the Postgres database plugin will automatically create any tables and structures needed.
 
-Your application will now be accessible at the provided `url`.
+Your application should now be accessible at the provided `url`.
 
 ### Upload your builds
 
-Along with your application code, install the Build Tracker CLI in the same repository as the application code you want to track:
+Install the Build Tracker CLI in the same repository as your application code you want to track (**not** the Server that we set up above):
 
 ```sh
 yarn add @build-tracker/cli@latest
@@ -69,3 +69,7 @@ yarn bt-cli upload-build
 ```
 
 Your build stats will be uploaded to Build Tracker now. Be sure to upload more than one build to start getting the benefits out of the delta-based comparisons that Build Tracker provides!
+
+## Recipes and Guides
+
+Want to do more with Build Tracker? Follow along in the [Guides](guides/guides.md) section of this documentation.

@@ -1,8 +1,12 @@
 ---
-id: app
-title: App configuration
-sidebar_label: Application
+id: server
+title: @build-tracker/server
+sidebar_label: @build-tracker/server
 ---
+
+Adding the `@build-tracker/server` package will install a binary available as `bt-server`. It can be run with `yarn bt-server` or `npx bt-server`
+
+> **Important note:** It is recommended to do set up your Build Tracker server & application either in a new repository or in an isolated workspace away from the code that you wish to track. This will help you avoid configuration conflicts as well as build-time issues between your app and Build Tracker itself.
 
 ## Install
 
@@ -11,8 +15,6 @@ yarn add @build-tracker/server@latest
 # or
 npm install --save @build-tracker/server@latest
 ```
-
-Adding the `@build-tracker/server` package will install a binary available as `bt-server`. It can be run with `yarn bt-server` or `npx bt-server`
 
 To list all commands and help, run `yarn bt-server --help`
 

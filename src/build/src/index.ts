@@ -7,53 +7,29 @@ export type BuildMetaItem = string | { value: string; url: string };
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface BuildMeta {
-  /**
-   * Unique revision identifier. Usually a git SHA
-   * @type {BuildMetaItem}
-   */
+  // Unique revision identifier. Usually a git SHA
   revision: BuildMetaItem;
-  /**
-   * Unique parent revision identifier. Usually a git SHA from `git merge-base $revision`
-   * This is used for default comparisons
-   * @type {BuildMetaItem}
-   */
+  // Unique parent revision identifier. Usually a git SHA from `git merge-base $revision`.
+  // This is used for default comparisons
   parentRevision: BuildMetaItem;
-  /**
-   * DateTime value representing when this build was created
-   * @type {number}
-   */
+  // DateTime value representing when this build was created
   timestamp: number;
-  /**
-   * Branch name for this revision. Helps for in-progress work to be filtered from the default UI
-   * @type {string}
-   */
+  // Branch name for this revision. Helps for in-progress work to be filtered from the default UI
   branch: BuildMetaItem;
 }
 
 export interface Artifact<AS extends ArtifactSizes> {
-  /**
-   * Unique hash of the contents of this artifact.
-   * @type {string}
-   */
+  // Unique hash of the contents of this artifact.
   hash: string;
-  /**
-   * Name of this build artifact
-   * @type {string}
-   */
+  // Name of this build artifact
   name: string;
-  /**
-   * Computed sizes of the build artifact
-   * @type {ArtifactSizes}
-   */
+  // Computed sizes of the build artifact
   sizes: AS;
 }
 
 export interface ArtifactSizes {
-  /**
-   * Create your own size calculations, in bytes
-   * `stat` and `gzip` sizes are most commonly used for web applications
-   * @type {[type]}
-   */
+  // Create your own size calculations, in bytes
+  // `stat` and `gzip` sizes are most commonly used for web applications
   [key: string]: number;
 }
 

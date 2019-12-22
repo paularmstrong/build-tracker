@@ -1,10 +1,10 @@
 ---
-id: development
-title: Development
-sidebar_label: Development
+id: contributing
+title: Contributing to Build Tracker
+sidebar_label: Contributing
 ---
 
-Thank you for your interest in helping out with Build Tracker! This is a project done with joy and care, out of our free time. Before getting started, please familiarize yourself with the [Contributor Covenant Code of Conduct](https://github.com/paularmstrong/build-tracker/blob/next/CODE_OF_CONDUCT.md).
+> Thank you for your interest in helping out with Build Tracker! This is a project done with joy and care, out of our free time. Before getting started, please familiarize yourself with the [Contributor Covenant Code of Conduct](https://github.com/paularmstrong/build-tracker/blob/next/CODE_OF_CONDUCT.md).
 
 ---
 
@@ -97,6 +97,7 @@ All folder names should be mapped as the publishable name without the `@build-tr
 Some local configs are available for development purposes. To use them, it's recommended to use a Docker container, since it's easy to seed and throw away:
 
 ##### MariaDB
+
 ```shell
 docker run -p 3307:3306 --name bt-mariadb -e MYSQL_ROOT_PASSWORD=tacos -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=buildtracker -d mariadb --default-authentication-plugin=mysql_native_password
 yarn ts-node src/server/src/index.ts setup -c ./config/mariadb.js
@@ -105,6 +106,7 @@ yarn dev:mariadb
 ```
 
 ##### MySQL
+
 ```shell
 docker run -p 3306:3306 --name bt-mysql -e MYSQL_ROOT_PASSWORD=tacos -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=buildtracker -d mysql --default-authentication-plugin=mysql_native_password
 yarn ts-node src/server/src/index.ts setup -c ./config/mysql.js
@@ -113,6 +115,7 @@ yarn dev:mysql
 ```
 
 ##### Postgres
+
 ```shell
 docker run --name pg -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=buildtracker -p 54320:5432 -d postgres
 yarn ts-node src/server/src/index.ts setup -c ./config/postgres.js
@@ -160,3 +163,35 @@ The following conformance checks can be run manually and will be automatically r
 - `yarn lint` Lint and auto-format code
 - `yarn test` Jest tests
 - `yarn tsc` Typescript type check
+
+## Documentation
+
+Documentation is a great place to get started contributing to the Build Tracker project because writing good docs is difficult. For that reason, your help is _always_ appreciated.
+
+### Running the docs locally
+
+To run the documentation with hot reloading from your local machine, simple run:
+
+```sh
+$ yarn docs
+LiveReload server started on port 35729
+Docusaurus server started on port 3000
+```
+
+Your browser should automatically be opened to the documentation site running locally. If it is not, you can visit `http://localhost:3000` (or swap the port `3000` with whatever is on the last line of the output above)
+
+### Updating documentation
+
+To update any documentation pages, first update the files from the repository root at `docs/docs`. If your changes are also relevant to the 1.x.x version, you will also need to update `website/versioned_docs/1.0.0` files.
+
+### Updating other pages
+
+All pages and templates are written with React.js and can be found in `website/core` and `website/pages`.
+
+### Submitting your PR
+
+After your changes look the way you want on your local documentation server. You can close the server down (`CTRL+C`). Simply commit your changes and open a PR on the [Build Tracker repository](https://github.com/paularmstrong/build-tracker).
+
+### Other help
+
+Build Tracker uses [Docusaurus](https://docusaurus.io) for generating it's docs. If you're unfamiliar with any of the internals of how the docs are built, structured, or how to add a feature to them, the [official docs](https://docusaurus.io) are the best place to start.

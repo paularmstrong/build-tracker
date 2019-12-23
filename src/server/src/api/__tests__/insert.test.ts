@@ -7,7 +7,6 @@ import Comparator from '@build-tracker/comparator';
 import express from 'express';
 import { insertBuild } from '../insert';
 import request from 'supertest';
-import { BudgetLevel, BudgetType } from '@build-tracker/types';
 
 const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, [
   { hash: '123', name: 'tacos', sizes: { stat: 231 } }
@@ -48,7 +47,7 @@ describe('insert build handler', () => {
   });
 
   describe('response', () => {
-    test('includes the comparator output in readable formats', () => {
+    test('returns a JSON serialized Comparator and summary', () => {
       const handler = insertBuild(queries, config);
       app.post('/test', handler);
 
@@ -60,98 +59,8 @@ describe('insert build handler', () => {
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
         .then(res => {
-          expect(res.body).toMatchObject({
-            json: comparator.toJSON(),
-            markdown: comparator.toMarkdown(),
-            csv: comparator.toCsv()
-          });
-        });
-    });
-
-    test('includes the build and parentBuild', () => {
-      const handler = insertBuild(queries, config);
-      app.post('/test', handler);
-
-      return request(app)
-        .post('/test')
-        .send({ meta: build.meta, artifacts: build.artifacts })
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .then(res => {
-          expect(res.body).toMatchObject({
-            build: build.toJSON(),
-            parentBuild: parentBuild.toJSON()
-          });
-        });
-    });
-
-    test('includes groupDeltas', () => {
-      const handler = insertBuild(queries, {
-        ...config,
-        artifacts: {
-          groups: [
-            {
-              name: 'food',
-              artifactMatch: /tacos/,
-              budgets: [{ type: BudgetType.DELTA, level: BudgetLevel.WARN, maximum: 100 }]
-            }
-          ]
-        }
-      });
-      app.post('/test', handler);
-
-      return request(app)
-        .post('/test')
-        .send({ meta: build.meta, artifacts: build.artifacts })
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .then(res => {
-          expect(res.body.groupDeltas).toEqual([
-            {
-              budgets: [],
-              failingBudgets: [],
-              hashChanged: false,
-              name: 'All',
-              percents: { stat: -0.4675324675324675 },
-              sizes: { stat: -108 }
-            },
-            {
-              budgets: [{ expected: 100, level: 'warn', passing: false, type: 'delta' }],
-              failingBudgets: [{ expected: 100, level: 'warn', passing: false, type: 'delta' }],
-              hashChanged: false,
-              name: 'food',
-              percents: { stat: -0.4675324675324675 },
-              sizes: { stat: -108 }
-            }
-          ]);
-        });
-    });
-
-    test('includes artifactDeltas', () => {
-      const handler = insertBuild(queries, {
-        ...config,
-        artifacts: {
-          budgets: { tacos: [{ type: BudgetType.DELTA, level: BudgetLevel.WARN, maximum: 100 }] }
-        }
-      });
-      app.post('/test', handler);
-
-      return request(app)
-        .post('/test')
-        .send({ meta: build.meta, artifacts: build.artifacts })
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-        .then(res => {
-          expect(res.body.artifactDeltas).toEqual([
-            {
-              budgets: [{ expected: 100, level: 'warn', passing: false, type: 'delta' }],
-              failingBudgets: [{ expected: 100, level: 'warn', passing: false, type: 'delta' }],
-              hashChanged: false,
-              name: 'tacos',
-              percents: { stat: -0.4675324675324675 },
-              sizes: { stat: -108 }
-            }
-          ]);
+          expect(res.body.comparatorData).toEqual(comparator.serialize());
+          expect(res.body.summary).toEqual(comparator.toSummary());
         });
     });
   });

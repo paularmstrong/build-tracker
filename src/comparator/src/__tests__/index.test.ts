@@ -32,6 +32,21 @@ const build2 = new Build(
 const artifactFilters = [/burritos/, /churros/];
 
 describe('BuildComparator', () => {
+  describe('deserialize', () => {
+    test('reconstructs a Comparator from a JSON-serialized string', () => {
+      const budget = { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 100, sizeKey: 'gzip' };
+      const original = new BuildComparator({
+        budgets: [budget],
+        builds: [build1, build2],
+        artifactFilters,
+        groups: [{ artifactNames: [], artifactMatch: /tacos/, budgets: [budget], name: 'tacos group' }]
+      });
+      const deserialized = BuildComparator.deserialize(original.serialize());
+      expect(deserialized.builds).toEqual(original.builds);
+      expect(deserialized.matrixGroups).toEqual(original.matrixGroups);
+    });
+  });
+
   describe('artifactFilters', () => {
     const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
 

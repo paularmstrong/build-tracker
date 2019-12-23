@@ -139,7 +139,7 @@ Take any action on the response from the API.
 module.exports = {
   onCompare: data => {
     // send markdown response somewhere…
-    GithubApi.postComment(data.markdown);
+    GithubApi.postComment(data.summary.join('\n'));
     return Promise.resolve();
   }
 };
@@ -149,41 +149,14 @@ The data response consists of a lot of useful information. Depending on how you 
 
 ```ts
 interface APIResponse {
-  build: { meta: BuildMeta; artifacts: Array<Artifact> };
-  parentBuild: { meta: BuildMeta; artifacts: Array<Artifact> };
-  groupDeltas: Array<ArtifactDelta>;
-  artifactDeltas: Array<ArtifactDelta>;
-  json: ComparisonMatrix; // Object representation of the build comparison chart
-  markdown: string; // Markdown table of the build comparison chart
-  csv: string; // CSV formatted string of the build comparison chart
+  // JSON serialized string that can be read back into a `Comparator` instance
+  comparatorData: string;
+  // Summary response from the original Comparator object
+  summary: Array<string>;
 }
 ```
 
-Most likely, you'll care about `groupDeltas` and `artifactDeltas`. These contain information about every group and artifact in your build, compared to its parent.
-
-```ts
-interface ArtifactDelta {
-  name: string;
-  sizes: { [key: string]: number };
-  percents: { [key: string]: number };
-  hashChanged: boolean;
-  budgets: Array<BudgetResult>;
-  failingBudgets: Array<BudgetResult>;
-}
-```
-
-The `failingBudgets` on each `ArtifactDelta` will be an array of budgets that you have configured that have been exceeded in this change.
-
-```ts
-interface BudgetResult {
-  sizeKey: string;
-  passing: boolean;
-  expected: number;
-  actual: number;
-  type: Budget['type'];
-  level: Budget['level'];
-}
-```
+More can be done with the data. Check out the [Continuous Integration guide](guides/ci.md) for more ideas.
 
 ## Commands
 

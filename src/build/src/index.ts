@@ -47,6 +47,13 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     });
   }
 
+  public static fromJSON<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes>(build: {
+    meta: M;
+    artifacts: Array<Artifact<A>>;
+  }): Build<M, A> {
+    return new Build(build.meta, build.artifacts);
+  }
+
   public toJSON(): { meta: M; artifacts: Array<Artifact<A>> } {
     return { meta: this.meta, artifacts: Array.from(this._artifacts.values()) };
   }

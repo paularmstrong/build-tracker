@@ -118,6 +118,11 @@ const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): 
 };
 const defaultArtifactFilter = (): boolean => true;
 
+const deserializeRegExp = (input: string): RegExp => {
+  const m = input.match(/\/(.*)\/(.*)?/);
+  return new RegExp(m[1], m[2] || '');
+};
+
 interface ComparatorOptions {
   artifactBudgets?: ArtifactBudgets;
   artifactFilters?: ArtifactFilters;
@@ -153,6 +158,29 @@ export default class BuildComparator {
         return memo;
       }, {})
     );
+  }
+
+  public static deserialize(data: string): BuildComparator {
+    const objData = JSON.parse(data);
+    return new BuildComparator({
+      ...objData,
+      artifactFilters: objData.artifactFilters.map(deserializeRegExp),
+      builds: objData.builds.map(d => Build.fromJSON(d)),
+      groups: objData.groups.map(g => ({ ...g, artifactMatch: g.artifactMatch && deserializeRegExp(g.artifactMatch) }))
+    });
+  }
+
+  public serialize(): string {
+    return JSON.stringify({
+      artifactBudgets: this._artifactBudgets,
+      artifactFilters: this._artifactFilters.map(f => f.toString()),
+      budgets: this._groups[0].budgets,
+      builds: this.builds.map(b => b.toJSON()),
+      groups: this._groups.slice(1).map(g => ({
+        ...g,
+        artifactMatch: g.artifactMatch && g.artifactMatch.toString()
+      }))
+    });
   }
 
   public get artifactNames(): Array<string> {

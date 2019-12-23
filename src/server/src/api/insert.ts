@@ -27,23 +27,16 @@ export const insertBuild = (
             artifactFilters: artifactConfig.filters,
             builds: [build, parentBuild],
             groups: artifactConfig.groups
-          }),
-          parentBuild
+          })
         };
       })
       .then(context => {
         return onInserted(context.comparator).then(() => context);
       })
-      .then(({ comparator, parentBuild }) => {
-        const buildDelta = comparator.buildDeltas[1][0];
+      .then(({ comparator }) => {
         res.send({
-          build: build.toJSON(),
-          parentBuild: parentBuild.toJSON(),
-          json: comparator.toJSON(),
-          markdown: comparator.toMarkdown(),
-          csv: comparator.toCsv(),
-          groupDeltas: Array.from(buildDelta.groupDeltas.values()).map(delta => delta.toObject()),
-          artifactDeltas: buildDelta.artifactDeltas.map(delta => delta.toObject())
+          comparatorData: comparator.serialize(),
+          summary: comparator.toSummary()
         });
       })
       .catch(error => {

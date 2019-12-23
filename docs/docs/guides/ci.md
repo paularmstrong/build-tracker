@@ -20,7 +20,6 @@ The response from the Build Tracker API is sent back to the [`onCompare`](../cli
 There are two items that are particularly useful here: `groupDeltas` and `artifactDeltas`. We can use these and filter on those with failing budgets to format a nice message.
 
 ```js
-const Build = require('@build-tracker/build').default;
 const Comparator = require('@build-tracker/comparator').default;
 
 const applicationUrl = 'https://my-application-url.local';
@@ -29,14 +28,9 @@ module.exports = {
   applicationUrl,
   // ... other config options
   onCompare: async data => {
-    const { build: buildData, parentBuild: parentData } = data;
-    // Reconstruct a comparator
-    const build = new Build(buildData.meta, buildData.artifacts);
-    const parentBuild = new Build(parentData.meta, parentData.artifacts);
-    const comparator = new Comparator({ artifactBudgets, builds: [parentBuild, build] });
-
-    // Get the general summary of your build
-    const summary = comparator.toSummary();
+    const { comparatorData, summary } = data;
+    // Reconstruct a comparator from the serialized data
+    const comparator = Comparator.deserialize(comparatorData);
 
     const table = comparator.toMarkdown({ artifactFilter });
     const revisions = `${parentBuild.getMetaValue('revision')}/${build.getMetaValue('revision')}`;

@@ -143,42 +143,20 @@ npm install --save @build-tracker/cli@latest
 <pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">onCompare</span>: <span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> {
     <span class="hljs-comment">// send markdown response somewhere…</span>
-    GithubApi.postComment(data.markdown);
+    GithubApi.postComment(data.summary.join(<span class="hljs-string">'\n'</span>));
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve();
   }
 };
 </code></pre>
 <p>The data response consists of a lot of useful information. Depending on how you want to report information, you may only need part of it.</p>
 <pre><code class="hljs css language-ts"><span class="hljs-keyword">interface</span> APIResponse {
-  build: { meta: BuildMeta; artifacts: <span class="hljs-built_in">Array</span>&lt;Artifact&gt; };
-  parentBuild: { meta: BuildMeta; artifacts: <span class="hljs-built_in">Array</span>&lt;Artifact&gt; };
-  groupDeltas: <span class="hljs-built_in">Array</span>&lt;ArtifactDelta&gt;;
-  artifactDeltas: <span class="hljs-built_in">Array</span>&lt;ArtifactDelta&gt;;
-  json: ComparisonMatrix; <span class="hljs-comment">// Object representation of the build comparison chart</span>
-  markdown: <span class="hljs-built_in">string</span>; <span class="hljs-comment">// Markdown table of the build comparison chart</span>
-  csv: <span class="hljs-built_in">string</span>; <span class="hljs-comment">// CSV formatted string of the build comparison chart</span>
+  <span class="hljs-comment">// JSON serialized string that can be read back into a `Comparator` instance</span>
+  comparatorData: <span class="hljs-built_in">string</span>;
+  <span class="hljs-comment">// Summary response from the original Comparator object</span>
+  summary: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;;
 }
 </code></pre>
-<p>Most likely, you'll care about <code>groupDeltas</code> and <code>artifactDeltas</code>. These contain information about every group and artifact in your build, compared to its parent.</p>
-<pre><code class="hljs css language-ts"><span class="hljs-keyword">interface</span> ArtifactDelta {
-  name: <span class="hljs-built_in">string</span>;
-  sizes: { [key: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">number</span> };
-  percents: { [key: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">number</span> };
-  hashChanged: <span class="hljs-built_in">boolean</span>;
-  budgets: <span class="hljs-built_in">Array</span>&lt;BudgetResult&gt;;
-  failingBudgets: <span class="hljs-built_in">Array</span>&lt;BudgetResult&gt;;
-}
-</code></pre>
-<p>The <code>failingBudgets</code> on each <code>ArtifactDelta</code> will be an array of budgets that you have configured that have been exceeded in this change.</p>
-<pre><code class="hljs css language-ts"><span class="hljs-keyword">interface</span> BudgetResult {
-  sizeKey: <span class="hljs-built_in">string</span>;
-  passing: <span class="hljs-built_in">boolean</span>;
-  expected: <span class="hljs-built_in">number</span>;
-  actual: <span class="hljs-built_in">number</span>;
-  <span class="hljs-keyword">type</span>: Budget[<span class="hljs-string">'type'</span>];
-  level: Budget[<span class="hljs-string">'level'</span>];
-}
-</code></pre>
+<p>More can be done with the data. Check out the <a href="/docs/guides/ci">Continuous Integration guide</a> for more ideas.</p>
 <h2><a class="anchor" aria-hidden="true" id="commands"></a><a href="#commands" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Commands</h2>
 <h3><a class="anchor" aria-hidden="true" id="upload-build"></a><a href="#upload-build" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>upload-build</code></h3>
 <p>This command will read your configuration file, and upload the current build meta and artifact stats to your server. In most scenarios, this should be all you need.</p>
@@ -222,7 +200,7 @@ npm install --save @build-tracker/cli@latest
 </table>
 <h3><a class="anchor" aria-hidden="true" id="version"></a><a href="#version" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>version</code></h3>
 <p>Output the version number of the <code>bt-cli</code>.</p>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 12/22/2019 by Paul Armstrong</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/packages/build"><span class="arrow-prev">← </span><span>@build-tracker/build</span></a><a class="docs-next button" href="/docs/packages/comparator"><span>@build-tracker/comparator</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#install">Install</a></li><li><a href="#configuration">Configuration</a><ul class="toc-headings"><li><a href="#applicationurl-string"><code>applicationUrl: string</code></a></li><li><a href="#artifacts-arraystring"><code>artifacts: Array&lt;string&gt;</code></a></li><li><a href="#basedir-string--processcwd"><code>baseDir?: string = process.cwd()</code></a></li><li><a href="#cwd-string--processcwd"><code>cwd?: string = process.cwd()</code></a></li><li><a href="#getfilenamehash-filename-string--string--void"><code>getFilenameHash?: (filename: string) =&gt; string | void</code></a></li><li><a href="#namemapper-filename-string--string"><code>nameMapper?: (filename: string) =&gt; string</code></a></li><li><a href="#buildurlformat-string"><code>buildUrlFormat?: string</code></a></li><li><a href="#oncompare-data-apiresponse--promisevoid"><code>onCompare?: (data: APIResponse) =&gt; Promise&lt;void&gt;</code></a></li></ul></li><li><a href="#commands">Commands</a><ul class="toc-headings"><li><a href="#upload-build"><code>upload-build</code></a></li><li><a href="#create-build"><code>create-build</code></a></li><li><a href="#stat-artifacts"><code>stat-artifacts</code></a></li><li><a href="#version"><code>version</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.svg" alt="Build Tracker" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/installation.html">Getting Started</a><a href="/docs/en/plugins/plugins.html">Plugins</a></div><div><h5>Community</h5><a href="http://stackoverflow.com/questions/tagged/build-tracker" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/paularmstrong/build-tracker">GitHub</a><a class="github-button" href="https://github.com/paularmstrong/build-tracker" data-icon="octicon-star" data-count-href="/paularmstrong/build-tracker/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Paul Armstrong</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 12/23/2019 by Paul Armstrong</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/packages/build"><span class="arrow-prev">← </span><span>@build-tracker/build</span></a><a class="docs-next button" href="/docs/packages/comparator"><span>@build-tracker/comparator</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#install">Install</a></li><li><a href="#configuration">Configuration</a><ul class="toc-headings"><li><a href="#applicationurl-string"><code>applicationUrl: string</code></a></li><li><a href="#artifacts-arraystring"><code>artifacts: Array&lt;string&gt;</code></a></li><li><a href="#basedir-string--processcwd"><code>baseDir?: string = process.cwd()</code></a></li><li><a href="#cwd-string--processcwd"><code>cwd?: string = process.cwd()</code></a></li><li><a href="#getfilenamehash-filename-string--string--void"><code>getFilenameHash?: (filename: string) =&gt; string | void</code></a></li><li><a href="#namemapper-filename-string--string"><code>nameMapper?: (filename: string) =&gt; string</code></a></li><li><a href="#buildurlformat-string"><code>buildUrlFormat?: string</code></a></li><li><a href="#oncompare-data-apiresponse--promisevoid"><code>onCompare?: (data: APIResponse) =&gt; Promise&lt;void&gt;</code></a></li></ul></li><li><a href="#commands">Commands</a><ul class="toc-headings"><li><a href="#upload-build"><code>upload-build</code></a></li><li><a href="#create-build"><code>create-build</code></a></li><li><a href="#stat-artifacts"><code>stat-artifacts</code></a></li><li><a href="#version"><code>version</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.svg" alt="Build Tracker" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/installation.html">Getting Started</a><a href="/docs/en/plugins/plugins.html">Plugins</a></div><div><h5>Community</h5><a href="http://stackoverflow.com/questions/tagged/build-tracker" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/paularmstrong/build-tracker">GitHub</a><a class="github-button" href="https://github.com/paularmstrong/build-tracker" data-icon="octicon-star" data-count-href="/paularmstrong/build-tracker/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 Paul Armstrong</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;

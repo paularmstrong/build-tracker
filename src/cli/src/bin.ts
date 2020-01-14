@@ -10,6 +10,7 @@ const argv = yargs
   .help('help', 'Show this help screen')
   .alias('help', 'h')
   .wrap(Math.min(process.stdout.columns, 120))
+  .strict()
   .recommendCommands()
   .option('v', {
     default: 0,

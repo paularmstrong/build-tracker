@@ -18,7 +18,7 @@ npm install --save @build-tracker/plugin-with-postgres@latest
 Edit your `build-tracker.config.js` file and compose your output configuration:
 
 ```js
-const withPostgres = require('@build-tracker/plugin-with-postgres');
+const withPostgres = require('@build-tracker/plugin-with-postgres').default;
 
 module.exports = withPostgres({
   pg: {

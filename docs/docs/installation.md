@@ -21,7 +21,7 @@ At a minimum, use one of the [available database plugins](plugins/plugins) and a
 For this quick start, we'll use Postgres. We'll assume your database is already up and running.
 
 ```js
-const withPostgres = require('@build-tracker/withPostgres').default;
+const withPostgres = require('@build-tracker/plugin-with-postgres').default;
 module.exports = withPostgres({
   url: 'https://your-build-tracker-app',
   pg: {

@@ -10,7 +10,7 @@ interface BuildJson {
   artifacts: Array<Artifact<ArtifactSizes>>;
 }
 
-interface ApiReturn {
+export interface ApiReturn {
   build: BuildJson;
   parentBuild: BuildJson;
   json: ComparisonMatrix;

@@ -28,31 +28,9 @@ module.exports = {
   applicationUrl,
   // ... other config options
   onCompare: async data => {
-    const { comparatorData, summary } = data;
-    // Reconstruct a comparator from the serialized data
-    const comparator = Comparator.deserialize(comparatorData);
-
-    const table = comparator.toMarkdown({ artifactFilter });
-    const revisions = `${parentBuild.getMetaValue('revision')}/${build.getMetaValue('revision')}`;
-    const output = `${summary.join('\n')}
-
-${table}
-
-See the full comparison at [${applicationUrl}/revisions/${revisions}](${applicationUrl}/revisions/${revisions})`;
-
     // Post the constructed markdown as a comment
-    return await GithubApi.postComment(output);
+    return GithubApi.postComment(data.markdown);
   }
-};
-
-// Filter out any rows from the markdown table that are not failing or did not have a hash change
-const artifactFilter = row => {
-  return row.some(cell => {
-    if (cell.type === 'delta') {
-      return cell.failingBudgets.length > 0 || cell.hashChanged;
-    }
-    return false;
-  });
 };
 ```
 

@@ -3,10 +3,10 @@
  */
 import { Argv } from 'yargs';
 import { handler as createBuild } from './create-build';
-import getConfig, { ApiReturn } from '../modules/config';
 import http from 'http';
 import https from 'https';
 import { URL } from 'url';
+import getConfig, { ApiReturn } from '../modules/config';
 
 export const command = 'upload-build';
 

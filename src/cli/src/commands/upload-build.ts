@@ -78,7 +78,6 @@ export const handler = async (args: Args): Promise<void> => {
       res.on('end', () => {
         const response = JSON.parse(output.join('')) as ApiReturn;
         if (config.onCompare) {
-          // @ts-ignore
           config.onCompare(response).then(resolve);
         } else {
           resolve();

@@ -20,8 +20,6 @@ The response from the Build Tracker API is sent back to the [`onCompare`](../cli
 There are two items that are particularly useful here: `groupDeltas` and `artifactDeltas`. We can use these and filter on those with failing budgets to format a nice message.
 
 ```js
-const Comparator = require('@build-tracker/comparator').default;
-
 const applicationUrl = 'https://my-application-url.local';
 
 module.exports = {

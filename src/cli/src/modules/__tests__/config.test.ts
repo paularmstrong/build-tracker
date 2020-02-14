@@ -31,6 +31,14 @@ describe('getConfig', () => {
     });
   });
 
+  test('propagate errors', () => {
+    return getConfig(
+      path.join(path.dirname(require.resolve('@build-tracker/fixtures')), 'cli-configs/rc/.build-trackerrc-invalid.js')
+    ).catch(e => {
+      expect(e.message).toMatch('test');
+    });
+  });
+
   test('throws if no configuration found', () => {
     return getConfig('tacos').catch(e => {
       expect(e.message).toMatch('Could not find configuration file');

@@ -35,7 +35,11 @@ export default async function getConfig(path?: string): Promise<Config> {
   try {
     result = !path ? await explorer.search() : await explorer.load(path);
   } catch (e) {
-    throw new Error('Could not find configuration file');
+    if (e.code === 'ENOENT') {
+      throw new Error('Could not find configuration file');
+    } else {
+      throw e;
+    }
   }
 
   return {

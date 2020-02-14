@@ -96,7 +96,7 @@ describe('insert build handler', () => {
     let app, config, queries;
     beforeEach(() => {
       queries = {
-        byRevision: jest.fn(() => Promise.reject(new NotFoundError('TODO'))),
+        byRevision: jest.fn(() => Promise.reject(new NotFoundError())),
         insert: jest.fn(() => Promise.resolve('1234'))
       };
       config = {

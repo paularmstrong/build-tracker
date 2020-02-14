@@ -3,10 +3,10 @@
  */
 import { Argv } from 'yargs';
 import { handler as createBuild } from './create-build';
-import getConfig from '../modules/config';
 import http from 'http';
 import https from 'https';
 import { URL } from 'url';
+import getConfig, { ApiReturn } from '../modules/config';
 
 export const command = 'upload-build';
 
@@ -76,9 +76,8 @@ export const handler = async (args: Args): Promise<void> => {
       });
 
       res.on('end', () => {
-        const response = Buffer.from(output).toJSON();
+        const response = JSON.parse(output.join('')) as ApiReturn;
         if (config.onCompare) {
-          // @ts-ignore
           config.onCompare(response).then(resolve);
         } else {
           resolve();

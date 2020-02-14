@@ -50,6 +50,19 @@ describe('upload-build', () => {
       expect(writeSpy).toHaveBeenCalledWith('{"success":"yep"}');
     });
 
+    test('invokes `onCompare`', async () => {
+      jest.spyOn(CreateBuild, 'handler').mockImplementation(() => Promise.resolve(postData));
+      const configValues = require(config);
+      const onCompareSpy = jest.spyOn(configValues, 'onCompare').mockImplementationOnce(() => Promise.resolve());
+
+      nock(`${configValues.applicationUrl}/`)
+        .post('/api/builds')
+        .reply(200, { success: 'yep' });
+
+      await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toBeUndefined();
+      expect(onCompareSpy).toHaveBeenCalledWith({ success: 'yep' });
+    });
+
     test('uploads the current build over http', async () => {
       jest.spyOn(CreateBuild, 'handler').mockImplementation(() => Promise.resolve(postData));
       const writeSpy = jest.spyOn(process.stdout, 'write').mockImplementationOnce(() => true);

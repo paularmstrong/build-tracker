@@ -19,17 +19,27 @@ export const insertBuild = (
   queries.insert(build).then(() =>
     queries
       .byRevision(build.getMetaValue('parentRevision'))
-      .then(parentBuildData => {
-        const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
-        return {
-          comparator: new Comparator({
-            artifactBudgets: artifactConfig.budgets,
-            artifactFilters: artifactConfig.filters,
-            builds: [build, parentBuild],
-            groups: artifactConfig.groups
-          })
-        };
-      })
+      .then(
+        parentBuildData => {
+          const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
+          return [build, parentBuild];
+        },
+        error => {
+          if (error instanceof NotFoundError) {
+            return [build];
+          } else {
+            throw error;
+          }
+        }
+      )
+      .then(builds => ({
+        comparator: new Comparator({
+          artifactBudgets: artifactConfig.budgets,
+          artifactFilters: artifactConfig.filters,
+          builds,
+          groups: artifactConfig.groups
+        })
+      }))
       .then(context => {
         return onInserted(context.comparator).then(() => context);
       })
@@ -40,10 +50,6 @@ export const insertBuild = (
         });
       })
       .catch(error => {
-        if (error instanceof NotFoundError) {
-          res.send({ error });
-          return;
-        }
         res.send({ error });
       })
   );

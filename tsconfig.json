@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
@@ -18,7 +19,10 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es5"
+    "target": "es5",
+    "paths": {
+      "react-native": ["./typings/react-native"]
+    }
   },
   "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**", "plugins/**/dist/**"]
 }

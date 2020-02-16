@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
-import { createElement, StyleProp, StyleSheet, ViewProps, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, unstable_createElement, ViewProps, ViewStyle } from 'react-native';
 
 interface TableProps extends ViewProps {
   children?: React.ReactNode;
@@ -13,22 +13,22 @@ interface TableProps extends ViewProps {
 }
 
 export const Table = (props: TableProps): React.ReactElement =>
-  createElement('table', { ...props, accessibilityRole: 'table', style: [styles.table, props.style] });
+  unstable_createElement('table', { ...props, accessibilityRole: 'table', style: [styles.table, props.style] });
 
 export const Thead = (props: TableProps): React.ReactElement =>
-  createElement('thead', { ...props, accessibilityRole: 'group', style: [styles.group, props.style] });
+  unstable_createElement('thead', { ...props, accessibilityRole: 'group', style: [styles.group, props.style] });
 
 export const Tbody = (props: TableProps): React.ReactElement =>
-  createElement('tbody', { ...props, accessibilityRole: 'group', style: [styles.group, props.style] });
+  unstable_createElement('tbody', { ...props, accessibilityRole: 'group', style: [styles.group, props.style] });
 
 export const Tr = (props: TableProps): React.ReactElement =>
-  createElement('tr', { ...props, accessibilityRole: 'row', style: [styles.row, props.style] });
+  unstable_createElement('tr', { ...props, accessibilityRole: 'row', style: [styles.row, props.style] });
 
 export const Th = (props: TableProps): React.ReactElement =>
-  createElement('th', { ...props, accessibilityRole: 'cell', style: [styles.cell, props.style] });
+  unstable_createElement('th', { ...props, accessibilityRole: 'cell', style: [styles.cell, props.style] });
 
 export const Td = (props: TableProps): React.ReactElement =>
-  createElement('td', { ...props, accessibilityRole: 'cell', style: [styles.cell, props.style] });
+  unstable_createElement('td', { ...props, accessibilityRole: 'cell', style: [styles.cell, props.style] });
 
 const styles = StyleSheet.create({
   table: {

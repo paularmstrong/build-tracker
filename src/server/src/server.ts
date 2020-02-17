@@ -39,7 +39,7 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
 ): void => {
   res.locals.props = {
     url,
-    artifactConfig: config.artifacts || {},
+    artifactConfig: Object.assign({}, { budgets: {}, filters: [], groups: [] }, config.artifacts || {}),
     hideAttribution: !!config.hideAttribution,
     name: config.name || 'Build Tracker'
   };

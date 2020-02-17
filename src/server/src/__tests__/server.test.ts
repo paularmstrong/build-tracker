@@ -45,7 +45,7 @@ describe('server', () => {
           });
       });
 
-      test('defaults artifactConfig to empty object', () => {
+      test('defaults artifactConfig if unset', () => {
         const app = express();
         const config = {};
         app.use(props(config, 'https://build-tracker.local'));
@@ -54,7 +54,22 @@ describe('server', () => {
           .get('/')
           .then(res => {
             expect(res.body.props).toMatchObject({
-              artifactConfig: {},
+              artifactConfig: { budgets: {}, filters: [], groups: [] },
+              url: 'https://build-tracker.local'
+            });
+          });
+      });
+
+      test('defaults individual keys of artifactConfig', () => {
+        const app = express();
+        const config = { artifacts: { filters: [/foo/] } };
+        app.use(props(config, 'https://build-tracker.local'));
+        app.get('/', localsToBody);
+        return request(app)
+          .get('/')
+          .then(res => {
+            expect(res.body.props).toMatchObject({
+              artifactConfig: { budgets: {}, filters: [/foo/], groups: [] },
               url: 'https://build-tracker.local'
             });
           });

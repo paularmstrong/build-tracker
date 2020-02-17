@@ -411,7 +411,9 @@ export default class BuildComparator {
     const groups = this.getStringFormattedGroups(formatTotal, formatDelta, sizeKey);
     const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
 
-    return markdownTable([header, ...groups, ...rows], { align: rows[0].map((_, i) => (i === 0 ? 'l' : 'r')) });
+    const firstRow = rows[0] !== undefined ? rows[0] : [];
+
+    return markdownTable([header, ...groups, ...rows], { align: firstRow.map((_, i) => (i === 0 ? 'l' : 'r')) });
   }
 
   public toCsv({

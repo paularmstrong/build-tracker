@@ -6,7 +6,7 @@ import { Artifact, BuildMeta } from '@build-tracker/build';
 
 export interface Build {
   meta: BuildMeta;
-  artifacts: Array<Artifact<{}>>;
+  artifacts: Array<Artifact>;
 }
 
 export interface Queries {

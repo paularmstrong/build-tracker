@@ -18,13 +18,13 @@ export interface BuildMeta {
   branch: BuildMetaItem;
 }
 
-export interface Artifact<AS extends ArtifactSizes> {
+export interface Artifact {
   // Unique hash of the contents of this artifact.
   hash: string;
   // Name of this build artifact
   name: string;
   // Computed sizes of the build artifact
-  sizes: AS;
+  sizes: ArtifactSizes;
 }
 
 export interface ArtifactSizes {
@@ -33,13 +33,13 @@ export interface ArtifactSizes {
   [key: string]: number;
 }
 
-export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes> {
+export default class Build<M extends BuildMeta = BuildMeta> {
   private _meta: M;
-  private _artifacts: Map<string, Artifact<A>>;
-  private _totals: A;
+  private _artifacts: Map<string, Artifact>;
+  private _totals: ArtifactSizes;
   private _sizeKeys: Set<string>;
 
-  public constructor(meta: M, artifacts: Array<Artifact<A>>) {
+  public constructor(meta: M, artifacts: Array<Artifact>) {
     this._meta = Object.freeze(meta);
     this._artifacts = new Map();
     artifacts.forEach(artifact => {
@@ -47,14 +47,11 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     });
   }
 
-  public static fromJSON<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes>(build: {
-    meta: M;
-    artifacts: Array<Artifact<A>>;
-  }): Build<M, A> {
+  public static fromJSON<M extends BuildMeta = BuildMeta>(build: { meta: M; artifacts: Array<Artifact> }): Build<M> {
     return new Build(build.meta, build.artifacts);
   }
 
-  public toJSON(): { meta: M; artifacts: Array<Artifact<A>> } {
+  public toJSON(): { meta: M; artifacts: Array<Artifact> } {
     return { meta: this.meta, artifacts: Array.from(this._artifacts.values()) };
   }
 
@@ -78,7 +75,7 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     return typeof val === 'object' && val.hasOwnProperty('url') ? val.url : undefined;
   }
 
-  public get artifacts(): Array<Artifact<A>> {
+  public get artifacts(): Array<Artifact> {
     return Array.from(this._artifacts.values());
   }
 
@@ -94,7 +91,7 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     return Array.from(this._sizeKeys);
   }
 
-  public getArtifact(name: string): Artifact<A> {
+  public getArtifact(name: string): Artifact {
     return this._artifacts.get(name);
   }
 
@@ -102,9 +99,8 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     return Array.from(this._artifacts.keys());
   }
 
-  public getSum(artifactNames: Array<string>): A {
-    // @ts-ignore
-    return artifactNames.reduce((sum: A, artifactName: string) => {
+  public getSum(artifactNames: Array<string>): ArtifactSizes {
+    return artifactNames.reduce((sum: ArtifactSizes, artifactName: string) => {
       const artifact = this._artifacts.get(artifactName);
       if (artifact) {
         Object.entries(artifact.sizes).forEach(([key, value]) => {
@@ -118,9 +114,8 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
     }, {});
   }
 
-  public getTotals(artifactFilters?: ArtifactFilters): A {
+  public getTotals(artifactFilters?: ArtifactFilters): ArtifactSizes {
     if (!this._totals) {
-      // @ts-ignore we'll build this below
       this._totals = {};
       this._artifacts.forEach(artifact => {
         Object.entries(artifact.sizes).forEach(([key, value]) => {

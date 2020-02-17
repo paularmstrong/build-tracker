@@ -151,7 +151,7 @@ export default class BuildComparator {
     this.builds = builds;
     this._artifactFilters = artifactFilters || [];
     this._artifactBudgets = artifactBudgets || emptyObject;
-    this._groups = [{ name: 'All', artifactNames: this.artifactNames, budgets }, ...groups].filter(Boolean);
+    this._groups = [{ name: 'All', artifactNames: this.artifactNames, budgets }, ...(groups || [])].filter(Boolean);
     this._emptySizes = Object.freeze(
       this.sizeKeys.reduce((memo, key) => {
         memo[key] = 0;

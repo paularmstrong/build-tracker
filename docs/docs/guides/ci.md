@@ -32,13 +32,15 @@ module.exports = {
     // Reconstruct a comparator from the serialized data
     const comparator = Comparator.deserialize(comparatorData);
 
+    const build = comparator.builds[0];
+
     const table = comparator.toMarkdown({ artifactFilter });
-    const revisions = `${parentBuild.getMetaValue('revision')}/${build.getMetaValue('revision')}`;
+    const revisions = `${build.getMetaValue('parentRevision')}/${build.getMetaValue('revision')}`;
     const output = `${summary.join('\n')}
 
 ${table}
 
-See the full comparison at [${applicationUrl}/revisions/${revisions}](${applicationUrl}/revisions/${revisions})`;
+See the full comparison at [${applicationUrl}/builds/${revisions}](${applicationUrl}/builds/${revisions})`;
 
     // Post the constructed markdown as a comment
     return await GithubApi.postComment(output);

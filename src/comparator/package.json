@@ -16,10 +16,8 @@
   "dependencies": {
     "@build-tracker/build": "^1.0.0-beta.4",
     "@build-tracker/formatting": "^1.0.0-beta.4",
+    "@build-tracker/types": "^1.0.0-beta.4",
     "markdown-table": "^1.1.2"
-  },
-  "devDependencies": {
-    "@build-tracker/types": "^1.0.0-beta.4"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {

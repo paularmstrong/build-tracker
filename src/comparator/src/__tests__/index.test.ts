@@ -346,7 +346,7 @@ describe('BuildComparator', () => {
       `);
     });
 
-    test('does not error when there are 0 rows', () => {
+    test('handles 0 artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build1b] });
       expect(comparator.toMarkdown({ artifactFilter: () => false })).toMatchInlineSnapshot(`
       "|     |  1234567 |  1234567 |           Δ1 |

@@ -349,8 +349,8 @@ describe('BuildComparator', () => {
     test('does not error when there are 0 rows', () => {
       const comparator = new BuildComparator({ builds: [build1, build1b] });
       expect(comparator.toMarkdown({ artifactFilter: () => false })).toMatchInlineSnapshot(`
-      "|     | 1234567  | 1234567  | Δ1           |
-      | --- | -------- | -------- | ------------ |
+      "|     |  1234567 |  1234567 |           Δ1 |
+      | :-- | -------: | -------: | -----------: |
       | All | 0.13 KiB | 0.13 KiB | 0 KiB (0.0%) |"
       `);
     });

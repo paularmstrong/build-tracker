@@ -20,6 +20,14 @@ const build1 = new Build(
     { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
   ]
 );
+// Same as build 1 but different revision
+const build1b = new Build(
+  { branch: 'master', revision: '1234567abcdeg', parentRevision: '1234567abcdef', timestamp: 1234567 },
+  [
+    { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
+    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
+  ]
+);
 
 const build2 = new Build(
   { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
@@ -335,6 +343,15 @@ describe('BuildComparator', () => {
         | churros  |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
         | burritos | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
         | tacos    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+      `);
+    });
+
+    test('handles 0 artifacts', () => {
+      const comparator = new BuildComparator({ builds: [build1, build1b] });
+      expect(comparator.toMarkdown({ artifactFilter: () => false })).toMatchInlineSnapshot(`
+      "|     |  1234567 |  1234567 |           Δ1 |
+      | :-- | -------: | -------: | -----------: |
+      | All | 0.13 KiB | 0.13 KiB | 0 KiB (0.0%) |"
       `);
     });
 

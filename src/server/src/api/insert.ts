@@ -14,7 +14,7 @@ export const insertBuild = (
   onInserted: (comparator: Comparator) => Promise<void> = () => Promise.resolve()
 ): RequestHandler => (req: Request, res: Response): void => {
   const { artifacts, meta } = req.body;
-  const { artifacts: artifactConfig = {} } = config;
+  const { artifacts: artifactConfig = {}, budgets } = config;
   const build = new Build(meta, artifacts);
   queries.insert(build).then(() =>
     queries
@@ -37,6 +37,7 @@ export const insertBuild = (
           artifactBudgets: artifactConfig.budgets,
           artifactFilters: artifactConfig.filters,
           builds,
+          budgets,
           groups: artifactConfig.groups
         })
       }))

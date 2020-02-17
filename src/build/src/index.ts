@@ -109,8 +109,10 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
       if (artifact) {
         Object.entries(artifact.sizes).forEach(([key, value]) => {
           if (!sum[key]) {
+            // @ts-ignore
             sum[key] = 0;
           }
+          // @ts-ignore
           sum[key] += value;
         });
       }
@@ -125,8 +127,10 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
       this._artifacts.forEach(artifact => {
         Object.entries(artifact.sizes).forEach(([key, value]) => {
           if (!this._totals[key]) {
+            // @ts-ignore
             this._totals[key] = 0;
           }
+          // @ts-ignore
           this._totals[key] += value;
         });
       });
@@ -138,6 +142,7 @@ export default class Build<M extends BuildMeta = BuildMeta, A extends ArtifactSi
         if (artifactFilters.some(filter => filter.test(artifactName))) {
           Object.entries(this._totals).forEach(([key, value]) => {
             const size = this._artifacts.get(artifactName).sizes[key];
+            // @ts-ignore
             totals[key] = value - size;
           });
         }

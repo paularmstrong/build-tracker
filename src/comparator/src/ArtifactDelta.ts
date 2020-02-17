@@ -28,6 +28,7 @@ export default class ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
   public get sizes(): AS {
     return Object.keys(this._sizes).reduce(
       (memo, sizeKey) => {
+        // @ts-ignore
         memo[sizeKey] = delta(sizeKey, this._sizes, this._prevSizes);
         return memo;
       },
@@ -38,6 +39,7 @@ export default class ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
   public get percents(): AS {
     return Object.keys(this._sizes).reduce(
       (memo, sizeKey) => {
+        // @ts-ignore
         memo[sizeKey] = percentDelta(sizeKey, this._sizes, this._prevSizes);
         return memo;
       },

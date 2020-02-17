@@ -4,7 +4,7 @@
 import * as Theme from '../theme';
 import React from 'react';
 import Ripple from './Ripple';
-import { createElement, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, unstable_createElement, View, ViewStyle } from 'react-native';
 
 interface Props {
   disabled?: boolean;
@@ -50,7 +50,7 @@ const RadioSelect = (props: Props): React.ReactElement => {
         <View style={[styles.radio, isFocused && styles.focused]} testID="fauxRadio">
           {value ? <View pointerEvents="none" style={[styles.checked, isFocused && styles.checkedFocused]} /> : null}
         </View>
-        {createElement('input', {
+        {unstable_createElement('input', {
           'aria-labelledby': labelledBy,
           checked: value,
           disabled: disabled,

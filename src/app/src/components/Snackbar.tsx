@@ -12,7 +12,6 @@ interface Props {
 const Snackbar = (props: Props): React.ReactElement => {
   const { text } = props;
   return (
-    // @ts-ignore
     <View accessibilityRole="alert" style={styles.root}>
       <Text style={styles.text}>{text}</Text>
     </View>

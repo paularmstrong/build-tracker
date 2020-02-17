@@ -57,11 +57,7 @@ export const AppBar = React.forwardRef<Handles, Props>(
           />
         ) : null}
         {typeof title === 'string' ? (
-          <Text
-            // @ts-ignore
-            accessibilityRole="heading"
-            style={styles.title}
-          >
+          <Text accessibilityRole="header" style={styles.title}>
             {title}
           </Text>
         ) : (
@@ -85,7 +81,6 @@ export const AppBar = React.forwardRef<Handles, Props>(
 
 const styles = StyleSheet.create({
   root: {
-    // @ts-ignore
     position: 'sticky',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: Theme.Color.Gray10,
@@ -108,7 +103,6 @@ const styles = StyleSheet.create({
     marginEnd: Theme.Spacing.Small
   },
 
-  // @ts-ignore
   title: {
     fontSize: Theme.FontSize.Normal,
     fontWeight: Theme.FontWeight.Bold,

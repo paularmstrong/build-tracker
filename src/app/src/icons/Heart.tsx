@@ -7,14 +7,14 @@
  */
 import React from 'react';
 import styles from './styles';
-import { createElement, StyleProp, TextStyle, ViewProps, ViewStyle } from 'react-native';
+import { StyleProp, TextStyle, unstable_createElement, ViewProps } from 'react-native';
 
-interface Props {
-  style?: StyleProp<ViewStyle & TextStyle>;
+interface Props extends ViewProps {
+  style?: StyleProp<TextStyle>;
 }
 
-const Heart = (props: Props & ViewProps): React.ReactElement<Props> =>
-  createElement(
+const Heart = (props: Props): React.ReactElement<Props> =>
+  unstable_createElement(
     'svg',
     {
       ...props,

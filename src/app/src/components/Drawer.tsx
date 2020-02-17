@@ -6,7 +6,6 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  // @ts-ignore TODO: Add Destination child type
   children: React.ReactElement | Array<React.ReactElement>;
   header?: React.ReactElement<typeof View>;
   hidden?: boolean;
@@ -35,7 +34,6 @@ const Drawer: React.RefForwardingComponent<Handles, Props> = (
   return (
     <React.Fragment>
       {
-        // @ts-ignore pointerEvents is web-only
         <TouchableOpacity
           activeOpacity={0.32}
           onPress={hideDrawerHandler}
@@ -45,7 +43,6 @@ const Drawer: React.RefForwardingComponent<Handles, Props> = (
       }
 
       <ScrollView
-        // @ts-ignore
         accessibilityRole="nav"
         aria-hidden={hidden && !forceShow}
         style={[styles.root, hidden && styles.hidden, forceShow && styles.forceShow]}

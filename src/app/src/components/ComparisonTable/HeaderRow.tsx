@@ -43,13 +43,12 @@ export const HeaderRow = (props: Props): React.ReactElement => {
     }
   };
 
-  return <Tr style={styles.headerRow}>{row.map(mapHeaderCell)}</Tr>;
+  return <Tr>{row.map(mapHeaderCell)}</Tr>;
 };
 
 const styles = StyleSheet.create({
   headerCell: {
     backgroundColor: 'white',
-    // @ts-ignore
     position: 'sticky',
     top: 0,
     zIndex: 4,

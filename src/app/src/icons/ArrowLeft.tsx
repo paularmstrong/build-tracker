@@ -7,14 +7,14 @@
  */
 import React from 'react';
 import styles from './styles';
-import { createElement, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { StyleProp, TextStyle, unstable_createElement, ViewProps } from 'react-native';
 
-interface Props {
-  style?: StyleProp<ViewStyle & TextStyle>;
+interface Props extends ViewProps {
+  style?: StyleProp<TextStyle>;
 }
 
 const ArrowLeft = (props: Props): React.ReactElement<Props> =>
-  createElement(
+  unstable_createElement(
     'svg',
     {
       ...props,

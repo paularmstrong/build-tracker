@@ -46,7 +46,7 @@ export const BodyRow = (props: Props): React.ReactElement => {
     sizeKey
   } = props;
 
-  const mapBodyCell = (cell: ACell | TCell | TDCell | DCell, i: number): React.ReactElement | void => {
+  const mapBodyCell = (cell: ACell | TCell | TDCell | DCell, i: number): React.ReactNode => {
     switch (cell.type) {
       case CellType.ARTIFACT: {
         return (
@@ -65,6 +65,8 @@ export const BodyRow = (props: Props): React.ReactElement => {
         return <DeltaCell cell={cell} key={i} sizeKey={sizeKey} />;
       case CellType.TOTAL:
         return <TotalCell cell={cell} key={i} sizeKey={sizeKey} />;
+      default:
+        return null;
     }
   };
 
@@ -80,18 +82,17 @@ export const BodyRow = (props: Props): React.ReactElement => {
   }, [artifactName, isActive, onHoverArtifact]);
 
   // @ts-ignore
-  const rows = row.map(mapBodyCell);
+  const columns = row.map(mapBodyCell);
 
   return (
     <Tr onMouseEnter={handleMouseEnter} style={[styles.row, { backgroundColor }]}>
-      {rows}
+      {columns}
     </Tr>
   );
 };
 
 const styles = StyleSheet.create({
   row: {
-    // @ts-ignore
     transitionProperty: 'background-color',
     transitionDuration: '0.1s'
   }

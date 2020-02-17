@@ -66,7 +66,6 @@ const Tooltip = (props: Props): React.ReactElement => {
 
   const tooltip = (
     <View
-      // @ts-ignore
       accessibilityRole="tooltip"
       ref={ref}
       style={[styles.root, { top: position.top, left: position.left }, position.top > 0 && styles.show]}
@@ -81,13 +80,11 @@ const Tooltip = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   root: {
     maxWidth: 400,
-    // @ts-ignore
     position: 'absolute',
     backgroundColor: Theme.Color.Gray50,
     borderRadius: Theme.BorderRadius.Normal,
     paddingHorizontal: Theme.Spacing.Small,
     paddingVertical: Theme.Spacing.Xsmall,
-    // @ts-ignore
     transitionProperty: 'transform, opacity',
     transitionDuration: '0.1s',
     transitionTimingFunction: Theme.MotionTiming.Accelerate,
@@ -98,7 +95,6 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1 }],
     opacity: 1
   },
-  // @ts-ignore
   text: {
     color: Theme.TextColor.Gray50,
     fontSize: Theme.FontSize.Xsmall,

@@ -32,7 +32,6 @@ export const GroupCell = (props: Props): React.ReactElement => {
   } = props;
 
   const nameRef = React.useRef<View>(null);
-  const [showTooltip, setShowTooltip] = React.useState(false);
 
   const handleValueChange = React.useCallback(
     (toggled: boolean): void => {
@@ -40,10 +39,6 @@ export const GroupCell = (props: Props): React.ReactElement => {
     },
     [artifactNames, onDisable, onEnable]
   );
-
-  const handleToggleTooltip = React.useCallback(() => {
-    setShowTooltip(showTooltip => !showTooltip);
-  }, []);
 
   const handleFocus = React.useCallback(() => {
     onFocus(artifactNames);
@@ -57,33 +52,22 @@ export const GroupCell = (props: Props): React.ReactElement => {
             <TouchableOpacity accessibilityRole="button" onPress={handleFocus} style={styles.name}>
               <View ref={nameRef}>
                 <Text style={isHovered && styles.hoveredText}>
-                  {
-                    // @ts-ignore
-                    <FolderIcon
-                      onMouseEnter={handleToggleTooltip}
-                      onMouseLeave={handleToggleTooltip}
-                      style={[styles.folder, isHovered && styles.hoveredText]}
-                      testID="groupicon"
-                    />
-                  }{' '}
-                  {text}
+                  <FolderIcon style={[styles.folder, isHovered && styles.hoveredText]} testID="groupicon" /> {text}
                 </Text>
+                {isHovered ? <Tooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
               </View>
             </TouchableOpacity>
           )}
         </Hoverable>
-        {showTooltip ? <Tooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
+
         <View style={styles.switch}>
-          {
-            // @ts-ignore
-            <Switch
-              activeThumbColor={Theme.Color.Primary30}
-              activeTrackColor={Theme.Color.Primary00}
-              disabled={disabled}
-              onValueChange={handleValueChange}
-              value={isActive}
-            />
-          }
+          <Switch
+            activeThumbColor={Theme.Color.Primary30}
+            activeTrackColor={Theme.Color.Primary00}
+            disabled={disabled}
+            onValueChange={handleValueChange}
+            value={isActive}
+          />
         </View>
       </View>
     </Th>

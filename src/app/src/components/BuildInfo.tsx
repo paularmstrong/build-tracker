@@ -68,8 +68,7 @@ const BuildInfo = (props: Props): React.ReactElement => {
           </Tr>
           {Object.keys(build.meta)
             .filter(metaKey => metaKey !== 'revision' && metaKey !== 'timestamp')
-            .map(metaKey => {
-              // @ts-ignore
+            .map((metaKey: 'revision' | 'parentRevision' | 'branch') => {
               const value = build.getMetaValue(metaKey);
               return (
                 <Tr key={metaKey}>
@@ -101,7 +100,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  // @ts-ignore
   headerText: {
     fontWeight: Theme.FontWeight.Bold,
     fontSize: Theme.FontSize.Normal

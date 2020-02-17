@@ -4,10 +4,10 @@
 import * as Theme from '../theme';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dimensions, GestureResponderEvent, StyleSheet, TouchableOpacity, View, ViewProps } from 'react-native';
+import { AccessibilityRole, Dimensions, GestureResponderEvent, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  accessibilityRole?: ViewProps['accessibilityRole'] | 'menu';
+  accessibilityRole?: AccessibilityRole;
   children?: React.ReactElement | Array<React.ReactElement>;
   onDismiss?: (event: GestureResponderEvent) => void;
   portalRootID?: string;
@@ -65,7 +65,6 @@ const Menu = (props: Props): React.ReactElement => {
         testID="overlay"
       />
       <View
-        // @ts-ignore
         accessibilityRole={accessibilityRole}
         ref={ref}
         style={[
@@ -84,7 +83,6 @@ const Menu = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   root: {
-    // @ts-ignore
     position: 'absolute',
     backgroundColor: Theme.Color.White,
     borderRadius: Theme.BorderRadius.Normal,
@@ -97,7 +95,6 @@ const styles = StyleSheet.create({
     maxHeight: 400,
     minHeight: '2rem',
     minWidth: 200,
-    // @ts-ignore
     transitionProperty: 'transform, opacity',
     transitionDuration: '0.1s',
     transitionTimingFunction: Theme.MotionTiming.Accelerate,

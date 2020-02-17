@@ -25,11 +25,7 @@ const Main = (): React.ReactElement => {
   return (
     <View style={styles.layout}>
       <DrawerView ref={drawerRef} />
-      <View
-        // @ts-ignore
-        accessibilityRole="main"
-        style={styles.main}
-      >
+      <View accessibilityRole="main" style={styles.main}>
         <View style={[styles.column, styles.chart]}>
           <AppBarView drawerRef={drawerRef} />
           {fetchState == FetchState.FETCHED ? (

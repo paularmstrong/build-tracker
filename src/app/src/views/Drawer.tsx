@@ -89,7 +89,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
       <Subtitle title="Date range" />
       <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.textinput} />
       <DateTextField minDate={startDate} maxDate={today} label="End date" onSet={setEndDate} style={styles.textinput} />
-      <View style={styles.date}>
+      <View>
         <Button disabled={!startDate || !endDate} onPress={handleSetDateRange} title="Get range" type="unelevated" />
       </View>
 
@@ -104,16 +104,13 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
       ) : null}
 
       <View style={styles.switchRoot}>
-        {
-          // @ts-ignore
-          <Switch
-            activeThumbColor={Theme.Color.Primary30}
-            activeTrackColor={Theme.Color.Primary00}
-            onValueChange={handleToggleDisabled}
-            style={styles.switch}
-            value={disabledArtifactsVisible}
-          />
-        }
+        <Switch
+          activeThumbColor={Theme.Color.Primary30}
+          activeTrackColor={Theme.Color.Primary00}
+          onValueChange={handleToggleDisabled}
+          style={styles.switch}
+          value={disabledArtifactsVisible}
+        />
         <Text>Show disabled artifacts</Text>
       </View>
 
@@ -141,7 +138,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
       <Subtitle title="Color scale" />
       <ColorScalePicker />
       <Divider style={styles.divider} />
-      <View style={styles.footer}>
+      <View>
         <Subtitle title="Links" />
         <DrawerLink href="https://buildtracker.dev" icon={OpenInExternalIcon} text="Documentation" />
         <DrawerLink href="https://github.com/paularmstrong/build-tracker" icon={OpenInExternalIcon} text="Github" />
@@ -150,12 +147,9 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
         <View style={styles.attribution}>
           <Text style={styles.attrText}>
             Created with <HeartIcon accessibilityLabel="love" style={styles.heart} /> by{' '}
-            {
-              // @ts-ignore
-              <Text accessibilityRole="link" href="https://twitter.com/paularmstrong" target="_blank">
-                Paul Armstrong
-              </Text>
-            }
+            <Text accessibilityRole="link" href="https://twitter.com/paularmstrong" target="_blank">
+              Paul Armstrong
+            </Text>
           </Text>
         </View>
       )}
@@ -173,7 +167,6 @@ const styles = StyleSheet.create({
     height: Theme.FontSize.Xlarge,
     marginEnd: Theme.Spacing.Small
   },
-  // @ts-ignore
   title: {
     color: Theme.Color.Primary40,
     fontWeight: Theme.FontWeight.Bold,
@@ -209,5 +202,4 @@ const styles = StyleSheet.create({
   }
 });
 
-// @ts-ignore
 export default React.forwardRef(DrawerView);

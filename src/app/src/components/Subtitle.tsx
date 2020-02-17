@@ -11,18 +11,10 @@ interface Props {
 
 const Subtitle = (props: Props): React.ReactElement => {
   const { title } = props;
-  return (
-    <Text
-      // @ts-ignore
-      style={styles.subtitle}
-    >
-      {title}
-    </Text>
-  );
+  return <Text style={styles.subtitle}>{title}</Text>;
 };
 
 const styles = StyleSheet.create({
-  // @ts-ignore
   subtitle: {
     color: Theme.Color.Gray50,
     fontSize: Theme.FontSize.Normal,

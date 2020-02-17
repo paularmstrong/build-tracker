@@ -11,7 +11,7 @@ interface Props {
   accessibilityLabel?: string;
   color?: 'primary' | 'secondary';
   disabled?: boolean;
-  icon?: React.ComponentType<{ style?: StyleProp<ViewStyle> }>;
+  icon?: React.ComponentType<{ style?: StyleProp<TextStyle> }>;
   iconOnly?: boolean;
   onPress?: (event: MouseEvent) => void;
   style?: StyleProp<ViewStyle>;
@@ -44,7 +44,7 @@ const Button = (props: Props): React.ReactElement => {
   const _getTextStyles = (isHovered: boolean): Array<StyleProp<TextStyle>> => _getStyles(textStyles, isHovered);
   const _getIconStyles = (isHovered: boolean): Array<StyleProp<ViewStyle>> => _getStyles(iconStyles, isHovered);
   const _getStyles = (
-    styles: typeof rootStyles | typeof textStyles,
+    styles: typeof rootStyles | typeof textStyles | typeof iconStyles,
     isHovered: boolean
   ): Array<StyleProp<ViewStyle | TextStyle>> => {
     const isRaised = ['raised', 'shapeRaised'].indexOf(type) !== -1;
@@ -52,12 +52,16 @@ const Button = (props: Props): React.ReactElement => {
 
     return [
       styles[type],
+      // @ts-ignore
       !disabled && isHovered && styles.rootHover,
+      // @ts-ignore
       !disabled && isActive && styles.rootActive,
       styles[color],
       disabled && styles[`${color}Disabled`],
+      // @ts-ignore
       isRaised && styles.raised,
       isRaised && styles[`raised${color}`],
+      // @ts-ignore
       isBg && styles.bg,
       isBg && styles[`bg${color}`],
       styles[`${type}${color}`],
@@ -95,7 +99,6 @@ const Button = (props: Props): React.ReactElement => {
   return (
     <Hoverable>
       {isHovered => (
-        // @ts-ignore annoying web-specific props
         <Ripple
           accessibilityLabel={accessibilityLabel || title}
           accessibilityRole="button"
@@ -127,7 +130,6 @@ const Button = (props: Props): React.ReactElement => {
 
 const rootStyles = StyleSheet.create({
   root: {
-    // @ts-ignore
     display: 'inline-flex',
     borderRadius: Theme.BorderRadius.Normal,
     boxSizing: 'border-box',
@@ -253,7 +255,6 @@ const iconStyles = StyleSheet.create({
     marginStart: '-0.25rem'
   },
 
-  // @ts-ignore
   iconOnly: {
     fontSize: Theme.FontSize.Medium
   },

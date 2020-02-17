@@ -19,7 +19,6 @@ const DrawerLink = (props: Props): React.ReactElement => {
     <Hoverable>
       {isHovered => {
         return (
-          // @ts-ignore
           <Text
             accessibilityRole="link"
             href={href}

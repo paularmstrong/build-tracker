@@ -7,6 +7,11 @@ import { RevisionDeltaCell } from '../RevisionDeltaCell';
 import { fireEvent, render } from 'react-native-testing-library';
 
 describe('RevisionDeltaCell', () => {
+  beforeEach(() => {
+    // Enable the hover monitor
+    document.dispatchEvent(new Event('mousemove'));
+  });
+
   describe('tooltip', () => {
     test('mouse enter shows a tooltip', () => {
       const { getByTestId, queryAllByProps } = render(

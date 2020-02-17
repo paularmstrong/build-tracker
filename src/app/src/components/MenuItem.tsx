@@ -24,7 +24,6 @@ const Item = (props: Props): React.ReactElement => {
     <Hoverable>
       {isHovered => (
         <Ripple
-          // @ts-ignore
           accessibilityRole="menuitem"
           nativeID={nativeID}
           onPress={onPress}

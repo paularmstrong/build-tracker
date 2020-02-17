@@ -356,12 +356,15 @@ export interface NativeMethodsMixinStatic {
   };
 }
 
+interface CreateElementProps {
+  [key: string]: mixed;
+}
 // see react-jsx.d.ts
-export function unstable_createElement<P>(
+export function unstable_createElement(
   type: React.ReactType,
-  props?: P,
+  props?: CreateElementProps,
   ...children: React.ReactNode[]
-): React.ReactElement<P>;
+): React.ReactElement<CreateElementProps>;
 
 export type Runnable = (appParameters: any) => void;
 
@@ -558,6 +561,9 @@ export interface FlexStyle {
   alignContent?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'space-between' | 'space-around';
   alignItems?: FlexAlignType;
   alignSelf?: 'auto' | FlexAlignType;
+  animationKeyframes?: Array<{ [key: string]: mixed }>;
+  animationDuration?: string;
+  animationIterationCount?: number;
   aspectRatio?: number;
   borderBottomWidth?: number;
   borderEndWidth?: number | string;
@@ -567,7 +573,7 @@ export interface FlexStyle {
   borderTopWidth?: number;
   borderWidth?: number;
   bottom?: number | string;
-  display?: 'none' | 'flex';
+  display?: 'none' | 'flex' | 'inline-flex' | 'block' | 'inline-block';
   end?: number | string;
   flex?: number;
   flexBasis?: number | string;
@@ -592,6 +598,7 @@ export interface FlexStyle {
   minHeight?: number | string;
   minWidth?: number | string;
   overflow?: 'visible' | 'hidden' | 'scroll';
+  outlineStyle?: string;
   padding?: number | string;
   paddingBottom?: number | string;
   paddingEnd?: number | string;
@@ -601,10 +608,16 @@ export interface FlexStyle {
   paddingStart?: number | string;
   paddingTop?: number | string;
   paddingVertical?: number | string;
-  position?: 'absolute' | 'relative';
+  position?: 'absolute' | 'relative' | 'static' | 'fixed' | 'sticky';
   right?: number | string;
   start?: number | string;
   top?: number | string;
+  transform?: Array<{}>;
+  transformOrigin?: string;
+  transitionDelay?: string;
+  transitionDuration?: string;
+  transitionProperty?: string;
+  transitionTimingFunction?: string;
   width?: number | string;
   zIndex?: number;
 
@@ -709,7 +722,7 @@ export type FontVariant = 'small-caps' | 'oldstyle-nums' | 'lining-nums' | 'tabu
 export interface TextStyle extends ViewStyle {
   color?: string;
   fontFamily?: string;
-  fontSize?: number;
+  fontSize?: number | string;
   fontStyle?: 'normal' | 'italic';
   fontVariant?: FontVariant[];
   /**
@@ -737,7 +750,7 @@ export interface TextStyle extends ViewStyle {
 }
 
 // https://facebook.github.io/react-native/docs/text.html#props
-export interface TextProps extends TextPropsIOS, AccessibilityProps {
+export interface TextProps extends AccessibilityProps {
   /**
    * Specifies whether fonts should scale to respect Text Size accessibility settings.
    * The default is `true`.
@@ -762,6 +775,8 @@ export interface TextProps extends TextPropsIOS, AccessibilityProps {
    * > `clip` is working only for iOS
    */
   ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
+
+  href?: string;
 
   /**
    * Line Break mode. Works only with numberOfLines.
@@ -801,6 +816,8 @@ export interface TextProps extends TextPropsIOS, AccessibilityProps {
    * @see https://facebook.github.io/react-native/docs/text.html#style
    */
   style?: StyleProp<TextStyle>;
+
+  target?: string;
 
   /**
    * Used to locate this view in end-to-end tests.
@@ -1333,7 +1350,7 @@ export interface GestureResponderHandlers {
  * @see https://facebook.github.io/react-native/docs/view.html#style
  * @see https://github.com/facebook/react-native/blob/master/Libraries/Components/View/ViewStylePropTypes.js
  */
-export interface ViewStyle extends FlexStyle, ShadowStyleIOS, TransformsStyle {
+export interface ViewStyle extends FlexStyle, ShadowStyleIOS, SvgStyle, TransformsStyle {
   backfaceVisibility?: 'visible' | 'hidden';
   backgroundColor?: string;
   borderBottomColor?: string;
@@ -1369,6 +1386,17 @@ export interface ViewStyle extends FlexStyle, ShadowStyleIOS, TransformsStyle {
    * @platform android
    */
   elevation?: number;
+}
+
+interface SvgStyle {
+  color?: string;
+  fill?: string;
+  stroke?: string;
+}
+
+interface TableStyle extends FlexStyle, TextStyle {
+  display?: 'table' | 'table-cell' | 'table-row';
+  borderCollapse?: string;
 }
 
 export type TVParallaxProperties = {
@@ -1540,32 +1568,37 @@ export interface AccessibilityState {
 
 export type AccessibilityRole =
   | 'none'
-  | 'button'
-  | 'link'
-  | 'search'
-  | 'image'
-  | 'keyboardkey'
-  | 'text'
   | 'adjustable'
-  | 'imagebutton'
-  | 'header'
-  | 'summary'
   | 'alert'
+  | 'alert'
+  | 'button'
   | 'checkbox'
   | 'combobox'
+  | 'header'
+  | 'image'
+  | 'imagebutton'
+  | 'keyboardkey'
+  | 'label'
+  | 'link'
+  | 'main'
   | 'menu'
   | 'menubar'
   | 'menuitem'
+  | 'nav'
   | 'progressbar'
   | 'radio'
   | 'radiogroup'
   | 'scrollbar'
+  | 'search'
   | 'spinbutton'
+  | 'summary'
   | 'switch'
   | 'tab'
   | 'tablist'
+  | 'text'
   | 'timer'
-  | 'toolbar';
+  | 'toolbar'
+  | 'tooltip';
 
 type AccessibilityTrait =
   | 'none'
@@ -2012,6 +2045,7 @@ export interface ImageStyle extends FlexStyle, TransformsStyle {
   backfaceVisibility?: 'visible' | 'hidden';
   borderBottomLeftRadius?: number;
   borderBottomRightRadius?: number;
+  boxSizing?: 'border-box' | 'content-box';
   backgroundColor?: string;
   borderColor?: string;
   borderWidth?: number;
@@ -3421,6 +3455,7 @@ export interface TouchableOpacityProps extends TouchableWithoutFeedbackProps {
    * Defaults to 0.2
    */
   activeOpacity?: number;
+  pointerEvents?: 'box-only' | 'none';
 }
 
 /**
@@ -3570,7 +3605,7 @@ interface SubscribableMixin {
 
 // @see https://github.com/facebook/react-native/blob/0.34-stable\Libraries\StyleSheet\StyleSheetTypes.js
 export namespace StyleSheet {
-  type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
+  type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle | SvgStyle | TableStyle };
 
   /**
    * Creates a StyleSheet style reference from the given object.
@@ -5695,6 +5730,8 @@ export interface UIManagerStatic {
 }
 
 export interface SwitchProps {
+  activeThumbColor?: string;
+  activeTrackColor?: string;
   /**
    * Color of the foreground switch grip.
    */

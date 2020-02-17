@@ -91,7 +91,6 @@ export const BodyRow = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   row: {
-    // @ts-ignore
     transitionProperty: 'background-color',
     transitionDuration: '0.1s'
   }

@@ -20,14 +20,13 @@ const DrawerLink = (props: Props): React.ReactElement => {
     <Hoverable>
       {isHovered => {
         return (
-          // @ts-ignore
-          <View
-            accessibilityRole="link"
-            href={href}
-            style={[styles.root, isHovered && styles.rootHovered, style]}
-            target="_blank"
-          >
-            <Text style={[styles.text, isHovered && styles.textHovered]}>
+          <View style={[styles.root, isHovered && styles.rootHovered, style]}>
+            <Text
+              accessibilityRole="link"
+              href={href}
+              style={[styles.text, isHovered && styles.textHovered]}
+              target="_blank"
+            >
               <>
                 {Icon ? <Icon style={styles.icon} /> : null}
                 {text}
@@ -50,7 +49,6 @@ const styles = StyleSheet.create({
   rootHovered: {
     backgroundColor: Theme.Color.Primary00
   },
-  // @ts-ignore
   text: {
     fontSize: Theme.FontSize.Normal
   },

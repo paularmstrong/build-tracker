@@ -2,13 +2,13 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
-import { StyleProp, StyleSheet, unstable_createElement, ViewProps, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TextStyle, unstable_createElement, ViewProps, ViewStyle } from 'react-native';
 
 interface TableProps extends ViewProps {
   children?: React.ReactNode;
   onMouseEnter?: (event: MouseEvent) => void;
   onMouseLeave?: (event: MouseEvent) => void;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle & ViewStyle>;
   title?: string;
 }
 
@@ -32,19 +32,15 @@ export const Td = (props: TableProps): React.ReactElement =>
 
 const styles = StyleSheet.create({
   table: {
-    // @ts-ignore
     borderCollapse: 'collapse'
   },
   group: {
-    // @ts-ignore
     boxSizing: 'border-box'
   },
   row: {
-    // @ts-ignore
     boxSizing: 'border-box'
   },
   cell: {
-    // @ts-ignore
     boxSizing: 'border-box',
     borderWidth: StyleSheet.hairlineWidth,
     borderBottomStyle: 'solid',

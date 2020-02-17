@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  // @ts-ignore
   headerText: {
     fontWeight: Theme.FontWeight.Bold,
     fontSize: Theme.FontSize.Normal

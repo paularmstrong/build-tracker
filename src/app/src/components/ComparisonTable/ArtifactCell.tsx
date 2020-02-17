@@ -66,16 +66,13 @@ export const ArtifactCell = (props: Props): React.ReactElement => {
           )}
         </Hoverable>
         <View style={styles.switch}>
-          {
-            // @ts-ignore
-            <Switch
-              activeThumbColor={color}
-              activeTrackColor={brighterColor.toString()}
-              disabled={disabled}
-              onValueChange={handleValueChange}
-              value={isActive}
-            />
-          }
+          <Switch
+            activeThumbColor={color}
+            activeTrackColor={brighterColor.toString()}
+            disabled={disabled}
+            onValueChange={handleValueChange}
+            value={isActive}
+          />
         </View>
       </View>
     </Th>

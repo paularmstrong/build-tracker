@@ -3,10 +3,10 @@
  */
 import React from 'react';
 import styles from './styles';
-import { StyleProp, TextStyle, unstable_createElement, ViewStyle } from 'react-native';
+import { StyleProp, TextStyle, unstable_createElement, ViewProps } from 'react-native';
 
-interface Props {
-  style?: StyleProp<ViewStyle & TextStyle>;
+interface Props extends ViewProps {
+  style?: StyleProp<TextStyle>;
 }
 
 const Logo = (props: Props): React.ReactElement<Props> =>

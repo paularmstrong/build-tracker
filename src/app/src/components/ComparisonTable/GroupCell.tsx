@@ -74,16 +74,13 @@ export const GroupCell = (props: Props): React.ReactElement => {
         </Hoverable>
         {showTooltip ? <Tooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
         <View style={styles.switch}>
-          {
-            // @ts-ignore
-            <Switch
-              activeThumbColor={Theme.Color.Primary30}
-              activeTrackColor={Theme.Color.Primary00}
-              disabled={disabled}
-              onValueChange={handleValueChange}
-              value={isActive}
-            />
-          }
+          <Switch
+            activeThumbColor={Theme.Color.Primary30}
+            activeTrackColor={Theme.Color.Primary00}
+            disabled={disabled}
+            onValueChange={handleValueChange}
+            value={isActive}
+          />
         </View>
       </View>
     </Th>

@@ -349,7 +349,7 @@ export default class BuildComparator {
   public getStringFormattedGroups(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
-    sizeKey: string = 'gzip'
+    sizeKey = 'gzip'
   ): Array<Array<string>> {
     return this.matrixGroups.map(row =>
       row.map(
@@ -370,7 +370,7 @@ export default class BuildComparator {
   public getStringFormattedRows(
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
-    sizeKey: string = 'gzip',
+    sizeKey = 'gzip',
     artifactFilter: ArtifactFilter = defaultArtifactFilter
   ): Array<Array<string>> {
     return this.matrixArtifacts.filter(artifactFilter).map(
@@ -429,7 +429,7 @@ export default class BuildComparator {
     return [header, ...groups, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }
 
-  public toSummary(useEmoji: boolean = true): Array<string> {
+  public toSummary(useEmoji = true): Array<string> {
     const groupResults = this.matrixGroups.reduce((memo, row): Array<string> => {
       row.forEach(cell => {
         if (cell.type !== CellType.TOTAL_DELTA) {

@@ -42,7 +42,7 @@ const levelToEmoji = {
   [BudgetLevel.ERROR]: '🚫'
 };
 
-export function formatBudgetResult(budgetResult: BudgetResult, itemName: string, useEmoji: boolean = false): string {
+export function formatBudgetResult(budgetResult: BudgetResult, itemName: string, useEmoji = false): string {
   const { actual, expected, level, sizeKey, type } = budgetResult;
   const actualFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(actual) : formatBytes(actual);
   const expectedFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(expected) : formatBytes(expected);

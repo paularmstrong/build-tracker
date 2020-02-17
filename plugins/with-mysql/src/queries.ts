@@ -113,7 +113,7 @@ export default class Queries {
     });
   };
 
-  public getRecent = (limit: number = 20, branch: string): Promise<Array<BuildStruct>> => {
+  public getRecent = (limit = 20, branch: string): Promise<Array<BuildStruct>> => {
     return new Promise((resolve, reject) => {
       this._pool.query(
         'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp DESC LIMIT ?',

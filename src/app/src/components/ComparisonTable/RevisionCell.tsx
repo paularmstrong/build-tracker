@@ -55,18 +55,15 @@ export const RevisionCell = (props: Props): React.ReactElement => {
       <Hoverable>
         {isHovered => (
           <Th accessibilityLabel={`Build ${cell.revision}`} style={[style, isHovered && styles.hovered]}>
-            {
-              // @ts-ignore
-              <TouchableOpacity
-                accessibilityRole="button"
-                onContextMenu={handleToggleMenu}
-                onPress={handleFocus}
-                ref={contentRef}
-                style={styles.content}
-              >
-                <Text style={styles.revision}>{formatSha(cell.revision)}</Text>
-              </TouchableOpacity>
-            }
+            <TouchableOpacity
+              accessibilityRole="button"
+              onContextMenu={handleToggleMenu}
+              onPress={handleFocus}
+              ref={contentRef}
+              style={styles.content}
+            >
+              <Text style={styles.revision}>{formatSha(cell.revision)}</Text>
+            </TouchableOpacity>
           </Th>
         )}
       </Hoverable>

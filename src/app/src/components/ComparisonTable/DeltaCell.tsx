@@ -3,6 +3,7 @@
  */
 import { BudgetLevel } from '@build-tracker/types';
 import ErrorIcon from '../../icons/Error';
+import Hoverable from '../Hoverable';
 import React from 'react';
 import { Td } from '../Table';
 import Tooltip from '../Tooltip';
@@ -49,15 +50,6 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   const sizeDelta = cell.sizes[sizeKey];
   const percentDelta = cell.percents[sizeKey];
   const viewRef: React.RefObject<View> = React.useRef(null);
-  const [showTooltip, setTooltipVisibility] = React.useState(false);
-
-  const handleEnter = React.useCallback(() => {
-    setTooltipVisibility(true);
-  }, []);
-
-  const handleExit = React.useCallback(() => {
-    setTooltipVisibility(false);
-  }, []);
 
   const failingBudgets = cell.failingBudgets;
   const errorBudgets = failingBudgets.filter(budget => budget.level === BudgetLevel.ERROR);
@@ -89,22 +81,19 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   return (
     <Td accessibilityLabel={title} style={[style, { backgroundColor }]}>
       {text ? (
-        // @ts-ignore
-        <View
-          onMouseEnter={handleEnter}
-          onMouseLeave={handleExit}
-          ref={viewRef}
-          style={styles.textWrapper}
-          testID="delta"
-        >
-          <Text>
-            {errorBudgets.length ? <ErrorIcon /> : warningBudgets.length ? <WarningIcon /> : null}
-            {failingBudgets.length ? ' ' : null}
-          </Text>
-          <Text>{text}</Text>
-        </View>
+        <Hoverable>
+          {isHovered => (
+            <View ref={viewRef} style={styles.textWrapper} testID="delta">
+              <Text>
+                {errorBudgets.length ? <ErrorIcon /> : warningBudgets.length ? <WarningIcon /> : null}
+                {failingBudgets.length ? ' ' : null}
+              </Text>
+              <Text>{text}</Text>
+              {isHovered ? <Tooltip relativeTo={viewRef} text={tooltipText} /> : null}
+            </View>
+          )}
+        </Hoverable>
       ) : null}
-      {showTooltip ? <Tooltip relativeTo={viewRef} text={tooltipText} /> : null}
     </Td>
   );
 };

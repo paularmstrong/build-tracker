@@ -30,7 +30,6 @@ export function getPageHTML(nonce: string, state: Partial<State>, scripts: Array
   const store = makeStore(state);
   const { name } = store.getState();
 
-  // @ts-ignore
   const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps: { store } });
   const html = ReactDOMServer.renderToString(element);
   const css = ReactDOMServer.renderToStaticMarkup(getStyleElement({ nonce }));

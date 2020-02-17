@@ -448,6 +448,8 @@ export interface Touchable {
   onTouchEnd?: (event: GestureResponderEvent) => void;
   onTouchCancel?: (event: GestureResponderEvent) => void;
   onTouchEndCapture?: (event: GestureResponderEvent) => void;
+  // mouse
+  onContextMenu?: (event: GestureResponderEvent) => void;
 }
 
 export type ComponentProvider = () => React.ComponentType<any>;
@@ -490,6 +492,11 @@ export namespace AppRegistry {
   function registerHeadlessTask(appKey: string, task: TaskProvider): void;
 
   function getRunnable(appKey: string): Runnable | undefined;
+
+  function getApplication(
+    appKey: string,
+    appParams: any
+  ): { element: React.ReactElement; getStyleElement: (any) => React.ReactElement };
 }
 
 export interface LayoutAnimationTypes {
@@ -1635,6 +1642,8 @@ export interface ViewProps extends GestureResponderHandlers, Touchable, Accessib
    */
   hitSlop?: Insets;
 
+  href?: string;
+
   /**
    * Invoked on mount and layout changes with
    *
@@ -1676,6 +1685,8 @@ export interface ViewProps extends GestureResponderHandlers, Touchable, Accessib
   removeClippedSubviews?: boolean;
 
   style?: StyleProp<ViewStyle>;
+
+  target?: string;
 
   /**
    * Used to locate this view in end-to-end tests.

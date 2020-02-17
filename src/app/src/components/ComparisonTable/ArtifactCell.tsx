@@ -97,10 +97,8 @@ const styles = StyleSheet.create({
     width: '100%',
     whiteSpace: 'nowrap',
     textAlign: 'left',
-    // @ts-ignore
     display: 'block',
     overflow: 'hidden',
-    // @ts-ignore
     textOverflow: 'ellipsis'
   },
   switch: {

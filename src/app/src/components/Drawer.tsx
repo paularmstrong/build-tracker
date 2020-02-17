@@ -6,7 +6,6 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  // @ts-ignore TODO: Add Destination child type
   children: React.ReactElement | Array<React.ReactElement>;
   header?: React.ReactElement<typeof View>;
   hidden?: boolean;

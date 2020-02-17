@@ -221,6 +221,11 @@ describe('DeltaCell', () => {
   });
 
   describe('tooltip', () => {
+    beforeEach(() => {
+      // Enable the hover monitor
+      document.dispatchEvent(new Event('mousemove'));
+    });
+
     test('mouse enter shows a tooltip', () => {
       const { getByTestId, queryAllByProps } = render(
         <DeltaCell

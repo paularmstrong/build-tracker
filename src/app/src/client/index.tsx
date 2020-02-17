@@ -7,7 +7,6 @@ import Main from '../screens/Main';
 import makeStore from '../store';
 import { Provider } from 'react-redux';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Router } from 'react-router';
 import Routes from './Routes';
 import { searchParamsToStore } from '../store/utils';
@@ -27,6 +26,8 @@ const App = (): React.ReactElement => (
 );
 
 AppRegistry.registerComponent('App', () => App);
-// @ts-ignore
-const { element } = AppRegistry.getApplication('App', {});
-ReactDOM.hydrate(element, document.getElementById('root'));
+AppRegistry.runApplication('App', {
+  hydrate: true,
+  initialProps: {},
+  rootTag: document.getElementById('root')
+});

@@ -99,7 +99,6 @@ const Button = (props: Props): React.ReactElement => {
   return (
     <Hoverable>
       {isHovered => (
-        // @ts-ignore annoying web-specific props
         <Ripple
           accessibilityLabel={accessibilityLabel || title}
           accessibilityRole="button"

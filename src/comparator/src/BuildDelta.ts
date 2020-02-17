@@ -13,19 +13,19 @@ export interface DeltaOptions {
   groups?: Array<Group>;
 }
 
-export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends ArtifactSizes = ArtifactSizes> {
-  private _baseBuild: Build<M, A>;
-  private _prevBuild: Build<M, A>;
+export default class BuildDelta<M extends BuildMeta = BuildMeta> {
+  private _baseBuild: Build<M>;
+  private _prevBuild: Build<M>;
 
   private _artifactBudgets: ArtifactBudgets;
-  private _artifactDeltas: Map<string, ArtifactDelta<A>>;
+  private _artifactDeltas: Map<string, ArtifactDelta>;
   private _artifactFilters: ArtifactFilters;
   private _artifactNames: Set<string>;
   private _groups: Array<Group>;
-  private _groupDeltas: Map<string, ArtifactDelta<A>>;
+  private _groupDeltas: Map<string, ArtifactDelta>;
   private _sizeKeys: Set<string>;
 
-  public constructor(baseBuild: Build<M, A>, prevBuild: Build<M, A>, options: DeltaOptions = {}) {
+  public constructor(baseBuild: Build<M>, prevBuild: Build<M>, options: DeltaOptions = {}) {
     this._baseBuild = baseBuild;
     this._prevBuild = prevBuild;
     this._artifactBudgets = options.artifactBudgets || emptyObject;
@@ -33,11 +33,11 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     this._groups = options.groups || [];
   }
 
-  public get baseBuild(): Build<M, A> {
+  public get baseBuild(): Build<M> {
     return this._baseBuild;
   }
 
-  public get prevBuild(): Build<M, A> {
+  public get prevBuild(): Build<M> {
     return this._prevBuild;
   }
 
@@ -71,7 +71,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
         memo[key] = 0;
         return memo;
       }, {});
-      return new ArtifactDelta<A>(name, [], noSize, noSize, false);
+      return new ArtifactDelta(name, [], noSize, noSize, false);
     }
     return this._artifactDeltas.get(name);
   }
@@ -90,7 +90,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     return this._artifactNames;
   }
 
-  private get _fauxArtifactSizes(): A {
+  private get _fauxArtifactSizes(): ArtifactSizes {
     // @ts-ignore
     return this.artifactSizes.reduce((memo, sizeKey) => {
       memo[sizeKey] = 0;
@@ -98,7 +98,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     }, {});
   }
 
-  public get artifactDeltas(): Array<ArtifactDelta<A>> {
+  public get artifactDeltas(): Array<ArtifactDelta> {
     if (!this._artifactDeltas) {
       this._artifactDeltas = new Map();
       this.artifactNames.forEach(artifactName => {
@@ -108,7 +108,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
         const sizes = baseArtifact ? baseArtifact.sizes : this._fauxArtifactSizes;
         const prevSizes = prevArtifact ? prevArtifact.sizes : this._fauxArtifactSizes;
 
-        const delta = new ArtifactDelta<A>(
+        const delta = new ArtifactDelta(
           artifactName,
           this._artifactBudgets[artifactName] || [],
           sizes,
@@ -123,14 +123,14 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
     return Array.from(this._artifactDeltas.values());
   }
 
-  public getGroupDelta(groupName: string): ArtifactDelta<A> {
+  public getGroupDelta(groupName: string): ArtifactDelta {
     if (!this._groupDeltas) {
       this.groupDeltas;
     }
     return this._groupDeltas.get(groupName);
   }
 
-  public get groupDeltas(): Map<string, ArtifactDelta<A>> {
+  public get groupDeltas(): Map<string, ArtifactDelta> {
     if (!this._groupDeltas) {
       this._groupDeltas = new Map();
       this._groups.forEach(group => {
@@ -150,7 +150,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta, A extends Artif
           return changed ? true : !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash;
         }, false);
 
-        const delta = new ArtifactDelta<A>(
+        const delta = new ArtifactDelta(
           group.name,
           group.budgets || [],
           baseSum || this._fauxArtifactSizes,

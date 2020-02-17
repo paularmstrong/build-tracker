@@ -5,15 +5,21 @@ import { ArtifactSizes } from '@build-tracker/build';
 import { Budget, BudgetResult } from '@build-tracker/types';
 import { delta, percentDelta } from './artifact-math';
 
-export default class ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
+export default class ArtifactDelta {
   private _name: string;
   private _budgets: Array<Budget>;
   private _results: Array<BudgetResult>;
-  private _sizes: AS;
-  private _prevSizes: AS;
+  private _sizes: ArtifactSizes;
+  private _prevSizes: ArtifactSizes;
   private _hashChanged: boolean;
 
-  public constructor(name: string, budgets: Array<Budget>, sizes: AS, prevSizes: AS, hashChanged: boolean) {
+  public constructor(
+    name: string,
+    budgets: Array<Budget>,
+    sizes: ArtifactSizes,
+    prevSizes: ArtifactSizes,
+    hashChanged: boolean
+  ) {
     this._name = name;
     this._budgets = budgets;
     this._sizes = sizes;
@@ -25,7 +31,7 @@ export default class ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
     return this._name;
   }
 
-  public get sizes(): AS {
+  public get sizes(): ArtifactSizes {
     return Object.keys(this._sizes).reduce(
       (memo, sizeKey) => {
         // @ts-ignore
@@ -36,7 +42,7 @@ export default class ArtifactDelta<AS extends ArtifactSizes = ArtifactSizes> {
     );
   }
 
-  public get percents(): AS {
+  public get percents(): ArtifactSizes {
     return Object.keys(this._sizes).reduce(
       (memo, sizeKey) => {
         // @ts-ignore

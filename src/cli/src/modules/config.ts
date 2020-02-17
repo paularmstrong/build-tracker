@@ -3,11 +3,11 @@
  */
 import { ComparisonMatrix } from '@build-tracker/comparator';
 import cosmiconfig from 'cosmiconfig';
-import { Artifact, ArtifactSizes, BuildMeta } from '@build-tracker/build';
+import { Artifact, BuildMeta } from '@build-tracker/build';
 
 interface BuildJson {
   meta: BuildMeta;
-  artifacts: Array<Artifact<ArtifactSizes>>;
+  artifacts: Array<Artifact>;
 }
 
 export interface ApiReturn {

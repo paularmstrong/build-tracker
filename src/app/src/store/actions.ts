@@ -4,6 +4,10 @@
 import Build from '@build-tracker/build';
 import ColorScale from '../modules/ColorScale';
 import {
+  // This must be imported because otherwise we get an error when `declaration` is enabled.
+  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Action,
   AddComparedRevision,
   AddSnack,
   ClearComparedRevision,

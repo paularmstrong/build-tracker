@@ -39,7 +39,7 @@ export interface State {
   url: string;
 }
 
-interface Action<T, P, M = undefined> {
+export interface Action<T, P, M = undefined> {
   type: T;
   payload: P;
   meta?: M;

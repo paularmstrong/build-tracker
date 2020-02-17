@@ -22,7 +22,7 @@ jest.mock('cross-fetch', () => {
   };
 });
 
-const renderLimit = async (startTimestamp: string = '100', endTimestamp: string = '200'): Promise<void> => {
+const renderLimit = async (startTimestamp = '100', endTimestamp = '200'): Promise<void> => {
   render(
     <Provider
       store={mockStore({

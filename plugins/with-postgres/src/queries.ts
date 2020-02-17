@@ -72,7 +72,7 @@ export default class Queries {
     return Promise.resolve(res.rows);
   };
 
-  public getRecent = async (limit: number = 20, branch: string): Promise<Array<BuildStruct>> => {
+  public getRecent = async (limit = 20, branch: string): Promise<Array<BuildStruct>> => {
     const res = await this._pool.query(
       'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp DESC LIMIT $2',
       [branch, limit]

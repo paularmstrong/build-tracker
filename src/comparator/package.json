@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@build-tracker/formatting": "^1.0.0-beta.3",
+    "@build-tracker/build": "^1.0.0-beta.3",
     "markdown-table": "^1.1.2"
   },
   "devDependencies": {
-    "@build-tracker/build": "^1.0.0-beta.3",
     "@build-tracker/types": "^1.0.0-beta.3"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",

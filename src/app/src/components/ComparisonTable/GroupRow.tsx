@@ -70,7 +70,6 @@ export const GroupRow = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   row: {
     backgroundColor: Theme.Color.Gray05,
-    // @ts-ignore
     transitionProperty: 'background-color',
     transitionDuration: '0.1s'
   },

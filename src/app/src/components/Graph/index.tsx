@@ -13,14 +13,14 @@ import StackedBar from './StackedBar';
 import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { addComparedRevision, setHoveredArtifacts } from '../../store/actions';
-import { createElement, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { GraphType, State } from '../../store/types';
+import { LayoutChangeEvent, StyleSheet, unstable_createElement, View } from 'react-native';
 import { scaleBand, scaleLinear, scalePoint } from 'd3-scale';
 import { useDispatch, useSelector } from 'react-redux';
 
 export class SVG extends React.Component<{ height: number; width: number }> {
   public render(): React.ReactElement {
-    return createElement('svg', this.props);
+    return unstable_createElement('svg', this.props);
   }
 }
 

@@ -65,7 +65,6 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
         <View style={[styles.root, style]}>
           <View style={[styles.content, isFocused && styles.contentFocused]}>
             <View
-              // @ts-ignore
               accessibilityRole="label"
               style={[styles.labelBox, !isFocused && isHovered && styles.labelBoxHovered]}
             >
@@ -102,7 +101,6 @@ const styles = StyleSheet.create({
   content: {
     borderBottomWidth: 1,
     borderBottomColor: Theme.Color.Gray50,
-    // @ts-ignore
     transitionProperty: 'border-bottom-color',
     transitionDuration: '0.1s'
   },
@@ -119,7 +117,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Theme.Spacing.Normal,
     alignContent: 'stretch',
     display: 'flex',
-    // @ts-ignore
     transitionProperty: 'background-color',
     transitionDuration: '0.1s'
   },
@@ -129,7 +126,6 @@ const styles = StyleSheet.create({
   },
 
   labelInput: {
-    // @ts-ignore
     display: 'flex',
     flexGrow: 1,
     flexShrink: 1
@@ -138,7 +134,6 @@ const styles = StyleSheet.create({
   textInput: {
     paddingTop: '1.65rem',
     paddingBottom: '0.85rem',
-    // @ts-ignore
     outlineStyle: 'none'
   },
 
@@ -148,28 +143,22 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    // @ts-ignore
     transitionProperty: 'transform',
     transitionDuration: '0.1s',
-    // @ts-ignore
     position: 'absolute',
     paddingVertical: '1.25rem'
   },
 
   labelMoved: {
-    // @ts-ignore
     transform: [{ translateY: '-0.8rem' }]
   },
 
   labelText: {
-    // @ts-ignore
     transitionProperty: 'color font-size',
-    // @ts-ignore
     transitionDuration: '0.1s',
     color: Theme.Color.Gray50
   },
 
-  // @ts-ignore
   labelTextMoved: {
     fontSize: Theme.FontSize.Xsmall,
     color: Theme.Color.Primary40

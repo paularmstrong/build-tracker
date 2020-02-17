@@ -31,7 +31,6 @@ export const ColorScale = (props: Props): React.ReactElement => {
   const nativeID = `radio${`${name}`.replace(/^\w/g, '')}`;
 
   return (
-    // @ts-ignore
     <View accessibilityRole="label" style={[styles.root, style]}>
       <RadioSelect labelledBy={nativeID} onValueChange={handleSelect} style={styles.radio} value={isSelected} />
       <Text nativeID={nativeID}>{name}</Text>

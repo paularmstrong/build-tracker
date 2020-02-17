@@ -9,6 +9,10 @@ import { fireEvent, render } from 'react-native-testing-library';
 
 describe('GroupCell', () => {
   describe('folder', () => {
+    beforeEach(() => {
+      // Enable the hover monitor
+      document.dispatchEvent(new Event('mousemove'));
+    });
     test('mouse enter shows a tooltip', () => {
       const { getByTestId, queryAllByProps } = render(
         <GroupCell

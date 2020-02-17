@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   root: {
-    // @ts-ignore
     display: 'inline-block',
     fill: 'currentcolor',
     height: '1.25em',

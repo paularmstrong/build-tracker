@@ -97,11 +97,9 @@ const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    // @ts-ignore
     display: 'inline-flex'
   },
   root: {
-    // @ts-ignore
     display: 'inline-flex',
     overflow: 'hidden',
     position: 'relative'
@@ -115,7 +113,6 @@ const styles = StyleSheet.create({
     height: 0,
     zIndex: -1,
     opacity: 0,
-    // @ts-ignore
     transitionProperty: 'transform, opacity',
     transitionDuration: '0.4s',
     transitionTimingFunction: Theme.MotionTiming.Standard,
@@ -124,7 +121,6 @@ const styles = StyleSheet.create({
   },
 
   adjuster: {
-    // @ts-ignore
     display: 'block',
     paddingTop: '100%',
     height: 0,
@@ -137,7 +133,6 @@ const styles = StyleSheet.create({
   },
 
   animateOut: {
-    // @ts-ignore
     animationKeyframes: [{ from: { opacity: 1 }, to: { opacity: 0 } }],
     animationDuration: '0.2s',
     animationIterationCount: 1,

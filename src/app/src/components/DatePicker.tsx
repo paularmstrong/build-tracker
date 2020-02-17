@@ -43,15 +43,14 @@ const DatePicker = (props: Props): React.ReactElement => {
   const daysInMonth = getDaysInMonth(currentMonth);
   const startDate = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 0 });
 
-  // @ts-ignore
-  const month = new Array(Math.ceil(daysInMonth / 7 + 2)).fill().reduce((memo, _week, weekIndex) => {
+  const weeksInMonth = Math.ceil(daysInMonth / 7 + 2);
+  const month = new Array(weeksInMonth).fill(0).reduce((memo, _week, weekIndex) => {
     const firstDayOfWeek = addDays(startDate, weekIndex * 7);
     if (weekIndex > 0 && !isSameMonth(firstDayOfWeek, currentMonth)) {
       return memo;
     }
     memo.push(
-      // @ts-ignore
-      new Array(7).fill().map((_, dayIndex) => {
+      new Array(7).fill(0).map((_, dayIndex) => {
         const date = addDays(firstDayOfWeek, dayIndex);
         return { date, isSameMonth: isSameMonth(date, currentMonth) };
       })

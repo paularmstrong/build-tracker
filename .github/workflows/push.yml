@@ -15,7 +15,17 @@ jobs:
         with:
           node-version: 10.x
       - run: npm install -g yarn
-      - run: yarn install --frozen-lockfile
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
       - name: Typecheck
         run: yarn tsc
       - name: Tests
@@ -32,7 +42,17 @@ jobs:
         with:
           node-version: 10.x
       - run: npm install -g yarn
-      - run: yarn install --frozen-lockfile
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
       - name: Build all
         run: yarn build
       - name: Upload build
@@ -49,7 +69,17 @@ jobs:
         with:
           node-version: 10.x
       - run: npm install -g yarn
-      - run: yarn install --frozen-lockfile
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
       - name: Build docs
         run: yarn workspace @build-tracker/docs build
       - name: Deploy documentation

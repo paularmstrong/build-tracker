@@ -20,7 +20,7 @@
     "glob": "^7.1.3",
     "gzip-size": "^5.0.0",
     "path-to-regexp": "3.0.0",
-    "yargs": "^13.2.1"
+    "yargs": "^15.0.0"
   },
   "devDependencies": {
     "@types/cosmiconfig": "^5.0.3",
@@ -28,7 +28,7 @@
     "@types/node": "^11.10.4",
     "@types/request": "^2.48.1",
     "@types/request-promise-native": "^1.0.15",
-    "@types/yargs": "^13.0.0",
+    "@types/yargs": "^15.0.0",
     "mock-spawn": "^0.2.6",
     "nock": "^10.0.6"
   },

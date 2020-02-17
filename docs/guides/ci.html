@@ -74,13 +74,15 @@
     <span class="hljs-comment">// Reconstruct a comparator from the serialized data</span>
     <span class="hljs-keyword">const</span> comparator = Comparator.deserialize(comparatorData);
 
+    <span class="hljs-keyword">const</span> build = comparator.builds[<span class="hljs-number">0</span>];
+
     <span class="hljs-keyword">const</span> table = comparator.toMarkdown({ artifactFilter });
-    <span class="hljs-keyword">const</span> revisions = <span class="hljs-string">`<span class="hljs-subst">${parentBuild.getMetaValue(<span class="hljs-string">'revision'</span>)}</span>/<span class="hljs-subst">${build.getMetaValue(<span class="hljs-string">'revision'</span>)}</span>`</span>;
+    <span class="hljs-keyword">const</span> revisions = <span class="hljs-string">`<span class="hljs-subst">${build.getMetaValue(<span class="hljs-string">'parentRevision'</span>)}</span>/<span class="hljs-subst">${build.getMetaValue(<span class="hljs-string">'revision'</span>)}</span>`</span>;
     <span class="hljs-keyword">const</span> output = <span class="hljs-string">`<span class="hljs-subst">${summary.join(<span class="hljs-string">'\n'</span>)}</span>
 
 <span class="hljs-subst">${table}</span>
 
-See the full comparison at [<span class="hljs-subst">${applicationUrl}</span>/revisions/<span class="hljs-subst">${revisions}</span>](<span class="hljs-subst">${applicationUrl}</span>/revisions/<span class="hljs-subst">${revisions}</span>)`</span>;
+See the full comparison at [<span class="hljs-subst">${applicationUrl}</span>/builds/<span class="hljs-subst">${revisions}</span>](<span class="hljs-subst">${applicationUrl}</span>/builds/<span class="hljs-subst">${revisions}</span>)`</span>;
 
     <span class="hljs-comment">// Post the constructed markdown as a comment</span>
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> GithubApi.postComment(output);

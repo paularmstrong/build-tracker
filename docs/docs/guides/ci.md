@@ -31,7 +31,7 @@ module.exports = {
     const { comparatorData, summary } = data;
     // Reconstruct a comparator from the serialized data
     const comparator = Comparator.deserialize(comparatorData);
-    
+
     const build = comparator.builds[0];
 
     const table = comparator.toMarkdown({ artifactFilter });

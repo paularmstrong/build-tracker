@@ -4,5 +4,5 @@ module.exports = {
   rules: {
     'header/header': ['error', path.join(__dirname, '../config/copyright.txt')]
   },
-  overrides: [{ files: '*.md', rules: { 'header/header': 'off' } }]
+  overrides: [{ files: ['*.md', '*.json'], rules: { 'header/header': 'off' } }]
 };

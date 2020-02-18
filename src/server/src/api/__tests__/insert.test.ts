@@ -52,7 +52,7 @@ describe('insert build handler', () => {
       const handler = insertBuild(queries, config);
       app.post('/test', handler);
 
-      const comparator = new Comparator({ builds: [build, parentBuild] });
+      const comparator = new Comparator({ builds: [parentBuild, build] });
 
       return request(app)
         .post('/test')
@@ -84,8 +84,8 @@ describe('insert build handler', () => {
             const [comparator] = handleInsert.mock.calls[0];
             // @ts-ignore
             expect(comparator.builds.map(build => build.getMetaValue('revision'))).toEqual([
-              build.getMetaValue('revision'),
-              parentBuild.getMetaValue('revision')
+              parentBuild.getMetaValue('revision'),
+              build.getMetaValue('revision')
             ]);
           });
       });

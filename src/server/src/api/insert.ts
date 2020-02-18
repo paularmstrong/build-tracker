@@ -22,7 +22,7 @@ export const insertBuild = (
       .then(
         parentBuildData => {
           const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
-          return [build, parentBuild];
+          return [parentBuild, build];
         },
         error => {
           if (error instanceof NotFoundError) {

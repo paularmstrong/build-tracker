@@ -9,7 +9,7 @@ import Graph from '../views/Graph';
 import React from 'react';
 import Snacks from '../views/Snacks';
 import { useSelector } from 'react-redux';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { FetchState, State } from '../store/types';
 
 const Comparison = React.lazy(() => import(/* webpackChunkName: "Comparison" */ '../views/Comparison'));
@@ -28,11 +28,12 @@ const Main = (): React.ReactElement => {
       <View accessibilityRole="main" style={styles.main}>
         <View style={[styles.column, styles.chart]}>
           <AppBarView drawerRef={drawerRef} />
-          {fetchState == FetchState.FETCHED ? (
+          {fetchState === FetchState.FETCHED || fetchState === FetchState.ERROR ? (
             <Graph />
-          ) : fetchState == FetchState.FETCHING ? (
+          ) : fetchState === FetchState.FETCHING ? (
             <View style={styles.loading}>
               <ActivityIndicator accessibilityLabel="Loading builds…" color={Theme.Color.Secondary30} size={'large'} />
+              <Text>Loading builds…</Text>
             </View>
           ) : null}
         </View>

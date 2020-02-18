@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/build",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Build Tracker tools for interacting with individual Builds",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -14,7 +14,7 @@
     "tsc": "tsc --noEmit"
   },
   "devDependencies": {
-    "@build-tracker/types": "^1.0.0-beta.3"
+    "@build-tracker/types": "^1.0.0-beta.4"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {

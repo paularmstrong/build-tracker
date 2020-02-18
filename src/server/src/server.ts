@@ -41,7 +41,8 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
     url,
     artifactConfig: Object.assign({}, { budgets: {}, filters: [], groups: [] }, config.artifacts || {}),
     hideAttribution: !!config.hideAttribution,
-    name: config.name || 'Build Tracker'
+    name: config.name || 'Build Tracker',
+    defaultSizeKey: config.defaultSizeKey
   };
   next();
 };

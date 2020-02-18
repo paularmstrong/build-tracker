@@ -183,6 +183,10 @@ interface Handlers {
 
 #### `port?: number`
 
+#### `defaultSizeKey?: string`
+
+The default size type used to represent files. For example, `gzip` or `brotli`.
+
 ### Database integration
 
 The following options should generally be handled by a [Build Tracker plugin](/docs/plugins). You can always override them or write your own custom queries and DB setup if you like.

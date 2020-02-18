@@ -46,7 +46,11 @@ export default function reducer(state: State, action: Actions): State {
 
       const graphType = builds.length <= 10 ? GraphType.STACKED_BAR : state.graphType;
 
-      const sizeKey = comparator.sizeKeys.includes(state.sizeKey) ? state.sizeKey : comparator.sizeKeys[0];
+      const sizeKey = comparator.sizeKeys.includes(state.sizeKey)
+        ? state.sizeKey
+        : comparator.sizeKeys.includes(state.defaultSizeKey)
+        ? state.defaultSizeKey
+        : comparator.sizeKeys[0];
       return { ...state, activeComparator, activeArtifacts, builds, comparator, graphType, sizeKey };
     }
 

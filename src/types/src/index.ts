@@ -73,4 +73,5 @@ export interface AppConfig {
   budgets?: Array<Budget>;
   hideAttribution?: boolean;
   name?: string;
+  defaultSizeKey?: string;
 }

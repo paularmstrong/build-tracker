@@ -23,6 +23,7 @@ const initialState: State = Object.freeze({
   hideAttribution: false,
   name: 'Tacos!',
   snacks: [],
+  defaultSizeKey: 'stat',
   sizeKey: '',
   url: 'https://build-tracker.local'
 });
@@ -90,8 +91,16 @@ describe('reducer', () => {
       expect(state.sizeKey).toBe('stat');
     });
 
-    test('resets the sizeKey if it the current is not in the new set', () => {
+    test('resets the sizeKey to the default if the current is not in the new set', () => {
       const state = reducer({ ...initialState, sizeKey: 'foobar' }, Actions.setBuilds([buildA, buildB]));
+      expect(state.sizeKey).toBe('stat');
+    });
+
+    test('resets the sizeKey to the first in list if both the current and the default are not in the new set', () => {
+      const state = reducer(
+        { ...initialState, defaultSizeKey: 'abc', sizeKey: 'foobar' },
+        Actions.setBuilds([buildA, buildB])
+      );
       expect(state.sizeKey).toBe('gzip');
     });
 

@@ -34,6 +34,7 @@ export interface State {
   hoveredArtifacts: Array<string>;
   name: string;
   snacks: Array<string>;
+  defaultSizeKey?: string;
   sizeKey: string;
   url: string;
 }

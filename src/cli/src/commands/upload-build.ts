@@ -36,6 +36,11 @@ export const builder = (yargs): Argv<Args> =>
       group,
       normalize: true
     })
+    .option('parent-revision', {
+      description: 'Manually provide the parent revision instead of reading it automatically',
+      group,
+      type: 'string'
+    })
     .option('skip-dirty-check', {
       default: false,
       description: 'Skip the git work tree state check',

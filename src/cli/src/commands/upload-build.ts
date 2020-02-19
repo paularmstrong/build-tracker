@@ -76,11 +76,15 @@ export const handler = async (args: Args): Promise<void> => {
       });
 
       res.on('end', () => {
-        const response = JSON.parse(output.join('')) as ApiReturn;
-        if (config.onCompare) {
-          config.onCompare(response).then(resolve);
+        if (res.statusCode >= 400) {
+          reject(new Error('Bad status code'));
         } else {
-          resolve();
+          const response = JSON.parse(output.join('')) as ApiReturn;
+          if (config.onCompare) {
+            config.onCompare(response).then(resolve);
+          } else {
+            resolve();
+          }
         }
       });
     });

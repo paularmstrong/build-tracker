@@ -81,11 +81,16 @@ export const handler = async (args: Args): Promise<void> => {
       });
 
       res.on('end', () => {
-        const response = JSON.parse(output.join('')) as ApiReturn;
-        if (config.onCompare) {
-          config.onCompare(response).then(resolve);
+        const response = JSON.parse(output.join(''));
+        if (res.statusCode >= 400) {
+          reject(new Error(response.error));
         } else {
-          resolve();
+          const successResponse = response as ApiReturn;
+          if (config.onCompare) {
+            config.onCompare(successResponse).then(resolve);
+          } else {
+            resolve();
+          }
         }
       });
     });

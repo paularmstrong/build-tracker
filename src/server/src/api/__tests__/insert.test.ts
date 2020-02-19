@@ -47,6 +47,26 @@ describe('insert build handler', () => {
     });
   });
 
+  describe('insert failed', () => {
+    test('responds with error', () => {
+      const handler = insertBuild(
+        { ...queries, insert: () => Promise.reject(new Error('Something went wrong.')) },
+        config
+      );
+      app.post('/test', handler);
+
+      return request(app)
+        .post('/test')
+        .send({ meta: build.meta, artifacts: build.artifacts })
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .then(res => {
+          expect(res.status).toEqual(500);
+          expect(res.body).toEqual({ error: 'Something went wrong.' });
+        });
+    });
+  });
+
   describe('response', () => {
     test('returns a JSON serialized Comparator and summary', () => {
       const handler = insertBuild(queries, config);

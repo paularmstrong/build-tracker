@@ -16,42 +16,45 @@ export const insertBuild = (
   const { artifacts, meta } = req.body;
   const { artifacts: artifactConfig = {}, budgets } = config;
   const build = new Build(meta, artifacts);
-  queries.insert(build).then(() =>
-    queries
-      .byRevision(build.getMetaValue('parentRevision'))
-      .then(
-        parentBuildData => {
-          const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
-          return [parentBuild, build];
-        },
-        error => {
-          if (error instanceof NotFoundError) {
-            return [build];
-          } else {
-            throw error;
+  queries
+    .insert(build)
+    .then(() =>
+      queries
+        .byRevision(build.getMetaValue('parentRevision'))
+        .then(
+          parentBuildData => {
+            const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
+            return [parentBuild, build];
+          },
+          error => {
+            if (error instanceof NotFoundError) {
+              return [build];
+            } else {
+              throw error;
+            }
           }
-        }
-      )
-      .then(builds => ({
-        comparator: new Comparator({
-          artifactBudgets: artifactConfig.budgets,
-          artifactFilters: artifactConfig.filters,
-          builds,
-          budgets,
-          groups: artifactConfig.groups
+        )
+        .then(builds => ({
+          comparator: new Comparator({
+            artifactBudgets: artifactConfig.budgets,
+            artifactFilters: artifactConfig.filters,
+            builds,
+            budgets,
+            groups: artifactConfig.groups
+          })
+        }))
+        .then(context => {
+          return onInserted(context.comparator).then(() => context);
         })
-      }))
-      .then(context => {
-        return onInserted(context.comparator).then(() => context);
-      })
-      .then(({ comparator }) => {
-        res.send({
-          comparatorData: comparator.serialize(),
-          summary: comparator.toSummary()
-        });
-      })
-      .catch(error => {
-        res.send({ error });
-      })
-  );
+        .then(({ comparator }) => {
+          res.send({
+            comparatorData: comparator.serialize(),
+            summary: comparator.toSummary()
+          });
+        })
+    )
+    .catch(error => {
+      res.status(500);
+      res.send({ error: error.message });
+    });
 };

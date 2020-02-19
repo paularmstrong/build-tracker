@@ -55,6 +55,6 @@ export const insertBuild = (
     )
     .catch(error => {
       res.status(500);
-      res.send({ error: error });
+      res.send({ error: error.message });
     });
 };

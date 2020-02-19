@@ -70,10 +70,10 @@ describe('upload-build', () => {
 
       nock(`${configValues.applicationUrl}/`)
         .post('/api/builds')
-        .reply(500, { error: {} });
+        .reply(500, { error: 'Something went wrong.' });
 
       await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).rejects.toStrictEqual(
-        new Error('Bad status code')
+        new Error('Something went wrong.')
       );
       expect(onCompareSpy).not.toHaveBeenCalled();
     });

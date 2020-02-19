@@ -62,6 +62,7 @@ describe('insert build handler', () => {
         .set('Accept', 'application/json')
         .then(res => {
           expect(res.status).toEqual(500);
+          expect(res.body).toEqual({ error: 'Something went wrong.' });
         });
     });
   });

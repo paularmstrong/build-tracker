@@ -39,7 +39,10 @@ export function getMergeBase(branch: string, cwd: string = process.cwd()): Promi
 export function getParentRevision(sha: string, cwd: string = process.cwd()): Promise<string> {
   return spawn('git', ['log', '--pretty=%P', '-n', '1', sha], { cwd }).then(
     (buffer: Buffer): string => {
-      return buffer.toString().trim().split(' ')[0];
+      return buffer
+        .toString()
+        .trim()
+        .split(' ')[0];
     }
   );
 }

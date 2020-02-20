@@ -77,7 +77,6 @@ export const handler = async (args: Args): Promise<void> => {
 
       res.on('data', data => {
         output.push(data);
-        process.stdout.write(data);
       });
 
       res.on('end', () => {
@@ -96,7 +95,6 @@ export const handler = async (args: Args): Promise<void> => {
     });
 
     req.on('error', error => {
-      process.stderr.write(error.toString());
       reject(error);
     });
 

@@ -24,6 +24,8 @@ const Comparator = require('@build-tracker/comparator').default;
 
 const applicationUrl = 'https://my-application-url.local';
 
+const last = xs => xs[xs.length - 1];
+
 module.exports = {
   applicationUrl,
   // ... other config options
@@ -32,7 +34,7 @@ module.exports = {
     // Reconstruct a comparator from the serialized data
     const comparator = Comparator.deserialize(comparatorData);
 
-    const build = comparator.builds[0];
+    const build = last(comparator.builds);
 
     const table = comparator.toMarkdown({ artifactFilter });
     const revisions = `${build.getMetaValue('parentRevision')}/${build.getMetaValue('revision')}`;

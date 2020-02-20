@@ -66,6 +66,8 @@
 
 <span class="hljs-keyword">const</span> applicationUrl = <span class="hljs-string">'https://my-application-url.local'</span>;
 
+<span class="hljs-keyword">const</span> last = <span class="hljs-function"><span class="hljs-params">xs</span> =&gt;</span> xs[xs.length - <span class="hljs-number">1</span>];
+
 <span class="hljs-built_in">module</span>.exports = {
   applicationUrl,
   <span class="hljs-comment">// ... other config options</span>
@@ -74,7 +76,7 @@
     <span class="hljs-comment">// Reconstruct a comparator from the serialized data</span>
     <span class="hljs-keyword">const</span> comparator = Comparator.deserialize(comparatorData);
 
-    <span class="hljs-keyword">const</span> build = comparator.builds[<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">const</span> build = last(comparator.builds);
 
     <span class="hljs-keyword">const</span> table = comparator.toMarkdown({ artifactFilter });
     <span class="hljs-keyword">const</span> revisions = <span class="hljs-string">`<span class="hljs-subst">${build.getMetaValue(<span class="hljs-string">'parentRevision'</span>)}</span>/<span class="hljs-subst">${build.getMetaValue(<span class="hljs-string">'revision'</span>)}</span>`</span>;
@@ -103,7 +105,7 @@ See the full comparison at [<span class="hljs-subst">${applicationUrl}</span>/bu
 <p>The Build Tracker web application accept links directly to a comparison of one or more builds in the format: <code>/builds/:revisions+</code>.</p>
 <p>For example, to link to a comparison of two builds:</p>
 <p><a href="https://build-tracker-demo.herokuapp.com/builds/ee6e071ef38eabf07a0f88d27bc6a0c9fce95e73/ffef391677992f0fae65702b94ec993bb7fb1744">/builds/ee6e071ef38eabf07a0f88d27bc6a0c9fce95e73/ffef391677992f0fae65702b94ec993bb7fb1744</a></p>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 2/19/2020 by Oliver Joseph Ash</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/guides/guides"><span class="arrow-prev">← </span><span>Guides</span></a><a class="docs-next button" href="/docs/guides/contributing"><span>Contributing</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#reporting-budget-results">Reporting budget results</a></li><li><a href="#linking-directly-to-a-build-comparison">Linking directly to a build comparison</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.svg" alt="Build Tracker" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/installation.html">Getting Started</a><a href="/docs/en/plugins/plugins.html">Plugins</a></div><div><h5>Community</h5><a href="http://stackoverflow.com/questions/tagged/build-tracker" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/paularmstrong/build-tracker">GitHub</a><a class="github-button" href="https://github.com/paularmstrong/build-tracker" data-icon="octicon-star" data-count-href="/paularmstrong/build-tracker/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2020 Paul Armstrong</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 2/20/2020 by Oliver Joseph Ash</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/guides/guides"><span class="arrow-prev">← </span><span>Guides</span></a><a class="docs-next button" href="/docs/guides/contributing"><span>Contributing</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#reporting-budget-results">Reporting budget results</a></li><li><a href="#linking-directly-to-a-build-comparison">Linking directly to a build comparison</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.svg" alt="Build Tracker" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/installation.html">Getting Started</a><a href="/docs/en/plugins/plugins.html">Plugins</a></div><div><h5>Community</h5><a href="http://stackoverflow.com/questions/tagged/build-tracker" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/paularmstrong/build-tracker">GitHub</a><a class="github-button" href="https://github.com/paularmstrong/build-tracker" data-icon="octicon-star" data-count-href="/paularmstrong/build-tracker/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2020 Paul Armstrong</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;

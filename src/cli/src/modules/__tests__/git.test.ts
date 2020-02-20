@@ -139,6 +139,17 @@ describe('git', () => {
       });
     });
 
+    test('returns the parent sha for the given sha (merge commit)', () => {
+      const spawn = jest
+        .spyOn(Spawn, 'default')
+        .mockImplementation(() => Promise.resolve(Buffer.from('123556 abcdef')));
+
+      return Git.getParentRevision('tacos').then(branch => {
+        expect(spawn).toHaveBeenCalledWith('git', ['log', '--pretty=%P', '-n', '1', 'tacos'], expect.any(Object));
+        expect(branch).toBe('123556');
+      });
+    });
+
     test('uses the process cwd', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 

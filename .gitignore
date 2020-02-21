@@ -7,3 +7,5 @@ dist
 .eslintcache
 coverage
 .env
+
+*.tsbuildinfo

@@ -11,7 +11,7 @@
   "main": "dist/server.js",
   "types": "index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
   },

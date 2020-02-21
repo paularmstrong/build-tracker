@@ -1,7 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "rootDir": "./src",
+    "outDir": "./dist",
+    // TODO: enable for all?
+    "composite": true,
+    // TODO: ?
+    // "declarationMaps": true
   },
   "include": ["src"]
 }

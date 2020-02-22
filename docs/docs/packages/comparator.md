@@ -92,11 +92,11 @@ Returns an array Markdown-formatted summaries of the overall comparison and any 
 
 If `useEmoji` is set to `false`, emoji will be replaced with words:
 
-| Emoji | Word    |
-| ----- | ------- |
-| ✅    | Success |
-| ⚠️    | Warning |
-| 🚫    | Error   |
+| Emoji        | Word    |
+| ------------ | ------- |
+| ✅ (U+2705)  | Success |
+| ⚠️ (U+26A0)  | Warning |
+| 🚫 (U+1F6AB) | Error   |
 
 ## Types
 

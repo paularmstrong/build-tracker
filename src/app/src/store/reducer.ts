@@ -11,6 +11,7 @@ const getActiveComparator = (
 ): Comparator => {
   return new Comparator({
     artifactBudgets: artifactConfig.budgets,
+    artifactFilters: artifactConfig.filters,
     builds: builds.filter(build => comparedRevisions.includes(build.getMetaValue('revision'))),
     groups: artifactConfig.groups
   });
@@ -30,8 +31,9 @@ export default function reducer(state: State, action: Actions): State {
     }
 
     case 'BUILDS_SET': {
+      const { budgets, filters, groups } = state.artifactConfig;
       const builds = action.payload;
-      const comparator = new Comparator({ builds });
+      const comparator = new Comparator({ artifactBudgets: budgets, artifactFilters: filters, builds, groups });
 
       const currentKeys = Object.keys(state.activeArtifacts).some(key => comparator.artifactNames.includes(key));
       const activeArtifacts = comparator.artifactNames.reduce((memo, artifactName) => {

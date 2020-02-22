@@ -56,6 +56,18 @@ describe('reducer', () => {
       const state = reducer(initialState, Actions.setBuilds([buildA, buildB]));
       expect(state.comparator).toBeInstanceOf(Comparator);
       expect(state.comparator.artifactNames).toEqual(['tacos']);
+      expect(state.activeComparator).toBeInstanceOf(Comparator);
+    });
+
+    test('includes filters in the comparator', () => {
+      const state = reducer(
+        { ...initialState, artifactConfig: { filters: [/tacos/] } },
+        Actions.setBuilds([buildA, buildB])
+      );
+      expect(state.comparator).toBeInstanceOf(Comparator);
+      expect(state.comparator.artifactNames).toEqual([]);
+      expect(state.activeComparator).toBeInstanceOf(Comparator);
+      expect(state.activeComparator.artifactNames).toEqual([]);
     });
 
     test('activates all artifacts', () => {

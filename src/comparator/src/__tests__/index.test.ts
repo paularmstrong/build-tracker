@@ -56,7 +56,10 @@ describe('BuildComparator', () => {
   });
 
   describe('artifactFilters', () => {
-    const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
+    let comparator;
+    beforeEach(() => {
+      comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
+    });
 
     test('filters artifact sizes from the totals', () => {
       const [, build1Total, build2Total, deltaTotal] = comparator.matrixGroups[0];

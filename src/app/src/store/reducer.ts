@@ -6,12 +6,14 @@ import { Actions, GraphType, State } from './types';
 
 const getActiveComparator = (
   comparedRevisions: State['comparedRevisions'],
+  budgets: State['budgets'],
   builds: State['builds'],
   artifactConfig: State['artifactConfig']
 ): Comparator => {
   return new Comparator({
     artifactBudgets: artifactConfig.budgets,
     artifactFilters: artifactConfig.filters,
+    budgets: budgets,
     builds: builds.filter(build => comparedRevisions.includes(build.getMetaValue('revision'))),
     groups: artifactConfig.groups
   });
@@ -31,9 +33,15 @@ export default function reducer(state: State, action: Actions): State {
     }
 
     case 'BUILDS_SET': {
-      const { budgets, filters, groups } = state.artifactConfig;
+      const { budgets: artifactBudgets, filters, groups } = state.artifactConfig;
       const builds = action.payload;
-      const comparator = new Comparator({ artifactBudgets: budgets, artifactFilters: filters, builds, groups });
+      const comparator = new Comparator({
+        artifactBudgets,
+        artifactFilters: filters,
+        budgets: state.budgets,
+        builds,
+        groups
+      });
 
       const currentKeys = Object.keys(state.activeArtifacts).some(key => comparator.artifactNames.includes(key));
       const activeArtifacts = comparator.artifactNames.reduce((memo, artifactName) => {
@@ -43,7 +51,7 @@ export default function reducer(state: State, action: Actions): State {
 
       const newRevisions = comparator.builds.map(build => build.getMetaValue('revision'));
       const activeComparator = state.comparedRevisions.every(rev => newRevisions.includes(rev))
-        ? getActiveComparator(state.comparedRevisions, builds, state.artifactConfig)
+        ? getActiveComparator(state.comparedRevisions, state.budgets, builds, state.artifactConfig)
         : null;
 
       const graphType = builds.length <= 10 ? GraphType.STACKED_BAR : state.graphType;
@@ -63,7 +71,7 @@ export default function reducer(state: State, action: Actions): State {
       const comparedRevisions = [...state.comparedRevisions, action.payload];
       return {
         ...state,
-        activeComparator: getActiveComparator(comparedRevisions, state.builds, state.artifactConfig),
+        activeComparator: getActiveComparator(comparedRevisions, state.budgets, state.builds, state.artifactConfig),
         comparedRevisions
       };
     }
@@ -72,7 +80,7 @@ export default function reducer(state: State, action: Actions): State {
       const comparedRevisions = state.comparedRevisions.filter(rev => rev !== action.payload);
       return {
         ...state,
-        activeComparator: getActiveComparator(comparedRevisions, state.builds, state.artifactConfig),
+        activeComparator: getActiveComparator(comparedRevisions, state.budgets, state.builds, state.artifactConfig),
         comparedRevisions,
         focusedRevision: state.focusedRevision === action.payload ? undefined : state.focusedRevision
       };

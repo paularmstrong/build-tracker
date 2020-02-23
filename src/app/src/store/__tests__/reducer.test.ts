@@ -12,6 +12,7 @@ const initialState: State = Object.freeze({
   activeArtifacts: {},
   activeComparator: null,
   artifactConfig: {},
+  budgets: [],
   builds: [],
   colorScale: Object.keys(ColorScale)[0],
   comparator: new Comparator({ builds: [] }),

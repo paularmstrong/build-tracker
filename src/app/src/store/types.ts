@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { AppConfig } from '@build-tracker/types';
 import Build from '@build-tracker/build';
 import ColorScale from '../modules/ColorScale';
 import Comparator from '@build-tracker/comparator';
+import { AppConfig, Budget } from '@build-tracker/types';
 
 export enum FetchState {
   NONE,
@@ -22,6 +22,7 @@ export interface State {
   activeArtifacts: { [key: string]: boolean };
   activeComparator: Comparator;
   artifactConfig: AppConfig['artifacts'];
+  budgets: Array<Budget>;
   builds: Array<Build>;
   colorScale: keyof typeof ColorScale;
   comparator: Comparator;

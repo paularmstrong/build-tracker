@@ -40,6 +40,7 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
   res.locals.props = {
     url,
     artifactConfig: Object.assign({}, { budgets: {}, filters: [], groups: [] }, config.artifacts || {}),
+    budgets: config.budgets || [],
     hideAttribution: !!config.hideAttribution,
     name: config.name || 'Build Tracker',
     defaultSizeKey: config.defaultSizeKey

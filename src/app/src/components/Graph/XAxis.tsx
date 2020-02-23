@@ -12,12 +12,21 @@ interface Props {
   scale: ScalePoint<string>;
 }
 
+const MAX_TICK_LABELS = 50;
+
 const XAxis = (props: Props): React.ReactElement => {
   const { height, scale } = props;
   const ref = React.useRef(null);
+  const domainLength = scale.domain().length;
 
   React.useEffect(() => {
-    const axis = axisBottom(scale).tickFormat(d => formatSha(d));
+    const axis = axisBottom(scale).tickFormat((d, i) => {
+      if (domainLength <= MAX_TICK_LABELS || i % Math.floor(domainLength / (MAX_TICK_LABELS / 2)) === 0) {
+        return formatSha(d);
+      }
+      return '';
+    });
+
     select(ref.current)
       .call(axis)
       .selectAll('text')
@@ -25,7 +34,7 @@ const XAxis = (props: Props): React.ReactElement => {
       .attr('x', 6)
       .attr('transform', 'rotate(24)')
       .style('text-anchor', 'start');
-  }, [scale]);
+  }, [domainLength, scale]);
 
   return <g ref={ref} transform={`translate(0, ${height})`} />;
 };

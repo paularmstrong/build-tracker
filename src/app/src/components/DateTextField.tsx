@@ -5,11 +5,19 @@ import formatDate from 'date-fns/format';
 import isValid from 'date-fns/is_valid';
 import React from 'react';
 import TextField from '../components/TextField';
-import { NativeSyntheticEvent, StyleProp, TextInputKeyPressEventData, View, ViewStyle } from 'react-native';
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInputKeyPressEventData,
+  TextInputProps,
+  TextInputSubmitEditingEventData,
+  View,
+  ViewStyle
+} from 'react-native';
 
 const DatePicker = React.lazy(() => import(/* webpackChunkName: "DatePicker" */ '../components/DatePicker'));
 
-interface Props {
+interface Props extends TextInputProps {
   initialValue?: Date;
   label: string;
   maxDate?: Date;
@@ -21,7 +29,7 @@ interface Props {
 const format = 'YYYY-MM-DD';
 
 const DateTextField = (props: Props): React.ReactElement => {
-  const { initialValue, label, maxDate, minDate, onSet, style } = props;
+  const { initialValue, label, maxDate, minDate, onSet, onSubmitEditing, style, ...textInputProps } = props;
 
   const [datePickerVisible, setDatePickerVisible] = React.useState(false);
   const [value, setValue] = React.useState<Date>(initialValue);
@@ -63,6 +71,14 @@ const DateTextField = (props: Props): React.ReactElement => {
     }
   }, []);
 
+  const handleSubmit = React.useCallback(
+    (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+      setDatePickerVisible(false);
+      onSubmitEditing(e);
+    },
+    [onSubmitEditing]
+  );
+
   return (
     <View ref={startDateRef} style={style}>
       <TextField
@@ -70,7 +86,9 @@ const DateTextField = (props: Props): React.ReactElement => {
         onChangeText={handleChangeText}
         onKeyPress={handleKeypress}
         onFocus={toggleDatePicker}
+        onSubmitEditing={handleSubmit}
         value={stringValue}
+        {...textInputProps}
       />
       {datePickerVisible ? (
         <React.Suspense fallback={null}>

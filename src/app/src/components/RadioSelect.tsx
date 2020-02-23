@@ -46,9 +46,9 @@ const RadioSelect = (props: Props): React.ReactElement => {
 
   return (
     <Ripple rippleColor={Theme.Color.Primary00} style={[styles.root, style]}>
-      <View>
+      <View pointerEvents="none">
         <View style={[styles.radio, isFocused && styles.focused]} testID="fauxRadio">
-          {value ? <View pointerEvents="none" style={[styles.checked, isFocused && styles.checkedFocused]} /> : null}
+          {value ? <View style={[styles.checked, isFocused && styles.checkedFocused]} /> : null}
         </View>
         {unstable_createElement('input', {
           'aria-labelledby': labelledBy,

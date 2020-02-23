@@ -70,7 +70,7 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
             >
               {LeadingIcon ? <LeadingIcon style={[styles.icon, styles.leadingIcon]} /> : null}
               <View style={styles.labelInput}>
-                <View style={[styles.label, labelMoved && styles.labelMoved]}>
+                <View pointerEvents="none" style={[styles.label, labelMoved && styles.labelMoved]}>
                   <Text style={[styles.labelText, labelMoved && styles.labelTextMoved]}>{label}</Text>
                 </View>
                 <TextInput

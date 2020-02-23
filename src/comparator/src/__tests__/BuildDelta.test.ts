@@ -4,6 +4,7 @@
 import ArtifactDelta from '../ArtifactDelta';
 import Build from '@build-tracker/build';
 import BuildDelta from '../BuildDelta';
+import { BudgetLevel, BudgetType } from '@build-tracker/types';
 
 describe('BuildDelta', () => {
   let buildA, buildB;
@@ -109,6 +110,33 @@ describe('BuildDelta', () => {
       const bd = new BuildDelta(buildA, buildB, { artifactFilters: [/churros/, /burritos/] });
       expect(bd.artifactDeltas).toEqual([
         new ArtifactDelta('tacos', [], { gzip: 1, stat: 2 }, { gzip: 1, stat: 1 }, false)
+      ]);
+    });
+
+    test('includes budgets for each artifact', () => {
+      const budgets = [{ level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.DELTA, maximum: 1 }];
+      const bd = new BuildDelta(buildA, buildB, {
+        artifactBudgets: { tacos: budgets }
+      });
+      expect(bd.artifactDeltas).toEqual(
+        expect.arrayContaining([new ArtifactDelta('tacos', budgets, { gzip: 1, stat: 2 }, { gzip: 1, stat: 1 }, false)])
+      );
+    });
+
+    test('includes * budgets on every artifact', () => {
+      const budget = { level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.DELTA, maximum: 1 };
+      const burritoBudget = { level: BudgetLevel.ERROR, sizeKey: 'stat', type: BudgetType.DELTA, maximum: 1 };
+      const bd = new BuildDelta(buildA, buildB, { artifactBudgets: { '*': [budget], burritos: [burritoBudget] } });
+      expect(bd.artifactDeltas).toEqual([
+        new ArtifactDelta('tacos', [budget], { gzip: 1, stat: 2 }, { gzip: 1, stat: 1 }, false),
+        new ArtifactDelta(
+          'burritos',
+          expect.arrayContaining([budget, burritoBudget]),
+          { gzip: 2, stat: 3 },
+          { gzip: 4, stat: 6 },
+          true
+        ),
+        new ArtifactDelta('churros', [budget], { gzip: 0, stat: 0 }, { gzip: 4, stat: 6 }, true)
       ]);
     });
   });

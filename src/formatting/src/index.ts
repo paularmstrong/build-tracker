@@ -29,7 +29,8 @@ export function formatSha(sha: string): string {
 }
 
 function formatPercent(value: number): string {
-  return `${(value * 100).toFixed(3)}%`;
+  const val = Math.ceil(value * 1000) / 10;
+  return `${val}%`;
 }
 
 const levelToString = {
@@ -55,7 +56,7 @@ export function formatBudgetResult(budgetResult: BudgetResult, itemName: string,
     case BudgetType.DELTA:
       return `${prefix} failed the ${sizeKey} budget delta limit. Expected to increase no more than ${expectedFormatted}, but increased by ${actualFormatted}`;
     case BudgetType.PERCENT_DELTA:
-      return `${prefix} failed the ${sizeKey} budget percent change limit. Expected no increase by no more than ${expectedFormatted}, but increased by ${actualFormatted}`;
+      return `${prefix} failed the ${sizeKey} budget percent change limit. Expected to not increase by more than ${expectedFormatted}, but increased by ${actualFormatted}`;
     case BudgetType.SIZE:
       return `${prefix} failed the ${sizeKey} budget size limit of ${expectedFormatted} by ${diffFormatted}`;
   }

@@ -104,14 +104,14 @@ describe('formatBudgetResult', () => {
             sizeKey: 'stat',
             passing: false,
             expected: 0.1,
-            actual: 0.2,
+            actual: 0.22345,
             type: BudgetType.PERCENT_DELTA,
             level: BudgetLevel.ERROR
           },
           'tacos'
         )
       ).toEqual(
-        'Error: `tacos` failed the stat budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+        'Error: `tacos` failed the stat budget percent change limit. Expected to not increase by more than 10%, but increased by 22.4%'
       );
     });
   });
@@ -175,14 +175,14 @@ describe('formatBudgetResult', () => {
             sizeKey: 'stat',
             passing: false,
             expected: 0.1,
-            actual: 0.2,
+            actual: 1.6354908725,
             type: BudgetType.PERCENT_DELTA,
             level: BudgetLevel.WARN
           },
           'tacos'
         )
       ).toEqual(
-        'Warning: `tacos` failed the stat budget percent change limit. Expected no increase by no more than 10.000%, but increased by 20.000%'
+        'Warning: `tacos` failed the stat budget percent change limit. Expected to not increase by more than 10%, but increased by 163.6%'
       );
     });
   });

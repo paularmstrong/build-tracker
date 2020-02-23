@@ -79,6 +79,7 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
         keyboardType="numeric"
         label="Number of builds"
         onChangeText={setBuildCountValue}
+        onSubmitEditing={handleSetLastNBuilds}
         style={styles.textinput}
         value={buildCountValue}
       />
@@ -87,8 +88,21 @@ const DrawerView: FunctionComponent<{}> = (_props: {}, ref: React.RefObject<Draw
       <Divider style={styles.divider} />
 
       <Subtitle title="Date range" />
-      <DateTextField maxDate={endDate || today} label="Start date" onSet={setStartDate} style={styles.textinput} />
-      <DateTextField minDate={startDate} maxDate={today} label="End date" onSet={setEndDate} style={styles.textinput} />
+      <DateTextField
+        onSubmitEditing={handleSetDateRange}
+        maxDate={endDate || today}
+        label="Start date"
+        onSet={setStartDate}
+        style={styles.textinput}
+      />
+      <DateTextField
+        onSubmitEditing={handleSetDateRange}
+        minDate={startDate}
+        maxDate={today}
+        label="End date"
+        onSet={setEndDate}
+        style={styles.textinput}
+      />
       <View>
         <Button disabled={!startDate || !endDate} onPress={handleSetDateRange} title="Get range" type="unelevated" />
       </View>

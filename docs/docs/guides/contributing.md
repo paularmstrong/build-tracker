@@ -153,6 +153,7 @@ Build Tracker is written in Typescript throughout all workspaces. Please do not 
 To run the development environment, some shortcuts are provided in the `package.json` scripts:
 
 - `yarn dev` Run the server and application in a hot-reloadable environment using pre-seeded builds on the filesystem
+- `yarn dev:large` This is the same as `yarn:dev`, but with a larger dataset. More builds and many more artifacts in each.
 - `yarn dev:maria` Run the server using a local MariaDB instance
 - `yarn dev:postgres` Run the server using a local Postgres instance
 

@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",
+    "dev:large": "ts-node src/server/src/index.ts run -c ./config/fixtures-large.js",
     "dev:setup": "ts-node src/server/src/index.ts setup",
     "dev:seed": "ts-node src/server/src/index.ts seed",
     "dev:mariadb": "ts-node src/server/src/index.ts run -c ./config/mariadb.js",

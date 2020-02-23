@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import Build from '@build-tracker/build';
-import buildA from '@build-tracker/fixtures/builds/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
+import buildA from '@build-tracker/fixtures/builds-medium/22abb6f829a07ca96ff56deeadf4d0e8fc2dbb04.json';
 import Comparator from '@build-tracker/comparator';
 import Comparison from '../../views/Comparison';
 import Main from '../Main';

@@ -101,6 +101,19 @@ describe('AppBarView', () => {
       expect(clearComparedSpy).toHaveBeenCalled();
     });
 
+    test('can copy a summary', () => {
+      const { getByProps } = render(
+        <Provider store={mockStore(seededState)}>
+          <AppBarView drawerRef={drawerRef} />
+        </Provider>
+      );
+
+      fireEvent.press(getByProps({ title: 'More actions' }));
+      fireEvent.press(getByProps({ label: 'Copy summary' }));
+
+      expect(clipboardSpy).toHaveBeenCalledWith(`${seededState.comparator.toSummary().join(' \n')}`);
+    });
+
     test('can copy as markdown', () => {
       const { getByProps } = render(
         <Provider store={mockStore(seededState)}>

@@ -107,10 +107,11 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
 
         const sizes = baseArtifact ? baseArtifact.sizes : this._fauxArtifactSizes;
         const prevSizes = prevArtifact ? prevArtifact.sizes : this._fauxArtifactSizes;
+        const budgets = [...(this._artifactBudgets[artifactName] || []), ...(this._artifactBudgets['*'] || [])];
 
         const delta = new ArtifactDelta(
           artifactName,
-          this._artifactBudgets[artifactName] || [],
+          budgets,
           sizes,
           prevSizes,
           !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash

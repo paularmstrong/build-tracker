@@ -8,6 +8,7 @@ import Divider from '../components/Divider';
 import DocumentIcon from '../icons/Document';
 import { Handles as DrawerHandles } from '../components/Drawer';
 import LinkIcon from '../icons/Link';
+import ListBulletedIcon from '../icons/ListBulleted';
 import MenuIcon from '../icons/Menu';
 import MenuItem from '../components/MenuItem';
 import React from 'react';
@@ -93,6 +94,12 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     appBarRef.current.dismissOverflow();
   }, [sizeKey, disabledArtifactsVisible, graphType, comparedRevisions, activeArtifacts, dispatch]);
 
+  const handleCopySummary = React.useCallback((): void => {
+    Clipboard.setString(`${activeComparator.toSummary().join(' \n')}`);
+    dispatch(addSnack('Copied summary'));
+    appBarRef.current.dismissOverflow();
+  }, [activeComparator, dispatch]);
+
   return (
     <AppBar
       navigationIcon={MenuIcon}
@@ -102,6 +109,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
           <>
             <MenuItem key="clear" icon={ClearIcon} label="Clear selected revisions" onPress={handleClearRevisions} />
             <Divider />
+            <MenuItem key="summary" icon={ListBulletedIcon} label="Copy summary" onPress={handleCopySummary} />
             <MenuItem key="md" icon={TableIcon} label="Copy as markdown" onPress={handleCopyAsMarkdown} />
             <MenuItem key="csv" icon={DocumentIcon} label="Copy as CSV" onPress={handleCopyAsCsv} />
             <MenuItem key="link" icon={LinkIcon} label="Copy link" onPress={handleCopyLink} />

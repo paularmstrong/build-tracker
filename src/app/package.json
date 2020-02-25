@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/app",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Build Tracker client side application for tracking builds over time",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

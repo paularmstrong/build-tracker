@@ -82,7 +82,7 @@ export const handler = async (args: Args): Promise<{}> => {
   const defaultBranch = await Git.getDefaultBranch(config.cwd);
   const branch = args.branch ? args.branch : await Git.getBranch(config.cwd);
   let revision: BuildMetaItem = await Git.getCurrentRevision(config.cwd);
-  const parentRevision =
+  let parentRevision: BuildMetaItem =
     args['parent-revision'] ||
     (branch !== defaultBranch
       ? await Git.getMergeBase(defaultBranch, config.cwd)
@@ -91,10 +91,16 @@ export const handler = async (args: Args): Promise<{}> => {
 
   if (config.buildUrlFormat) {
     const toPath = pathToRegexp.compile(config.buildUrlFormat);
-    const url = toPath({ revision });
+    const revisionUrl = toPath({ revision });
     revision = {
       value: revision,
-      url
+      url: revisionUrl
+    };
+
+    const parentRevisionUrl = toPath({ revision: parentRevision });
+    parentRevision = {
+      value: parentRevision,
+      url: parentRevisionUrl
     };
   }
 

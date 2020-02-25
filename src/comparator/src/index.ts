@@ -148,7 +148,25 @@ export default class BuildComparator {
   private _matrixArtifacts: ComparisonMatrix['artifacts'];
 
   public constructor({ artifactBudgets, artifactFilters, budgets, builds, groups }: ComparatorOptions) {
-    this.builds = builds;
+    this.builds = builds
+      .sort((buildA, buildB) => {
+        const diff = buildA.timestamp.valueOf() - buildB.timestamp.valueOf();
+        if (diff > 0) {
+          return 1;
+        } else if (diff < 0) {
+          return -1;
+        }
+        return 0;
+      })
+      .sort((buildA, buildB) => {
+        if (buildA.getMetaValue('parentRevision') === buildB.getMetaValue('revision')) {
+          return 1;
+        }
+        if (buildB.getMetaValue('revision') === buildA.getMetaValue('parentRevision')) {
+          return -1;
+        }
+        return 0;
+      });
     this._artifactFilters = artifactFilters || [];
     this._artifactBudgets = artifactBudgets || emptyObject;
     this._groups = [{ name: 'All', artifactNames: this.artifactNames, budgets }, ...(groups || [])].filter(Boolean);

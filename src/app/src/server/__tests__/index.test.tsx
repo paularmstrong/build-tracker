@@ -76,10 +76,7 @@ describe('Server', () => {
         .get('/')
         .then(res => {
           const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
-          expect(match[1]).toMatchInlineSnapshot(`
-            "={ artifactConfig:{ groups:[ { name:\\"Foo\\",
-                    artifactMatch:/foo/ } ] } }"
-          `);
+          expect(match[1]).toMatchInlineSnapshot(`"={artifactConfig:{groups:[{name:\\"Foo\\",artifactMatch:/foo/}]}}"`);
         });
     });
 
@@ -104,10 +101,7 @@ describe('Server', () => {
         .query({ sizeKey: 'tacos', comparedRevisions: '123' })
         .then(res => {
           const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
-          expect(match[1]).toMatchInlineSnapshot(`
-            "={ sizeKey:\\"tacos\\",
-              comparedRevisions:[ \\"123\\" ] }"
-          `);
+          expect(match[1]).toMatchInlineSnapshot(`"={sizeKey:\\"tacos\\",comparedRevisions:[\\"123\\"]}"`);
         });
     });
   });

@@ -72,6 +72,9 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
   }, [activeComparator, artifactFilter, dispatch, sizeKey]);
 
   const handleCopyLink = React.useCallback((): void => {
+    const url = new URL(window.location.href);
+    url.pathname = `/builds/${comparedRevisions.join('/')}`;
+
     const params = new URLSearchParams();
     params.append('sizeKey', sizeKey);
     params.append('disabledArtifactsVisible', `${disabledArtifactsVisible}`);
@@ -87,12 +90,11 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
       });
     }
 
-    const newUrl = new URL(window.location.href);
-    newUrl.search = params.toString();
-    Clipboard.setString(newUrl.toString());
+    url.search = params.toString();
+    Clipboard.setString(url.toString());
     dispatch(addSnack('Copied link to clipboard'));
     appBarRef.current.dismissOverflow();
-  }, [sizeKey, disabledArtifactsVisible, graphType, comparedRevisions, activeArtifacts, dispatch]);
+  }, [activeArtifacts, comparedRevisions, disabledArtifactsVisible, dispatch, graphType, sizeKey]);
 
   const handleCopySummary = React.useCallback((): void => {
     Clipboard.setString(`${activeComparator.toSummary().join(' \n')}`);
@@ -112,6 +114,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
             <MenuItem key="summary" icon={ListBulletedIcon} label="Copy summary" onPress={handleCopySummary} />
             <MenuItem key="md" icon={TableIcon} label="Copy as markdown" onPress={handleCopyAsMarkdown} />
             <MenuItem key="csv" icon={DocumentIcon} label="Copy as CSV" onPress={handleCopyAsCsv} />
+            <Divider />
             <MenuItem key="link" icon={LinkIcon} label="Copy link" onPress={handleCopyLink} />
           </>
         ) : null

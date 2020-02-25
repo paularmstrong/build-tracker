@@ -55,6 +55,22 @@ describe('BuildComparator', () => {
     });
   });
 
+  describe('builds', () => {
+    test('sorts by timestamp, then parentRevision', () => {
+      const build3 = new Build(
+        { branch: 'master', revision: 'abcdef', parentRevision: build1.getMetaValue('revision'), timestamp: 1234566 },
+        [
+          { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
+          { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
+        ]
+      );
+      const comparator = new BuildComparator({ builds: [build2, build3, build1] });
+      expect(comparator.builds[0]).toBe(build1);
+      expect(comparator.builds[1]).toBe(build3);
+      expect(comparator.builds[2]).toBe(build2);
+    });
+  });
+
   describe('artifactFilters', () => {
     let comparator;
     beforeEach(() => {

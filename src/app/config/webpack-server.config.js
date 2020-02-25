@@ -24,7 +24,7 @@ module.exports = (env, reporter) => ({
       {
         test: /\.(png)$/i,
         loader: 'file-loader',
-        options: { outputPath: '../client/static', name: '[name].[hash:8].[ext]' }
+        options: { outputPath: '../client/static', publicPath: 'client/static', name: '[name].[hash:8].[ext]' }
       }
     ]
   },

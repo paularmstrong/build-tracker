@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.8",
   "description": "Build Tracker tool for comparing two or more builds",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

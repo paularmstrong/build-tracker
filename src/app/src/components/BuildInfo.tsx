@@ -70,14 +70,13 @@ const BuildInfo = (props: Props): React.ReactElement => {
             .filter(metaKey => metaKey !== 'revision' && metaKey !== 'timestamp')
             .map((metaKey: 'revision' | 'parentRevision' | 'branch') => {
               const value = build.getMetaValue(metaKey);
+              const url = build.getMetaUrl(metaKey);
               return (
                 <Tr key={metaKey}>
                   <Th>
                     <Text>{titleCase(metaKey)}</Text>
                   </Th>
-                  <Td style={styles.infoCell}>
-                    <Text>{value}</Text>
-                  </Td>
+                  <Td style={styles.infoCell}>{url ? <TextLink href={url} text={value} /> : <Text>{value}</Text>}</Td>
                 </Tr>
               );
             })}

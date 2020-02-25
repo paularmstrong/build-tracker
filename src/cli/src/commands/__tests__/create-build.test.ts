@@ -137,13 +137,16 @@ describe('create-build', () => {
       });
     });
 
-    test('returns a revision url if buildUrlFormat is provided', async () => {
+    test('returns a revision and parentRevision url if buildUrlFormat is provided', async () => {
       getBranchSpy.mockReturnValue(Promise.resolve('tacobranch'));
 
       await expect(
         Command.handler({ config: configWithFormatUrl, out: false, 'skip-dirty-check': true })
       ).resolves.toMatchObject({
-        meta: { revision: { url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg', value: 'abcdefg' } }
+        meta: {
+          revision: { url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg', value: 'abcdefg' },
+          parentRevision: { url: 'https://github.com/paularmstrong/build-tracker/commit/1234567', value: '1234567' }
+        }
       });
     });
   });

@@ -49,6 +49,30 @@ describe('BuildInfo', () => {
     });
   });
 
+  test('renders a text link for other keys that have a URL', () => {
+    const buildA = new Build(
+      {
+        branch: 'master',
+        revision: '123456',
+        parentRevision: {
+          value: 'abcdef',
+          url: 'https://github.com/paularmstrong/build-tracker/commit/abcdef'
+        },
+        timestamp: 123
+      },
+      []
+    );
+    const { getByType } = render(
+      <Provider store={mockStore({ comparator: new Comparator({ builds: [buildA] }) })}>
+        <BuildInfo focusedRevision="123456" />
+      </Provider>
+    );
+    expect(getByType(TextLink).props).toMatchObject({
+      href: 'https://github.com/paularmstrong/build-tracker/commit/abcdef',
+      text: 'abcdef'
+    });
+  });
+
   test('removes the build focus on button press', () => {
     const removeComparedRevisionSpy = jest.spyOn(Actions, 'removeComparedRevision');
     const { getByProps } = render(

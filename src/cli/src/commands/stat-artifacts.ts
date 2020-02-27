@@ -51,7 +51,7 @@ export const handler = async (args: Args): Promise<{ artifacts: Map<string, Stat
 
   const artifacts = new Map();
   artifactGlobs.forEach(fileGlob => {
-    glob.sync(path.resolve(cwd, fileGlob)).forEach(filePath => {
+    glob.sync(path.resolve(cwd, fileGlob), { nodir: true }).forEach(filePath => {
       const sizes = readfile(filePath, getFilenameHash);
       artifacts.set(nameMapper(path.relative(baseDir, filePath).replace(`.${sizes.hash}`, '')), sizes);
     });

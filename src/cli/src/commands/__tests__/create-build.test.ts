@@ -125,12 +125,12 @@ describe('create-build', () => {
             }
           },
           {
-            hash: 'd41d8cd98f00b204e9800998ecf8427e',
-            name: '../../fakedist/test-folder/test',
+            hash: '415dec15fc798bb79f499aeff00258fb',
+            name: '../../fakedist/test-folder/test-no-extension',
             sizes: {
               brotli: 49,
-              gzip: 20,
-              stat: 0
+              gzip: 54,
+              stat: 34
             }
           },
           {

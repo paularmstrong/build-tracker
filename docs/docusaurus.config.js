@@ -7,6 +7,7 @@ module.exports = {
   organizationName: 'paularmstrong', // Usually your GitHub org/user name.
   projectName: 'build-tracker', // Usually your repo name.
   themeConfig: {
+    disableDarkMode: true,
     navbar: {
       title: 'Build Tracker',
       logo: {

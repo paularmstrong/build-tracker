@@ -10,6 +10,6 @@ module.exports = {
   },
   rootDir: './',
   roots: ['<rootDir>/src'],
-  setupFiles: ['<rootDir>/../../node_modules/react-native-web/jest/setup.js', '<rootDir>/config/jest/setup.js'],
+  setupFiles: ['react-native-web/jest/setup.js', '<rootDir>/config/jest/setup.js'],
   testEnvironment: 'jsdom'
 };

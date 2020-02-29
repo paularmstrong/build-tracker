@@ -1,7 +1,7 @@
 ---
 id: api-errors
-title: @build-tracker/api-errors
-sidebar_label: @build-tracker/api-errors
+title: '@build-tracker/api-errors'
+sidebar_label: '@build-tracker/api-errors'
 ---
 
 This is a shared package for creating and comparing API errors returned from the Build Tracker server's API.

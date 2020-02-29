@@ -1,7 +1,7 @@
 ---
 id: comparator
-title: @build-tracker/comparator
-sidebar_label: @build-tracker/comparator
+title: '@build-tracker/comparator'
+sidebar_label: '@build-tracker/comparator'
 ---
 
 The Build Tracker Comparator contains the core functionality for calculating how two or more Builds differ. This package is only needed individually if you would like to do some custom reporting on various Builds.

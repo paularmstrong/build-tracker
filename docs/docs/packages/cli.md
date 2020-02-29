@@ -1,7 +1,7 @@
 ---
 id: cli
-title: @build-tracker/cli
-sidebar_label: @build-tracker/cli
+title: '@build-tracker/cli'
+sidebar_label: '@build-tracker/cli'
 ---
 
 Adding the `@build-tracker/cli` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`

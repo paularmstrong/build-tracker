@@ -11,7 +11,7 @@ jobs:
       - name: Add labels
         uses: adamzolyak/monorepo-pr-labeler-action@patching
         env:
-          BASE_DIRS: src|plugins|docs
+          BASE_DIRS: src|plugins
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set status
         uses: wip/action@master

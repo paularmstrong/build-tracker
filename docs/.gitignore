@@ -1,12 +1,12 @@
-.DS_Store
+# Production
+/build
 
-node_modules
+# Generated files
+.docusaurus
+.cache-loader
 
-lib/core/metadata.js
-lib/core/MetadataBlog.js
-
-website/translated_docs
-website/build/
-website/yarn.lock
-website/node_modules
-website/i18n/*
+# Misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

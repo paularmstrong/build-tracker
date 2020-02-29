@@ -87,5 +87,3 @@ jobs:
         env:
           BUILD_DIR: docs
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
-          PROJECT_NAME: build-tracker

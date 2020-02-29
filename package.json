@@ -9,7 +9,7 @@
   "workspaces": [
     "src/*",
     "plugins/*",
-    "docs"
+    "./docs"
   ],
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",

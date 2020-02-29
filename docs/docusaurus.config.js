@@ -24,7 +24,7 @@ module.exports = {
         }
       ],
       algolia: {
-        apiKey: '8dd64bd9bb779b8908147f675d6684e7',
+        apiKey: process.env.ALGOLIA_API_KEY,
         indexName: 'buildtracker',
         algoliaOptions: {}
       }

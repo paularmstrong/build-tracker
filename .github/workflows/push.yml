@@ -83,7 +83,7 @@ jobs:
       - name: Build docs
         run: yarn workspace @build-tracker/docs build
       - name: Deploy documentation
-        uses: clay/docusaurus-github-action@master
+        uses: paularmstrong/docusaurus-github-action@master
         env:
           BUILD_DIR: docs
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}

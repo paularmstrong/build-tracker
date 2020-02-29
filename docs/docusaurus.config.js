@@ -23,12 +23,13 @@ module.exports = {
           label: 'GitHub',
           position: 'right'
         }
-      ],
-      algolia: {
-        apiKey: '8dd64bd9bb779b8908147f675d6684e7',
-        indexName: 'buildtracker',
-        algoliaOptions: {}
-      }
+      ]
+    },
+    algolia: {
+      appId: 'BH4D9OD16A',
+      apiKey: '8dd64bd9bb779b8908147f675d6684e7',
+      indexName: 'buildtracker',
+      algoliaOptions: {}
     },
     footer: {
       logo: { src: 'img/logo.svg', alt: '' },

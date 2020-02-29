@@ -9,7 +9,7 @@
   "workspaces": [
     "src/*",
     "plugins/*",
-    "docs/website"
+    "docs"
   ],
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",
@@ -19,7 +19,7 @@
     "dev:mariadb": "ts-node src/server/src/index.ts run -c ./config/mariadb.js",
     "dev:mysql": "ts-node src/server/src/index.ts run -c ./config/mysql.js",
     "dev:postgres": "ts-node src/server/src/index.ts run -c ./config/postgres.js",
-    "docs": "cd docs/website && yarn start",
+    "docs": "cd docs && yarn start",
     "prebuild": "yarnpkg clean",
     "build": "lerna run build --stream --parallel --ignore @build-tracker/docs",
     "build:all": "lerna run build --stream --parallel",

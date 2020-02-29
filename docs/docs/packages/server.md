@@ -1,7 +1,7 @@
 ---
 id: server
-title: @build-tracker/server
-sidebar_label: @build-tracker/server
+title: '@build-tracker/server'
+sidebar_label: '@build-tracker/server'
 ---
 
 Adding the `@build-tracker/server` package will install a binary available as `bt-server`. It can be run with `yarn bt-server` or `npx bt-server`

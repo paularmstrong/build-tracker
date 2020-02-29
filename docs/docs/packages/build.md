@@ -1,7 +1,7 @@
 ---
 id: build
-title: @build-tracker/build
-sidebar_label: @build-tracker/build
+title: '@build-tracker/build'
+sidebar_label: '@build-tracker/build'
 ---
 
 ## Install

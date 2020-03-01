@@ -60,7 +60,7 @@ describe('formatBudgetResult', () => {
           'tacos',
           true
         )
-      ).toEqual('🚫: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('🚨: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('size', () => {

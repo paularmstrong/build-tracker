@@ -86,7 +86,7 @@ Returns an array Markdown-formatted summaries of the overall comparison and any 
 [
   '⚠️: `Group \\"All\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB',
   '⚠️: `Group \\"warning\\"` failed the gzip budget size limit of 0 KiB by 0.12 KiB',
-  '🚫: `Group \\"error\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB'
+  '🚨: `Group \\"error\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB'
 ];
 ```
 
@@ -96,7 +96,7 @@ If `useEmoji` is set to `false`, emoji will be replaced with words:
 | ------------ | ------- |
 | ✅ (U+2705)  | Success |
 | ⚠️ (U+26A0)  | Warning |
-| 🚫 (U+1F6AB) | Error   |
+| 🚨 (U+1F6A9) | Error   |
 
 ## Types
 

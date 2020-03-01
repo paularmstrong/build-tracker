@@ -40,7 +40,7 @@ const levelToString = {
 
 const levelToEmoji = {
   [BudgetLevel.WARN]: '⚠️',
-  [BudgetLevel.ERROR]: '🚫'
+  [BudgetLevel.ERROR]: '🚨'
 };
 
 export function formatBudgetResult(budgetResult: BudgetResult, itemName: string, useEmoji = false): string {

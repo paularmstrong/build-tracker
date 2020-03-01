@@ -23,7 +23,7 @@ module.exports = (env, reporter) => ({
       { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
       {
         test: /\.(png)$/i,
-        loader: 'file-loader',
+        loader: require.resolve('file-loader'),
         options: { outputPath: '../client/static', publicPath: '/client/static', name: '[name].[hash:8].[ext]' }
       }
     ]

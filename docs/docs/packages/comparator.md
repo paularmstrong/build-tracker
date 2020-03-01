@@ -86,17 +86,19 @@ Returns an array Markdown-formatted summaries of the overall comparison and any 
 [
   '⚠️: `Group \\"All\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB',
   '⚠️: `Group \\"warning\\"` failed the gzip budget size limit of 0 KiB by 0.12 KiB',
-  '🚨: `Group \\"error\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB'
+  '🚨: `Group \\"error\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB',
+  '#️⃣: `burritos` hash changed without any file size change'
 ];
 ```
 
 If `useEmoji` is set to `false`, emoji will be replaced with words:
 
-| Emoji        | Word    |
-| ------------ | ------- |
-| ✅ (U+2705)  | Success |
-| ⚠️ (U+26A0)  | Warning |
-| 🚨 (U+1F6A9) | Error   |
+| Emoji            | Word    |
+| ---------------- | ------- |
+| ✅ (U+2705)      | Success |
+| ⚠️ (U+26A0)      | Warning |
+| 🚨 (U+1F6A9)     | Error   |
+| #️⃣ (U+0023-20E3) | Hash    |
 
 ## Types
 

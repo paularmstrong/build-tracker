@@ -4,6 +4,7 @@
 import { CellType } from '@build-tracker/comparator';
 import { DeltaCell } from '../DeltaCell';
 import ErrorIcon from '../../../icons/Error';
+import HashIcon from '../../../icons/Hash';
 import React from 'react';
 import { Td } from '../../Table';
 import WarningIcon from '../../../icons/Warning';
@@ -65,7 +66,7 @@ describe('DeltaCell', () => {
         />
       );
 
-      expect(getByType(Td).props.accessibilityLabel).toEqual('-134 bytes (-50.000%)');
+      expect(getByType(Td).props.accessibilityLabel).toEqual('"tacos" changed by -134 bytes (-50.000%)');
     });
 
     test('shows a warning label if no change, but hash changed', () => {
@@ -83,8 +84,8 @@ describe('DeltaCell', () => {
           sizeKey="stat"
         />
       );
-      expect(queryAllByType(WarningIcon)).toHaveLength(1);
-      expect(getByType(Td).props.accessibilityLabel).toEqual('Unexpected hash change! 0 bytes (0.000%)');
+      expect(queryAllByType(HashIcon)).toHaveLength(1);
+      expect(getByType(Td).props.accessibilityLabel).toEqual('Hash: `tacos` hash changed without any file size change');
     });
 
     test('shows a warning icon if warning budget fails', () => {

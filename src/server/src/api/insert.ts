@@ -3,9 +3,9 @@
  */
 import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
-import { NotFoundError } from '@build-tracker/api-errors';
 import { Queries } from '../types';
 import { ServerConfig } from '../server';
+import { NotFoundError, ValidationError } from '@build-tracker/api-errors';
 import { Request, RequestHandler, Response } from 'express';
 
 export const insertBuild = (
@@ -15,7 +15,25 @@ export const insertBuild = (
 ): RequestHandler => (req: Request, res: Response): void => {
   const { artifacts, meta } = req.body;
   const { artifacts: artifactConfig = {}, budgets } = config;
+
   const build = new Build(meta, artifacts);
+
+  let validationErrors = [];
+  const revision = build.getMetaValue('revision');
+  if (!revision) {
+    validationErrors.push(new ValidationError('revision', 'string', revision));
+  }
+
+  if (isNaN(build.timestamp.valueOf())) {
+    validationErrors.push(new ValidationError('timestamp', 'timestamp', build.meta.timestamp));
+  }
+
+  if (validationErrors.length) {
+    res.status(400);
+    res.send({ errors: validationErrors.map(v => v.message) });
+    return;
+  }
+
   queries
     .insert(build)
     .then(() =>
@@ -54,7 +72,7 @@ export const insertBuild = (
         })
     )
     .catch(error => {
-      res.status(500);
+      res.status(error.status || 500);
       res.send({ error: error.message });
     });
 };

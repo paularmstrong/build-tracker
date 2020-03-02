@@ -84,6 +84,24 @@ describe('insert build handler', () => {
           expect(res.body.summary).toEqual(comparator.toSummary());
         });
     });
+
+    test('returns an array of validation errors', () => {
+      const handler = insertBuild(queries, config);
+      app.post('/test', handler);
+
+      return request(app)
+        .post('/test')
+        .send({ meta: { timestamp: 'foobar' }, artifacts: [] })
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json')
+        .then(res => {
+          expect(res.status).toEqual(400);
+          expect(res.body.errors).toEqual([
+            '"revision" expected to receive "string", but value was "undefined"',
+            '"timestamp" expected to receive "timestamp", but value was "foobar"'
+          ]);
+        });
+    });
   });
 
   describe('parent revision', () => {

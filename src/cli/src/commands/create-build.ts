@@ -12,9 +12,10 @@ export const command = 'create-build';
 
 export const description = 'Construct a build for the current commit';
 
-interface Args {
+export interface Args {
   branch?: string;
   config?: string;
+  meta?: string;
   out: boolean;
   'parent-revision'?: string;
   'skip-dirty-check': boolean;
@@ -22,9 +23,8 @@ interface Args {
 
 const group = 'Create a build';
 
-export const builder = (yargs): Argv<Args> =>
+export const getBuildOptions = (yargs): Argv<Args> =>
   yargs
-    .usage(`Usage: $0 ${command}`)
     .option('branch', {
       alias: 'b',
       description: 'Set the branch name and do not attempt to read from git',
@@ -37,12 +37,10 @@ export const builder = (yargs): Argv<Args> =>
       group,
       normalize: true
     })
-    .option('out', {
-      alias: 'o',
-      default: true,
-      description: 'Write the build to stdout',
+    .option('meta', {
+      description: 'JSON-encoded extra meta information to attach to the build',
       group,
-      type: 'boolean'
+      type: 'string'
     })
     .option('parent-revision', {
       description: 'Manually provide the parent revision instead of reading it automatically',
@@ -52,6 +50,17 @@ export const builder = (yargs): Argv<Args> =>
     .option('skip-dirty-check', {
       default: false,
       description: 'Skip the git work tree state check',
+      group,
+      type: 'boolean'
+    });
+
+export const builder = (yargs): Argv<Args> =>
+  getBuildOptions(yargs)
+    .usage(`Usage: $0 ${command}`)
+    .option('out', {
+      alias: 'o',
+      default: true,
+      description: 'Write the build to stdout',
       group,
       type: 'boolean'
     });
@@ -106,6 +115,8 @@ export const handler = async (args: Args): Promise<{}> => {
     }
   }
 
+  const meta = args.meta ? JSON.parse(args.meta) : {};
+
   const build = {
     meta: {
       author: name,
@@ -113,7 +124,8 @@ export const handler = async (args: Args): Promise<{}> => {
       parentRevision,
       revision,
       subject,
-      timestamp
+      timestamp,
+      ...meta
     },
     artifacts
   };

@@ -158,5 +158,18 @@ describe('create-build', () => {
         }
       });
     });
+
+    test('can include JSON encoded extra meta', async () => {
+      await expect(
+        Command.handler({
+          config,
+          out: false,
+          meta: '{"foo":"bar","baz":{"url":"https://buildtracker.dev","value":"baz"}}',
+          'skip-dirty-check': true
+        })
+      ).resolves.toMatchObject({
+        meta: { revision: 'abcdefg', foo: 'bar', baz: { url: 'https://buildtracker.dev', value: 'baz' } }
+      });
+    });
   });
 });

@@ -2,55 +2,23 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Argv } from 'yargs';
-import { handler as createBuild } from './create-build';
 import http from 'http';
 import https from 'https';
 import { URL } from 'url';
+import { Args as BuildArgs, handler as createBuildHandler, getBuildOptions } from './create-build';
 import getConfig, { ApiReturn } from '../modules/config';
 
 export const command = 'upload-build';
 
 export const description = 'Upload a build for the current commit';
 
-interface Args {
-  branch?: string;
-  config?: string;
-  out: boolean;
-  'skip-dirty-check': boolean;
-}
+type Args = BuildArgs;
 
-const group = 'Create a build';
-
-export const builder = (yargs): Argv<Args> =>
-  yargs
-    .usage(`Usage: $0 ${command}`)
-    .option('branch', {
-      alias: 'b',
-      description: 'Set the branch name and do not attempt to read from git',
-      group,
-      type: 'string'
-    })
-    .option('config', {
-      alias: 'c',
-      description: 'Override path to the build-tracker CLI config file',
-      group,
-      normalize: true
-    })
-    .option('parent-revision', {
-      description: 'Manually provide the parent revision instead of reading it automatically',
-      group,
-      type: 'string'
-    })
-    .option('skip-dirty-check', {
-      default: false,
-      description: 'Skip the git work tree state check',
-      group,
-      type: 'boolean'
-    });
+export const builder = (yargs): Argv<Args> => getBuildOptions(yargs).usage(`Usage: $0 ${command}`);
 
 export const handler = async (args: Args): Promise<void> => {
   const config = await getConfig(args.config);
-  const build = await createBuild({ ...args, out: false });
+  const build = await createBuildHandler({ ...args, out: false });
 
   const url = new URL(`${config.applicationUrl}/api/builds`);
   const httpProtocol = config.applicationUrl.startsWith('https:') ? https : http;

@@ -6,6 +6,10 @@ sidebar_label: '@build-tracker/api-errors'
 
 This is a shared package for creating and comparing API errors returned from the Build Tracker server's API.
 
+## 400 `ValidationError`
+
+The build that you are trying to insert into the database does not meet requirements. See the specific error message for more information.
+
 ## 401 `AuthError`
 
 If your server's API is protected with an API key and you do not provide it with requests requiring authentication, a 401 unauthorized response will be returned.

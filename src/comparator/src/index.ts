@@ -5,7 +5,13 @@ import Build from '@build-tracker/build';
 import BuildDelta from './BuildDelta';
 import markdownTable from 'markdown-table';
 import { ArtifactBudgets, ArtifactFilters, Budget, BudgetLevel, BudgetResult, Group } from '@build-tracker/types';
-import { formatBudgetResult, formatBytes, formatSha } from '@build-tracker/formatting';
+import {
+  formatBudgetResult,
+  formatBytes,
+  formatSha,
+  formatUnexpectedHashChange,
+  levelToEmoji
+} from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
   [key: string]: number;
@@ -112,9 +118,17 @@ const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatB
 const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string => {
   const errorFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.ERROR);
   const warningFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.WARN);
-  return `${errorFailingBudgets ? '🚨 ' : warningFailingBudgets ? '⚠️ ' : ''}${formatBytes(
-    cell.sizes[sizeKey] || 0
-  )} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
+  const warningHashChanged =
+    cell.hashChanged && cell.failingBudgets.length === 0 && Object.values(cell.sizes).every(size => size === 0);
+  return `${
+    errorFailingBudgets
+      ? `${levelToEmoji[BudgetLevel.ERROR]} `
+      : warningFailingBudgets
+      ? `${levelToEmoji[BudgetLevel.WARN]} `
+      : warningHashChanged
+      ? `${levelToEmoji['hash']} `
+      : ''
+  }${formatBytes(cell.sizes[sizeKey] || 0)} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
 };
 const defaultArtifactFilter = (): boolean => true;
 
@@ -470,6 +484,10 @@ export default class BuildComparator {
         cell.failingBudgets.forEach(budget => {
           memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
         });
+
+        if (cell.failingBudgets.length === 0 && Object.values(cell.sizes).every(size => size === 0)) {
+          memo.push(formatUnexpectedHashChange(row[0].text, useEmoji));
+        }
       });
       return memo;
     }, []);

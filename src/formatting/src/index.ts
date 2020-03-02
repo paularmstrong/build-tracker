@@ -35,22 +35,28 @@ function formatPercent(value: number): string {
 
 const levelToString = {
   [BudgetLevel.WARN]: 'Warning',
-  [BudgetLevel.ERROR]: 'Error'
+  [BudgetLevel.ERROR]: 'Error',
+  hash: 'Hash'
 };
 
-const levelToEmoji = {
+export const levelToEmoji = {
   [BudgetLevel.WARN]: '⚠️',
-  [BudgetLevel.ERROR]: '🚫'
+  [BudgetLevel.ERROR]: '🚨',
+  hash: '#️⃣'
 };
 
-export function formatBudgetResult(budgetResult: BudgetResult, itemName: string, useEmoji = false): string {
+function getPrefix(artifactName: string, level: string, useEmoji = false): string {
+  return `${(useEmoji ? levelToEmoji : levelToString)[level]}: \`${artifactName}\``;
+}
+
+export function formatBudgetResult(budgetResult: BudgetResult, artifactName: string, useEmoji = false): string {
   const { actual, expected, level, sizeKey, type } = budgetResult;
   const actualFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(actual) : formatBytes(actual);
   const expectedFormatted = type === BudgetType.PERCENT_DELTA ? formatPercent(expected) : formatBytes(expected);
   const diffFormatted =
     type === BudgetType.PERCENT_DELTA ? formatPercent(actual - expected) : formatBytes(actual - expected);
 
-  const prefix = `${(useEmoji ? levelToEmoji : levelToString)[level]}: \`${itemName}\``;
+  const prefix = getPrefix(artifactName, level, useEmoji);
 
   switch (type) {
     case BudgetType.DELTA:
@@ -60,4 +66,9 @@ export function formatBudgetResult(budgetResult: BudgetResult, itemName: string,
     case BudgetType.SIZE:
       return `${prefix} failed the ${sizeKey} budget size limit of ${expectedFormatted} by ${diffFormatted}`;
   }
+}
+
+export function formatUnexpectedHashChange(artifactName: string, useEmoji = false): string {
+  const prefix = getPrefix(artifactName, 'hash', useEmoji);
+  return `${prefix} hash changed without any file size change`;
 }

@@ -3,13 +3,14 @@
  */
 import { BudgetLevel } from '@build-tracker/types';
 import ErrorIcon from '../../icons/Error';
+import HashIcon from '../../icons/Hash';
 import Hoverable from '../Hoverable';
 import React from 'react';
 import { Td } from '../Table';
 import Tooltip from '../Tooltip';
 import WarningIcon from '../../icons/Warning';
 import { DeltaCell as Cell, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
-import { formatBudgetResult, formatBytes } from '@build-tracker/formatting';
+import { formatBudgetResult, formatBytes, formatUnexpectedHashChange } from '@build-tracker/formatting';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
@@ -69,26 +70,35 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   }
 
   const stringChange = `${sizeDelta} bytes (${(percentDelta * 100).toFixed(3)}%)`;
-  const title = cell.hashChanged && sizeDelta === 0 ? `Unexpected hash change! ${stringChange}` : stringChange;
 
-  const text = sizeDelta === 0 ? cell.hashChanged ? <WarningIcon /> : '' : formatBytes(sizeDelta);
+  const text = formatBytes(sizeDelta);
+  const hashChangedOnly = sizeDelta === 0 && cell.hashChanged;
   const tooltipText = failingBudgets.length
     ? failingBudgets.map(budget => formatBudgetResult(budget, cell.name)).join(', ')
-    : sizeDelta === 0 && cell.hashChanged
-    ? `The hash for "${cell.name}" unexpectedly changed`
+    : hashChangedOnly
+    ? formatUnexpectedHashChange(cell.name, false)
     : `"${cell.name}" changed by ${stringChange}`;
 
   return (
-    <Td accessibilityLabel={title} style={[style, { backgroundColor }]}>
+    <Td accessibilityLabel={tooltipText} style={[style, { backgroundColor }]}>
       {text ? (
         <Hoverable>
           {isHovered => (
             <View ref={viewRef} style={styles.textWrapper} testID="delta">
-              <Text>
-                {errorBudgets.length ? <ErrorIcon /> : warningBudgets.length ? <WarningIcon /> : null}
-                {failingBudgets.length ? ' ' : null}
-              </Text>
-              <Text>{text}</Text>
+              {sizeDelta !== 0 || hashChangedOnly ? (
+                <Text>
+                  {errorBudgets.length ? (
+                    <ErrorIcon />
+                  ) : warningBudgets.length ? (
+                    <WarningIcon />
+                  ) : hashChangedOnly ? (
+                    <HashIcon />
+                  ) : (
+                    ''
+                  )}{' '}
+                </Text>
+              ) : null}
+              {sizeDelta !== 0 ? <Text>{text}</Text> : null}
               {isHovered ? <Tooltip relativeTo={viewRef} text={tooltipText} /> : null}
             </View>
           )}

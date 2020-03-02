@@ -36,6 +36,14 @@ const build2 = new Build(
     { name: 'churros', hash: 'def', sizes: { stat: 469, gzip: 120 } }
   ]
 );
+// Alternative to build2 with burritos
+const build2b = new Build(
+  { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
+  [
+    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
+    { name: 'burritos', hash: 'def', sizes: { stat: 456, gzip: 90 } }
+  ]
+);
 
 const artifactFilters = [/burritos/, /churros/];
 
@@ -368,9 +376,9 @@ describe('BuildComparator', () => {
     test('handles 0 artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build1b] });
       expect(comparator.toMarkdown({ artifactFilter: () => false })).toMatchInlineSnapshot(`
-      "|     |  1234567 |  1234567 |           Δ1 |
-      | :-- | -------: | -------: | -----------: |
-      | All | 0.13 KiB | 0.13 KiB | 0 KiB (0.0%) |"
+        "|     |  1234567 |  1234567 |           Δ1 |
+        | :-- | -------: | -------: | -----------: |
+        | All | 0.13 KiB | 0.13 KiB | 0 KiB (0.0%) |"
       `);
     });
 
@@ -489,6 +497,19 @@ describe('BuildComparator', () => {
       `);
     });
 
+    test('includes hash emoji for unexpected hash changes', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2b]
+      });
+      expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
+"|          |  1234567 |  8901234 |               Δ1 |
+| :------- | -------: | -------: | ---------------: |
+| All      | 0.13 KiB | 0.13 KiB | #️⃣ 0 KiB (0.0%) |
+| burritos | 0.09 KiB | 0.09 KiB | #️⃣ 0 KiB (0.0%) |
+| tacos    | 0.04 KiB | 0.04 KiB |     0 KiB (0.0%) |"
+`);
+    });
+
     test('includes emoji for failing group budgets', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
@@ -562,10 +583,10 @@ describe('BuildComparator', () => {
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
       expect(comparator.toCsv()).toMatchInlineSnapshot(`
-        ",1234567,8901234,Δ1
-        All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
-        tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
-      `);
+",1234567,8901234,Δ1
+All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
+tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
+`);
     });
 
     test('accepts formatting and filtering options', () => {
@@ -591,7 +612,7 @@ describe('BuildComparator', () => {
   describe('summary', () => {
     test('returns a list of errors and warnings for artifacts', () => {
       const comparator = new BuildComparator({
-        builds: [build1, build2],
+        builds: [build1, build2b],
         artifactBudgets: {
           churros: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 100, sizeKey: 'gzip' }],
           tacos: [
@@ -601,10 +622,10 @@ describe('BuildComparator', () => {
         }
       });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
-        "⚠️: \`churros\` failed the gzip budget size limit of 0.1 KiB by 0.02 KiB
-        ⚠️: \`tacos\` failed the gzip budget size limit of 0 KiB by 0.04 KiB
-        🚫: \`tacos\` failed the gzip budget size limit of 0.03 KiB by 0.01 KiB"
-      `);
+"#️⃣: \`burritos\` hash changed without any file size change
+⚠️: \`tacos\` failed the gzip budget size limit of 0 KiB by 0.04 KiB
+🚨: \`tacos\` failed the gzip budget size limit of 0.03 KiB by 0.01 KiB"
+`);
     });
 
     test('returns a list of errors and warnings for groups', () => {
@@ -627,7 +648,7 @@ describe('BuildComparator', () => {
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
         "⚠️: \`Group \\"All\\"\` failed the gzip budget size limit of 0 KiB by 0.16 KiB
         ⚠️: \`Group \\"warning\\"\` failed the gzip budget size limit of 0 KiB by 0.12 KiB
-        🚫: \`Group \\"error\\"\` failed the gzip budget size limit of 0 KiB by 0.16 KiB"
+        🚨: \`Group \\"error\\"\` failed the gzip budget size limit of 0 KiB by 0.16 KiB"
       `);
     });
 

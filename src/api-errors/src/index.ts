@@ -28,3 +28,12 @@ export class UnimplementedError extends Error {
     Object.setPrototypeOf(this, UnimplementedError.prototype);
   }
 }
+
+export class ValidationError extends Error {
+  public readonly status = 400;
+
+  public constructor(field: string, expected: string, received: string | number | void) {
+    super(`"${field}" expected to receive "${expected}", but value was "${received}"`);
+    Object.setPrototypeOf(this, ValidationError.prototype);
+  }
+}

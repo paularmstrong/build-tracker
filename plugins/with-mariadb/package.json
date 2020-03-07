@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/plugin-with-mariadb",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "Build Tracker server plugin for MariaDB",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -14,9 +14,9 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/api-errors": "^1.0.0-beta.0",
+    "@build-tracker/api-errors": "^1.0.0-beta.9",
     "@build-tracker/build": "^1.0.0-beta.4",
-    "@build-tracker/server": "^1.0.0-beta.8",
+    "@build-tracker/server": "^1.0.0-beta.9",
     "dotenv": "^7.0.0",
     "mariadb": "^2.0.5"
   },

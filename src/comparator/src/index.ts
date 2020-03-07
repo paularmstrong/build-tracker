@@ -485,7 +485,11 @@ export default class BuildComparator {
           memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
         });
 
-        if (cell.failingBudgets.length === 0 && Object.values(cell.sizes).every(size => size === 0)) {
+        if (
+          cell.failingBudgets.length === 0 &&
+          cell.hashChanged &&
+          Object.values(cell.sizes).every(size => size === 0)
+        ) {
           memo.push(formatUnexpectedHashChange(row[0].text, useEmoji));
         }
       });

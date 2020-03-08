@@ -9,7 +9,7 @@ import { Artifact, BuildMeta, BuildMetaItem } from '@build-tracker/build';
 
 export interface Options {
   branch?: string;
-  meta?: string;
+  meta?: {};
   parentRevision?: string;
   skipDirtyCheck: boolean;
 }
@@ -68,8 +68,6 @@ export default async function createBuild(config: Config, opts: Options = { skip
     }
   }
 
-  const meta = opts.meta ? JSON.parse(opts.meta) : {};
-
   const build = {
     meta: {
       author: name,
@@ -78,7 +76,7 @@ export default async function createBuild(config: Config, opts: Options = { skip
       revision,
       subject,
       timestamp,
-      ...meta
+      ...(opts.meta || {})
     },
     artifacts
   };

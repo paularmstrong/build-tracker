@@ -67,7 +67,7 @@ export const handler = async (args: Args): Promise<{}> => {
 
   const build = await createBuild(config, {
     branch: args.branch,
-    meta: args.meta,
+    meta: args.meta ? JSON.parse(args.meta) : {},
     parentRevision: args['parent-revision'],
     skipDirtyCheck: args['skip-dirty-check']
   });

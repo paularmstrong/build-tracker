@@ -49,5 +49,12 @@ describe('create-build', () => {
       );
       expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"parentRevision\\": \\"7654321\\"'));
     });
+
+    test('converts JSON string-encoded metadata', async () => {
+      await expect(
+        Command.handler({ config, meta: JSON.stringify({ foo: 'bar' }), out: true, 'skip-dirty-check': true })
+      ).resolves.toEqual(expect.any(Object));
+      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('\\"foo\\": \\"bar\\"'));
+    });
   });
 });

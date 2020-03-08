@@ -118,10 +118,10 @@ describe('createBuild', () => {
     });
   });
 
-  test('can include JSON encoded extra meta', async () => {
+  test('can include extra meta', async () => {
     await expect(
       createBuild(config, {
-        meta: '{"foo":"bar","baz":{"url":"https://buildtracker.dev","value":"baz"}}',
+        meta: { foo: 'bar', baz: { url: 'https://buildtracker.dev', value: 'baz' } },
         skipDirtyCheck: true
       })
     ).resolves.toMatchObject({

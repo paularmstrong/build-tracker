@@ -1,19 +1,19 @@
 ---
 id: cli
-title: '@build-tracker/cli'
-sidebar_label: '@build-tracker/cli'
+title: '@build-tracker/utility'
+sidebar_label: '@build-tracker/utility'
 ---
 
-Adding the `@build-tracker/cli` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`
+Adding the `@build-tracker/utility` package will install a binary available as `bt-cli`. It can be run with `yarn bt-cli` or `npx bt-cli`
 
 > **Important note:** Set up the Build Tracker CLI close to your application's code (in the same repository and workspace). Remember that the configuration for the CLI is **not** the same as the configuration for the [server](./server.md).
 
 ## Install
 
 ```sh
-yarn add @build-tracker/cli@latest
+yarn add @build-tracker/utility@latest
 # or
-npm install --save @build-tracker/cli@latest
+npm install --save @build-tracker/utility@latest
 ```
 
 To list all commands and help, run `yarn bt-cli --help`

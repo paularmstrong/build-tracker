@@ -7,7 +7,7 @@ The [Build Tracker CLI](../ci) is a handy tool to make uploading new builds from
 
 # Uploading a new build
 
-Using the CLI from `@build-tracker/cli`, once you've set up your [configuration file](../cli#configuration) you can upload a new build with a single command:
+Using the CLI from `@build-tracker/utility`, once you've set up your [configuration file](../cli#configuration) you can upload a new build with a single command:
 
 ```shell
 yarn bt-cli upload-build

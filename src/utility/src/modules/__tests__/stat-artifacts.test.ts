@@ -1,11 +1,15 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import * as brotliSize from 'brotli-size';
 import config from '@build-tracker/fixtures/cli-configs/rc/.build-trackerrc.js';
 import statArtifacts from '../stat-artifacts';
 
 describe('statArtifacts', () => {
   test('gets artifact sizes', () => {
+    jest.spyOn(brotliSize, 'sync').mockImplementation(() => {
+      throw new Error('disabled in test');
+    });
     const artifacts = statArtifacts(config);
     expect(artifacts).toBeInstanceOf(Map);
     expect(artifacts.size).toEqual(3);

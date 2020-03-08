@@ -6,11 +6,11 @@ module.exports = {
       'packages/api-errors',
       'packages/app',
       'packages/build',
-      'packages/cli',
       'packages/comparator',
       'packages/formatting',
       'packages/server',
-      'packages/types'
+      'packages/types',
+      'packages/utility'
     ],
     Plugins: ['plugins/plugins', 'plugins/withPostgres', 'plugins/withMariadb', 'plugins/withMysql']
   }

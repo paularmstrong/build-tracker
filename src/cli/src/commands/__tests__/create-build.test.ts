@@ -3,6 +3,7 @@
  */
 import * as brotliSize from 'brotli-size';
 import * as Command from '../create-build';
+import * as Git from '@build-tracker/api-client/src/modules/git';
 import path from 'path';
 import yargs from 'yargs';
 
@@ -12,6 +13,17 @@ const config = path.join(
 );
 
 describe('create-build', () => {
+  beforeEach(() => {
+    jest.spyOn(Git, 'getDefaultBranch').mockImplementation(() => Promise.resolve('master'));
+    jest.spyOn(Git, 'getMergeBase').mockImplementation(() => Promise.resolve('1234567'));
+    jest.spyOn(Git, 'getParentRevision').mockImplementation(() => Promise.resolve('7654321'));
+    jest.spyOn(Git, 'getCurrentRevision').mockImplementation(() => Promise.resolve('abcdefg'));
+    jest.spyOn(Git, 'getBranch').mockImplementation(() => Promise.resolve('master'));
+    jest
+      .spyOn(Git, 'getRevisionDetails')
+      .mockImplementation(() => Promise.resolve({ timestamp: 1234567890, name: 'Jimmy', subject: 'tacos' }));
+  });
+
   describe('builder', () => {
     test('defaults config', () => {
       const args = Command.builder(yargs([]));
@@ -35,7 +47,7 @@ describe('create-build', () => {
 
     test('writes the artifact stats to stdout', async () => {
       await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toBeUndefined();
-      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('"name": "../../fakedist/main.1234567.js"'));
+      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('"parentRevision": "7654321",'));
     });
 
     test('converts JSON string-encoded metadata', async () => {

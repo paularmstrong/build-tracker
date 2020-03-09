@@ -1,26 +1,24 @@
 ---
-id: utility
-title: '@build-tracker/utility'
-sidebar_label: '@build-tracker/utility'
+id: api-client
+title: '@build-tracker/api-client'
+sidebar_label: '@build-tracker/api-client'
 ---
 
-Adding the `@build-tracker/utility` package includes a command-line utility, `bt-cli` and a node.js API for creating and uploading builds to your Build Tracker instance. It can be run with `yarn bt-cli` or `npx bt-cli`
+The `@build-tracker/api-client` package includes node.js functions for creating and uploading builds to your Build Tracker instance’s API.
 
-> **Important note:** Set up the Build Tracker CLI close to your application's code (in the same repository and workspace). Remember that the configuration for the CLI is **not** the same as the configuration for the [server](./server.md).
+> **Important note:** Set up the Build Tracker API configuration close to your application's code (in the same repository and workspace). Remember that the configuration for the API is **not** the same as the configuration for the [server](./server.md).
 
 ## Install
 
 ```sh
-yarn add @build-tracker/utility@latest
+yarn add @build-tracker/api-client@latest
 # or
-npm install --save @build-tracker/utility@latest
+npm install --save @build-tracker/api-client@latest
 ```
-
-To list all commands and help, run `yarn bt-cli --help`
 
 ## Configuration
 
-The Build Tracker CLI is easily configured using a [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) compatible file.
+The Build Tracker API is easily configured using a [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) compatible file.
 
 Starting from the current working directory, it will look for the following possible sources, in this order:
 
@@ -158,52 +156,6 @@ interface APIResponse {
 
 More can be done with the data. Check out the [Continuous Integration guide](guides/ci.md) for more ideas.
 
-## CLI
-
-### `upload-build`
-
-This command will read your configuration file, and upload the current build meta and artifact stats to your server. In most scenarios, this should be all you need.
-
-Beside the arguments below, if you're running your server with a [`BT_API_AUTH_TOKEN` environment variable](./server#securing-your-api), ensure you run this command with that variable available as well.
-
-```
-BT_API_AUTH_TOKEN=my-secret-token bt-cli upload-build
-```
-
-| option, alias        | description                                                | default                       |
-| -------------------- | ---------------------------------------------------------- | ----------------------------- |
-| `--branch`, `-b`     | Set the branch name and do not attempt to read from git    | Current git working branch    |
-| `--config`, `-c`     | Set path to the build-tracker CLI config file              | `./build-tracker.config.js`   |
-| `--meta`             | JSON-encoded extra meta information to attach to the build |                               |
-| `--parent-revision`  | Manually set the parent revision for the comparison.       | Determined via git-merge-base |
-| `--skip-dirty-check` | Skip the git work tree state check                         | `false`                       |
-
-### `create-build`
-
-This command will create a Build object for the current available build. If run independently, it will only output information, but not upload it anywhere. For that, you only need to run `yarn bt-cli upload-build`.
-
-| option, alias        | description                                                | default                       |
-| -------------------- | ---------------------------------------------------------- | ----------------------------- |
-| `--branch`, `-b`     | Set the branch name and do not attempt to read from git    | Current git working branch    |
-| `--config`, `-c`     | Set path to the build-tracker CLI config file              | `./build-tracker.config.js`   |
-| `--meta`             | JSON-encoded extra meta information to attach to the build |                               |
-| `--out`, `-o`        | Write the build to stdout                                  | `true`                        |
-| `--parent-revision`  | Manually set the parent revision for the comparison.       | Determined via git-merge-base |
-| `--skip-dirty-check` | Skip the git work tree state check                         | `false`                       |
-
-### `stat-artifacts`
-
-Lower-level than `create-build`, this command will get artifact stats for the current build files and output a JSON representation of them.
-
-| option, alias    | description                                   | default                     |
-| ---------------- | --------------------------------------------- | --------------------------- |
-| `--config`, `-c` | Set path to the build-tracker CLI config file | `./build-tracker.config.js` |
-| `--out`, `-o`    | Write the stats to stdout                     | `true`                      |
-
-### `version`
-
-Output the version number of the `bt-cli`.
-
 ## API
 
 ### `getConfig(path?: string): Promise<Config>`
@@ -211,7 +163,7 @@ Output the version number of the `bt-cli`.
 Reads your Build Tracker Utility configuration. If a path is not provided, this will use [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) to find the appropriate file.
 
 ```js
-import { getConfig } from '@build-tracker/utility';
+import { getConfig } from '@build-tracker/api-client';
 
 const config = await getConfig();
 ```
@@ -221,7 +173,7 @@ const config = await getConfig();
 Creates a JSON-friendly build configuration, suitable for POSTing to the Build Tracker API.
 
 ```js
-import { createBuild, getConfig } from '@build-tracker/utility';
+import { createBuild, getConfig } from '@build-tracker/api-client';
 
 const config = await getConfig();
 createBuild(config, {
@@ -239,7 +191,7 @@ createBuild(config, {
 Reads the artifacts from disk and builds a map of filenames to size stats. This is done automatically by `createBuild`; it is only included in case you want to create builds with a custom script.
 
 ```js
-import { getConfig, statArtifacts } from '@build-tracker/utility';
+import { getConfig, statArtifacts } from '@build-tracker/api-client';
 
 const config = await getConfig();
 const artifactMap = statArtifacts(config);
@@ -251,7 +203,7 @@ const mainSizes = artifactMap.get('main.js');
 Uploads a Build to your Build Tracker instance.
 
 ```js
-import { createBuild, getConfig, uploadBuild } from '@build-tracker/utility';
+import { createBuild, getConfig, uploadBuild } from '@build-tracker/api-client';
 
 const config = await getConfig();
 createBuild(config, {}).then(build => {

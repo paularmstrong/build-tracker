@@ -2,8 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Argv } from 'yargs';
-import getConfig from '../modules/config';
-import statArtifacts, { Stat } from '../modules/stat-artifacts';
+import { getConfig, statArtifacts } from '@build-tracker/api-client';
 
 export const command = 'stat-artifacts';
 
@@ -33,7 +32,7 @@ export const builder = (yargs): Argv<Args> =>
       type: 'boolean'
     });
 
-export const handler = async (args: Args): Promise<Map<string, Stat>> => {
+export const handler = async (args: Args): Promise<void> => {
   const config = await getConfig(args.config);
 
   const artifacts = statArtifacts(config);
@@ -46,6 +45,4 @@ export const handler = async (args: Args): Promise<Map<string, Stat>> => {
     // @ts-ignore
     process.stdout.write(JSON.stringify(fileOut, null, 2));
   }
-
-  return Promise.resolve(artifacts);
 };

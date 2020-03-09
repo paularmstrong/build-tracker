@@ -2,10 +2,8 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Argv } from 'yargs';
-import createBuild from '../modules/create-build';
-import getConfig from '../modules/config';
-import uploadBuild from '../modules/upload-build';
 import { Args as BuildArgs, getBuildOptions } from './create-build';
+import { createBuild, getConfig, uploadBuild } from '@build-tracker/api-client';
 
 export const command = 'upload-build';
 

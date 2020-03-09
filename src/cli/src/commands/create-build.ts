@@ -2,8 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Argv } from 'yargs';
-import createBuild from '../modules/create-build';
-import getConfig from '../modules/config';
+import { createBuild, getConfig } from '@build-tracker/api-client';
 
 export const command = 'create-build';
 
@@ -62,7 +61,7 @@ export const builder = (yargs): Argv<Args> =>
       type: 'boolean'
     });
 
-export const handler = async (args: Args): Promise<{}> => {
+export const handler = async (args: Args): Promise<void> => {
   const config = await getConfig(args.config);
 
   const build = await createBuild(config, {
@@ -75,6 +74,4 @@ export const handler = async (args: Args): Promise<{}> => {
   if (args.out) {
     process.stdout.write(JSON.stringify(build, null, 2));
   }
-
-  return Promise.resolve(build);
 };

@@ -3,6 +3,7 @@ module.exports = {
     'Getting Started': ['installation', 'budgets'],
     Guides: ['guides/guides', 'guides/ci', 'guides/contributing'],
     Packages: [
+      'packages/api-client',
       'packages/api-errors',
       'packages/app',
       'packages/build',

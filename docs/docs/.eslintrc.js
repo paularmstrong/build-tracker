@@ -6,7 +6,7 @@ module.exports = {
       files: ['*.md'],
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/no-unused-vars': 'warn'
+        '@typescript-eslint/no-unused-vars': 'off'
       }
     }
   ]

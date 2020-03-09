@@ -3,19 +3,17 @@ id: ci
 title: Continuous Integration
 ---
 
-The [Build Tracker CLI](../ci) is a handy tool to make uploading new builds from your CI environment simple.
+## Uploading a new build
 
-# Uploading a new build
-
-Using the CLI from `@build-tracker/cli`, once you've set up your [configuration file](../cli#configuration) you can upload a new build with a single command:
+Using the API integration from `@build-tracker/cli`, once you've set up your [configuration file](/docs/packages/api-client#configuration) you can upload a new build with a single command:
 
 ```shell
 yarn bt-cli upload-build
 ```
 
-## Reporting budget results
+### Reporting budget results
 
-The response from the Build Tracker API is sent back to the [`onCompare`](../cli#oncompare-data-apiresponse-promise-void) callback function in your configuration and has many useful pieces of information.
+The response from the Build Tracker API is sent back to the [`onCompare`](/docs/packages/api-client#oncompare-data-apiresponse-promise-void) callback function in your configuration and has many useful pieces of information.
 
 There are two items that are particularly useful here: `groupDeltas` and `artifactDeltas`. We can use these and filter on those with failing budgets to format a nice message.
 
@@ -60,7 +58,7 @@ const artifactFilter = row => {
 };
 ```
 
-## Linking directly to a build comparison
+### Linking directly to a build comparison
 
 The Build Tracker web application accept links directly to a comparison of one or more builds in the format: `/builds/:revisions+`.
 

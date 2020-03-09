@@ -18,7 +18,7 @@ export interface ApiReturn {
   csv: string;
 }
 
-interface Config {
+export interface Config {
   applicationUrl: string;
   artifacts: Array<string>;
   baseDir: string;

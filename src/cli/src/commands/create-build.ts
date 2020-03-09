@@ -1,24 +1,20 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Git from '../modules/git';
 import { Argv } from 'yargs';
-import { BuildMetaItem } from '@build-tracker/build';
-import getConfig from '../modules/config';
-import pathToRegexp from 'path-to-regexp';
-import { handler as statArtifacts } from './stat-artifacts';
+import { createBuild, getConfig } from '@build-tracker/api-client';
 
 export const command = 'create-build';
 
 export const description = 'Construct a build for the current commit';
 
 export interface Args {
+  'parent-revision'?: string;
+  'skip-dirty-check': boolean;
   branch?: string;
   config?: string;
   meta?: string;
   out: boolean;
-  'parent-revision'?: string;
-  'skip-dirty-check': boolean;
 }
 
 const group = 'Create a build';
@@ -65,74 +61,17 @@ export const builder = (yargs): Argv<Args> =>
       type: 'boolean'
     });
 
-export const handler = async (args: Args): Promise<{}> => {
+export const handler = async (args: Args): Promise<void> => {
   const config = await getConfig(args.config);
-  if (!args['skip-dirty-check']) {
-    const isDirty = await Git.isDirty(config.cwd);
-    if (isDirty) {
-      throw new Error('Current work tree is dirty. Please commit all changes before proceeding');
-    }
-  }
 
-  const { artifacts: artifactStats } = await statArtifacts({ config: args.config, out: false });
-  const artifacts = Array.from(artifactStats).reduce((memo, [artifactName, stat]) => {
-    memo.push({
-      name: artifactName,
-      hash: stat.hash,
-      sizes: {
-        stat: stat.stat,
-        gzip: stat.gzip,
-        brotli: stat.brotli
-      }
-    });
-    return memo;
-  }, []);
-
-  const defaultBranch = await Git.getDefaultBranch(config.cwd);
-  const branch = args.branch ? args.branch : await Git.getBranch(config.cwd);
-  let revision: BuildMetaItem = await Git.getCurrentRevision(config.cwd);
-  let parentRevision: BuildMetaItem =
-    args['parent-revision'] ||
-    (branch !== defaultBranch
-      ? await Git.getMergeBase(defaultBranch, config.cwd)
-      : await Git.getParentRevision(revision));
-  const { timestamp, name, subject } = await Git.getRevisionDetails(revision, config.cwd);
-
-  if (config.buildUrlFormat) {
-    const toPath = pathToRegexp.compile(config.buildUrlFormat);
-    const revisionUrl = toPath({ revision });
-    revision = {
-      value: revision,
-      url: revisionUrl
-    };
-
-    if (parentRevision) {
-      const parentRevisionUrl = toPath({ revision: parentRevision });
-      parentRevision = {
-        value: parentRevision,
-        url: parentRevisionUrl
-      };
-    }
-  }
-
-  const meta = args.meta ? JSON.parse(args.meta) : {};
-
-  const build = {
-    meta: {
-      author: name,
-      branch,
-      parentRevision,
-      revision,
-      subject,
-      timestamp,
-      ...meta
-    },
-    artifacts
-  };
+  const build = await createBuild(config, {
+    branch: args.branch,
+    meta: args.meta ? JSON.parse(args.meta) : {},
+    parentRevision: args['parent-revision'],
+    skipDirtyCheck: args['skip-dirty-check']
+  });
 
   if (args.out) {
     process.stdout.write(JSON.stringify(build, null, 2));
   }
-
-  return Promise.resolve(build);
 };

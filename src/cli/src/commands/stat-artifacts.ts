@@ -2,10 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { Argv } from 'yargs';
-import getConfig from '../modules/config';
-import glob from 'glob';
-import path from 'path';
-import readfile from '../modules/readfile';
+import { getConfig, statArtifacts } from '@build-tracker/api-client';
 
 export const command = 'stat-artifacts';
 
@@ -16,16 +13,7 @@ interface Args {
   out: boolean;
 }
 
-interface Stat {
-  hash: string;
-  stat: number;
-  gzip: number;
-  brotli: number;
-}
-
 const group = 'Stat artifacts';
-
-const defaultNameMapper = (fileName: string): string => fileName;
 
 export const builder = (yargs): Argv<Args> =>
   yargs
@@ -44,18 +32,10 @@ export const builder = (yargs): Argv<Args> =>
       type: 'boolean'
     });
 
-export const handler = async (args: Args): Promise<{ artifacts: Map<string, Stat> }> => {
-  const { artifacts: artifactGlobs, baseDir, cwd, getFilenameHash, nameMapper = defaultNameMapper } = await getConfig(
-    args.config
-  );
+export const handler = async (args: Args): Promise<void> => {
+  const config = await getConfig(args.config);
 
-  const artifacts = new Map();
-  artifactGlobs.forEach(fileGlob => {
-    glob.sync(path.resolve(cwd, fileGlob), { nodir: true }).forEach(filePath => {
-      const sizes = readfile(filePath, getFilenameHash);
-      artifacts.set(nameMapper(path.relative(baseDir, filePath).replace(`.${sizes.hash}`, '')), sizes);
-    });
-  }, []);
+  const artifacts = statArtifacts(config);
 
   if (args.out) {
     const fileOut = Array.from(artifacts).reduce((memo, [artifactName, stat]) => {
@@ -65,8 +45,4 @@ export const handler = async (args: Args): Promise<{ artifacts: Map<string, Stat
     // @ts-ignore
     process.stdout.write(JSON.stringify(fileOut, null, 2));
   }
-
-  return Promise.resolve({
-    artifacts
-  });
 };

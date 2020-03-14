@@ -88,7 +88,7 @@ jobs:
         run: yarn lint:ci
 
   build:
-    name: build
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -109,3 +109,10 @@ jobs:
       - run: yarn install --frozen-lockfile
       - name: Build
         run: yarn build
+      - uses: paularmstrong/build-tracker-action@master
+        with:
+          BT_CLI_CONFIG: ./demo/build-tracker-cli.config.js
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BT_API_AUTH_TOKEN: ${{ secrets.BT_API_AUTH_TOKEN }}
+          BT_FILTER_TABLE_ROWS: true
+          BT_FAIL_ON_ERROR: false

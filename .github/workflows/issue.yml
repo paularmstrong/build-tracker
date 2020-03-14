@@ -1,0 +1,19 @@
+name: Issue checker
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  auto_close_issues:
+    name: Verify well-formed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Automatically close issues that don't follow the issue template
+        uses: lucasbento/auto-close-issues@v1.0.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-close-message: "@${issue.user.login}: Hello! :wave:\n\nThis issue is being automatically closed because it does not follow the issue template. Please follow the template provided, do not delete any of the template contents, and include as much information as possible.\n\nYou can edit this issue and include the template to re-open or start with a [New Issue](https://github.com/paularmstrong/build-tracker/issues/new/choose)."
+          closed-issues-label: '🙁 Issue template broken'

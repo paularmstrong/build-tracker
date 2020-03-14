@@ -1,5 +1,5 @@
 ---
-id: ci
+id: advanced-ci
 title: Continuous Integration
 ---
 

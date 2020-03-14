@@ -5,7 +5,7 @@ title: GitHub Actions
 
 If you use GitHub and GitHub Actions, there's a ready-made Build Tracker action that you can include to add reports to every pull request. The action will include a summary of any failing budgets, a table comparison, and a link to your Build Tracker instance for a more in-depth view.
 
-![GitHub Action comment on a pull request showing a failing Build Tracker budget](/static/img/github-action.png)
+![GitHub Action comment on a pull request showing a failing Build Tracker budget](/img/github-action.png)
 
 ## Installation
 

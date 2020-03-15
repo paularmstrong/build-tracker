@@ -1,8 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "module": "esnext"
+    "module": "esnext",
+    "outDir": "./dist"
   },
   "include": ["src", "../build", "../comparator", "../fixtures", "../formatting", "../types"]
 }

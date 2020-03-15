@@ -9,7 +9,13 @@
     "bt-server": "dist/index.js"
   },
   "main": "dist/server.js",
-  "types": "index.ts",
+  "module": "./",
+  "types": "dist/server.d.ts",
+  "sideEffects": false,
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",

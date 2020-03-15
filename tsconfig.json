@@ -4,6 +4,8 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "jsx": "react",
     "lib": ["esnext", "dom"],

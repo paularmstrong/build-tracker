@@ -37,6 +37,7 @@ module.exports = (env, reporter) => ({
     global: false
   },
   optimization: {
+    sideEffects: true,
     splitChunks: {
       cacheGroups: {
         vendor: {

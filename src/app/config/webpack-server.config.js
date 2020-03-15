@@ -40,6 +40,7 @@ module.exports = (env, reporter) => ({
   },
   optimization: {
     minimize: false,
+    sideEffects: true,
     splitChunks: {}
   },
   output: {

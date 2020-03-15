@@ -4,6 +4,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
+    "declaration": true,
     "esModuleInterop": true,
     "jsx": "react",
     "lib": ["esnext", "dom"],
@@ -24,5 +25,17 @@
       "react-native": ["./typings/react-native"]
     }
   },
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**", "plugins/**/dist/**"]
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**", "plugins/**/dist/**"],
+  "references": [
+    { "path": "src/api-client" },
+    { "path": "src/api-errors" },
+    { "path": "src/api-app" },
+    { "path": "src/api-build" },
+    { "path": "src/api-cli" },
+    { "path": "src/api-comparator" },
+    { "path": "src/api-fixtures" },
+    { "path": "src/api-formatting" },
+    { "path": "src/api-server" },
+    { "path": "src/api-types" }
+  ]
 }

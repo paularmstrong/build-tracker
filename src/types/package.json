@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "dist",
   "module": "./",
-  "types": "index.ts",
+  "types": "dist/index.ts",
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist"

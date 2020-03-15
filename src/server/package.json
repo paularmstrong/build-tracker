@@ -10,7 +10,7 @@
   },
   "main": "dist/server.js",
   "module": "./",
-  "types": "dist/index.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "index.js",
     "dist"

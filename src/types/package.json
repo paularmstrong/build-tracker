@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "dist",
   "module": "./",
-  "types": "dist/index.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "index.js",
     "dist"

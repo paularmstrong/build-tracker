@@ -7,7 +7,7 @@ module.exports = withPostgres({
       {
         name: 'Web App',
         artifactMatch: /^app\/client/,
-        budgets: [{ level: BudgetLevel.WARNING, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 153600 }]
+        budgets: [{ level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 153600 }]
       }
     ]
   },

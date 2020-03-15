@@ -29,9 +29,10 @@ jobs:
       - name: Typecheck
         run: yarn tsc
       - name: Tests
-        run: yarn test:ci
+        run: yarn test:ci --coverage
       - name: Lint
         run: yarn lint:ci
+      - uses: codecov/codecov-action@v1
 
   upload-build:
     name: Upload build

@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/api-errors",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.12",
   "description": "Build Tracker API errors",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -8,7 +8,6 @@
   "main": "dist",
   "module": "./",
   "types": "dist/index.d.ts",
-  "sideEffects": false,
   "sideEffects": false,
   "files": [
     "index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.13",
   "description": "Build Tracker node.js web server",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

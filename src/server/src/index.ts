@@ -19,7 +19,7 @@ const argv = yargs
   })
   .group(['help', 'verbose'], 'Global:')
   .commandDir(path.join(__dirname, 'commands'), {
-    extensions: ['ts', 'js']
+    extensions: [process.argv[0].endsWith('ts-node') && 'ts', 'js'].filter(Boolean)
   })
   .demandCommand(1, 1, 'Please provide a command to run').argv;
 

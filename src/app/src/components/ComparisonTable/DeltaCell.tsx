@@ -6,8 +6,8 @@ import ErrorIcon from '../../icons/Error';
 import HashIcon from '../../icons/Hash';
 import Hoverable from '../Hoverable';
 import React from 'react';
+import RelativeTooltip from '../RelativeTooltip';
 import { Td } from '../Table';
-import Tooltip from '../Tooltip';
 import WarningIcon from '../../icons/Warning';
 import { DeltaCell as Cell, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
 import { formatBudgetResult, formatBytes, formatUnexpectedHashChange } from '@build-tracker/formatting';
@@ -99,7 +99,7 @@ export const DeltaCell = (props: Props): React.ReactElement => {
                 </Text>
               ) : null}
               {sizeDelta !== 0 ? <Text>{text}</Text> : null}
-              {isHovered ? <Tooltip relativeTo={viewRef} text={tooltipText} /> : null}
+              {isHovered ? <RelativeTooltip relativeTo={viewRef} text={tooltipText} /> : null}
             </View>
           )}
         </Hoverable>

@@ -5,8 +5,8 @@ import { RevisionDeltaCell as Cell } from '@build-tracker/comparator';
 import { formatSha } from '@build-tracker/formatting';
 import Hoverable from '../Hoverable';
 import React from 'react';
+import RelativeTooltip from '../RelativeTooltip';
 import { Th } from '../Table';
-import Tooltip from '../Tooltip';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 interface Props {
@@ -25,7 +25,7 @@ export const RevisionDeltaCell = (props: Props): React.ReactElement => {
           <View ref={viewRef} testID="delta">
             <Text style={styles.delta}>{`𝚫${deltaIndex}`}</Text>
             {isHovered ? (
-              <Tooltip
+              <RelativeTooltip
                 relativeTo={viewRef}
                 text={`Delta from ${formatSha(againstRevision)} to ${formatSha(revision)}`}
               />

@@ -6,8 +6,8 @@ import FolderIcon from '../../icons/Folder';
 import { GroupCell as GCell } from '@build-tracker/comparator';
 import Hoverable from '../Hoverable';
 import React from 'react';
+import RelativeTooltip from '../RelativeTooltip';
 import { Th } from '../Table';
-import Tooltip from '../Tooltip';
 import { StyleProp, StyleSheet, Switch, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 interface Props {
@@ -54,7 +54,7 @@ export const GroupCell = (props: Props): React.ReactElement => {
                 <Text style={isHovered && styles.hoveredText}>
                   <FolderIcon style={[styles.folder, isHovered && styles.hoveredText]} testID="groupicon" /> {text}
                 </Text>
-                {isHovered ? <Tooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
+                {isHovered ? <RelativeTooltip relativeTo={nameRef} text={`${artifactNames.join(', ')}`} /> : null}
               </View>
             </TouchableOpacity>
           )}

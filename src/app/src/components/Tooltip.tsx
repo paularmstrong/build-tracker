@@ -7,61 +7,53 @@ import ReactDOM from 'react-dom';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 interface Props {
-  relativeTo: React.RefObject<View>;
+  top: number;
+  left: number;
   text: string;
 }
 
-const tipSpace = 6;
+const TIP_SPACE = 6;
 
 const Tooltip = (props: Props): React.ReactElement => {
-  const { relativeTo, text } = props;
+  const { left, text, top } = props;
   const [position, setPosition] = React.useState({ top: -999, left: 0 });
   const portalRoot = document.getElementById('tooltipPortal');
   const ref: React.RefObject<View> = React.createRef();
 
   React.useEffect(() => {
     let mounted = true;
-    if (relativeTo.current) {
-      const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
-      ref.current.measure(
-        (_x: number, _y: number, tipWidth: number, tipHeight: number): void => {
-          if (!mounted) {
-            return;
-          }
-          relativeTo.current.measureInWindow(
-            (x: number, y: number, width: number, height: number): void => {
-              if (!mounted) {
-                return;
-              }
-              let top = y + height + tipSpace;
-              let left = x + width / 2 - tipWidth / 2;
-              // too far right when underneath
-              if (left + tipWidth > windowWidth) {
-                left = x - tipWidth - tipSpace;
-                top = y + height / 2 - tipHeight / 2;
-              }
-              // too far left when underneath
-              else if (left < 0) {
-                left = x + width + tipSpace;
-                top = y + height / 2 - tipHeight / 2;
-              }
-              // too close to bottom
-              else if (top + tipHeight > windowHeight) {
-                top = y - tipHeight - tipSpace;
-              }
-
-              setPosition({ left, top });
-            }
-          );
+    const { width: windowWidth } = Dimensions.get('window');
+    ref.current.measure(
+      (_x: number, _y: number, tipWidth: number, tipHeight: number): void => {
+        if (!mounted) {
+          return;
         }
-      );
-    }
+        let newTop = top - TIP_SPACE - tipHeight;
+        let newLeft = left - Math.round(tipWidth / 2);
+        // too far right
+        if (newLeft + tipWidth + TIP_SPACE > windowWidth) {
+          newLeft = left - tipWidth - TIP_SPACE;
+          newTop = top - Math.round(tipHeight / 2);
+        }
+        // too far left
+        else if (newLeft < TIP_SPACE) {
+          newLeft = left + TIP_SPACE;
+          newTop = top - Math.round(tipHeight / 2);
+        }
+        // too close to top
+        else if (newTop <= TIP_SPACE) {
+          newTop = top + tipHeight + TIP_SPACE;
+        }
+
+        setPosition({ left: newLeft, top: newTop });
+      }
+    );
     return () => {
       mounted = false;
     };
     /* eslint-disable react-hooks/exhaustive-deps */
     // Tests break if you pass the ref/relativeTo higher object in and not the actual value we're using
-  }, [ref.current, relativeTo.current]);
+  }, [ref.current, left, top]);
   /* eslint-enable react-hooks/exhaustive-deps */
 
   const tooltip = (
@@ -81,7 +73,8 @@ const styles = StyleSheet.create({
   root: {
     maxWidth: 400,
     position: 'absolute',
-    backgroundColor: Theme.Color.Gray50,
+    pointerEvents: 'none',
+    backgroundColor: `${Theme.Color.Gray50}EE`,
     borderRadius: Theme.BorderRadius.Normal,
     paddingHorizontal: Theme.Spacing.Small,
     paddingVertical: Theme.Spacing.Xsmall,

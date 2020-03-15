@@ -5,8 +5,8 @@ import * as Theme from '../../theme';
 import Hoverable from '../Hoverable';
 import { hsl } from 'd3-color';
 import React from 'react';
+import RelativeTooltip from '../RelativeTooltip';
 import { Th } from '../Table';
-import Tooltip from '../Tooltip';
 import { ArtifactCell as ACell, GroupCell as GCell } from '@build-tracker/comparator';
 import { StyleProp, StyleSheet, Switch, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 
@@ -61,7 +61,7 @@ export const ArtifactCell = (props: Props): React.ReactElement => {
                   {text}
                 </Text>
               </TouchableOpacity>
-              {isHovered ? <Tooltip relativeTo={textRef} text={`Show "${text}" only`} /> : null}
+              {isHovered ? <RelativeTooltip relativeTo={textRef} text={`Show "${text}" only`} /> : null}
             </View>
           )}
         </Hoverable>

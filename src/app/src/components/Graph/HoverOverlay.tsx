@@ -3,11 +3,13 @@
  */
 import * as Theme from '../../theme';
 import Build from '@build-tracker/build';
+import { formatSha } from '@build-tracker/formatting';
 import memoize from 'memoize-one';
 import { Offset } from './Offset';
 import React from 'react';
 import { select } from 'd3-selection';
 import { Series } from 'd3-shape';
+import Tooltip from '../Tooltip';
 import { ScaleBand, ScaleLinear, ScalePoint } from 'd3-scale';
 
 interface Props {
@@ -75,11 +77,18 @@ const HoverOverlay = (props: Props): React.ReactElement => {
     [buildRevisionFromX, onSelectRevision, selectedRevisions]
   );
 
+  const [offsetX, setOffsetX] = React.useState(NaN);
+  const [absPosition, setAbsPosition] = React.useState({ left: 0, top: 0 });
+  const [hoveredArtifact, setHoveredArtifact] = React.useState('');
+
   const handleMouseMove = React.useCallback(
     (event: React.MouseEvent<SVGRectElement>): void => {
       const {
-        nativeEvent: { offsetX, offsetY = Offset.TOP }
+        nativeEvent: { offsetX, offsetY = Offset.TOP, pageX, pageY }
       } = event;
+
+      setOffsetX(offsetX);
+      setAbsPosition({ left: pageX, top: pageY });
 
       const revision = buildRevisionFromX(offsetX - Offset.LEFT);
       const xPos = xGetter(revision.value);
@@ -89,6 +98,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       const hoveredArtifact = data.find(data => {
         return data[revision.index][0] <= yValue && data[revision.index][1] >= yValue;
       });
+      hoveredArtifact && setHoveredArtifact(hoveredArtifact.key);
       onHoverArtifacts(hoveredArtifact ? [hoveredArtifact.key] : []);
     },
     [buildRevisionFromX, data, onHoverArtifacts, xGetter, yScale]
@@ -97,11 +107,17 @@ const HoverOverlay = (props: Props): React.ReactElement => {
   const handleMouseOut = React.useCallback((): void => {
     select(lineRef.current).style('opacity', 0);
     onHoverArtifacts([]);
+    setOffsetX(NaN);
   }, [onHoverArtifacts]);
 
   const handleMouseOver = React.useCallback((): void => {
     select(lineRef.current).style('opacity', 1);
   }, []);
+
+  const getTooltipText = React.useCallback((): string => {
+    const revision = buildRevisionFromX(offsetX - Offset.LEFT);
+    return `Revision: ${formatSha(revision.value)}, Artifact: ${hoveredArtifact}`;
+  }, [buildRevisionFromX, hoveredArtifact, offsetX]);
 
   return (
     <g>
@@ -132,6 +148,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         );
       })}
       <line data-testid="hoverline" pointerEvents="none" ref={lineRef} style={styles.hoverLine} y1={0} y2={height} />
+      {!isNaN(offsetX) ? <Tooltip left={absPosition.left} top={absPosition.top} text={getTooltipText()} /> : null}
     </g>
   );
 };

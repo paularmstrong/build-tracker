@@ -1,7 +1,7 @@
 module.exports = {
   docs: {
     'Getting Started': ['installation', 'budgets'],
-    Guides: ['guides/guides', 'guides/github-actions', 'guides/advanced-ci', 'guides/contributing'],
+    Guides: ['guides/guides', 'guides/heroku', 'guides/github-actions', 'guides/advanced-ci', 'guides/contributing'],
     Packages: [
       'packages/api-client',
       'packages/api-errors',

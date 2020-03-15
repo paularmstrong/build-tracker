@@ -66,7 +66,9 @@ The tool for managing these packages is [Lerna](https://github.com/lerna/lerna) 
 
 ```plaintext
 ├── docs
-│   └── website
+│   ├── blog
+│   ├── docs
+│   └── static
 ├── plugins
 │   ├── with-mariadb
 │   └── with-postgres
@@ -150,12 +152,12 @@ Build Tracker is written in Typescript throughout all workspaces. Please do not 
 
 ## Dev environment
 
-To run the development environment, some shortcuts are provided in the `package.json` scripts:
+To run the development environment, first, run `yarn build` to prebuild some static sources. Once that is done you can run one of the pre-configured test/dev environments:
 
 - `yarn dev` Run the server and application in a hot-reloadable environment using pre-seeded builds on the filesystem
 - `yarn dev:large` This is the same as `yarn:dev`, but with a larger dataset. More builds and many more artifacts in each.
-- `yarn dev:maria` Run the server using a local MariaDB instance
-- `yarn dev:postgres` Run the server using a local Postgres instance
+- `yarn dev:maria` Run the server using a local MariaDB instance (see [plugins](#mariadb) for more requirements)
+- `yarn dev:postgres` Run the server using a local Postgres instance (see [plugins](#postgres) for more requirements)
 
 ## Code integrity
 
@@ -196,3 +198,8 @@ After your changes look the way you want on your local documentation server. You
 ### Other help
 
 Build Tracker uses [Docusaurus](https://docusaurus.io) for generating it's docs. If you're unfamiliar with any of the internals of how the docs are built, structured, or how to add a feature to them, the [official docs](https://docusaurus.io) are the best place to start.
+
+## Publishing
+
+1. `yarn build` - Build all packages
+2. `yarn lerna publish` - Lerna will request a new version and publish only the changed packages

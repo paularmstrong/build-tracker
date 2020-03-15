@@ -11,6 +11,7 @@
   "main": "dist/server.js",
   "module": "./",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "files": [
     "index.js",
     "dist"

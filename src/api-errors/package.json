@@ -8,6 +8,8 @@
   "main": "dist",
   "module": "./",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "sideEffects": false,
   "files": [
     "index.js",
     "dist"

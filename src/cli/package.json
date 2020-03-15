@@ -11,6 +11,7 @@
   "main": "dist",
   "module": "./",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist"
   ],

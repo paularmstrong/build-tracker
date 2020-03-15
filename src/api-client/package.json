@@ -5,12 +5,13 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
   "license": "MIT",
-  "bin": {
-    "bt-cli": "./dist/bin.js"
-  },
   "main": "dist",
   "module": "./",
   "types": "dist/index.d.ts",
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",

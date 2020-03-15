@@ -5,9 +5,8 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
   "license": "MIT",
-  "main": "dist",
+  "main": "./",
   "module": "./",
-  "types": "dist/index.ts",
   "dependencies": {
     "glob": "^7.1.3"
   },

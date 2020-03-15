@@ -11,6 +11,9 @@
   "main": "dist",
   "module": "./",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",

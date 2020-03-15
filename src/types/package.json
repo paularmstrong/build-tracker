@@ -8,6 +8,10 @@
   "main": "dist",
   "module": "./",
   "types": "dist/index.ts",
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist"

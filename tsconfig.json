@@ -26,17 +26,5 @@
       "react-native": ["./typings/react-native"]
     }
   },
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**", "plugins/**/dist/**"],
-  "references": [
-    { "path": "src/api-client" },
-    { "path": "src/api-errors" },
-    { "path": "src/api-app" },
-    { "path": "src/api-build" },
-    { "path": "src/api-cli" },
-    { "path": "src/api-comparator" },
-    { "path": "src/api-fixtures" },
-    { "path": "src/api-formatting" },
-    { "path": "src/api-server" },
-    { "path": "src/api-types" }
-  ]
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/*/dist/**", "plugins/**/dist/**"]
 }

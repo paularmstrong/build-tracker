@@ -1,0 +1,13 @@
+codecov:
+  branch: next
+  require_ci_to_pass: no
+
+coverage:
+  precision: 2
+  round: down
+  range: '90...100'
+
+comment:
+  layout: 'reach,diff,flags,tree'
+  behavior: default
+  require_changes: yes

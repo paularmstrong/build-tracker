@@ -4,7 +4,7 @@ title: Contributing to Build Tracker
 sidebar_label: Contributing
 ---
 
-> Thank you for your interest in helping out with Build Tracker! This is a project done with joy and care, out of our free time. Before getting started, please familiarize yourself with the [Contributor Covenant Code of Conduct](https://github.com/paularmstrong/build-tracker/blob/next/CODE_OF_CONDUCT.md).
+> Thank you for your interest in helping out with Build Tracker! This is a project done with joy and care, out of our free time. Before getting started, please familiarize yourself with the [Contributor Covenant Code of Conduct](https://github.com/paularmstrong/build-tracker/blob/master/CODE_OF_CONDUCT.md).
 
 ---
 
@@ -15,8 +15,6 @@ Fork and pull the repository from Github. If you're unsure how to fork a reposit
 ```sh
 git clone git@github.com:<myuser>/build-tracker.git
 ```
-
-Once you've pulled the repository, you'll be working on the _next_ branch. This may be slightly different from what you're used to, so make sure to pay attention to always keep the _next_ branch up to date, and don't worry about _master_.
 
 ### Install dependencies
 
@@ -29,7 +27,7 @@ yarn
 
 ### Make your changes
 
-Always work on features in a separate branch from the main _next_ or _master_ branch.
+Always work on features in a separate branch from the main _master_ branch.
 
 ```sh
 git checkout -b my-feature

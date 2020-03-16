@@ -81,7 +81,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/paularmstrong/build-tracker/edit/next/docs/'
+          editUrl: 'https://github.com/paularmstrong/build-tracker/edit/master/docs/'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')

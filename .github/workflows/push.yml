@@ -3,7 +3,7 @@ name: On push
 on:
   push:
     branches:
-      - next
+      - master
 
 jobs:
   run_tests:
@@ -57,7 +57,7 @@ jobs:
       - name: Build all
         run: yarn build
       - name: Upload build
-        run: yarn ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js -b next
+        run: yarn ts-node src/cli/src/bin.ts upload-build -c demo/build-tracker-cli.config.js -b master
         env:
           BT_API_AUTH_TOKEN: ${{ secrets.BT_API_AUTH_TOKEN }}
 

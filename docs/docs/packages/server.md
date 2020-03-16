@@ -179,7 +179,7 @@ module.exports = {
 
 Your application will graph this branch by default and ignore builds from other branches.
 
-This is a useful setting if you use and track a branch that is not `master` in your git repository. For example, Build Tracker uses `next` as its default working branch.
+This is a useful setting if you use and track a branch that is not `master` in your git repository.
 
 #### `dev?: boolean = false`
 

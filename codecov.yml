@@ -8,6 +8,6 @@ coverage:
   range: '90...100'
 
 comment:
-  layout: 'reach,diff,flags,tree'
+  layout: 'diff,files'
   behavior: default
   require_changes: no

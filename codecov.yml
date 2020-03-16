@@ -10,4 +10,4 @@ coverage:
 comment:
   layout: 'reach,diff,flags,tree'
   behavior: default
-  require_changes: yes
+  require_changes: no

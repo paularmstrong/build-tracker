@@ -95,7 +95,7 @@ type RevisionStringFormatter = (cell: RevisionCell) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
 type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;
 type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell, sizeKey: string) => string;
-type ArtifactFilter = (row: ArtifactRow) => boolean;
+export type ArtifactFilter = (row: ArtifactRow) => boolean;
 
 interface FormattingOptions {
   formatRevision?: RevisionStringFormatter;

@@ -22,13 +22,13 @@
     "@build-tracker/api-errors": "^1.0.0-beta.12",
     "@build-tracker/build": "^1.0.0-beta.12",
     "@build-tracker/server": "^1.0.0-beta.13",
+    "@types/pg": "^7.4.13",
     "dotenv": "^7.0.0",
     "pg": "^7.8.2"
   },
   "devDependencies": {
     "@build-tracker/types": "^1.0.0-beta.12",
     "@types/dotenv": "^6.1.0",
-    "@types/pg": "^7.4.13"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {

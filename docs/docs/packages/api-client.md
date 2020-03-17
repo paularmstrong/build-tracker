@@ -76,7 +76,7 @@ module.exports = {
 };
 ```
 
-### `getFilenameHash?: (filename: string) => string | void`
+### `getFilenameHash?: (filename: string) => string | null`
 
 This optional method allows you to extract a filename hash from the built artifact filename. Many applications built with webpack will include a chunk hash in the filename for cache-busting reasons.
 

@@ -3,7 +3,7 @@
  */
 import { config } from 'dotenv';
 import Queries from './queries';
-import { ServerConfig } from '@build-tracker/server/src/server';
+import { ServerConfig } from '@build-tracker/server';
 import setup from './setup';
 import { createPool, PoolConfig } from 'mariadb';
 

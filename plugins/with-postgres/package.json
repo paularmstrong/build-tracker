@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@build-tracker/types": "^1.0.0-beta.12",
-    "@types/dotenv": "^6.1.0",
+    "@types/dotenv": "^6.1.0"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {

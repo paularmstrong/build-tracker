@@ -14,15 +14,9 @@ import XAxis from './XAxis';
 import YAxis from './YAxis';
 import { addComparedRevision, setHoveredArtifacts } from '../../store/actions';
 import { GraphType, State } from '../../store/types';
-import { LayoutChangeEvent, StyleSheet, unstable_createElement, View } from 'react-native';
+import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { scaleBand, scaleLinear, scalePoint } from 'd3-scale';
 import { useDispatch, useSelector } from 'react-redux';
-
-export class SVG extends React.Component<{ height: number; width: number }> {
-  public render(): React.ReactElement {
-    return unstable_createElement('svg', this.props);
-  }
-}
 
 interface Props {
   comparator: State['comparator'];
@@ -55,8 +49,7 @@ const Graph = (props: Props): React.ReactElement => {
     return graphType === GraphType.AREA
       ? scalePoint()
           .range([0, width - Offset.LEFT - Offset.RIGHT])
-          .padding(0.05)
-          .round(true)
+          .padding(0.5)
           .domain(domain)
       : scaleBand()
           .rangeRound([0, width - Offset.LEFT - Offset.RIGHT])
@@ -83,14 +76,17 @@ const Graph = (props: Props): React.ReactElement => {
     return dataStack(comparator.builds);
   }, [activeArtifactNames, comparator, sizeKey]);
 
-  const handleLayout = (event: LayoutChangeEvent): void => {
-    const {
-      nativeEvent: {
-        layout: { height, width }
-      }
-    } = event;
-    setDimensions({ height, width });
-  };
+  const handleLayout = React.useCallback(
+    (event: LayoutChangeEvent): void => {
+      const {
+        nativeEvent: {
+          layout: { height, width }
+        }
+      } = event;
+      setDimensions({ height, width });
+    },
+    [setDimensions]
+  );
 
   const handleHoverArtifacts = React.useCallback(
     (artifacts: Array<string>): void => {
@@ -108,7 +104,7 @@ const Graph = (props: Props): React.ReactElement => {
 
   return (
     <View onLayout={handleLayout} style={styles.root}>
-      <SVG height={height} ref={svgRef} width={width}>
+      <svg height={height} ref={svgRef} width={width}>
         <g className="main" transform={`translate(${Offset.LEFT},${Offset.TOP})`}>
           {height && width ? (
             <>
@@ -151,7 +147,7 @@ const Graph = (props: Props): React.ReactElement => {
             </>
           ) : null}
         </g>
-      </SVG>
+      </svg>
     </View>
   );
 };

@@ -91,13 +91,13 @@ export interface ComparisonMatrix {
   artifacts: Array<ArtifactRow>;
 }
 
-type RevisionStringFormatter = (cell: RevisionCell) => string;
-type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
-type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;
-type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell, sizeKey: string) => string;
+export type RevisionStringFormatter = (cell: RevisionCell) => string;
+export type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
+export type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;
+export type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell, sizeKey: string) => string;
 export type ArtifactFilter = (row: ArtifactRow) => boolean;
 
-interface FormattingOptions {
+export interface FormattingOptions {
   formatRevision?: RevisionStringFormatter;
   formatRevisionDelta?: RevisionDeltaStringFormatter;
   formatTotal?: TotalStringFormatter;

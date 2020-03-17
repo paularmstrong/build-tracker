@@ -17,11 +17,8 @@ const build = {
 };
 
 const returnValue = {
-  build,
-  parentBuild: build,
-  json: {},
-  markdown: '',
-  csv: ''
+  comparatorData: '',
+  summary: []
 };
 
 describe('uploadBuild', () => {

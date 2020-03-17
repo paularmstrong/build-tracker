@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import { ApiReturn } from '@build-tracker/api-client/src/modules/config';
 import Build from '@build-tracker/build';
 import Comparator from '@build-tracker/comparator';
 import { Queries } from '../types';
@@ -65,10 +66,11 @@ export const insertBuild = (
           return onInserted(context.comparator).then(() => context);
         })
         .then(({ comparator }) => {
-          res.send({
+          const response: ApiReturn = {
             comparatorData: comparator.serialize(),
             summary: comparator.toSummary()
-          });
+          };
+          res.send(response);
         })
     )
     .catch(error => {

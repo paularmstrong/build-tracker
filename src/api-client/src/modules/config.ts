@@ -21,8 +21,8 @@ export interface ApiReturn {
 export interface Config {
   applicationUrl: string;
   artifacts: Array<string>;
-  baseDir: string;
-  cwd: string;
+  baseDir?: string;
+  cwd?: string;
   buildUrlFormat?: string;
   getFilenameHash?: (filename: string) => string | null;
   nameMapper?: (filename: string) => string;

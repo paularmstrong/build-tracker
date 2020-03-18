@@ -14,12 +14,10 @@
     "dist"
   ],
   "scripts": {
+    "@build-tracker/types": "^1.0.0-beta.12",
     "build": "tsc",
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@build-tracker/types": "^1.0.0-beta.12"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {

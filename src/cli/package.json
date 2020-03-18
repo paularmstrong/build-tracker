@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/cli",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.14",
   "description": "Build Tracker tool for reading build artifact sizes and uploading to your server",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -21,7 +21,7 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/api-client": "^1.0.0-beta.12",
+    "@build-tracker/api-client": "^1.0.0-beta.14",
     "@types/node": "^11.10.4",
     "@types/yargs": "^15.0.0",
     "yargs": "^15.0.0"

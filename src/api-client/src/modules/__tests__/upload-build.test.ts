@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
+import { ApiReturn } from '../config';
 import config from '@build-tracker/fixtures/cli-configs/rc/.build-trackerrc.js';
 import httpConfig from '@build-tracker/fixtures/cli-configs/rc/.build-tracker-http-rc.js';
 import nock from 'nock';
@@ -16,12 +17,9 @@ const build = {
   artifacts: []
 };
 
-const returnValue = {
-  build,
-  parentBuild: build,
-  json: {},
-  markdown: '',
-  csv: ''
+const returnValue: ApiReturn = {
+  comparatorData: '',
+  summary: []
 };
 
 describe('uploadBuild', () => {

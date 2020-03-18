@@ -1,21 +1,11 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import { ComparisonMatrix } from '@build-tracker/comparator';
 import cosmiconfig from 'cosmiconfig';
-import { Artifact, BuildMeta } from '@build-tracker/build';
-
-interface BuildJson {
-  meta: BuildMeta;
-  artifacts: Array<Artifact>;
-}
 
 export interface ApiReturn {
-  build: BuildJson;
-  parentBuild: BuildJson;
-  json: ComparisonMatrix;
-  markdown: string;
-  csv: string;
+  comparatorData: string;
+  summary: Array<string>;
 }
 
 export interface Config {

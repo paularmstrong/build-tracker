@@ -22,12 +22,9 @@
   },
   "dependencies": {
     "@build-tracker/api-client": "^1.0.0-beta.12",
-    "yargs": "^15.0.0"
-  },
-  "devDependencies": {
     "@types/node": "^11.10.4",
     "@types/yargs": "^15.0.0",
-    "brotli-size": "^4.0.0"
+    "yargs": "^15.0.0"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",
   "publishConfig": {

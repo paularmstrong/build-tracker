@@ -53,11 +53,11 @@ yarn add @build-tracker/api-client@latest
 
 Create a configuration file, `build-tracker.config.js`
 
-You will need, at a minimum, the `applicationUrl` string, and `artifacts` search locations set. For the full set of CLI options, refer to the [cli docs](cli).
+You will need, at a minimum, the `applicationUrl` string, and `artifacts` search locations set. For the full set of CLI options, refer to the [cli docs](packages/cli/).
 
 ```js
 module.exports = {
-  applicationUrl: 'https://your-build-tracker-app', // The same as your server config `url`
+  applicationUrl: 'https://your-build-tracker-app.example.com', // The same as your server config `url`
   artifacts: ['dist/**/*.js'] // an Array of glob-style file paths
 };
 ```

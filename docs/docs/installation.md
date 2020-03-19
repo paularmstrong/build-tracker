@@ -57,7 +57,7 @@ You will need, at a minimum, the `applicationUrl` string, and `artifacts` search
 
 ```js
 module.exports = {
-  applicationUrl: 'https://your-build-tracker-app.herokuapp.com', // The same as your server config `url`
+  applicationUrl: 'https://your-build-tracker-app.example.com', // The same as your server config `url`
   artifacts: ['dist/**/*.js'] // an Array of glob-style file paths
 };
 ```

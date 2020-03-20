@@ -48,7 +48,7 @@ Your application should now be accessible at the provided `url`.
 Install the Build Tracker CLI in the same repository as your application code you want to track (**not** the Server that we set up above):
 
 ```sh
-yarn add @build-tracker/api-client@latest
+yarn add @build-tracker/cli@latest
 ```
 
 Create a configuration file, `build-tracker.config.js`

@@ -51,7 +51,8 @@ describe('BodyRow', () => {
           failingBudgets: [],
           sizes: { stat: 4 },
           percents: { stat: 4 },
-          hashChanged: false
+          hashChanged: false,
+          hashChangeUnexpected: false
         }
       ];
       const { getByType } = render(

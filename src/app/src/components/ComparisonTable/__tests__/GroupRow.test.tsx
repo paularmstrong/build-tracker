@@ -64,6 +64,7 @@ describe('GroupRow', () => {
           type: CellType.TOTAL_DELTA,
           name: 'tacos',
           hashChanged: true,
+          hashChangeUnexpected: false,
           budgets: [],
           failingBudgets: [],
           sizes: { stat: 4 },

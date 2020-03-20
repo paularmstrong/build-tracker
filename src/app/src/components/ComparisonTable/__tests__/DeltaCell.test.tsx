@@ -24,6 +24,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { stat: 0.5 },
             hashChanged: true,
+            hashChangeUnexpected: false,
             sizes: { stat: 4300 }
           }}
           sizeKey="stat"
@@ -42,6 +43,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { stat: 0 },
             hashChanged: false,
+            hashChangeUnexpected: false,
             sizes: { stat: 0 }
           }}
           sizeKey="stat"
@@ -60,6 +62,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { stat: -0.5 },
             hashChanged: true,
+            hashChangeUnexpected: false,
             sizes: { stat: -134 }
           }}
           sizeKey="stat"
@@ -79,6 +82,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { stat: 0 },
             hashChanged: true,
+            hashChangeUnexpected: true,
             sizes: { stat: 0 }
           }}
           sizeKey="stat"
@@ -106,6 +110,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { stat: 0 },
             hashChanged: false,
+            hashChangeUnexpected: false,
             sizes: { stat: 5 }
           }}
           sizeKey="stat"
@@ -132,6 +137,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { stat: 0 },
             hashChanged: false,
+            hashChangeUnexpected: false,
             sizes: { stat: 5 }
           }}
           sizeKey="stat"
@@ -152,6 +158,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { gzip: -1 },
             hashChanged: true,
+            hashChangeUnexpected: false,
             sizes: { gzip: -4300 }
           }}
           sizeKey="gzip"
@@ -172,6 +179,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { gzip: 0.9 },
             hashChanged: true,
+            hashChangeUnexpected: false,
             sizes: { gzip: 4300 }
           }}
           sizeKey="gzip"
@@ -182,7 +190,7 @@ describe('DeltaCell', () => {
       });
     });
 
-    test('is warning color if no size change, but hash changed', () => {
+    test('is warning color if hash changed unexpectedly', () => {
       const { getByType } = render(
         <DeltaCell
           cell={{
@@ -192,6 +200,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { gzip: 0 },
             hashChanged: true,
+            hashChangeUnexpected: true,
             sizes: { gzip: 0 }
           }}
           sizeKey="gzip"
@@ -212,6 +221,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { gzip: 0 },
             hashChanged: false,
+            hashChangeUnexpected: false,
             sizes: { gzip: 0 }
           }}
           sizeKey="gzip"
@@ -237,6 +247,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { gzip: 1 },
             hashChanged: false,
+            hashChangeUnexpected: false,
             sizes: { gzip: 1024 }
           }}
           sizeKey="gzip"
@@ -256,6 +267,7 @@ describe('DeltaCell', () => {
             name: 'tacos',
             percents: { gzip: 1 },
             hashChanged: false,
+            hashChangeUnexpected: false,
             sizes: { gzip: 1024 }
           }}
           sizeKey="gzip"

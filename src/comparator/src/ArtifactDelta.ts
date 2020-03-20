@@ -57,6 +57,14 @@ export default class ArtifactDelta {
     return this._hashChanged;
   }
 
+  public get hashChangeUnexpected(): boolean {
+    return (
+      this._hashChanged &&
+      this.failingBudgets.length === 0 &&
+      Object.keys(this.sizes).every(sizeKey => this.sizes[sizeKey] === 0)
+    );
+  }
+
   public get budgets(): Array<BudgetResult> {
     if (!this._results) {
       const sizes = this.sizes;
@@ -97,6 +105,7 @@ export default class ArtifactDelta {
       sizes: this.sizes,
       percents: this.percents,
       hashChanged: this.hashChanged,
+      hashChangeUnexpected: this.hashChangeUnexpected,
       budgets: this.budgets,
       failingBudgets: this.failingBudgets
     };

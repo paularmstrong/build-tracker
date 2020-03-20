@@ -22,12 +22,16 @@ export const handler = async (args: Args): Promise<void> => {
     skipDirtyCheck: args['skip-dirty-check']
   });
 
-  await uploadBuild(config, build, process.env.BT_API_AUTH_TOKEN, {
-    log: input => {
-      process.stdout.write(input);
-    },
-    error: input => {
-      process.stderr.write(input);
-    }
-  });
+  try {
+    await uploadBuild(config, build, process.env.BT_API_AUTH_TOKEN, {
+      log: input => {
+        process.stdout.write(`${input}\n`);
+      },
+      error: input => {
+        process.stderr.write(`${input}\n`);
+      }
+    });
+  } catch (e) {
+    process.exit(1);
+  }
 };

@@ -45,26 +45,28 @@ export default async function uploadBuild(
       res.setEncoding('utf8');
 
       res.on('data', data => {
-        output.push(data);
-        logger.log(data);
+        output.push(typeof data === 'string' ? data : data.toString());
       });
 
-      res.on('end', () => {
+      res.on('end', async () => {
         const response = JSON.parse(output.join(''));
         if (res.statusCode >= 400) {
+          logger.error(response.error);
           reject(new Error(response.error));
-        } else {
-          const successResponse = response as ApiReturn;
-          if (onCompare) {
-            onCompare(successResponse).then(() => resolve(successResponse));
-          } else {
-            resolve(successResponse);
-          }
+          return;
         }
+
+        const successResponse = response as ApiReturn;
+        if (onCompare) {
+          await onCompare(successResponse);
+        }
+
+        logger.log(JSON.stringify(successResponse));
+        resolve(successResponse);
       });
     });
 
-    req.on('error', error => {
+    req.on('error', (error: Error) => {
       logger.error(error.toString());
       reject(error);
     });

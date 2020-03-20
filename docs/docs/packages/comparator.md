@@ -130,6 +130,7 @@ interface ComparatorOptions {
 
 ```ts
 interface FormattingOptions {
+  formatCellText?: CellTextStringFormatter;
   formatRevision?: RevisionStringFormatter;
   formatRevisionDelta?: RevisionDeltaStringFormatter;
   formatTotal?: TotalStringFormatter;
@@ -142,6 +143,7 @@ interface FormattingOptions {
 ### Formatters
 
 ```ts
+type CellTextStringFormatter = (cell: TextCell | GroupCell | ArtifactCell) => string;
 type RevisionStringFormatter = (cell: RevisionCell) => string;
 type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
 type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;

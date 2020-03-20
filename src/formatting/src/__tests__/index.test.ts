@@ -60,7 +60,24 @@ describe('formatBudgetResult', () => {
           'tacos',
           true
         )
-      ).toEqual('🚨: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('🚨: *tacos* failed the stat budget size limit of 2 KiB by 2 KiB');
+    });
+
+    test('escapes ~ in artifact names', () => {
+      expect(
+        formatBudgetResult(
+          {
+            sizeKey: 'stat',
+            passing: false,
+            expected: 2048,
+            actual: 4096,
+            type: BudgetType.SIZE,
+            level: BudgetLevel.ERROR
+          },
+          'churros~burritos~tacos',
+          true
+        )
+      ).toEqual('🚨: *churros\\~burritos\\~tacos* failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('size', () => {
@@ -76,7 +93,7 @@ describe('formatBudgetResult', () => {
           },
           'tacos'
         )
-      ).toEqual('Error: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('Error: *tacos* failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('delta', () => {
@@ -93,7 +110,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Error: `tacos` failed the stat budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+        'Error: *tacos* failed the stat budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
       );
     });
 
@@ -111,7 +128,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Error: `tacos` failed the stat budget percent change limit. Expected to not increase by more than 10%, but increased by 22.4%'
+        'Error: *tacos* failed the stat budget percent change limit. Expected to not increase by more than 10%, but increased by 22.4%'
       );
     });
   });
@@ -131,7 +148,7 @@ describe('formatBudgetResult', () => {
           'tacos',
           true
         )
-      ).toEqual('⚠️: `tacos` failed the stat budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('⚠️: *tacos* failed the stat budget size limit of 2 KiB by 2 KiB');
     });
 
     test('size', () => {
@@ -147,7 +164,7 @@ describe('formatBudgetResult', () => {
           },
           'tacos'
         )
-      ).toEqual('Warning: `tacos` failed the brotli budget size limit of 2 KiB by 2 KiB');
+      ).toEqual('Warning: *tacos* failed the brotli budget size limit of 2 KiB by 2 KiB');
     });
 
     test('delta', () => {
@@ -164,7 +181,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Warning: `tacos` failed the gzip budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
+        'Warning: *tacos* failed the gzip budget delta limit. Expected to increase no more than 2 KiB, but increased by 4 KiB'
       );
     });
 
@@ -182,7 +199,7 @@ describe('formatBudgetResult', () => {
           'tacos'
         )
       ).toEqual(
-        'Warning: `tacos` failed the stat budget percent change limit. Expected to not increase by more than 10%, but increased by 163.6%'
+        'Warning: *tacos* failed the stat budget percent change limit. Expected to not increase by more than 10%, but increased by 163.6%'
       );
     });
   });

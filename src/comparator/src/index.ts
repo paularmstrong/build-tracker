@@ -91,6 +91,7 @@ export interface ComparisonMatrix {
   artifacts: Array<ArtifactRow>;
 }
 
+export type CellTextStringFormatter = (cell: TextCell | GroupCell | ArtifactCell) => string;
 export type RevisionStringFormatter = (cell: RevisionCell) => string;
 export type RevisionDeltaStringFormatter = (cell: RevisionDeltaCell) => string;
 export type TotalStringFormatter = (cell: TotalCell, sizeKey: string) => string;
@@ -98,6 +99,7 @@ export type DeltaStringFormatter = (cell: DeltaCell | TotalDeltaCell, sizeKey: s
 export type ArtifactFilter = (row: ArtifactRow) => boolean;
 
 export interface FormattingOptions {
+  formatCellText?: CellTextStringFormatter;
   formatRevision?: RevisionStringFormatter;
   formatRevisionDelta?: RevisionDeltaStringFormatter;
   formatTotal?: TotalStringFormatter;
@@ -112,6 +114,8 @@ const emptyObject = Object.freeze({});
 const flatten = (arrays: Array<any>): Array<any> => arrays.reduce((memo: Array<any>, b: any) => memo.concat(b), []);
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
+const defaultFormatCellText = (cell: TextCell | GroupCell | ArtifactCell): string => cell.text;
+const formatCellTextMarkdown = (cell: TextCell | GroupCell | ArtifactCell): string => cell.text.replace(/~/g, '\\~');
 const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.revision);
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatBytes(cell.sizes[sizeKey] || 0);
@@ -379,6 +383,7 @@ export default class BuildComparator {
   }
 
   public getStringFormattedGroups(
+    formatCellText: CellTextStringFormatter = defaultFormatCellText,
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
     sizeKey = 'gzip'
@@ -388,7 +393,7 @@ export default class BuildComparator {
         (cell): string => {
           switch (cell.type) {
             case CellType.GROUP:
-              return cell.text;
+              return formatCellText(cell as GroupCell);
             case CellType.TOTAL_DELTA:
               return formatDelta(cell as TotalDeltaCell, sizeKey);
             case CellType.TOTAL:
@@ -400,6 +405,7 @@ export default class BuildComparator {
   }
 
   public getStringFormattedRows(
+    formatCellText: CellTextStringFormatter = defaultFormatCellText,
     formatTotal: TotalStringFormatter = defaultFormatTotal,
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
     sizeKey = 'gzip',
@@ -411,7 +417,7 @@ export default class BuildComparator {
           (cell): string => {
             switch (cell.type) {
               case CellType.ARTIFACT:
-                return cell.text;
+                return formatCellText(cell as ArtifactCell);
               case CellType.DELTA:
                 return formatDelta(cell as DeltaCell, sizeKey);
               case CellType.TOTAL:
@@ -432,6 +438,7 @@ export default class BuildComparator {
   }
 
   public toMarkdown({
+    formatCellText = formatCellTextMarkdown,
     formatRevision,
     formatRevisionDelta,
     formatTotal,
@@ -440,8 +447,8 @@ export default class BuildComparator {
     sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const groups = this.getStringFormattedGroups(formatTotal, formatDelta, sizeKey);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
+    const groups = this.getStringFormattedGroups(formatCellText, formatTotal, formatDelta, sizeKey);
+    const rows = this.getStringFormattedRows(formatCellText, formatTotal, formatDelta, sizeKey, artifactFilter);
 
     const allRows = [header, ...groups, ...rows];
 
@@ -449,6 +456,7 @@ export default class BuildComparator {
   }
 
   public toCsv({
+    formatCellText,
     formatRevision,
     formatRevisionDelta,
     formatTotal,
@@ -457,8 +465,8 @@ export default class BuildComparator {
     sizeKey
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
-    const groups = this.getStringFormattedGroups(formatTotal, formatDelta, sizeKey);
-    const rows = this.getStringFormattedRows(formatTotal, formatDelta, sizeKey, artifactFilter);
+    const groups = this.getStringFormattedGroups(formatCellText, formatTotal, formatDelta, sizeKey);
+    const rows = this.getStringFormattedRows(formatCellText, formatTotal, formatDelta, sizeKey, artifactFilter);
 
     return [header, ...groups, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
   }

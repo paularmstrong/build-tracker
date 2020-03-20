@@ -46,7 +46,7 @@ export const levelToEmoji = {
 };
 
 function getPrefix(artifactName: string, level: string, useEmoji = false): string {
-  return `${(useEmoji ? levelToEmoji : levelToString)[level]}: \`${artifactName}\``;
+  return `${(useEmoji ? levelToEmoji : levelToString)[level]}: *${artifactName.replace(/~/g, '\\~')}*`;
 }
 
 export function formatBudgetResult(budgetResult: BudgetResult, artifactName: string, useEmoji = false): string {

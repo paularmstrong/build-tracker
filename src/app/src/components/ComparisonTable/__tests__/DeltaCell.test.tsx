@@ -85,7 +85,7 @@ describe('DeltaCell', () => {
         />
       );
       expect(queryAllByType(HashIcon)).toHaveLength(1);
-      expect(getByType(Td).props.accessibilityLabel).toEqual('Hash: `tacos` hash changed without any file size change');
+      expect(getByType(Td).props.accessibilityLabel).toEqual('Hash: *tacos* hash changed without any file size change');
     });
 
     test('shows a warning icon if warning budget fails', () => {

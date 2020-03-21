@@ -275,6 +275,7 @@ describe('BuildComparator', () => {
         budgets: [],
         failingBudgets: [],
         hashChanged: true,
+        hashChangeUnexpected: false,
         sizes: { gzip: 28, stat: 13 },
         percents: { gzip: 0.2074074074074074, stat: 0.022452504317789293 }
       });
@@ -306,6 +307,7 @@ describe('BuildComparator', () => {
         type: 'totalDelta',
         name: 'stuff',
         hashChanged: true,
+        hashChangeUnexpected: false,
         budgets: [],
         failingBudgets: [],
         percents: { gzip: 0.3333333333333333, stat: 0.02850877192982456 },
@@ -332,6 +334,7 @@ describe('BuildComparator', () => {
         type: 'totalDelta',
         name: 'stuff',
         hashChanged: true,
+        hashChangeUnexpected: false,
         budgets: [],
         failingBudgets: [],
         percents: { gzip: -0.6814814814814815, stat: -0.7875647668393783 },

@@ -39,6 +39,7 @@ export interface DeltaCell {
   sizes: ArtifactSizes;
   percents: ArtifactSizes;
   hashChanged: boolean;
+  hashChangeUnexpected: boolean;
   budgets: Array<BudgetResult>;
   failingBudgets: Array<BudgetResult>;
 }
@@ -55,6 +56,7 @@ export interface TotalDeltaCell {
   sizes: ArtifactSizes;
   percents: ArtifactSizes;
   hashChanged: boolean;
+  hashChangeUnexpected: boolean;
   budgets: Array<BudgetResult>;
   failingBudgets: Array<BudgetResult>;
 }
@@ -122,14 +124,13 @@ const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatB
 const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string => {
   const errorFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.ERROR);
   const warningFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.WARN);
-  const warningHashChanged =
-    cell.hashChanged && cell.failingBudgets.length === 0 && Object.values(cell.sizes).every(size => size === 0);
+
   return `${
     errorFailingBudgets
       ? `${levelToEmoji[BudgetLevel.ERROR]} `
       : warningFailingBudgets
       ? `${levelToEmoji[BudgetLevel.WARN]} `
-      : warningHashChanged
+      : cell.hashChangeUnexpected
       ? `${levelToEmoji['hash']} `
       : ''
   }${formatBytes(cell.sizes[sizeKey] || 0)} (${((cell.percents[sizeKey] || 0) * 100).toFixed(1)}%)`;
@@ -493,11 +494,7 @@ export default class BuildComparator {
           memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
         });
 
-        if (
-          cell.failingBudgets.length === 0 &&
-          cell.hashChanged &&
-          Object.values(cell.sizes).every(size => size === 0)
-        ) {
+        if (cell.hashChangeUnexpected) {
           memo.push(formatUnexpectedHashChange(row[0].text, useEmoji));
         }
       });

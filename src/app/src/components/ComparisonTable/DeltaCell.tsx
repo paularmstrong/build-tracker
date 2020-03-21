@@ -72,7 +72,7 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   const stringChange = `${sizeDelta} bytes (${(percentDelta * 100).toFixed(3)}%)`;
 
   const text = formatBytes(sizeDelta);
-  const hashChangedOnly = sizeDelta === 0 && cell.hashChanged;
+  const hashChangedOnly = cell.hashChangeUnexpected;
   const tooltipText = failingBudgets.length
     ? failingBudgets.map(budget => formatBudgetResult(budget, cell.name)).join(', ')
     : hashChangedOnly

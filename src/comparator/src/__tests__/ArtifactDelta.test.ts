@@ -32,6 +32,38 @@ describe('ArtifactDelta', () => {
     });
   });
 
+  describe('hashChangeUnexpected', () => {
+    test('is false when no hash change', () => {
+      expect(
+        new ArtifactDelta('tacos', [], { gzip: 1, stat: 2 }, { gzip: 1, stat: 2 }, false).hashChangeUnexpected
+      ).toBe(false);
+    });
+
+    test('is false when hash change and any size changes', () => {
+      expect(
+        new ArtifactDelta('tacos', [], { gzip: 2, stat: 2 }, { gzip: 1, stat: 2 }, true).hashChangeUnexpected
+      ).toBe(false);
+    });
+
+    test('is false when there is a budget failure', () => {
+      expect(
+        new ArtifactDelta(
+          'tacos',
+          [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, sizeKey: 'gzip', maximum: 3 }],
+          { gzip: 5, stat: 10 },
+          { gzip: 5, stat: 10 },
+          false
+        ).hashChangeUnexpected
+      ).toBe(false);
+    });
+
+    test('is true when all sizes are zero and no failing budgets', () => {
+      expect(
+        new ArtifactDelta('tacos', [], { gzip: 1, stat: 2 }, { gzip: 1, stat: 2 }, true).hashChangeUnexpected
+      ).toBe(true);
+    });
+  });
+
   describe('budgets', () => {
     test('returns a list with delta budget', () => {
       const ad = new ArtifactDelta(
@@ -142,6 +174,7 @@ describe('ArtifactDelta', () => {
         sizes: { stat: 1 },
         percents: { stat: 1 / 3 },
         hashChanged: false,
+        hashChangeUnexpected: false,
         budgets: [budget],
         failingBudgets: [budget]
       });

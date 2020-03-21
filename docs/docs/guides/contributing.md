@@ -175,27 +175,33 @@ To run the documentation with hot reloading from your local machine, simple run:
 
 ```sh
 $ yarn docs
-LiveReload server started on port 35729
-Docusaurus server started on port 3000
+# … webpack may need a moment to build
+✔ Client
+  Compiled successfully in 15.58s
+
+ℹ ｢wds｣: Project is running at http://localhost:3000/
+ℹ ｢wds｣: webpack output is served from /
+ℹ ｢wds｣: Content not from webpack is served from /Users/parmstrong/Development/build-tracker/docs
+ℹ ｢wds｣: 404s will fallback to /index.html
 ```
 
 Your browser should automatically be opened to the documentation site running locally. If it is not, you can visit `http://localhost:3000` (or swap the port `3000` with whatever is on the last line of the output above)
 
 ### Updating documentation
 
-To update any documentation pages, first update the files from the repository root at `docs/docs`. If your changes are also relevant to the 1.x.x version, you will also need to update `website/versioned_docs/1.0.0` files.
+To update any documentation pages, open the appropriate Markdown files in `./docs/docs`. Make any changes you’d like.
 
 ### Updating other pages
 
-All pages and templates are written with React.js and can be found in `website/core` and `website/pages`.
+All pages and templates are written with React.js and can be found in `src/pages`.
 
 ### Submitting your PR
 
-After your changes look the way you want on your local documentation server. You can close the server down (`CTRL+C`). Simply commit your changes and open a PR on the [Build Tracker repository](https://github.com/paularmstrong/build-tracker).
+After your changes look the way you want on your local documentation server. You can close the server down (`CTRL+C`). Commit your changes to a local feature branch, push them to your fork on GitHub, and open a PR on the [Build Tracker repository](https://github.com/paularmstrong/build-tracker).
 
 ### Other help
 
-Build Tracker uses [Docusaurus](https://docusaurus.io) for generating it's docs. If you're unfamiliar with any of the internals of how the docs are built, structured, or how to add a feature to them, the [official docs](https://docusaurus.io) are the best place to start.
+Build Tracker uses [Docusaurus](https://v2.docusaurus.io) for generating it's docs. If you're unfamiliar with any of the internals of how the docs are built, structured, or how to add a feature to them, the [official docs](https://v2.docusaurus.io) are the best place to start.
 
 ## Publishing
 

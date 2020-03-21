@@ -24,7 +24,7 @@ interface Props {
 }
 
 const handleMoveLine = memoize((line, xPos): void => {
-  select(line).transition().duration(250).attr('x1', xPos).attr('x2', xPos);
+  select(line).transition().duration(50).attr('x1', xPos).attr('x2', xPos);
 });
 
 const HoverOverlay = (props: Props): React.ReactElement => {
@@ -110,8 +110,27 @@ const HoverOverlay = (props: Props): React.ReactElement => {
 
   const getTooltipText = React.useCallback((): string => {
     const revision = buildRevisionFromX(offsetX - Offset.LEFT);
-    return `Revision: ${formatSha(revision.value)}, Artifact: ${hoveredArtifact}`;
-  }, [buildRevisionFromX, hoveredArtifact, offsetX]);
+
+    const dataSeries = data.find((d) => d.key === hoveredArtifact);
+    const buildDate = dataSeries[revision.index].data.timestamp;
+    const formattedDate =
+      // Output date as YYYY-MM-DD
+      buildDate
+        .toLocaleDateString('ja', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        })
+        .replace(/\//g, '-') +
+      ' ' +
+      buildDate.toLocaleTimeString();
+
+    return `
+Revision: ${formatSha(revision.value)}
+Date: ${formattedDate}
+Artifact: ${hoveredArtifact}
+`.trim();
+  }, [buildRevisionFromX, data, hoveredArtifact, offsetX]);
 
   return (
     <g>

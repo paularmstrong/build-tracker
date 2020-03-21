@@ -27,7 +27,7 @@ const handleMoveLine = memoize(
   (line, xPos): void => {
     select(line)
       .transition()
-      .duration(250)
+      .duration(50)
       .attr('x1', xPos)
       .attr('x2', xPos);
   }
@@ -116,8 +116,27 @@ const HoverOverlay = (props: Props): React.ReactElement => {
 
   const getTooltipText = React.useCallback((): string => {
     const revision = buildRevisionFromX(offsetX - Offset.LEFT);
-    return `Revision: ${formatSha(revision.value)}, Artifact: ${hoveredArtifact}`;
-  }, [buildRevisionFromX, hoveredArtifact, offsetX]);
+
+    const dataSeries = data.find(d => d.key === hoveredArtifact);
+    const build = dataSeries[revision.index].data;
+    const date = new Date(parseInt(`${build.meta.timestamp}000`, 10));
+    const formattedDate =
+      date
+        .toLocaleDateString('ja', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        })
+        .replace(/\//g, '-') +
+      ' ' +
+      date.toLocaleTimeString();
+
+    return `
+Revision: ${formatSha(revision.value)}
+Date: ${formattedDate}
+Artifact: ${hoveredArtifact}
+`.trim();
+  }, [buildRevisionFromX, data, hoveredArtifact, offsetX]);
 
   return (
     <g>

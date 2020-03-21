@@ -90,8 +90,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: Theme.TextColor.Gray50,
-    fontSize: Theme.FontSize.Xsmall,
-    textAlign: 'center'
+    fontSize: Theme.FontSize.Xsmall
   }
 });
 

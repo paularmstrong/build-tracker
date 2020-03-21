@@ -57,13 +57,17 @@ describe('uploadBuild', () => {
   });
 
   test('if request failed, responds with error and does not invoke `onCompare`', async () => {
+    const logger = { log: jest.fn(), error: jest.fn() };
     const onCompareSpy = jest.spyOn(config, 'onCompare').mockImplementationOnce(() => Promise.resolve());
 
     nock(`${config.applicationUrl}/`)
       .post('/api/builds')
       .reply(500, { error: 'Something went wrong.' });
 
-    await expect(uploadBuild(config, build)).rejects.toStrictEqual(new Error('Something went wrong.'));
+    await expect(uploadBuild(config, build, undefined, logger)).rejects.toStrictEqual(
+      new Error('Something went wrong.')
+    );
+    expect(logger.error).toHaveBeenCalledWith('Something went wrong.');
     expect(onCompareSpy).not.toHaveBeenCalled();
   });
 
@@ -102,6 +106,6 @@ describe('uploadBuild', () => {
       .replyWithError(responseError);
 
     await expect(uploadBuild(config, build, undefined, logger)).rejects.toEqual(responseError);
-    expect(logger.error).toHaveBeenLastCalledWith(responseError.toString());
+    expect(logger.error).toHaveBeenCalledWith('Error: some error');
   });
 });

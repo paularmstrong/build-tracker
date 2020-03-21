@@ -14,12 +14,18 @@ export default function(req: Request, res: Response, next: NextFunction): void {
   }
 
   if (!authHeaderValue) {
-    res.status(401).send({ error: new AuthError(`${req.path} request x-bt-auth header`) });
+    const error = new AuthError(
+      `${
+        req.path
+      } requires the x-bt-auth header to be set. This API is secured with a token, ensure you set the same BT_API_AUTH_TOKEN variable before requesting again`
+    );
+    res.status(error.status).send({ error: error.message });
     return;
   }
 
   if (authHeaderValue !== authToken) {
-    res.status(401).send({ error: new AuthError('invalid auth token') });
+    const error = new AuthError('invalid x-bt-auth token header');
+    res.status(error.status).send({ error: error.message });
     return;
   }
 

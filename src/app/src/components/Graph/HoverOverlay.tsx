@@ -118,10 +118,10 @@ const HoverOverlay = (props: Props): React.ReactElement => {
     const revision = buildRevisionFromX(offsetX - Offset.LEFT);
 
     const dataSeries = data.find(d => d.key === hoveredArtifact);
-    const build = dataSeries[revision.index].data;
-    const date = new Date(parseInt(`${build.meta.timestamp}000`, 10));
+    const buildDate = dataSeries[revision.index].data.timestamp;
     const formattedDate =
-      date
+      // Output date as YYYY-MM-DD
+      buildDate
         .toLocaleDateString('ja', {
           year: 'numeric',
           month: '2-digit',
@@ -129,7 +129,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         })
         .replace(/\//g, '-') +
       ' ' +
-      date.toLocaleTimeString();
+      buildDate.toLocaleTimeString();
 
     return `
 Revision: ${formatSha(revision.value)}

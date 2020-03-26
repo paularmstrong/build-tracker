@@ -77,12 +77,12 @@ describe('createBuild', () => {
       },
       artifacts: [
         {
-          hash: '631a500f31d7602a386b4f858338dd6f',
+          hash: '764196c430cf8a94c698b74b6dfdad71',
           name: '../../fakedist/main.1234567.js',
           sizes: {
             brotli: 49,
-            gzip: 73,
-            stat: 64,
+            gzip: 74,
+            stat: 65,
           },
         },
         {
@@ -95,12 +95,12 @@ describe('createBuild', () => {
           },
         },
         {
-          hash: 'fc4bcd175441f89862f9d81e37599416',
+          hash: '0b3bb1892728da2a8a5af73335a51f35',
           name: '../../fakedist/vendor.js',
           sizes: {
             brotli: 49,
-            gzip: 82,
-            stat: 82,
+            gzip: 83,
+            stat: 83,
           },
         },
       ],

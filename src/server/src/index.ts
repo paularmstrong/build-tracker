@@ -15,12 +15,12 @@ const argv = yargs
     default: 0,
     describe: 'Set the logging verbosity. Use -vv for more verbose',
     global: true,
-    type: 'count'
+    type: 'count',
   })
   .group(['help', 'verbose'], 'Global:')
   .commandDir(path.join(__dirname, 'commands'), {
     extensions: ['ts', 'js'],
-    exclude: /\.d\.ts$/
+    exclude: /\.d\.ts$/,
   })
   .demandCommand(1, 1, 'Please provide a command to run').argv;
 

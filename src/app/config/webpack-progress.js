@@ -7,7 +7,7 @@ const clearOutput = () => {
   process.stdout.write('\x1B[2J\x1B[0f');
 };
 
-module.exports = port => ({
+module.exports = (port) => ({
   change: (context, { shortPath }) => {
     clearOutput();
     console.log(`⏱  ${shortPath} changed. Rebuilding…`);
@@ -17,13 +17,13 @@ module.exports = port => ({
     const info = stats.toJson();
 
     if (stats.hasErrors()) {
-      info.errors.forEach(error => {
+      info.errors.forEach((error) => {
         console.error(error);
       });
     }
   },
 
-  afterAllDone: context => {
+  afterAllDone: (context) => {
     const { hasErrors, message, name } = context.state;
 
     if (hasErrors) {
@@ -33,5 +33,5 @@ module.exports = port => ({
       clearOutput();
       console.log(`\n 🚀 Server is ready on https://localhost:${port}\n`);
     }
-  }
+  },
 });

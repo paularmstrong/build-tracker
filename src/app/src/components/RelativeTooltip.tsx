@@ -17,15 +17,13 @@ const RelativeTooltip = (props: Props): React.ReactElement => {
   React.useEffect(() => {
     let mounted = true;
     if (relativeTo.current) {
-      relativeTo.current.measureInWindow(
-        (x: number, y: number, width: number, height: number): void => {
-          if (!mounted) {
-            return;
-          }
-
-          setPosition({ left: x + Math.round(width / 2), top: y + Math.round(height / 2) });
+      relativeTo.current.measureInWindow((x: number, y: number, width: number, height: number): void => {
+        if (!mounted) {
+          return;
         }
-      );
+
+        setPosition({ left: x + Math.round(width / 2), top: y + Math.round(height / 2) });
+      });
     }
     return () => {
       mounted = false;

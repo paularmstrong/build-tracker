@@ -27,7 +27,7 @@ export const RevisionCell = (props: Props): React.ReactElement => {
 
   const handleToggleMenu = React.useCallback((event: GestureResponderEvent): void => {
     event.preventDefault();
-    toggleMenu(showMenu => !showMenu);
+    toggleMenu((showMenu) => !showMenu);
   }, []);
 
   const handleRemove = React.useCallback(
@@ -53,7 +53,7 @@ export const RevisionCell = (props: Props): React.ReactElement => {
   return (
     <>
       <Hoverable>
-        {isHovered => (
+        {(isHovered) => (
           <Th accessibilityLabel={`Build ${cell.revision}`} style={[style, isHovered && styles.hovered]}>
             <TouchableOpacity
               accessibilityRole="button"
@@ -79,16 +79,16 @@ export const RevisionCell = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   hovered: {
-    backgroundColor: Theme.Color.Primary00
+    backgroundColor: Theme.Color.Primary00,
   },
   content: {
     justifyContent: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   revision: {
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 });
 
 export default React.memo(RevisionCell);

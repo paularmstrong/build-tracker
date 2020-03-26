@@ -8,7 +8,7 @@ module.exports = (fixtureType, overrides = {}) => {
   const today = new Date();
   glob
     .sync(`${path.join(__dirname, `../src/fixtures/builds-${fixtureType}`)}/*.json`)
-    .map(buildPath => ({ ...require(buildPath) }))
+    .map((buildPath) => ({ ...require(buildPath) }))
     .sort((a, b) => b.meta.timestamp - a.meta.timestamp)
     .forEach((build, i) => {
       build.meta.timestamp = Math.floor(subDays(today, i).valueOf() / 1000);
@@ -21,16 +21,16 @@ module.exports = (fixtureType, overrides = {}) => {
     name: 'Static Fixtures',
     queries: {
       build: {
-        byRevision: async revision => {
+        byRevision: async (revision) => {
           return Promise.resolve(builds.get(revision));
         },
         insert: async () => {
           throw new UnimplementedError();
-        }
+        },
       },
       builds: {
-        byRevisions: async revisions => {
-          return Promise.resolve(revisions.map(revision => builds.get(revision)).filter(Boolean));
+        byRevisions: async (revisions) => {
+          return Promise.resolve(revisions.map((revision) => builds.get(revision)).filter(Boolean));
         },
         byRevisionRange: async () => {
           throw new UnimplementedError();
@@ -38,7 +38,7 @@ module.exports = (fixtureType, overrides = {}) => {
         byTimeRange: async (startTimestamp, endTimestamp) => {
           return Promise.resolve(
             Array.from(builds.values())
-              .filter(build => build.meta.timestamp >= startTimestamp && build.meta.timestamp <= endTimestamp)
+              .filter((build) => build.meta.timestamp >= startTimestamp && build.meta.timestamp <= endTimestamp)
               .sort((a, b) => a.meta.timestamp - b.meta.timestamp)
           );
         },
@@ -48,11 +48,11 @@ module.exports = (fixtureType, overrides = {}) => {
               .sort((a, b) => a.meta.timestamp - b.meta.timestamp)
               .slice(-limit)
           );
-        }
-      }
+        },
+      },
     },
     setup: () => Promise.resolve(),
     url: 'http://localhost:3000',
-    ...overrides
+    ...overrides,
   };
 };

@@ -61,7 +61,7 @@ export default class ArtifactDelta {
     return (
       this._hashChanged &&
       this.failingBudgets.length === 0 &&
-      Object.keys(this.sizes).every(sizeKey => this.sizes[sizeKey] === 0)
+      Object.keys(this.sizes).every((sizeKey) => this.sizes[sizeKey] === 0)
     );
   }
 
@@ -71,7 +71,7 @@ export default class ArtifactDelta {
       const percents = this.percents;
 
       this._results = [];
-      this._budgets.forEach(budget => {
+      this._budgets.forEach((budget) => {
         const { level, maximum, sizeKey, type } = budget;
         const actual =
           type === 'delta'
@@ -88,7 +88,7 @@ export default class ArtifactDelta {
           level,
           passing: actual < expected,
           sizeKey,
-          type
+          type,
         });
       });
     }
@@ -96,7 +96,7 @@ export default class ArtifactDelta {
   }
 
   public get failingBudgets(): Array<BudgetResult> {
-    return this.budgets.filter(budget => budget.passing === false);
+    return this.budgets.filter((budget) => budget.passing === false);
   }
 
   public toObject(): {} {
@@ -107,7 +107,7 @@ export default class ArtifactDelta {
       hashChanged: this.hashChanged,
       hashChangeUnexpected: this.hashChangeUnexpected,
       budgets: this.budgets,
-      failingBudgets: this.failingBudgets
+      failingBudgets: this.failingBudgets,
     };
   }
 }

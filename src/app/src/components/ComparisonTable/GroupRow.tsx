@@ -13,7 +13,7 @@ import {
   GroupCell as GCell,
   GroupRow as GRow,
   TotalCell as TCell,
-  TotalDeltaCell as TDCell
+  TotalDeltaCell as TDCell,
 } from '@build-tracker/comparator';
 
 interface Props {
@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
   row: {
     backgroundColor: Theme.Color.Gray05,
     transitionProperty: 'background-color',
-    transitionDuration: '0.1s'
+    transitionDuration: '0.1s',
   },
   cell: {
-    borderColor: Theme.Color.Gray20
-  }
+    borderColor: Theme.Color.Gray20,
+  },
 });
 
 export default React.memo(GroupRow);

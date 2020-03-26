@@ -3,5 +3,5 @@ function stuff() {}
 
 module.exports = {
   vendor,
-  stuff
+  stuff,
 };

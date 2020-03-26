@@ -2,8 +2,8 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/src/**/*.{ts,tsx}'],
   globals: {
     'ts-jest': {
-      isolatedModules: true
-    }
+      isolatedModules: true,
+    },
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   modulePathIgnorePatterns: ['dist', 'lib'],
@@ -14,6 +14,6 @@ module.exports = {
   timers: 'fake',
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.jsx?$': 'babel-jest'
-  }
+    '^.+\\.jsx?$': 'babel-jest',
+  },
 };

@@ -31,11 +31,11 @@ export const AppBar = React.forwardRef<Handles, Props>(
     React.useImperativeHandle(ref, () => ({
       dismissOverflow: () => {
         setShowOverflow(false);
-      }
+      },
     }));
 
     const handleShowOverflow = React.useCallback(() => {
-      setShowOverflow(showOverflow => !showOverflow);
+      setShowOverflow((showOverflow) => !showOverflow);
     }, []);
 
     React.useEffect(() => {
@@ -96,22 +96,22 @@ const styles = StyleSheet.create({
     transitionProperty: 'top, box-shadow',
     transitionDuration: '0.2s',
     transitionTimingFunction: Theme.MotionTiming.Standard,
-    width: '100%'
+    width: '100%',
   },
 
   icon: {
-    marginEnd: Theme.Spacing.Small
+    marginEnd: Theme.Spacing.Small,
   },
 
   title: {
     fontSize: Theme.FontSize.Normal,
     fontWeight: Theme.FontWeight.Bold,
-    color: Theme.Color.Primary40
+    color: Theme.Color.Primary40,
   },
 
   actionItems: {
-    marginStart: 'auto'
-  }
+    marginStart: 'auto',
+  },
 });
 
 export default React.memo(AppBar);

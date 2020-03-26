@@ -6,5 +6,5 @@ module.exports = {
   displayName: 'server',
   testEnvironment: 'node',
   rootDir: './',
-  roots: ['<rootDir>/src']
+  roots: ['<rootDir>/src'],
 };

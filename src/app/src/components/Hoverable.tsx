@@ -39,7 +39,7 @@ const createHoverMonitor = (): Monitor => {
   return {
     get isEnabled() {
       return isHoverEnabled;
-    }
+    },
   };
 };
 
@@ -65,7 +65,7 @@ class Hoverable extends React.Component<Props, State> {
 
     return React.cloneElement(React.Children.only(child), {
       onMouseEnter: this._handleMouseEnter,
-      onMouseLeave: this._handleMouseLeave
+      onMouseLeave: this._handleMouseLeave,
     });
   }
 

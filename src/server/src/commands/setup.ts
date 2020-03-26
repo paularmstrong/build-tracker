@@ -18,11 +18,11 @@ const group = 'Setup';
 export const builder = (yargs): Argv<Args> =>
   yargs.usage(`Usage: $0 ${command}`).option('config', {
     alias: 'c',
-    coerce: v => path.join(process.cwd(), v),
+    coerce: (v) => path.join(process.cwd(), v),
     default: 'build-tracker.config.js',
     description: 'path to the build-tracker config file',
     group,
-    normalize: true
+    normalize: true,
   });
 
 export const handler = async (args: Args): Promise<void> => {

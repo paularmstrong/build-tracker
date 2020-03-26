@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
     alignItems: 'center',
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   radio: {
-    marginEnd: Theme.Spacing.Small
+    marginEnd: Theme.Spacing.Small,
   },
-  text: {}
+  text: {},
 });
 
 export default SizeKeyPicker;

@@ -12,7 +12,7 @@ import {
   TextInputProps,
   TextInputSubmitEditingEventData,
   View,
-  ViewStyle
+  ViewStyle,
 } from 'react-native';
 
 const DatePicker = React.lazy(() => import(/* webpackChunkName: "DatePicker" */ '../components/DatePicker'));
@@ -39,7 +39,7 @@ const DateTextField = (props: Props): React.ReactElement => {
   const startDateRef = React.useRef<View>(null);
 
   const toggleDatePicker = React.useCallback(() => {
-    setDatePickerVisible(visible => !visible);
+    setDatePickerVisible((visible) => !visible);
   }, []);
 
   const handleSelect = React.useCallback(

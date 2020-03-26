@@ -21,14 +21,14 @@ describe('withMariadb', () => {
       queries: {
         build: {
           byRevision: expect.any(Function),
-          insert: expect.any(Function)
+          insert: expect.any(Function),
         },
         builds: {
           byRevisions: expect.any(Function),
           byRevisionRange: expect.any(Function),
-          byTimeRange: expect.any(Function)
-        }
-      }
+          byTimeRange: expect.any(Function),
+        },
+      },
     });
   });
 });

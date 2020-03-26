@@ -26,8 +26,8 @@ module.exports = withMariadb({
     host: '', // default: process.env.MARIAHOST
     database: '', // default: process.env.MARIADATABASE
     password: '', // default: process.env.MARIAPASSWORD
-    port: 3306 // default: process.env.MARIAPORT
-  }
+    port: 3306, // default: process.env.MARIAPORT
+  },
 });
 ```
 

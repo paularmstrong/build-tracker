@@ -15,7 +15,7 @@ describe('RadioSelect', () => {
         left: '0px',
         right: '0px',
         bottom: '0px',
-        opacity: '0'
+        opacity: '0',
       });
     });
   });
@@ -32,12 +32,12 @@ describe('RadioSelect', () => {
       const { getByRole, getByTestId } = render(<RadioSelect value={true} />);
       // @ts-ignore
       expect(getByTestId('fauxRadio').children[0].style).toMatchObject({
-        'background-color': 'rgb(178, 178, 178)'
+        'background-color': 'rgb(178, 178, 178)',
       });
       fireEvent.focus(getByRole('checkbox'));
       // @ts-ignore
       expect(getByTestId('fauxRadio').children[0].style).toMatchObject({
-        'background-color': 'rgb(61, 109, 162)'
+        'background-color': 'rgb(61, 109, 162)',
       });
     });
   });
@@ -56,7 +56,7 @@ describe('RadioSelect', () => {
       fireEvent.blur(getByRole('checkbox'));
       // @ts-ignore
       expect(getByTestId('fauxRadio').children[0].style).toMatchObject({
-        'background-color': 'rgb(178, 178, 178)'
+        'background-color': 'rgb(178, 178, 178)',
       });
     });
   });

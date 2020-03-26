@@ -20,7 +20,7 @@ export default function withMariadb(config: Omit<ServerConfig, 'queries'> & { ma
     password: process.env.MARIAPASSWORD,
     port: process.env.MARIAPORT ? parseInt(process.env.MARIAPORT, 10) : 3306,
     ...mariaConfig,
-    database
+    database,
   });
 
   const queries = new Queries(pool);
@@ -31,14 +31,14 @@ export default function withMariadb(config: Omit<ServerConfig, 'queries'> & { ma
     queries: {
       build: {
         byRevision: queries.getByRevision,
-        insert: queries.insert
+        insert: queries.insert,
       },
       builds: {
         byRevisions: queries.getByRevisions,
         byRevisionRange: queries.getByRevisionRange,
         byTimeRange: queries.getByTimeRange,
-        recent: queries.getRecent
-      }
-    }
+        recent: queries.getRecent,
+      },
+    },
   };
 }

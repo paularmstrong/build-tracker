@@ -47,7 +47,7 @@ describe('AppBar', () => {
       expect(getByType(Button).props).toMatchObject({
         icon: MoreIcon,
         iconOnly: true,
-        title: 'More actions'
+        title: 'More actions',
       });
     });
   });

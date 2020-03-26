@@ -21,7 +21,7 @@ describe('Server', () => {
 
     return request(app)
       .get('/')
-      .catch(res => {
+      .catch((res) => {
         expect(res.status).toBe(500);
       });
   });
@@ -32,7 +32,7 @@ describe('Server', () => {
 
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           expect(res.text).toMatch('<style nonce="12345-67890-12345-67890" id="react-native-stylesheet">');
         });
     });
@@ -47,7 +47,7 @@ describe('Server', () => {
 
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           expect(res.text).toMatch('<script nonce="12345-67890-12345-67890" src="/client/app.js"></script>');
           expect(res.text).toMatch('<script nonce="12345-67890-12345-67890" src="/client/tacos.js"></script>');
         });
@@ -58,7 +58,7 @@ describe('Server', () => {
 
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           expect(res.text).toMatch('<script nonce="12345-67890-12345-67890" src="/client/app.js"></script>');
         });
     });
@@ -74,7 +74,7 @@ describe('Server', () => {
 
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
           expect(match[1]).toMatchInlineSnapshot(`"={artifactConfig:{groups:[{name:\\"Foo\\",artifactMatch:/foo/}]}}"`);
         });
@@ -88,7 +88,7 @@ describe('Server', () => {
       app.get('/', serverRenderer({ children: [{ name: 'client', assetsByChunkName: { app: 'app.js' } }] }));
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           expect(res.text).toMatch('<title>Tacos! : Build Tracker</title>');
         });
     });
@@ -99,7 +99,7 @@ describe('Server', () => {
       return request(app)
         .get('/')
         .query({ sizeKey: 'tacos', comparedRevisions: '123' })
-        .then(res => {
+        .then((res) => {
           const match = res.text.match(/window\.__PROPS__([^<]+)<\/script>/);
           expect(match[1]).toMatchInlineSnapshot(`"={sizeKey:\\"tacos\\",comparedRevisions:[\\"123\\"]}"`);
         });

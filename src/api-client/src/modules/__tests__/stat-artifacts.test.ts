@@ -15,9 +15,9 @@ describe('statArtifacts', () => {
     expect(artifacts.size).toEqual(3);
     expect(artifacts.get('../../fakedist/main.1234567.js')).toMatchInlineSnapshot(`
       Object {
-        "gzip": 73,
-        "hash": "631a500f31d7602a386b4f858338dd6f",
-        "stat": 64,
+        "gzip": 74,
+        "hash": "764196c430cf8a94c698b74b6dfdad71",
+        "stat": 65,
       }
     `);
     expect(artifacts.get('../../fakedist/test-folder/test-no-extension')).toMatchInlineSnapshot(`
@@ -28,11 +28,11 @@ describe('statArtifacts', () => {
       }
     `);
     expect(artifacts.get('../../fakedist/vendor.js')).toMatchInlineSnapshot(`
-      Object {
-        "gzip": 82,
-        "hash": "fc4bcd175441f89862f9d81e37599416",
-        "stat": 82,
-      }
-    `);
+Object {
+  "gzip": 83,
+  "hash": "0b3bb1892728da2a8a5af73335a51f35",
+  "stat": 83,
+}
+`);
   });
 });

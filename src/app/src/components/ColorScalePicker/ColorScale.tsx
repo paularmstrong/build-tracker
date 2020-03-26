@@ -42,11 +42,11 @@ const styles = StyleSheet.create({
   root: {
     cursor: 'pointer',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   radio: {
-    marginEnd: Theme.Spacing.Small
-  }
+    marginEnd: Theme.Spacing.Small,
+  },
 });
 
 export default ColorScale;

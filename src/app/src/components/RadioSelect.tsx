@@ -59,7 +59,7 @@ const RadioSelect = (props: Props): React.ReactElement => {
           onFocus: handleFocus,
           role: 'checkbox',
           style: [styles.native],
-          type: 'checkbox'
+          type: 'checkbox',
         })}
       </View>
     </Ripple>
@@ -69,7 +69,7 @@ const RadioSelect = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   root: {
     borderRadius: Theme.BorderRadius.Infinite,
-    padding: Theme.Spacing.Xsmall
+    padding: Theme.Spacing.Xsmall,
   },
   radio: {
     borderRadius: Theme.BorderRadius.Infinite,
@@ -79,19 +79,19 @@ const styles = StyleSheet.create({
     width: Theme.FontSize.Medium,
     height: Theme.FontSize.Medium,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   focused: {
-    borderColor: Theme.Color.Primary30
+    borderColor: Theme.Color.Primary30,
   },
   checked: {
     borderRadius: Theme.BorderRadius.Infinite,
     backgroundColor: Theme.Color.Gray30,
     width: Theme.FontSize.Small,
-    height: Theme.FontSize.Small
+    height: Theme.FontSize.Small,
   },
   checkedFocused: {
-    backgroundColor: Theme.Color.Primary30
+    backgroundColor: Theme.Color.Primary30,
   },
   native: {
     ...StyleSheet.absoluteFillObject,
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     margin: 0,
     opacity: 0,
     padding: 0,
-    width: '100%'
-  }
+    width: '100%',
+  },
 });
 
 export default RadioSelect;

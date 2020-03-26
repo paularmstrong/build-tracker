@@ -32,7 +32,7 @@ export default class Queries {
         build.meta.timestamp,
         build.getMetaValue('parentRevision'),
         JSON.stringify(build.meta),
-        JSON.stringify(build.artifacts)
+        JSON.stringify(build.artifacts),
       ]
     );
 

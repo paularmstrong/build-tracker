@@ -18,7 +18,7 @@ describe('getConfig', () => {
     jest
       .spyOn(process, 'cwd')
       .mockReturnValue(path.join(path.dirname(require.resolve('@build-tracker/fixtures')), 'cli-configs/commonjs'));
-    return getConfig().then(result => {
+    return getConfig().then((result) => {
       expect(result).toEqual(commonjsConfig);
     });
   });
@@ -26,7 +26,7 @@ describe('getConfig', () => {
   test('loaded via cosmiconfig when provided', () => {
     return getConfig(
       path.join(path.dirname(require.resolve('@build-tracker/fixtures')), 'cli-configs/rc/.build-trackerrc.js')
-    ).then(result => {
+    ).then((result) => {
       expect(result).toMatchObject(rcConfig);
     });
   });
@@ -34,13 +34,13 @@ describe('getConfig', () => {
   test('propagate errors', () => {
     return getConfig(
       path.join(path.dirname(require.resolve('@build-tracker/fixtures')), 'cli-configs/rc/.build-trackerrc-invalid.js')
-    ).catch(e => {
+    ).catch((e) => {
       expect(e.message).toMatch('test');
     });
   });
 
   test('throws if no configuration found', () => {
-    return getConfig('tacos').catch(e => {
+    return getConfig('tacos').catch((e) => {
       expect(e.message).toMatch('Could not find configuration file');
     });
   });

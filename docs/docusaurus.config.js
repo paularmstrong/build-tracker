@@ -12,7 +12,7 @@ module.exports = {
       title: 'Build Tracker',
       logo: {
         alt: 'Build Tracker Logo',
-        src: 'img/logo.svg'
+        src: 'img/logo.svg',
       },
       links: [
         { to: 'docs/installation', label: 'Docs', position: 'left' },
@@ -21,15 +21,15 @@ module.exports = {
         {
           href: 'https://github.com/paularmstrong/build-tracker',
           label: 'GitHub',
-          position: 'right'
-        }
-      ]
+          position: 'right',
+        },
+      ],
     },
     algolia: {
       appId: 'BH4D9OD16A',
       apiKey: '8dd64bd9bb779b8908147f675d6684e7',
       indexName: 'buildtracker',
-      algoliaOptions: {}
+      algoliaOptions: {},
     },
     footer: {
       logo: { src: 'img/logo.svg', alt: '' },
@@ -39,41 +39,41 @@ module.exports = {
           items: [
             {
               label: 'Getting started',
-              to: 'docs/installation'
+              to: 'docs/installation',
             },
             {
               label: 'Plugins',
-              to: 'docs/plugins/plugins'
-            }
-          ]
+              to: 'docs/plugins/plugins',
+            },
+          ],
         },
         {
           title: 'Community',
           items: [
             {
               label: 'Stack Overflow',
-              href: 'http://stackoverflow.com/questions/tagged/build-tracker'
-            }
-          ]
+              href: 'http://stackoverflow.com/questions/tagged/build-tracker',
+            },
+          ],
         },
         {
           title: 'Social',
           items: [
             {
               label: 'Blog',
-              to: 'blog'
+              to: 'blog',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/paularmstrong/build-tracker'
-            }
-          ]
-        }
+              href: 'https://github.com/paularmstrong/build-tracker',
+            },
+          ],
+        },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Paul Armstrong`
+      copyright: `Copyright © ${new Date().getFullYear()} Paul Armstrong`,
     },
     // Open Graph and Twitter card images.
-    image: 'img/ogImage.png'
+    image: 'img/ogImage.png',
   },
   presets: [
     [
@@ -81,12 +81,12 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/paularmstrong/build-tracker/edit/master/docs/'
+          editUrl: 'https://github.com/paularmstrong/build-tracker/edit/master/docs/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css')
-        }
-      }
-    ]
-  ]
+          customCss: require.resolve('./src/css/custom.css'),
+        },
+      },
+    ],
+  ],
 };

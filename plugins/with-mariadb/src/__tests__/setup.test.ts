@@ -12,7 +12,7 @@ describe('withMariadb setup', () => {
     // @ts-ignore
     jest.spyOn(Mariadb, 'createPool').mockImplementation(() => ({
       // @ts-ignore
-      getConnection: () => Promise.resolve({ query, release })
+      getConnection: () => Promise.resolve({ query, release }),
     }));
 
     setupFn = setup(Mariadb.createPool({}));

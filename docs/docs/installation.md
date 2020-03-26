@@ -28,8 +28,8 @@ module.exports = withPostgres({
     user: 'myuser',
     password: 'mypassword',
     host: '127.0.0.1',
-    database: 'buildtracker'
-  }
+    database: 'buildtracker',
+  },
 });
 ```
 
@@ -58,7 +58,7 @@ You will need, at a minimum, the `applicationUrl` string, and `artifacts` search
 ```js
 module.exports = {
   applicationUrl: 'https://your-build-tracker-app.example.com', // The same as your server config `url`
-  artifacts: ['dist/**/*.js'] // an Array of glob-style file paths
+  artifacts: ['dist/**/*.js'], // an Array of glob-style file paths
 };
 ```
 

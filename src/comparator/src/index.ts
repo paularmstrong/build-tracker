@@ -10,7 +10,7 @@ import {
   formatBytes,
   formatSha,
   formatUnexpectedHashChange,
-  levelToEmoji
+  levelToEmoji,
 } from '@build-tracker/formatting';
 
 export interface ArtifactSizes {
@@ -25,7 +25,7 @@ export enum CellType {
   REVISION = 'revision',
   REVISION_DELTA = 'revisionDelta',
   ARTIFACT = 'artifact',
-  GROUP = 'group'
+  GROUP = 'group',
 }
 
 export interface TextCell {
@@ -83,9 +83,9 @@ export interface GroupCell {
   text: string;
   artifactNames: Array<string>;
 }
-export type HeaderRow = [TextCell, ...(Array<RevisionCell | RevisionDeltaCell>)];
-export type ArtifactRow = [ArtifactCell, ...(Array<TotalCell | DeltaCell>)];
-export type GroupRow = [GroupCell, ...(Array<TotalCell | TotalDeltaCell>)];
+export type HeaderRow = [TextCell, ...Array<RevisionCell | RevisionDeltaCell>];
+export type ArtifactRow = [ArtifactCell, ...Array<TotalCell | DeltaCell>];
+export type GroupRow = [GroupCell, ...Array<TotalCell | TotalDeltaCell>];
 
 export interface ComparisonMatrix {
   header: HeaderRow;
@@ -122,8 +122,8 @@ const defaultFormatRevision = (cell: RevisionCell): string => formatSha(cell.rev
 const defaultFormatRevisionDelta = (cell: RevisionDeltaCell): string => `Δ${cell.deltaIndex}`;
 const defaultFormatTotal = (cell: TotalCell, sizeKey: string): string => formatBytes(cell.sizes[sizeKey] || 0);
 const defaultFormatDelta = (cell: DeltaCell | TotalDeltaCell, sizeKey: string): string => {
-  const errorFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.ERROR);
-  const warningFailingBudgets = cell.failingBudgets.some(result => result.level === BudgetLevel.WARN);
+  const errorFailingBudgets = cell.failingBudgets.some((result) => result.level === BudgetLevel.ERROR);
+  const warningFailingBudgets = cell.failingBudgets.some((result) => result.level === BudgetLevel.WARN);
 
   return `${
     errorFailingBudgets
@@ -202,21 +202,24 @@ export default class BuildComparator {
     return new BuildComparator({
       ...objData,
       artifactFilters: objData.artifactFilters.map(deserializeRegExp),
-      builds: objData.builds.map(d => Build.fromJSON(d)),
-      groups: objData.groups.map(g => ({ ...g, artifactMatch: g.artifactMatch && deserializeRegExp(g.artifactMatch) }))
+      builds: objData.builds.map((d) => Build.fromJSON(d)),
+      groups: objData.groups.map((g) => ({
+        ...g,
+        artifactMatch: g.artifactMatch && deserializeRegExp(g.artifactMatch),
+      })),
     });
   }
 
   public serialize(): string {
     return JSON.stringify({
       artifactBudgets: this._artifactBudgets,
-      artifactFilters: this._artifactFilters.map(f => f.toString()),
+      artifactFilters: this._artifactFilters.map((f) => f.toString()),
       budgets: this._groups[0].budgets,
-      builds: this.builds.map(b => b.toJSON()),
-      groups: this._groups.slice(1).map(g => ({
+      builds: this.builds.map((b) => b.toJSON()),
+      groups: this._groups.slice(1).map((g) => ({
         ...g,
-        artifactMatch: g.artifactMatch && g.artifactMatch.toString()
-      }))
+        artifactMatch: g.artifactMatch && g.artifactMatch.toString(),
+      })),
     });
   }
 
@@ -227,15 +230,18 @@ export default class BuildComparator {
 
     if (!this._artifactNames) {
       this._artifactNames = Array.prototype.concat
-        .apply([], this.builds.map(build => build.artifacts))
+        .apply(
+          [],
+          this.builds.map((build) => build.artifacts)
+        )
         .sort((a, b) => {
           const sizeKey = Object.keys(a.sizes)[0];
           return b.sizes[sizeKey] - a.sizes[sizeKey];
         })
-        .map(artifact => artifact.name)
+        .map((artifact) => artifact.name)
         .filter(
           (value, index, self) =>
-            self.indexOf(value) === index && !this._artifactFilters.some(filter => filter.test(value))
+            self.indexOf(value) === index && !this._artifactFilters.some((filter) => filter.test(value))
         );
     }
     return this._artifactNames;
@@ -249,15 +255,15 @@ export default class BuildComparator {
     if (!this._sizeKeys) {
       this._sizeKeys = Object.keys(this.builds[0].artifacts[0].sizes).sort();
       const allSizeKeys = new Set();
-      this.builds.forEach(build => {
-        build.artifacts.forEach(artifact => {
-          Object.keys(artifact.sizes).forEach(key => {
+      this.builds.forEach((build) => {
+        build.artifacts.forEach((artifact) => {
+          Object.keys(artifact.sizes).forEach((key) => {
             allSizeKeys.add(key);
           });
         });
       });
 
-      if (allSizeKeys.size !== this._sizeKeys.length || !this._sizeKeys.every(key => allSizeKeys.has(key))) {
+      if (allSizeKeys.size !== this._sizeKeys.length || !this._sizeKeys.every((key) => allSizeKeys.has(key))) {
         throw new Error('builds provided do not have same size keys for artifacts');
       }
     }
@@ -271,11 +277,11 @@ export default class BuildComparator {
 
     if (!this._buildDeltas) {
       this._buildDeltas = this.builds.map((baseBuild, i) => {
-        return this.builds.slice(0, i).map(prevBuild => {
+        return this.builds.slice(0, i).map((prevBuild) => {
           return new BuildDelta(baseBuild, prevBuild, {
             artifactBudgets: this._artifactBudgets,
             artifactFilters: this._artifactFilters,
-            groups: this._groups
+            groups: this._groups,
           });
         });
       });
@@ -297,11 +303,11 @@ export default class BuildComparator {
                 type: CellType.REVISION_DELTA,
                 deltaIndex: deltaIndex + 1,
                 againstRevision: buildDelta.prevBuild.getMetaValue('revision'),
-                revision
-              }))
+                revision,
+              })),
             ];
           })
-        )
+        ),
       ];
     }
     return this._matrixHeader;
@@ -309,14 +315,14 @@ export default class BuildComparator {
 
   public get matrixGroups(): ComparisonMatrix['groups'] {
     if (!this._matrixGroups) {
-      this._matrixGroups = this._groups.map(group => this._getGroupRow(group));
+      this._matrixGroups = this._groups.map((group) => this._getGroupRow(group));
     }
     return this._matrixGroups;
   }
 
   public get matrixArtifacts(): ComparisonMatrix['artifacts'] {
     if (!this._matrixArtifacts) {
-      this._matrixArtifacts = this.artifactNames.map(artifactName => this._getArtifactRow(artifactName));
+      this._matrixArtifacts = this.artifactNames.map((artifactName) => this._getArtifactRow(artifactName));
     }
     return this._matrixArtifacts;
   }
@@ -329,13 +335,13 @@ export default class BuildComparator {
           {
             sizes: artifact ? artifact.sizes : this._emptySizes,
             name: artifactName,
-            type: CellType.TOTAL
+            type: CellType.TOTAL,
           },
           // @ts-ignore
-          ...buildDeltas.map(buildDelta => ({
+          ...buildDeltas.map((buildDelta) => ({
             ...buildDelta.getArtifactDelta(artifactName).toObject(),
-            type: CellType.DELTA
-          }))
+            type: CellType.DELTA,
+          })),
         ];
       }
     );
@@ -345,7 +351,7 @@ export default class BuildComparator {
   private _getGroupRow(group: Group): GroupRow {
     let artifactNames = group.artifactNames ? [...group.artifactNames].filter(Boolean) : [];
     if (group.artifactMatch) {
-      artifactNames = artifactNames.concat(this.artifactNames.filter(name => group.artifactMatch.test(name)));
+      artifactNames = artifactNames.concat(this.artifactNames.filter((name) => group.artifactMatch.test(name)));
     }
     const cells = this.buildDeltas.map(
       (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
@@ -354,13 +360,13 @@ export default class BuildComparator {
           {
             sizes: groupSizes,
             name: group.name,
-            type: CellType.TOTAL
+            type: CellType.TOTAL,
           },
           // @ts-ignore
-          ...buildDeltas.map(buildDelta => ({
+          ...buildDeltas.map((buildDelta) => ({
             ...buildDelta.getGroupDelta(group.name).toObject(),
-            type: CellType.TOTAL_DELTA
-          }))
+            type: CellType.TOTAL_DELTA,
+          })),
         ];
       }
     );
@@ -371,7 +377,7 @@ export default class BuildComparator {
     formatRevision: RevisionStringFormatter = defaultFormatRevision,
     formatRevisionDelta: RevisionDeltaStringFormatter = defaultFormatRevisionDelta
   ): Array<string> {
-    return this.matrixHeader.map(cell => {
+    return this.matrixHeader.map((cell) => {
       switch (cell.type) {
         case CellType.REVISION:
           return formatRevision(cell);
@@ -389,19 +395,17 @@ export default class BuildComparator {
     formatDelta: DeltaStringFormatter = defaultFormatDelta,
     sizeKey = 'gzip'
   ): Array<Array<string>> {
-    return this.matrixGroups.map(row =>
-      row.map(
-        (cell): string => {
-          switch (cell.type) {
-            case CellType.GROUP:
-              return formatCellText(cell as GroupCell);
-            case CellType.TOTAL_DELTA:
-              return formatDelta(cell as TotalDeltaCell, sizeKey);
-            case CellType.TOTAL:
-              return formatTotal(cell as TotalCell, sizeKey);
-          }
+    return this.matrixGroups.map((row) =>
+      row.map((cell): string => {
+        switch (cell.type) {
+          case CellType.GROUP:
+            return formatCellText(cell as GroupCell);
+          case CellType.TOTAL_DELTA:
+            return formatDelta(cell as TotalDeltaCell, sizeKey);
+          case CellType.TOTAL:
+            return formatTotal(cell as TotalCell, sizeKey);
         }
-      )
+      })
     );
   }
 
@@ -414,18 +418,16 @@ export default class BuildComparator {
   ): Array<Array<string>> {
     return this.matrixArtifacts.filter(artifactFilter).map(
       (row): Array<string> => {
-        return row.map(
-          (cell): string => {
-            switch (cell.type) {
-              case CellType.ARTIFACT:
-                return formatCellText(cell as ArtifactCell);
-              case CellType.DELTA:
-                return formatDelta(cell as DeltaCell, sizeKey);
-              case CellType.TOTAL:
-                return formatTotal(cell as TotalCell, sizeKey);
-            }
+        return row.map((cell): string => {
+          switch (cell.type) {
+            case CellType.ARTIFACT:
+              return formatCellText(cell as ArtifactCell);
+            case CellType.DELTA:
+              return formatDelta(cell as DeltaCell, sizeKey);
+            case CellType.TOTAL:
+              return formatTotal(cell as TotalCell, sizeKey);
           }
-        );
+        });
       }
     );
   }
@@ -434,7 +436,7 @@ export default class BuildComparator {
     return {
       header: this.matrixHeader,
       groups: this.matrixGroups,
-      artifacts: this.matrixArtifacts
+      artifacts: this.matrixArtifacts,
     };
   }
 
@@ -445,7 +447,7 @@ export default class BuildComparator {
     formatTotal,
     formatDelta,
     artifactFilter,
-    sizeKey
+    sizeKey,
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const groups = this.getStringFormattedGroups(formatCellText, formatTotal, formatDelta, sizeKey);
@@ -463,22 +465,22 @@ export default class BuildComparator {
     formatTotal,
     formatDelta,
     artifactFilter,
-    sizeKey
+    sizeKey,
   }: FormattingOptions = {}): string {
     const header = this.getStringFormattedHeader(formatRevision, formatRevisionDelta);
     const groups = this.getStringFormattedGroups(formatCellText, formatTotal, formatDelta, sizeKey);
     const rows = this.getStringFormattedRows(formatCellText, formatTotal, formatDelta, sizeKey, artifactFilter);
 
-    return [header, ...groups, ...rows].map(row => `${row.join(',')}`).join(`\r\n`);
+    return [header, ...groups, ...rows].map((row) => `${row.join(',')}`).join(`\r\n`);
   }
 
   public toSummary(useEmoji = true): Array<string> {
     const groupResults = this.matrixGroups.reduce((memo, row): Array<string> => {
-      row.forEach(cell => {
+      row.forEach((cell) => {
         if (cell.type !== CellType.TOTAL_DELTA) {
           return;
         }
-        cell.failingBudgets.forEach(budget => {
+        cell.failingBudgets.forEach((budget) => {
           memo.push(formatBudgetResult(budget, `Group "${row[0].text}"`, useEmoji));
         });
       });
@@ -486,11 +488,11 @@ export default class BuildComparator {
     }, []);
 
     const artifactResults = this.matrixArtifacts.reduce((memo, row): Array<string> => {
-      row.forEach(cell => {
+      row.forEach((cell) => {
         if (cell.type !== CellType.DELTA) {
           return;
         }
-        cell.failingBudgets.forEach(budget => {
+        cell.failingBudgets.forEach((budget) => {
           memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
         });
 

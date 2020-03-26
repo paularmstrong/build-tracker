@@ -15,22 +15,18 @@ export default class Queries {
 
   public getByRevision = (revision: string): Promise<BuildStruct> => {
     return new Promise((resolve, reject) => {
-      this._pool.query(
-        'SELECT meta, artifacts FROM builds WHERE revision = ?',
-        [revision],
-        (err, results): void => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          if (results.length !== 1) {
-            reject(new NotFoundError());
-            return;
-          }
-
-          resolve(this._formatRow(results[0]));
+      this._pool.query('SELECT meta, artifacts FROM builds WHERE revision = ?', [revision], (err, results): void => {
+        if (err) {
+          reject(err);
+          return;
         }
-      );
+        if (results.length !== 1) {
+          reject(new NotFoundError());
+          return;
+        }
+
+        resolve(this._formatRow(results[0]));
+      });
     });
   };
 
@@ -45,7 +41,7 @@ export default class Queries {
           build.meta.timestamp,
           build.getMetaValue('parentRevision'),
           JSON.stringify(build.meta),
-          JSON.stringify(build.artifacts)
+          JSON.stringify(build.artifacts),
         ],
         (err, results): void => {
           if (err) {

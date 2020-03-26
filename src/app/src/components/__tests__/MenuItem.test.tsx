@@ -36,12 +36,12 @@ describe('MenuItem', () => {
       const { getByType } = render(<MenuItem label="tacos" nativeID="tacos" />);
       fireEvent(getByType(Ripple), 'mouseEnter');
       expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
-        backgroundColor: 'rgba(0,0,0,0.1)'
+        backgroundColor: 'rgba(0,0,0,0.1)',
       });
 
       fireEvent(getByType(Ripple), 'mouseLeave');
       expect(StyleSheet.flatten(getByType(Ripple).props.style)).not.toMatchObject({
-        backgroundColor: 'rgba(0,0,0,0.1)'
+        backgroundColor: 'rgba(0,0,0,0.1)',
       });
     });
 
@@ -49,12 +49,12 @@ describe('MenuItem', () => {
       const { getByType } = render(<MenuItem icon={MenuIcon} label="tacos" nativeID="tacos" />);
       fireEvent(getByType(Ripple), 'mouseEnter');
       expect(StyleSheet.flatten(getByType(MenuIcon).props.style)).toMatchObject({
-        color: Theme.Color.Gray40
+        color: Theme.Color.Gray40,
       });
 
       fireEvent(getByType(Ripple), 'mouseLeave');
       expect(StyleSheet.flatten(getByType(MenuIcon).props.style)).toMatchObject({
-        color: Theme.Color.Gray30
+        color: Theme.Color.Gray30,
       });
     });
   });

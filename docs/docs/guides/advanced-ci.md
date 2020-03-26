@@ -22,12 +22,12 @@ const Comparator = require('@build-tracker/comparator').default;
 
 const applicationUrl = 'https://my-application-url.local';
 
-const last = xs => xs[xs.length - 1];
+const last = (xs) => xs[xs.length - 1];
 
 module.exports = {
   applicationUrl,
   // ... other config options
-  onCompare: async data => {
+  onCompare: async (data) => {
     const { comparatorData, summary } = data;
     // Reconstruct a comparator from the serialized data
     const comparator = Comparator.deserialize(comparatorData);
@@ -44,12 +44,12 @@ See the full comparison at [${applicationUrl}/builds/${revisions}](${application
 
     // Post the constructed markdown as a comment
     return await GithubApi.postComment(output);
-  }
+  },
 };
 
 // Filter out any rows from the markdown table that are not failing or did not have a hash change
-const artifactFilter = row => {
-  return row.some(cell => {
+const artifactFilter = (row) => {
+  return row.some((cell) => {
     if (cell.type === 'delta') {
       return cell.failingBudgets.length > 0 || cell.hashChanged;
     }

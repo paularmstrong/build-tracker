@@ -20,7 +20,7 @@ export default function withMysql(config: Omit<ServerConfig, 'queries'> & { mysq
     password: process.env.MYSQLPASSWORD,
     port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
     ...mysqlConfig,
-    database
+    database,
   });
 
   const queries = new Queries(pool);
@@ -31,14 +31,14 @@ export default function withMysql(config: Omit<ServerConfig, 'queries'> & { mysq
     queries: {
       build: {
         byRevision: queries.getByRevision,
-        insert: queries.insert
+        insert: queries.insert,
       },
       builds: {
         byRevisions: queries.getByRevisions,
         byRevisionRange: queries.getByRevisionRange,
         byTimeRange: queries.getByTimeRange,
-        recent: queries.getRecent
-      }
-    }
+        recent: queries.getRecent,
+      },
+    },
   };
 }

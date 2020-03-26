@@ -25,41 +25,39 @@ export const getBuildOptions = (yargs): Argv<Args> =>
       alias: 'b',
       description: 'Set the branch name and do not attempt to read from git',
       group,
-      type: 'string'
+      type: 'string',
     })
     .option('config', {
       alias: 'c',
       description: 'Override path to the build-tracker CLI config file',
       group,
-      normalize: true
+      normalize: true,
     })
     .option('meta', {
       description: 'JSON-encoded extra meta information to attach to the build',
       group,
-      type: 'string'
+      type: 'string',
     })
     .option('parent-revision', {
       description: 'Manually provide the parent revision instead of reading it automatically',
       group,
-      type: 'string'
+      type: 'string',
     })
     .option('skip-dirty-check', {
       default: false,
       description: 'Skip the git work tree state check',
       group,
-      type: 'boolean'
+      type: 'boolean',
     });
 
 export const builder = (yargs): Argv<Args> =>
-  getBuildOptions(yargs)
-    .usage(`Usage: $0 ${command}`)
-    .option('out', {
-      alias: 'o',
-      default: true,
-      description: 'Write the build to stdout',
-      group,
-      type: 'boolean'
-    });
+  getBuildOptions(yargs).usage(`Usage: $0 ${command}`).option('out', {
+    alias: 'o',
+    default: true,
+    description: 'Write the build to stdout',
+    group,
+    type: 'boolean',
+  });
 
 export const handler = async (args: Args): Promise<void> => {
   const config = await getConfig(args.config);
@@ -68,7 +66,7 @@ export const handler = async (args: Args): Promise<void> => {
     branch: args.branch,
     meta: args.meta ? JSON.parse(args.meta) : {},
     parentRevision: args['parent-revision'],
-    skipDirtyCheck: args['skip-dirty-check']
+    skipDirtyCheck: args['skip-dirty-check'],
   });
 
   if (args.out) {

@@ -58,20 +58,15 @@ describe('protectedMiddleware', () => {
 
     test('fails if auth header not equal to the token', async () => {
       app.post('/foo', respondPath);
-      await expect(
-        request(app)
-          .post('/foo')
-          .set('x-bt-auth', 'abcd')
-      ).resolves.toMatchObject({ status: 401 });
+      await expect(request(app).post('/foo').set('x-bt-auth', 'abcd')).resolves.toMatchObject({ status: 401 });
     });
 
     test('succeeds if auth header not equal to the token', async () => {
       app.post('/foo', respondPath);
-      await expect(
-        request(app)
-          .post('/foo')
-          .set('x-bt-auth', 'test-token')
-      ).resolves.toMatchObject({ status: 200, text: '/foo' });
+      await expect(request(app).post('/foo').set('x-bt-auth', 'test-token')).resolves.toMatchObject({
+        status: 200,
+        text: '/foo',
+      });
     });
   });
 });

@@ -14,27 +14,27 @@ module.exports = (env, reporter) => ({
   entry: {
     app: [
       !IS_PROD && 'webpack-hot-middleware/client?reload=true&noInfo=true',
-      path.join(SRC_ROOT, 'client/index.tsx')
-    ].filter(Boolean)
+      path.join(SRC_ROOT, 'client/index.tsx'),
+    ].filter(Boolean),
   },
   mode: IS_PROD ? 'production' : 'development',
   devServer: {
     contentBase: SRC_ROOT,
     hot: true,
-    noInfo: true
+    noInfo: true,
   },
   devtool: IS_PROD ? false : 'cheap-module-eval-source-map',
   module: {
-    rules: [{ test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }]
+    rules: [{ test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }],
   },
   resolve: {
     alias: {
-      'react-native$': 'react-native-web'
+      'react-native$': 'react-native-web',
     },
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
   },
   node: {
-    global: false
+    global: false,
   },
   optimization: {
     sideEffects: true,
@@ -44,29 +44,29 @@ module.exports = (env, reporter) => ({
           chunks: 'initial',
           name: 'vendor',
           test: /node_modules/,
-          enforce: true
-        }
+          enforce: true,
+        },
       },
-      chunks: 'async'
-    }
+      chunks: 'async',
+    },
   },
   output: {
     filename: `[name]${IS_PROD ? '.[hash:8]' : ''}.js`,
     path: path.join(DIST_ROOT, 'client'),
-    publicPath: '/client/'
+    publicPath: '/client/',
   },
   plugins: [
     env.analyzer && new BundleAnalyzerPlugin({ defaultSizes: 'gzip', openAnalyzer: true }),
     new webpack.DefinePlugin({
-      global: 'window'
+      global: 'window',
     }),
     !IS_PROD &&
       reporter &&
       new WebpackBar({
         name: 'Web',
         color: 'green',
-        reporters: ['fancy', reporter]
+        reporters: ['fancy', reporter],
       }),
-    !IS_PROD && new webpack.HotModuleReplacementPlugin()
-  ].filter(Boolean)
+    !IS_PROD && new webpack.HotModuleReplacementPlugin(),
+  ].filter(Boolean),
 });

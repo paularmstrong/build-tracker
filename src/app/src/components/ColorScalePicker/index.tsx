@@ -22,11 +22,11 @@ export const ColorScalePicker = (): React.ReactElement => {
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   scale: {
-    marginBottom: Theme.Spacing.Small
-  }
+    marginBottom: Theme.Spacing.Small,
+  },
 });
 
 export default React.memo(ColorScalePicker);

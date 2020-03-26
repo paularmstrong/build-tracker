@@ -9,7 +9,7 @@ describe('git', () => {
     test('returns true of the repo has un-committed changes', () => {
       jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from(' M src/cli/package.json')));
 
-      return Git.isDirty().then(dirty => {
+      return Git.isDirty().then((dirty) => {
         expect(dirty).toBe(true);
       });
     });
@@ -17,7 +17,7 @@ describe('git', () => {
     test('returns false if the status is clean', () => {
       jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('\n')));
 
-      return Git.isDirty().then(dirty => {
+      return Git.isDirty().then((dirty) => {
         expect(dirty).toBe(false);
       });
     });
@@ -43,7 +43,7 @@ describe('git', () => {
     test('returns the default branch of the repo', () => {
       jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('asdf\nHEAD branch: chili\n')));
 
-      return Git.getDefaultBranch().then(branch => {
+      return Git.getDefaultBranch().then((branch) => {
         expect(branch).toBe('chili');
       });
     });
@@ -72,7 +72,7 @@ describe('git', () => {
   describe('getBranch', () => {
     test('gets the branch name', () => {
       jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from(' \n\ttacosaregreat\n')));
-      return Git.getBranch().then(branch => {
+      return Git.getBranch().then((branch) => {
         expect(branch).toBe('tacosaregreat');
       });
     });
@@ -102,7 +102,7 @@ describe('git', () => {
     test('returns the merge base for the current revision', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('123556')));
 
-      return Git.getMergeBase('tacos').then(branch => {
+      return Git.getMergeBase('tacos').then((branch) => {
         expect(spawn).toHaveBeenCalledWith(
           expect.any(String),
           ['merge-base', 'HEAD', 'origin/tacos'],
@@ -133,7 +133,7 @@ describe('git', () => {
     test('returns the parent sha for the given sha', () => {
       const spawn = jest.spyOn(Spawn, 'default').mockImplementation(() => Promise.resolve(Buffer.from('123556')));
 
-      return Git.getParentRevision('tacos').then(branch => {
+      return Git.getParentRevision('tacos').then((branch) => {
         expect(spawn).toHaveBeenCalledWith('git', ['log', '--pretty=%P', '-n', '1', 'tacos'], expect.any(Object));
         expect(branch).toBe('123556');
       });
@@ -144,7 +144,7 @@ describe('git', () => {
         .spyOn(Spawn, 'default')
         .mockImplementation(() => Promise.resolve(Buffer.from('123556 abcdef')));
 
-      return Git.getParentRevision('tacos').then(branch => {
+      return Git.getParentRevision('tacos').then((branch) => {
         expect(spawn).toHaveBeenCalledWith('git', ['log', '--pretty=%P', '-n', '1', 'tacos'], expect.any(Object));
         expect(branch).toBe('123556');
       });
@@ -192,11 +192,11 @@ describe('git', () => {
         .spyOn(Spawn, 'default')
         .mockImplementation(() => Promise.resolve(Buffer.from(`1551808003${del}jimmy${del}tacos, tacos, tacos`)));
 
-      return Git.getRevisionDetails('12345').then(res => {
+      return Git.getRevisionDetails('12345').then((res) => {
         expect(res).toEqual({
           timestamp: 1551808003,
           name: 'jimmy',
-          subject: 'tacos, tacos, tacos'
+          subject: 'tacos, tacos, tacos',
         });
       });
     });

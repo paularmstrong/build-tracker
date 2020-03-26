@@ -22,14 +22,14 @@ export const builder = (yargs): Argv<Args> =>
       alias: 'c',
       description: 'Override path to the build-tracker CLI config file',
       group,
-      normalize: true
+      normalize: true,
     })
     .option('out', {
       alias: 'o',
       default: true,
       description: 'Write the stats to stdout',
       group,
-      type: 'boolean'
+      type: 'boolean',
     });
 
 export const handler = async (args: Args): Promise<void> => {

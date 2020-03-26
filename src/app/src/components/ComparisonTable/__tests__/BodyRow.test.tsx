@@ -37,7 +37,7 @@ describe('BodyRow', () => {
         color: ColorScale.Rainbow(1),
         isActive: true,
         onDisable: handleDisable,
-        onEnable: handleEnable
+        onEnable: handleEnable,
       });
     });
 
@@ -52,8 +52,8 @@ describe('BodyRow', () => {
           sizes: { stat: 4 },
           percents: { stat: 4 },
           hashChanged: false,
-          hashChangeUnexpected: false
-        }
+          hashChangeUnexpected: false,
+        },
       ];
       const { getByType } = render(
         <BodyRow
@@ -71,14 +71,14 @@ describe('BodyRow', () => {
       );
       expect(getByType(DeltaCell).props).toMatchObject({
         cell: row[1],
-        sizeKey: 'stat'
+        sizeKey: 'stat',
       });
     });
 
     test('total cell', () => {
       const row: ArtifactRow = [
         { type: CellType.ARTIFACT, text: 'tacos' },
-        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } },
       ];
       const { getByType } = render(
         <BodyRow
@@ -96,7 +96,7 @@ describe('BodyRow', () => {
       );
       expect(getByType(TotalCell).props).toMatchObject({
         cell: row[1],
-        sizeKey: 'stat'
+        sizeKey: 'stat',
       });
     });
   });
@@ -105,7 +105,7 @@ describe('BodyRow', () => {
     test('is transparent background when row is not isHovered', () => {
       const row: ArtifactRow = [
         { type: CellType.ARTIFACT, text: 'tacos' },
-        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } },
       ];
       const { getByType } = render(
         <BodyRow
@@ -122,14 +122,14 @@ describe('BodyRow', () => {
         />
       );
       expect(StyleSheet.flatten(getByType(Tr).props.style)).toMatchObject({
-        backgroundColor: expect.any(String)
+        backgroundColor: expect.any(String),
       });
     });
 
     test('is visually highlighed when the row isHovered', () => {
       const row: ArtifactRow = [
         { type: CellType.ARTIFACT, text: 'tacos' },
-        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } },
       ];
       const { getByType } = render(
         <BodyRow
@@ -146,7 +146,7 @@ describe('BodyRow', () => {
         />
       );
       expect(StyleSheet.flatten(getByType(Tr).props.style)).toMatchObject({
-        backgroundColor: 'rgb(228, 218, 241)'
+        backgroundColor: 'rgb(228, 218, 241)',
       });
     });
 

@@ -20,8 +20,8 @@ export default function statArtifacts(config: Config): Map<string, Stat> {
 
   const artifacts = new Map();
 
-  artifactGlobs.forEach(fileGlob => {
-    glob.sync(path.resolve(cwd, fileGlob), { nodir: true }).forEach(filePath => {
+  artifactGlobs.forEach((fileGlob) => {
+    glob.sync(path.resolve(cwd, fileGlob), { nodir: true }).forEach((filePath) => {
       const sizes = readfile(filePath, getFilenameHash);
       artifacts.set(nameMapper(path.relative(baseDir, filePath).replace(`.${sizes.hash}`, '')), sizes);
     });

@@ -21,7 +21,7 @@ new Build({
   revision: '1234567',
   parentRevision: 'abcdefg',
   timestamp: 1577038148378,
-  branch: 'master'
+  branch: 'master',
 });
 ```
 

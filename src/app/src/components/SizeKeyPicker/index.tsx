@@ -24,7 +24,7 @@ const SizeKeyPicker = (props: Props): React.ReactElement => {
   );
   return (
     <View style={styles.root}>
-      {keys.map(key => (
+      {keys.map((key) => (
         <SizeKey isSelected={selected === key} key={key} onSelect={handleSelect} style={styles.button} value={key} />
       ))}
     </View>
@@ -33,7 +33,7 @@ const SizeKeyPicker = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   root: {},
-  button: {}
+  button: {},
 });
 
 export default SizeKeyPicker;

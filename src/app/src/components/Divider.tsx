@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
   root: {
     height: StyleSheet.hairlineWidth,
     overflow: 'hidden',
-    backgroundColor: Theme.Color.Gray20
-  }
+    backgroundColor: Theme.Color.Gray20,
+  },
 });
 
 export default Divider;

@@ -7,15 +7,15 @@ module.exports = withPostgres({
       {
         name: 'Web App',
         artifactMatch: /^app\/client/,
-        budgets: [{ level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 153600 }]
-      }
-    ]
+        budgets: [{ level: BudgetLevel.WARN, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 153600 }],
+      },
+    ],
   },
   defaultBranch: 'master',
   pg: {
     connectionString: process.env.DATABASE_URL,
-    ssl: true
+    ssl: true,
   },
   port: process.env.PORT,
-  url: 'https://build-tracker-demo.herokuapp.com'
+  url: 'https://build-tracker-demo.herokuapp.com',
 });

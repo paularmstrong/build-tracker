@@ -16,7 +16,7 @@ import {
   DeltaCell as DCell,
   GroupRow,
   TotalCell as TCell,
-  TotalDeltaCell as TDCell
+  TotalDeltaCell as TDCell,
 } from '@build-tracker/comparator';
 
 interface Props {
@@ -43,7 +43,7 @@ export const BodyRow = (props: Props): React.ReactElement => {
     onHoverArtifact,
     row,
     rowIndex,
-    sizeKey
+    sizeKey,
   } = props;
 
   const mapBodyCell = (cell: ACell | TCell | TDCell | DCell, i: number): React.ReactNode => {
@@ -94,8 +94,8 @@ export const BodyRow = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   row: {
     transitionProperty: 'background-color',
-    transitionDuration: '0.1s'
-  }
+    transitionDuration: '0.1s',
+  },
 });
 
 export default React.memo(BodyRow);

@@ -9,33 +9,33 @@ export default function spawn(command: string, args?: ReadonlyArray<string>, opt
     const errors = {
       spawn: null,
       stdout: null,
-      stderr: null
+      stderr: null,
     };
 
     const stderr: Array<Buffer> = [];
     const stdout: Array<Buffer> = [];
 
-    proc.on('error', error => {
+    proc.on('error', (error) => {
       errors.spawn = error;
     });
 
-    proc.stdout.on('error', error => {
+    proc.stdout.on('error', (error) => {
       errors.stdout = error;
     });
 
-    proc.stderr.on('error', error => {
+    proc.stderr.on('error', (error) => {
       errors.stderr = error;
     });
 
-    proc.stderr.on('data', data => {
+    proc.stderr.on('data', (data) => {
       stderr.push(data);
     });
 
-    proc.stdout.on('data', data => {
+    proc.stdout.on('data', (data) => {
       stdout.push(data);
     });
 
-    proc.on('close', code => {
+    proc.on('close', (code) => {
       if (code !== 0) {
         return reject({ code, stderr: Buffer.concat(stderr).toString(), errors });
       }

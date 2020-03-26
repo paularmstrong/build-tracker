@@ -7,19 +7,19 @@ import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 
 const row1Result = {
   meta: { branch: 'master', revision: '12345', timestamp: 1111 },
-  artifacts: []
+  artifacts: [],
 };
 const row2Result = {
   meta: { branch: 'master', revision: 'abcde', timestamp: 2222 },
-  artifacts: []
+  artifacts: [],
 };
 const row1 = {
   meta: Buffer.from(JSON.stringify(row1Result.meta)),
-  artifacts: Buffer.from(JSON.stringify(row1Result.artifacts))
+  artifacts: Buffer.from(JSON.stringify(row1Result.artifacts)),
 };
 const row2 = {
   meta: Buffer.from(JSON.stringify(row2Result.meta)),
-  artifacts: Buffer.from(JSON.stringify(row2Result.artifacts))
+  artifacts: Buffer.from(JSON.stringify(row2Result.artifacts)),
 };
 
 describe('withMysql queries', () => {
@@ -59,9 +59,9 @@ describe('withMysql queries', () => {
           branch: 'master',
           revision: { value: '12345', url: 'https://build-tracker.local' },
           timestamp: now,
-          parentRevision: 'abcdef'
+          parentRevision: 'abcdef',
         },
-        artifacts: []
+        artifacts: [],
       };
       query.mockImplementation((_query, _args, cb) => {
         cb(null, { insertId: '12345' });

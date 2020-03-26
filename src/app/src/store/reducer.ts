@@ -14,8 +14,8 @@ const getActiveComparator = (
     artifactBudgets: artifactConfig.budgets,
     artifactFilters: artifactConfig.filters,
     budgets: budgets,
-    builds: builds.filter(build => comparedRevisions.includes(build.getMetaValue('revision'))),
-    groups: artifactConfig.groups
+    builds: builds.filter((build) => comparedRevisions.includes(build.getMetaValue('revision'))),
+    groups: artifactConfig.groups,
   });
 };
 
@@ -40,17 +40,17 @@ export default function reducer(state: State, action: Actions): State {
         artifactFilters: filters,
         budgets: state.budgets,
         builds,
-        groups
+        groups,
       });
 
-      const currentKeys = Object.keys(state.activeArtifacts).some(key => comparator.artifactNames.includes(key));
+      const currentKeys = Object.keys(state.activeArtifacts).some((key) => comparator.artifactNames.includes(key));
       const activeArtifacts = comparator.artifactNames.reduce((memo, artifactName) => {
         memo[artifactName] = currentKeys ? !!state.activeArtifacts[artifactName] : true;
         return memo;
       }, {});
 
-      const newRevisions = comparator.builds.map(build => build.getMetaValue('revision'));
-      const activeComparator = state.comparedRevisions.every(rev => newRevisions.includes(rev))
+      const newRevisions = comparator.builds.map((build) => build.getMetaValue('revision'));
+      const activeComparator = state.comparedRevisions.every((rev) => newRevisions.includes(rev))
         ? getActiveComparator(state.comparedRevisions, state.budgets, builds, state.artifactConfig)
         : null;
 
@@ -72,17 +72,17 @@ export default function reducer(state: State, action: Actions): State {
       return {
         ...state,
         activeComparator: getActiveComparator(comparedRevisions, state.budgets, state.builds, state.artifactConfig),
-        comparedRevisions
+        comparedRevisions,
       };
     }
 
     case 'COMPARED_REVISION_REMOVE': {
-      const comparedRevisions = state.comparedRevisions.filter(rev => rev !== action.payload);
+      const comparedRevisions = state.comparedRevisions.filter((rev) => rev !== action.payload);
       return {
         ...state,
         activeComparator: getActiveComparator(comparedRevisions, state.budgets, state.builds, state.artifactConfig),
         comparedRevisions,
-        focusedRevision: state.focusedRevision === action.payload ? undefined : state.focusedRevision
+        focusedRevision: state.focusedRevision === action.payload ? undefined : state.focusedRevision,
       };
     }
 
@@ -102,12 +102,12 @@ export default function reducer(state: State, action: Actions): State {
       return { ...state, snacks: [...state.snacks, action.payload] };
 
     case 'REMOVE_SNACK':
-      return { ...state, snacks: state.snacks.filter(msg => msg !== action.payload) };
+      return { ...state, snacks: state.snacks.filter((msg) => msg !== action.payload) };
 
     case 'HOVER_ARTIFACTS':
       if (
         state.hoveredArtifacts.length === action.payload.length &&
-        action.payload.every(value => state.hoveredArtifacts.includes(value))
+        action.payload.every((value) => state.hoveredArtifacts.includes(value))
       ) {
         return state;
       }

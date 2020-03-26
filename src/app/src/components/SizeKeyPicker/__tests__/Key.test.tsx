@@ -12,7 +12,7 @@ describe('SizeKey', () => {
       const { queryAllByProps } = render(<SizeKey isSelected onSelect={jest.fn()} value="tacos" />);
       expect(
         queryAllByProps({
-          accessibilityRole: 'label'
+          accessibilityRole: 'label',
         })
       ).toHaveLength(1);
     });

@@ -10,9 +10,7 @@ import XAxis from '../XAxis';
 
 describe('XAxis', () => {
   test('creates a bottom axis', () => {
-    const scale = scalePoint()
-      .range([0, 100])
-      .domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
+    const scale = scalePoint().range([0, 100]).domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
     const mockCall = jest.fn(() => {
       selectSpy.mockRestore();
       return Selection.select(document.createElement('g'));
@@ -30,9 +28,7 @@ describe('XAxis', () => {
   });
 
   test('formats shas', () => {
-    const scale = scalePoint()
-      .range([0, 100])
-      .domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
+    const scale = scalePoint().range([0, 100]).domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
     const mockTickFormat = jest.fn(() => {
       axisSpy.mockRestore();
       return Axes.axisBottom(scale);
@@ -55,9 +51,7 @@ describe('XAxis', () => {
 
   test('limits number of tick labels', () => {
     const domain = new Array(150).fill(0).map((_v, i) => `12345${i}`);
-    const scale = scalePoint()
-      .range([0, 100])
-      .domain(domain);
+    const scale = scalePoint().range([0, 100]).domain(domain);
     const mockTickFormat = jest.fn(() => {
       axisSpy.mockRestore();
       return Axes.axisBottom(scale);

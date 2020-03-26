@@ -31,14 +31,14 @@ describe('GroupRow', () => {
         cell: row[0],
         isActive: true,
         onDisable: handleDisable,
-        onEnable: handleEnable
+        onEnable: handleEnable,
       });
     });
 
     test('total cell', () => {
       const row: GRow = [
         { type: CellType.GROUP, artifactNames: ['tacos', 'burritos'], text: 'tacos' },
-        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } }
+        { type: CellType.TOTAL, name: 'tacos', sizes: { stat: 4 } },
       ];
       const { getByType } = render(
         <GroupRow
@@ -53,7 +53,7 @@ describe('GroupRow', () => {
       );
       expect(getByType(TotalCell).props).toMatchObject({
         cell: row[1],
-        sizeKey: 'stat'
+        sizeKey: 'stat',
       });
     });
 
@@ -68,8 +68,8 @@ describe('GroupRow', () => {
           budgets: [],
           failingBudgets: [],
           sizes: { stat: 4 },
-          percents: { stat: 4 }
-        }
+          percents: { stat: 4 },
+        },
       ];
       const { getByType } = render(
         <GroupRow
@@ -84,7 +84,7 @@ describe('GroupRow', () => {
       );
       expect(getByType(DeltaCell).props).toMatchObject({
         cell: row[1],
-        sizeKey: 'stat'
+        sizeKey: 'stat',
       });
     });
   });

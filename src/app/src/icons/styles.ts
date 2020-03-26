@@ -8,6 +8,6 @@ export default StyleSheet.create({
     maxWidth: '100%',
     position: 'relative',
     userSelect: 'none',
-    textAlignVertical: 'text-bottom'
-  }
+    textAlignVertical: 'text-bottom',
+  },
 });

@@ -31,8 +31,8 @@ export default async function uploadBuild(
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'content-length': Buffer.byteLength(body)
-    }
+      'content-length': Buffer.byteLength(body),
+    },
   };
 
   if (apiToken) {
@@ -44,7 +44,7 @@ export default async function uploadBuild(
       const output = [];
       res.setEncoding('utf8');
 
-      res.on('data', data => {
+      res.on('data', (data) => {
         output.push(typeof data === 'string' ? data : data.toString());
       });
 

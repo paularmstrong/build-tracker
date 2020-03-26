@@ -55,7 +55,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.SIZE,
-            level: BudgetLevel.ERROR
+            level: BudgetLevel.ERROR,
           },
           'tacos',
           true
@@ -72,7 +72,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.SIZE,
-            level: BudgetLevel.ERROR
+            level: BudgetLevel.ERROR,
           },
           'churros~burritos~tacos',
           true
@@ -89,7 +89,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.SIZE,
-            level: BudgetLevel.ERROR
+            level: BudgetLevel.ERROR,
           },
           'tacos'
         )
@@ -105,7 +105,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.DELTA,
-            level: BudgetLevel.ERROR
+            level: BudgetLevel.ERROR,
           },
           'tacos'
         )
@@ -123,7 +123,7 @@ describe('formatBudgetResult', () => {
             expected: 0.1,
             actual: 0.22345,
             type: BudgetType.PERCENT_DELTA,
-            level: BudgetLevel.ERROR
+            level: BudgetLevel.ERROR,
           },
           'tacos'
         )
@@ -143,7 +143,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.SIZE,
-            level: BudgetLevel.WARN
+            level: BudgetLevel.WARN,
           },
           'tacos',
           true
@@ -160,7 +160,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.SIZE,
-            level: BudgetLevel.WARN
+            level: BudgetLevel.WARN,
           },
           'tacos'
         )
@@ -176,7 +176,7 @@ describe('formatBudgetResult', () => {
             expected: 2048,
             actual: 4096,
             type: BudgetType.DELTA,
-            level: BudgetLevel.WARN
+            level: BudgetLevel.WARN,
           },
           'tacos'
         )
@@ -194,7 +194,7 @@ describe('formatBudgetResult', () => {
             expected: 0.1,
             actual: 1.6354908725,
             type: BudgetType.PERCENT_DELTA,
-            level: BudgetLevel.WARN
+            level: BudgetLevel.WARN,
           },
           'tacos'
         )

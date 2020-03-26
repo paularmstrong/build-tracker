@@ -48,7 +48,7 @@ ${css}
 <div id="tooltipPortal"></div>
 <div id="snackbarPortal"></div>
 <script nonce="${nonce}">window.__PROPS__=${toSource(state, null, false)}</script>
-${scripts.map(script => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
+${scripts.map((script) => `<script nonce="${nonce}" src="/client/${script}"></script>`).join('')}
   `;
 }
 
@@ -73,7 +73,7 @@ const serverRender = (stats: ProdStats | DevStats): RequestHandler => (req: Requ
     'clientStats' in stats
       ? stats.clientStats
       : 'children' in stats
-      ? stats.children.find(child => child.name === 'client')
+      ? stats.children.find((child) => child.name === 'client')
       : null;
 
   if (!appStats) {

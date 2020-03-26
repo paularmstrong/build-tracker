@@ -31,10 +31,10 @@ describe('BuildInfo', () => {
         branch: 'master',
         revision: {
           value: '123456',
-          url: 'https://github.com/paularmstrong/build-tracker/commit/123456'
+          url: 'https://github.com/paularmstrong/build-tracker/commit/123456',
         },
         parentRevision: 'abcdef',
-        timestamp: 123
+        timestamp: 123,
       },
       []
     );
@@ -45,7 +45,7 @@ describe('BuildInfo', () => {
     );
     expect(getByType(TextLink).props).toMatchObject({
       href: 'https://github.com/paularmstrong/build-tracker/commit/123456',
-      text: '123456'
+      text: '123456',
     });
   });
 
@@ -56,9 +56,9 @@ describe('BuildInfo', () => {
         revision: '123456',
         parentRevision: {
           value: 'abcdef',
-          url: 'https://github.com/paularmstrong/build-tracker/commit/abcdef'
+          url: 'https://github.com/paularmstrong/build-tracker/commit/abcdef',
         },
-        timestamp: 123
+        timestamp: 123,
       },
       []
     );
@@ -69,7 +69,7 @@ describe('BuildInfo', () => {
     );
     expect(getByType(TextLink).props).toMatchObject({
       href: 'https://github.com/paularmstrong/build-tracker/commit/abcdef',
-      text: 'abcdef'
+      text: 'abcdef',
     });
   });
 

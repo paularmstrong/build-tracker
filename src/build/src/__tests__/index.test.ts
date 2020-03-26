@@ -13,7 +13,7 @@ describe('Build', () => {
     baseMeta = {
       revision: '123',
       parentRevision: { value: 'abc', url: 'https://build-tracker.local' },
-      timestamp: 1550528708
+      timestamp: 1550528708,
     };
   });
 
@@ -86,11 +86,11 @@ describe('Build', () => {
       const build = new Build(baseMeta, [
         tacoArtifact,
         burritoArtifact,
-        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } }
+        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } },
       ]);
       expect(build.getSum(['churros', 'burritos'])).toEqual({
         stat: 9,
-        gzip: 6
+        gzip: 6,
       });
     });
 
@@ -98,11 +98,11 @@ describe('Build', () => {
       const build = new Build(baseMeta, [
         tacoArtifact,
         burritoArtifact,
-        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } }
+        { name: 'churros', hash: 'abc', sizes: { stat: 6, gzip: 4 } },
       ]);
       expect(build.getSum(['nachos', 'burritos'])).toEqual({
         stat: 3,
-        gzip: 2
+        gzip: 2,
       });
     });
   });
@@ -124,7 +124,7 @@ describe('Build', () => {
       const build = new Build(baseMeta, [tacoArtifact, burritoArtifact]);
       expect(build.toJSON()).toEqual({
         meta: baseMeta,
-        artifacts: expect.arrayContaining([burritoArtifact, tacoArtifact])
+        artifacts: expect.arrayContaining([burritoArtifact, tacoArtifact]),
       });
     });
   });

@@ -20,7 +20,7 @@ describe('withPostgres', () => {
       const row = { meta: {}, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 1, rows: [row] }));
       const queries = new Queries(new Pool());
-      return queries.getByRevision('12345').then(res => {
+      return queries.getByRevision('12345').then((res) => {
         expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision = $1', ['12345']);
         expect(res).toEqual(row);
       });
@@ -29,7 +29,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getByRevision('12345').catch(err => {
+      return queries.getByRevision('12345').catch((err) => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });
@@ -44,13 +44,15 @@ describe('withPostgres', () => {
           branch: 'master',
           revision: { value: '12345', url: 'https://build-tracker.local' },
           timestamp: now,
-          parentRevision: 'abcdef'
+          parentRevision: 'abcdef',
         },
-        artifacts: []
+        artifacts: [],
       };
       query.mockReturnValue(Promise.resolve({ rowCount: 1, rows: [build] }));
-      return queries.insert(build).then(res => {
-        expect(query).toHaveBeenCalledWith(
+      return queries.insert(build).then((res) => {
+        expect(
+          query
+        ).toHaveBeenCalledWith(
           'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4, $5, $6)',
           ['master', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
         );
@@ -63,10 +65,10 @@ describe('withPostgres', () => {
       const now = Date.now();
       const build = {
         meta: { branch: 'master', revision: 'abcdef', timestamp: now, parentRevision: '12345' },
-        artifacts: []
+        artifacts: [],
       };
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
-      return queries.insert(build).catch(err => {
+      return queries.insert(build).catch((err) => {
         expect(err.message).toEqual('Unable to insert build');
       });
     });
@@ -78,9 +80,9 @@ describe('withPostgres', () => {
       const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
-      return queries.getByRevisions(['12345', 'abcde']).then(res => {
+      return queries.getByRevisions(['12345', 'abcde']).then((res) => {
         expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision = ANY($1)', [
-          ['12345', 'abcde']
+          ['12345', 'abcde'],
         ]);
         expect(res).toEqual([row1, row2]);
       });
@@ -89,7 +91,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getByRevisions(['12345', 'abcde']).catch(err => {
+      return queries.getByRevisions(['12345', 'abcde']).catch((err) => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });
@@ -98,7 +100,7 @@ describe('withPostgres', () => {
   describe('getByRevisionRange', () => {
     test('throw unimplemented error', () => {
       const queries = new Queries(new Pool());
-      return queries.getByRevisionRange('12345', 'abcde').catch(err => {
+      return queries.getByRevisionRange('12345', 'abcde').catch((err) => {
         expect(err).toBeInstanceOf(UnimplementedError);
       });
     });
@@ -110,8 +112,10 @@ describe('withPostgres', () => {
       const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
-      return queries.getByTimeRange(12345, 67890, 'tacos').then(res => {
-        expect(query).toHaveBeenCalledWith(
+      return queries.getByTimeRange(12345, 67890, 'tacos').then((res) => {
+        expect(
+          query
+        ).toHaveBeenCalledWith(
           'SELECT meta, artifacts FROM builds WHERE timestamp >= $1 AND timestamp <= $2 AND branch = $3 ORDER BY timestamp',
           [12345, 67890, 'tacos']
         );
@@ -122,7 +126,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getByTimeRange(12345, 67890, 'tacos').catch(err => {
+      return queries.getByTimeRange(12345, 67890, 'tacos').catch((err) => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });
@@ -134,8 +138,10 @@ describe('withPostgres', () => {
       const row2 = { meta: { branch: 'master', revision: 'abcde', timestamp: 2222 }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row2, row1] }));
       const queries = new Queries(new Pool());
-      return queries.getRecent(2, 'master').then(res => {
-        expect(query).toHaveBeenCalledWith(
+      return queries.getRecent(2, 'master').then((res) => {
+        expect(
+          query
+        ).toHaveBeenCalledWith(
           'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp DESC LIMIT $2',
           ['master', 2]
         );
@@ -146,7 +152,7 @@ describe('withPostgres', () => {
     test('throws with no results', () => {
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
       const queries = new Queries(new Pool());
-      return queries.getRecent(undefined, 'tacos').catch(err => {
+      return queries.getRecent(undefined, 'tacos').catch((err) => {
         expect(err).toBeInstanceOf(NotFoundError);
       });
     });

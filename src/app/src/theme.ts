@@ -30,7 +30,7 @@ export enum Color {
   Gray30 = '#b2b2b2',
   Gray40 = '#828282',
   Gray50 = '#444444',
-  Gray60 = '#000000'
+  Gray60 = '#000000',
 }
 
 export enum TextColor {
@@ -59,14 +59,14 @@ export enum TextColor {
   Gray30 = '#000000',
   Gray40 = '#000000',
   Gray50 = '#FFFFFF',
-  Gray60 = '#FFFFFF'
+  Gray60 = '#FFFFFF',
 }
 
 export enum BorderRadius {
   None = 0,
   Small = 2,
   Normal = 4,
-  Infinite = 9999
+  Infinite = 9999,
 }
 
 export enum FontSize {
@@ -77,16 +77,16 @@ export enum FontSize {
   Medium = '1.5rem',
   Normal = '1rem',
   Small = '0.85rem',
-  Xsmall = '0.7rem'
+  Xsmall = '0.7rem',
 }
 
 export enum LineHeight {
-  Normal = 1.4
+  Normal = 1.4,
 }
 
 export enum FontWeight {
   Normal = '400',
-  Bold = '700'
+  Bold = '700',
 }
 
 export enum Breakpoint {
@@ -94,7 +94,7 @@ export enum Breakpoint {
   Small = 1023,
   Medium = 1439,
   Large = 1919,
-  Xlarge = 9999
+  Xlarge = 9999,
 }
 
 export enum Spacing {
@@ -103,11 +103,11 @@ export enum Spacing {
   Xsmall = '0.5rem',
   Small = '0.66rem',
   Normal = '1rem',
-  Large = '2rem'
+  Large = '2rem',
 }
 
 export enum MotionTiming {
   Standard = 'cubic-bezier(0.4, 0.0, 0.2, 1)',
   Decelerate = 'cubic-bezier(0.0, 0.0, 0.2, 1)',
-  Accelerate = 'cubic-bezier(0.4, 0.0, 1, 1)'
+  Accelerate = 'cubic-bezier(0.4, 0.0, 1, 1)',
 }

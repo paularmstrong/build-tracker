@@ -28,7 +28,7 @@ export const GroupCell = (props: Props): React.ReactElement => {
     onDisable,
     onEnable,
     onFocus,
-    style
+    style,
   } = props;
 
   const nameRef = React.useRef<View>(null);
@@ -48,7 +48,7 @@ export const GroupCell = (props: Props): React.ReactElement => {
     <Th style={style}>
       <View style={styles.artifact}>
         <Hoverable>
-          {isHovered => (
+          {(isHovered) => (
             <TouchableOpacity accessibilityRole="button" onPress={handleFocus} style={styles.name}>
               <View ref={nameRef}>
                 <Text style={isHovered && styles.hoveredText}>
@@ -78,24 +78,24 @@ const styles = StyleSheet.create({
   artifact: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: Theme.Spacing.Xxsmall
+    paddingVertical: Theme.Spacing.Xxsmall,
   },
   name: {
     flexShrink: 1,
     flexGrow: 1,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingEnd: Theme.Spacing.Xsmall
+    paddingEnd: Theme.Spacing.Xsmall,
   },
   folder: {
-    color: Theme.Color.Gray40
+    color: Theme.Color.Gray40,
   },
   switch: {
-    paddingStart: Theme.Spacing.Xsmall
+    paddingStart: Theme.Spacing.Xsmall,
   },
   hoveredText: {
-    color: Theme.Color.Primary30
-  }
+    color: Theme.Color.Primary30,
+  },
 });
 
 export default React.memo(GroupCell);

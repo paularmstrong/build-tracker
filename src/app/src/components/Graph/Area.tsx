@@ -25,7 +25,7 @@ const Area = (props: Props): React.ReactElement => {
   const gRef = React.useRef(null);
 
   const graphColorScale = React.useMemo(() => {
-    return d => {
+    return (d) => {
       const color = hsl(colorScale(artifactNames.indexOf(d.key)));
       if (hoveredArtifacts.length && !hoveredArtifacts.includes(d.key)) {
         color.l = 0.75;
@@ -39,9 +39,9 @@ const Area = (props: Props): React.ReactElement => {
     return (
       area()
         // @ts-ignore d.data does exist
-        .x(d => xScale(d.data.getMetaValue('revision')))
-        .y0(d => yScale(d[0]))
-        .y1(d => yScale(d[1]))
+        .x((d) => xScale(d.data.getMetaValue('revision')))
+        .y0((d) => yScale(d[0]))
+        .y1((d) => yScale(d[1]))
     );
   }, [xScale, yScale]);
 
@@ -58,7 +58,7 @@ const Area = (props: Props): React.ReactElement => {
       .append('path')
       .attr('class', 'artifact')
       .style('fill', graphColorScale)
-      .attr('aria-label', d => d.key)
+      .attr('aria-label', (d) => d.key)
       // @ts-ignore Docs are very clear that this is allowed
       .merge(artifact)
       .transition()

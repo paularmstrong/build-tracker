@@ -6,5 +6,5 @@ module.exports = {
   displayName: 'api-client',
   testEnvironment: 'node',
   rootDir: './',
-  roots: ['<rootDir>/src']
+  roots: ['<rootDir>/src'],
 };

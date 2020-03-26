@@ -38,13 +38,13 @@ const Graph = (props: Props): React.ReactElement => {
   const svgRef = React.useRef(null);
 
   const activeArtifactNames = React.useMemo(() => {
-    return Object.keys(activeArtifacts).filter(name => activeArtifacts[name]);
+    return Object.keys(activeArtifacts).filter((name) => activeArtifacts[name]);
   }, [activeArtifacts]);
 
   const xScale = React.useMemo(() => {
     const domain = comparator.builds
       .sort((a, b) => a.timestamp.valueOf() - b.timestamp.valueOf())
-      .map(build => build.getMetaValue('revision'));
+      .map((build) => build.getMetaValue('revision'));
 
     return graphType === GraphType.AREA
       ? scalePoint()
@@ -58,7 +58,7 @@ const Graph = (props: Props): React.ReactElement => {
   }, [comparator, graphType, width]);
 
   const yScale = React.useMemo(() => {
-    const totals = comparator.builds.map(build => build.getSum(activeArtifactNames)[sizeKey]);
+    const totals = comparator.builds.map((build) => build.getSum(activeArtifactNames)[sizeKey]);
     const maxTotal = Math.max(...totals);
     return scaleLinear()
       .range([height - Offset.TOP - Offset.BOTTOM, 0])
@@ -80,8 +80,8 @@ const Graph = (props: Props): React.ReactElement => {
     (event: LayoutChangeEvent): void => {
       const {
         nativeEvent: {
-          layout: { height, width }
-        }
+          layout: { height, width },
+        },
       } = event;
       setDimensions({ height, width });
     },
@@ -157,8 +157,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     width: '100%',
     maxHeight: 'calc(100% - 4rem)',
-    overflow: 'hidden'
-  }
+    overflow: 'hidden',
+  },
 });
 
 export default Graph;

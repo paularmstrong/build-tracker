@@ -5,13 +5,13 @@ export type ArtifactFilters = Array<RegExp>;
 
 export enum BudgetLevel {
   WARN = 'warn',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 export enum BudgetType {
   DELTA = 'delta',
   PERCENT_DELTA = 'percentDelta',
-  SIZE = 'size'
+  SIZE = 'size',
 }
 
 export interface Budget {

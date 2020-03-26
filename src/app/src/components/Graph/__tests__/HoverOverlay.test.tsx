@@ -11,29 +11,25 @@ import { stack } from 'd3-shape';
 import { fireEvent, render } from '@testing-library/react';
 import { scaleLinear, scalePoint } from 'd3-scale';
 
-const xScale = scalePoint()
-  .range([0, 300])
-  .domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
-const yScale = scaleLinear()
-  .range([400, 0])
-  .domain([0, 168]);
+const xScale = scalePoint().range([0, 300]).domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
+const yScale = scaleLinear().range([400, 0]).domain([0, 168]);
 const builds = [
   new Build({ branch: 'master', revision: '1234567abcdef', parentRevision: '000', timestamp: 0 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
-    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),
   new Build({ branch: 'master', revision: 'abcdefg1234567', parentRevision: '123', timestamp: 1 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
-    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),
   new Build({ branch: 'master', revision: 'abcd', parentRevision: '123', timestamp: 2 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
-    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),
   new Build({ branch: 'master', revision: '1234', parentRevision: '123', timestamp: 3 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
-    { name: 'vendor', hash: '123', sizes: { gzip: 45 } }
-  ])
+    { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
+  ]),
 ];
 const comparator = new Comparator({ builds });
 
@@ -127,7 +123,7 @@ describe('HoverOverlay', () => {
       mockD3Select = jest.fn(() => ({
         attr: mockD3Select,
         duration: mockD3Select,
-        transition: mockD3Select
+        transition: mockD3Select,
       }));
       // @ts-ignore
       jest.spyOn(Selection, 'select').mockReturnValue(mockD3Select());
@@ -181,9 +177,7 @@ describe('HoverOverlay', () => {
 
     test('calls back with null if no artifact', () => {
       const handleHoverArtifacts = jest.fn();
-      const yScale = scaleLinear()
-        .range([400, 0])
-        .domain([0, 200]);
+      const yScale = scaleLinear().range([400, 0]).domain([0, 200]);
       const { getByTestId } = render(
         <svg>
           <HoverOverlay

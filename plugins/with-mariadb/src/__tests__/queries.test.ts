@@ -7,19 +7,19 @@ import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 
 const row1Result = {
   meta: { branch: 'master', revision: '12345', timestamp: 1111 },
-  artifacts: []
+  artifacts: [],
 };
 const row2Result = {
   meta: { branch: 'master', revision: 'abcde', timestamp: 2222 },
-  artifacts: []
+  artifacts: [],
 };
 const row1 = {
   meta: Buffer.from(JSON.stringify(row1Result.meta)),
-  artifacts: Buffer.from(JSON.stringify(row1Result.artifacts))
+  artifacts: Buffer.from(JSON.stringify(row1Result.artifacts)),
 };
 const row2 = {
   meta: Buffer.from(JSON.stringify(row2Result.meta)),
-  artifacts: Buffer.from(JSON.stringify(row2Result.artifacts))
+  artifacts: Buffer.from(JSON.stringify(row2Result.artifacts)),
 };
 
 describe('withMariadb queries', () => {
@@ -52,13 +52,15 @@ describe('withMariadb queries', () => {
           branch: 'master',
           revision: { value: '12345', url: 'https://build-tracker.local' },
           timestamp: now,
-          parentRevision: 'abcdef'
+          parentRevision: 'abcdef',
         },
-        artifacts: []
+        artifacts: [],
       };
       query.mockReturnValue(Promise.resolve(row1));
       await expect(queries.insert(build)).resolves.toEqual('12345');
-      expect(query).toHaveBeenCalledWith(
+      expect(
+        query
+      ).toHaveBeenCalledWith(
         'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES (?, ?, ?, ?, ?, ?)',
         ['master', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
       );
@@ -70,7 +72,7 @@ describe('withMariadb queries', () => {
       query.mockReturnValue(Promise.resolve([row1, row2]));
       await expect(queries.getByRevisions(['12345', 'abcde'])).resolves.toEqual([row1Result, row2Result]);
       expect(query).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE revision in ?', [
-        ['12345', 'abcde']
+        ['12345', 'abcde'],
       ]);
     });
 
@@ -90,7 +92,9 @@ describe('withMariadb queries', () => {
     test('selects meta and artifacts', async () => {
       query.mockReturnValue(Promise.resolve([row1, row2]));
       await expect(queries.getByTimeRange(12345, 67890, 'tacos')).resolves.toEqual([row1Result, row2Result]);
-      expect(query).toHaveBeenCalledWith(
+      expect(
+        query
+      ).toHaveBeenCalledWith(
         'SELECT meta, artifacts FROM builds WHERE timestamp >= ? AND timestamp <= ? AND branch = ? ORDER BY timestamp',
         [12345, 67890, 'tacos']
       );
@@ -106,10 +110,12 @@ describe('withMariadb queries', () => {
     test('returns N most recent', async () => {
       query.mockReturnValue(Promise.resolve([row2, row1]));
       await expect(queries.getRecent(2, 'master')).resolves.toEqual([row1Result, row2Result]);
-      expect(query).toHaveBeenCalledWith(
-        'SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp DESC LIMIT ?',
-        ['master', 2]
-      );
+      expect(
+        query
+      ).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp DESC LIMIT ?', [
+        'master',
+        2,
+      ]);
     });
 
     test('throws with no results', async () => {

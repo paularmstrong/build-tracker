@@ -15,7 +15,7 @@ const features = [
         Use the <code>bt-server</code> command-line utility and many available plugins to quickly configure and deploy a
         Build Tracker instance using your database and hosting of choice.
       </React.Fragment>
-    )
+    ),
   },
   {
     title: <React.Fragment>Start budgeting</React.Fragment>,
@@ -24,7 +24,7 @@ const features = [
       <React.Fragment>
         Build Tracker allows you to easily configure many types of performance budgets to fit your application’s needs.
       </React.Fragment>
-    )
+    ),
   },
   {
     title: <React.Fragment>Prevent bloat</React.Fragment>,
@@ -33,8 +33,8 @@ const features = [
       <React.Fragment>
         Integrate Build Tracker with your CI system to warn or fail pull requests when assets fail your budgets.
       </React.Fragment>
-    )
-  }
+    ),
+  },
 ];
 
 function Feature({ imageUrl, title, description }) {

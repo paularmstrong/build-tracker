@@ -18,47 +18,43 @@ describe('RelativeTooltip', () => {
     portal.setAttribute('id', 'tooltipPortal');
     document.body.appendChild(portal);
 
-    jest.spyOn(View.prototype, 'measure').mockImplementation(
-      (fn: MeasureOnSuccessCallback): void => {
-        fn(0, 0, 45, 20, 0, 0);
-      }
-    );
-    jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
-      (fn: (x: number, y: number, width: number, height: number) => void): void => {
+    jest.spyOn(View.prototype, 'measure').mockImplementation((fn: MeasureOnSuccessCallback): void => {
+      fn(0, 0, 45, 20, 0, 0);
+    });
+    jest
+      .spyOn(View.prototype, 'measureInWindow')
+      .mockImplementation((fn: (x: number, y: number, width: number, height: number) => void): void => {
         fn(20, 100, 40, 30);
-      }
-    );
+      });
 
     const { getByRole, queryAllByText } = render(<RelativeTooltip relativeTo={viewRef} text="foobar" />, {
-      container: portal
+      container: portal,
     });
 
     expect(getByRole('tooltip').style).toMatchObject({
       top: '89px',
-      left: '17px'
+      left: '17px',
     });
     expect(queryAllByText('foobar')).toHaveLength(1);
     document.body.removeChild(portal);
   });
 
   test('renders directly without a portal available', () => {
-    jest.spyOn(View.prototype, 'measure').mockImplementation(
-      (fn: MeasureOnSuccessCallback): void => {
-        fn(0, 0, 45, 20, 0, 0);
-      }
-    );
+    jest.spyOn(View.prototype, 'measure').mockImplementation((fn: MeasureOnSuccessCallback): void => {
+      fn(0, 0, 45, 20, 0, 0);
+    });
 
-    jest.spyOn(View.prototype, 'measureInWindow').mockImplementation(
-      (fn: (x: number, y: number, width: number, height: number) => void): void => {
+    jest
+      .spyOn(View.prototype, 'measureInWindow')
+      .mockImplementation((fn: (x: number, y: number, width: number, height: number) => void): void => {
         fn(20, 100, 40, 30);
-      }
-    );
+      });
 
     const { getByRole, queryAllByText } = render(<RelativeTooltip relativeTo={viewRef} text="foobar" />);
 
     expect(getByRole('tooltip').style).toMatchObject({
       top: '89px',
-      left: '17px'
+      left: '17px',
     });
     expect(queryAllByText('foobar')).toHaveLength(1);
   });

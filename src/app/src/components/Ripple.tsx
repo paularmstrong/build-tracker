@@ -34,7 +34,7 @@ const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
         setRippleVisibility(true);
         setLocation({
           x: Math.floor(locationX - window.scrollX),
-          y: Math.floor(locationY - window.scrollY)
+          y: Math.floor(locationY - window.scrollY),
         });
 
         if (onPressIn) {
@@ -84,8 +84,8 @@ const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
             showRipple ? styles.animateIn : styles.animateOut,
             {
               left: location.x - finalSize / 2,
-              top: location.y - finalSize / 2
-            }
+              top: location.y - finalSize / 2,
+            },
           ]}
         >
           <View style={styles.adjuster} />
@@ -97,12 +97,12 @@ const Ripple = (props: Props & TouchableOpacityProps): React.ReactElement => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    display: 'inline-flex'
+    display: 'inline-flex',
   },
   root: {
     display: 'inline-flex',
     overflow: 'hidden',
-    position: 'relative'
+    position: 'relative',
   },
   ripple: {
     position: 'absolute',
@@ -117,19 +117,19 @@ const styles = StyleSheet.create({
     transitionDuration: '0.4s',
     transitionTimingFunction: Theme.MotionTiming.Standard,
     transformOrigin: '50% 50%',
-    transform: [{ scale: 0 }]
+    transform: [{ scale: 0 }],
   },
 
   adjuster: {
     display: 'block',
     paddingTop: '100%',
     height: 0,
-    width: 0
+    width: 0,
   },
 
   animateIn: {
     opacity: 1,
-    transform: [{ scale: 1 }]
+    transform: [{ scale: 1 }],
   },
 
   animateOut: {
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     width: 0,
     height: 0,
     transform: [{ scale: 0 }],
-    opacity: 0
-  }
+    opacity: 0,
+  },
 });
 
 export default Ripple;

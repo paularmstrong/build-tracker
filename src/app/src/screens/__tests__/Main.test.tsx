@@ -55,7 +55,7 @@ describe('Main', () => {
         comparedRevisions: [buildA.meta.revision],
         comparator: new Comparator({ builds: [new Build(buildA.meta, buildA.artifacts)] }),
         snacks: [],
-        url
+        url,
       });
       const component = (
         <Provider store={store}>

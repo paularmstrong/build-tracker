@@ -42,7 +42,7 @@ Please note that options not denoted with a `?` are required and _must_ be provi
 
 ```js
 module.exports = {
-  url: 'https://my-url' // required
+  url: 'https://my-url', // required
 };
 ```
 
@@ -58,9 +58,9 @@ An object map of artifact names to arrays of budgets for each artifacts.
 module.exports = {
   artifacts: {
     budgets: {
-      main: [{ level: 'error', sizeKey: 'gzip', type: 'size', maximum: 150000 }]
-    }
-  }
+      main: [{ level: 'error', sizeKey: 'gzip', type: 'size', maximum: 150000 }],
+    },
+  },
 };
 ```
 
@@ -72,9 +72,9 @@ module.exports = {
     budgets: {
       main: [{ level: 'error', sizeKey: 'gzip', type: 'size', maximum: 150000 }],
       // Warn on any artifact that grows more than 50%
-      '*': [{ level: 'warn', sizeKey: 'gzip', type: 'percent_delta', maximum: 0.5 }]
-    }
-  }
+      '*': [{ level: 'warn', sizeKey: 'gzip', type: 'percent_delta', maximum: 0.5 }],
+    },
+  },
 };
 ```
 
@@ -88,8 +88,8 @@ For example, filter out all translation bundles except for the default:
 module.exports = {
   artifacts: {
     // Hide all packages matching 'i18n/.*', except for 'i18n/en'
-    filters: [/^i18n\/(?!en$).*$/]
-  }
+    filters: [/^i18n\/(?!en$).*$/],
+  },
 };
 ```
 
@@ -118,10 +118,10 @@ module.exports = {
         // An array of budgets
         budgets: [{ level: 'error', sizeKey: 'gzip', type: 'size', maximum: 150000 }],
         // A name for the group
-        name: 'Initial'
-      }
-    ]
-  }
+        name: 'Initial',
+      },
+    ],
+  },
 };
 ```
 
@@ -151,7 +151,7 @@ interface Budget {
 
 ```js
 module.exports = {
-  budgets: [{ level: 'error', sizeKey: 'brotli', type: 'size', maximum: 1000000 }]
+  budgets: [{ level: 'error', sizeKey: 'brotli', type: 'size', maximum: 1000000 }],
 };
 ```
 
@@ -169,7 +169,7 @@ The URL that your server is running at. Please set this to ensure the applicatio
 
 ```js
 module.exports = {
-  url: 'https://build-tracker-demo.herokuapp.com'
+  url: 'https://build-tracker-demo.herokuapp.com',
 };
 ```
 

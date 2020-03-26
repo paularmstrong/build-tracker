@@ -36,13 +36,13 @@ function formatPercent(value: number): string {
 const levelToString = {
   [BudgetLevel.WARN]: 'Warning',
   [BudgetLevel.ERROR]: 'Error',
-  hash: 'Hash'
+  hash: 'Hash',
 };
 
 export const levelToEmoji = {
   [BudgetLevel.WARN]: '⚠️',
   [BudgetLevel.ERROR]: '🚨',
-  hash: '#️⃣'
+  hash: '#️⃣',
 };
 
 function getPrefix(artifactName: string, level: string, useEmoji = false): string {

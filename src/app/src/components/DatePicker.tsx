@@ -35,7 +35,7 @@ const DatePicker = (props: Props): React.ReactElement => {
     onDismiss,
     onSelect,
     relativeTo,
-    selectedDate = startOfToday()
+    selectedDate = startOfToday(),
   } = props;
 
   const [currentMonth, setCurrentMonth] = React.useState<Date>(startOfMonth(selectedDate));
@@ -59,11 +59,11 @@ const DatePicker = (props: Props): React.ReactElement => {
   }, []);
 
   const handleNextMonth = React.useCallback(() => {
-    setCurrentMonth(currentMonth => addMonths(currentMonth, 1));
+    setCurrentMonth((currentMonth) => addMonths(currentMonth, 1));
   }, []);
 
   const handlePreviousMonth = React.useCallback(() => {
-    setCurrentMonth(currentMonth => subMonths(currentMonth, 1));
+    setCurrentMonth((currentMonth) => subMonths(currentMonth, 1));
   }, []);
 
   return (
@@ -130,32 +130,32 @@ const DatePicker = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   root: {},
   month: {
-    padding: Theme.Spacing.Xsmall
+    padding: Theme.Spacing.Xsmall,
   },
   header: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   day: {
     flexGrow: 1,
-    flexBasis: `${(1 / 7) * 100}%`
+    flexBasis: `${(1 / 7) * 100}%`,
   },
   hovered: {},
   monthHeader: {
     flexGrow: 1,
     flexShrink: 0,
     flexBasis: `${(5 / 7) * 100}%`,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   monthText: {
     textAlign: 'center',
-    fontWeight: Theme.FontWeight.Bold
+    fontWeight: Theme.FontWeight.Bold,
   },
   week: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   text: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 export default DatePicker;

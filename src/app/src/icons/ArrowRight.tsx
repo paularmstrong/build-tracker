@@ -19,7 +19,7 @@ const ArrowRight = (props: Props): React.ReactElement<Props> =>
     {
       ...props,
       style: [styles.root, props.style],
-      viewBox: '0 0 24 24'
+      viewBox: '0 0 24 24',
     },
     <g>
       <path d="M10 17l5-5-5-5v10z" />

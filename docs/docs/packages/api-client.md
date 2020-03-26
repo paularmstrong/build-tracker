@@ -42,7 +42,7 @@ The full URL (with scheme) to your application. New builds will be posted to the
 module.exports = {
   applicationUrl: 'https://build-tracker-demo.herokuapp.com',
   // OR, if you're running from a subdirectory
-  applicationUrl: 'https://mysite.dev/build-tracker'
+  applicationUrl: 'https://mysite.dev/build-tracker',
 };
 ```
 
@@ -52,7 +52,7 @@ An array of [glob](https://github.com/isaacs/node-glob#readme) paths to search f
 
 ```js
 module.exports = {
-  artifacts: ['./dist/**/*.js']
+  artifacts: ['./dist/**/*.js'],
 };
 ```
 
@@ -62,7 +62,7 @@ A base directory option to calculate relative paths for your artifacts. This is 
 
 ```js
 module.exports = {
-  baseDir: path.join(__dirname, 'dist')
+  baseDir: path.join(__dirname, 'dist'),
 };
 ```
 
@@ -72,7 +72,7 @@ The command working directory. Set this to change the script working path to som
 
 ```js
 module.exports = {
-  cwd: path.join(__dirname, '..')
+  cwd: path.join(__dirname, '..'),
 };
 ```
 
@@ -93,10 +93,10 @@ You can extract the hash from the filename with a function:
 
 ```js
 module.exports = {
-  getFilenameHash: fileName => {
+  getFilenameHash: (fileName) => {
     const parts = path.basename(fileName, '.js').split('.');
     return parts.length > 1 ? parts[parts.length - 1] : null;
-  }
+  },
 };
 ```
 
@@ -105,17 +105,17 @@ module.exports = {
 Similar to the `getFilenameHash` method above, you may want to strip out parts of the artifact filenames to make them more legible in reports and the application.
 
 ```js
-const filenameHash = fileName => {
+const filenameHash = (fileName) => {
   const parts = path.basename(fileName, '.js').split('.');
   return parts.length > 1 ? parts[parts.length - 1] : null;
 };
 
 module.exports = {
-  nameMapper: fileName => {
+  nameMapper: (fileName) => {
     const hash = filenameHash(fileName);
     const out = fileName.replace(/\.js$/, '');
     return hash ? out.replace(`.${hash}`, '') : out;
-  }
+  },
 };
 ```
 
@@ -125,7 +125,7 @@ You may want to link each build to a commit. Provide `buildUrlFormat` in the fol
 
 ```js
 module.exports = {
-  buildUrlFormat: 'https://github.com/paularmstrong/build-tracker/commit/:revision'
+  buildUrlFormat: 'https://github.com/paularmstrong/build-tracker/commit/:revision',
 };
 ```
 
@@ -135,11 +135,11 @@ Take any action on the response from the API.
 
 ```js
 module.exports = {
-  onCompare: data => {
+  onCompare: (data) => {
     // send markdown response somewhere…
     GithubApi.postComment(data.summary.join('\n'));
     return Promise.resolve();
-  }
+  },
 };
 ```
 
@@ -180,8 +180,8 @@ createBuild(config, {
   branch: 'master', // optional, in case your git state is not on a branch
   meta: {}, // optional additional metadata to provide in the build
   parentRevision: '123456', // optional, in case your git state cannot find the merge-base
-  skipDirtyCheck: false // set to true to bypass enforcing no local changes in your git work tree
-}).then(build => {
+  skipDirtyCheck: false, // set to true to bypass enforcing no local changes in your git work tree
+}).then((build) => {
   // do something with the build
 });
 ```
@@ -206,7 +206,7 @@ Uploads a Build to your Build Tracker instance.
 import { createBuild, getConfig, uploadBuild } from '@build-tracker/api-client';
 
 const config = await getConfig();
-createBuild(config, {}).then(build => {
+createBuild(config, {}).then((build) => {
   return uploadBuild(config, build, process.env.BT_API_AUTH_TOKEN);
 });
 ```

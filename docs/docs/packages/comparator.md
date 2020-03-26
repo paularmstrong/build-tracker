@@ -31,9 +31,9 @@ import BuildComparator from '@build-tracker/comparator';
 new BuildComparator({
   builds: [
     new Build(build1Meta, build1Artifacts),
-    new Build(build2Meta, build2Artifacts)
+    new Build(build2Meta, build2Artifacts),
     /* ... more than 2 builds can be added */
-  ]
+  ],
 });
 ```
 
@@ -87,7 +87,7 @@ Returns an array Markdown-formatted summaries of the overall comparison and any 
   '⚠️: `Group \\"All\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB',
   '⚠️: `Group \\"warning\\"` failed the gzip budget size limit of 0 KiB by 0.12 KiB',
   '🚨: `Group \\"error\\"` failed the gzip budget size limit of 0 KiB by 0.16 KiB',
-  '#️⃣: `burritos` hash changed without any file size change'
+  '#️⃣: `burritos` hash changed without any file size change',
 ];
 ```
 

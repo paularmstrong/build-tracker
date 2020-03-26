@@ -21,19 +21,16 @@ describe('readfile', () => {
 
   describe('hash', () => {
     test('defaults to an MD5 of the file', () => {
-      expect(readfile(main).hash).toMatchInlineSnapshot(`"631a500f31d7602a386b4f858338dd6f"`);
+      expect(readfile(main).hash).toMatchInlineSnapshot(`"764196c430cf8a94c698b74b6dfdad71"`);
     });
 
     test('can get the hash from filename function', () => {
       expect(
-        readfile(
-          main,
-          (fileName: string): string => {
-            return fileName.split('.')[1];
-          }
-        )
+        readfile(main, (fileName: string): string => {
+          return fileName.split('.')[1];
+        })
       ).toMatchObject({
-        hash: '1234567'
+        hash: '1234567',
       });
     });
   });

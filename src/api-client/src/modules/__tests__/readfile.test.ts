@@ -26,14 +26,11 @@ describe('readfile', () => {
 
     test('can get the hash from filename function', () => {
       expect(
-        readfile(
-          main,
-          (fileName: string): string => {
-            return fileName.split('.')[1];
-          }
-        )
+        readfile(main, (fileName: string): string => {
+          return fileName.split('.')[1];
+        })
       ).toMatchObject({
-        hash: '1234567'
+        hash: '1234567',
       });
     });
   });

@@ -23,31 +23,29 @@ const Tooltip = (props: Props): React.ReactElement => {
   React.useEffect(() => {
     let mounted = true;
     const { width: windowWidth } = Dimensions.get('window');
-    ref.current.measure(
-      (_x: number, _y: number, tipWidth: number, tipHeight: number): void => {
-        if (!mounted) {
-          return;
-        }
-        let newTop = top - TIP_SPACE - tipHeight;
-        let newLeft = left - Math.round(tipWidth / 2);
-        // too far right
-        if (newLeft + tipWidth + TIP_SPACE > windowWidth) {
-          newLeft = left - tipWidth - TIP_SPACE;
-          newTop = top - Math.round(tipHeight / 2);
-        }
-        // too far left
-        else if (newLeft < TIP_SPACE) {
-          newLeft = left + TIP_SPACE;
-          newTop = top - Math.round(tipHeight / 2);
-        }
-        // too close to top
-        else if (newTop <= TIP_SPACE) {
-          newTop = top + tipHeight + TIP_SPACE;
-        }
-
-        setPosition({ left: newLeft, top: newTop });
+    ref.current.measure((_x: number, _y: number, tipWidth: number, tipHeight: number): void => {
+      if (!mounted) {
+        return;
       }
-    );
+      let newTop = top - TIP_SPACE - tipHeight;
+      let newLeft = left - Math.round(tipWidth / 2);
+      // too far right
+      if (newLeft + tipWidth + TIP_SPACE > windowWidth) {
+        newLeft = left - tipWidth - TIP_SPACE;
+        newTop = top - Math.round(tipHeight / 2);
+      }
+      // too far left
+      else if (newLeft < TIP_SPACE) {
+        newLeft = left + TIP_SPACE;
+        newTop = top - Math.round(tipHeight / 2);
+      }
+      // too close to top
+      else if (newTop <= TIP_SPACE) {
+        newTop = top + tipHeight + TIP_SPACE;
+      }
+
+      setPosition({ left: newLeft, top: newTop });
+    });
     return () => {
       mounted = false;
     };
@@ -82,17 +80,17 @@ const styles = StyleSheet.create({
     transitionDuration: '0.1s',
     transitionTimingFunction: Theme.MotionTiming.Accelerate,
     transform: [{ scale: 0.75 }],
-    opacity: 0
+    opacity: 0,
   },
   show: {
     transform: [{ scale: 1 }],
-    opacity: 1
+    opacity: 1,
   },
   text: {
     color: Theme.TextColor.Gray50,
     fontSize: Theme.FontSize.Xsmall,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 export default Tooltip;

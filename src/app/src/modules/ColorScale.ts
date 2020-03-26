@@ -12,7 +12,7 @@ const scales: Scales = Object.freeze({
   Standard: scaleSequential(interpolateRdYlBu),
   Cool: scaleSequential(interpolateCool),
   Magma: scaleSequential(interpolateMagma),
-  Rainbow: scaleSequential(interpolateRainbow)
+  Rainbow: scaleSequential(interpolateRainbow),
 });
 
 export default scales;

@@ -175,45 +175,45 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     flexDirection: 'row',
-    paddingVertical: Theme.Spacing.Large
+    paddingVertical: Theme.Spacing.Large,
   },
   logo: {
     height: Theme.FontSize.Xlarge,
-    marginEnd: Theme.Spacing.Small
+    marginEnd: Theme.Spacing.Small,
   },
   title: {
     color: Theme.Color.Primary40,
     fontWeight: Theme.FontWeight.Bold,
-    fontSize: Theme.FontSize.Large
+    fontSize: Theme.FontSize.Large,
   },
   divider: {
-    marginBottom: Theme.Spacing.Normal
+    marginBottom: Theme.Spacing.Normal,
   },
   switchRoot: {
     flexDirection: 'row',
-    marginBottom: Theme.Spacing.Normal
+    marginBottom: Theme.Spacing.Normal,
   },
   switch: {
-    marginEnd: Theme.Spacing.Small
+    marginEnd: Theme.Spacing.Small,
   },
   buttonRow: {
     justifyContent: 'space-around',
     flexDirection: 'row',
-    marginBottom: Theme.Spacing.Normal
+    marginBottom: Theme.Spacing.Normal,
   },
   textinput: {
-    marginBottom: Theme.Spacing.Small
+    marginBottom: Theme.Spacing.Small,
   },
   attribution: {
     paddingVertical: Theme.Spacing.Large,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   attrText: {
-    width: '100%'
+    width: '100%',
   },
   heart: {
-    color: Theme.Color.Secondary30
-  }
+    color: Theme.Color.Secondary30,
+  },
 });
 
 export default React.forwardRef(DrawerView);

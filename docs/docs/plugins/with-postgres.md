@@ -28,8 +28,8 @@ module.exports = withPostgres({
     database: '', // default: process.env.PGDATABASE
     password: '', // default: process.env.PGPASSWORD
     port: 5432, // default: process.env.PGPORT
-    ssl: true
-  }
+    ssl: true,
+  },
 });
 ```
 

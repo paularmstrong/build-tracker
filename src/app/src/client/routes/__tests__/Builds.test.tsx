@@ -18,7 +18,7 @@ const url = 'https://build-tracker.local';
 
 jest.mock('cross-fetch', () => {
   return {
-    fetch: jest.fn()
+    fetch: jest.fn(),
   };
 });
 
@@ -32,7 +32,7 @@ const renderLimit = async (revisions: string = REVISIONS_QUERY): Promise<void> =
         builds: [],
         comparedRevisions: [],
         snacks: [],
-        url
+        url,
       })}
     >
       <Builds
@@ -50,7 +50,7 @@ describe('Builds', () => {
     fetchSpy = jest.spyOn(CrossFetch, 'fetch').mockImplementation(() =>
       // @ts-ignore
       Promise.resolve({
-        json: () => Promise.resolve([buildA, buildB, buildC])
+        json: () => Promise.resolve([buildA, buildB, buildC]),
       })
     );
     setFetchStateSpy = jest.spyOn(Actions, 'setFetchState');

@@ -36,16 +36,16 @@ const styles = StyleSheet.create({
     animationKeyframes: [
       {
         from: { transform: [{ scale: 0.85 }], opacity: 0 },
-        to: { transform: [{ scale: 1 }], opacity: 1 }
-      }
+        to: { transform: [{ scale: 1 }], opacity: 1 },
+      },
     ],
     animationDuration: '0.1s',
     animationTimingFunction: Theme.MotionTiming.Accelerate,
-    animationIterationCount: 1
+    animationIterationCount: 1,
   },
   text: {
-    color: Theme.TextColor.Black
-  }
+    color: Theme.TextColor.Black,
+  },
 });
 
 export default Snackbar;

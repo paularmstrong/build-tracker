@@ -22,7 +22,7 @@ const getCSP = (allowUnsafeEval = false): IHelmetContentSecurityPolicyDirectives
   scriptSrc: ["'self'", allowUnsafeEval && "'unsafe-eval'", "'strict-dynamic'", getNonce].filter(Boolean),
   styleSrc: ["'self'", "'unsafe-inline'"],
   upgradeInsecureRequests: false,
-  workerSrc: ["'self'"]
+  workerSrc: ["'self'"],
 });
 
 export default getCSP;

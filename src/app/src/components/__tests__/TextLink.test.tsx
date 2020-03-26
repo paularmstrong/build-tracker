@@ -17,11 +17,11 @@ describe('TextLink', () => {
       const { getByProps } = render(<TextLink href="https://build-tracker.local" text="tacos" />);
       const root = getByProps({ accessibilityRole: 'link' });
       expect(StyleSheet.flatten(root.props.style)).not.toMatchObject({
-        backgroundColor: expect.any(String)
+        backgroundColor: expect.any(String),
       });
       fireEvent(root, 'mouseEnter');
       expect(StyleSheet.flatten(root.props.style)).toMatchObject({
-        backgroundColor: Theme.Color.Primary00
+        backgroundColor: Theme.Color.Primary00,
       });
     });
   });

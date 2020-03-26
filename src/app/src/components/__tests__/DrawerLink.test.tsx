@@ -33,11 +33,11 @@ describe('DrawerLink', () => {
       const { getByProps } = render(<DrawerLink href="https://build-tracker.local" text="tacos" />);
       const root = getByProps({ accessibilityRole: 'link' });
       expect(StyleSheet.flatten(root.props.style)).not.toMatchObject({
-        backgroundColor: expect.any(String)
+        backgroundColor: expect.any(String),
       });
       fireEvent(root, 'mouseEnter');
       expect(StyleSheet.flatten(root.props.style)).toMatchObject({
-        backgroundColor: Theme.Color.Primary00
+        backgroundColor: Theme.Color.Primary00,
       });
     });
 
@@ -45,11 +45,11 @@ describe('DrawerLink', () => {
       const { getByType } = render(<DrawerLink href="https://build-tracker.local" text="tacos" />);
       const root = getByType(Text);
       expect(StyleSheet.flatten(root.props.style)).not.toMatchObject({
-        color: expect.any(String)
+        color: expect.any(String),
       });
       fireEvent(root, 'mouseEnter');
       expect(StyleSheet.flatten(root.props.style)).toMatchObject({
-        color: Theme.Color.Primary40
+        color: Theme.Color.Primary40,
       });
     });
   });

@@ -53,7 +53,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     Clipboard.setString(
       activeComparator.toMarkdown({
         artifactFilter,
-        sizeKey
+        sizeKey,
       })
     );
     dispatch(addSnack('Copied table as markdown'));
@@ -64,7 +64,7 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     Clipboard.setString(
       activeComparator.toCsv({
         artifactFilter,
-        sizeKey
+        sizeKey,
       })
     );
     dispatch(addSnack('Copied table as CSV'));
@@ -79,10 +79,10 @@ const AppBarView = (props: { drawerRef: React.RefObject<DrawerHandles> }): React
     params.append('sizeKey', sizeKey);
     params.append('disabledArtifactsVisible', `${disabledArtifactsVisible}`);
     params.append('graphType', `${graphType}`);
-    comparedRevisions.forEach(rev => {
+    comparedRevisions.forEach((rev) => {
       params.append('comparedRevisions', rev);
     });
-    if (Object.values(activeArtifacts).some(v => !v)) {
+    if (Object.values(activeArtifacts).some((v) => !v)) {
       Object.entries(activeArtifacts).forEach(([artifactName, active]) => {
         if (active) {
           params.append('activeArtifacts', artifactName);

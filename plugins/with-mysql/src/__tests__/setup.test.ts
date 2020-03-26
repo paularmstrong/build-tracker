@@ -13,10 +13,10 @@ describe('withMysql setup', () => {
     release = jest.fn();
     // @ts-ignore
     jest.spyOn(Mysql, 'createPool').mockImplementation(() => ({
-      getConnection: cb => {
+      getConnection: (cb) => {
         // @ts-ignore
         cb(null, { query, release });
-      }
+      },
     }));
 
     setupFn = setup(Mysql.createPool({}));

@@ -29,7 +29,7 @@ const Comparison = (props: Props): React.ReactElement => {
 
   const colorScale = React.useMemo(() => ColorScales[colorScaleName].domain([0, comparator.artifactNames.length]), [
     colorScaleName,
-    comparator.artifactNames.length
+    comparator.artifactNames.length,
   ]);
 
   const handleDisableArtifacts = React.useCallback(
@@ -49,7 +49,12 @@ const Comparison = (props: Props): React.ReactElement => {
   const handleFocusArtifacts = React.useCallback(
     (artifactNames: Array<string>): void => {
       dispatch(setArtifactActive(artifactNames, true));
-      dispatch(setArtifactActive(Object.keys(activeArtifacts).filter(name => !artifactNames.includes(name)), false));
+      dispatch(
+        setArtifactActive(
+          Object.keys(activeArtifacts).filter((name) => !artifactNames.includes(name)),
+          false
+        )
+      );
     },
     [activeArtifacts, dispatch]
   );
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
   tableScroll: {
     width: '100%',
     transitionProperty: 'height',
-    transitionDuration: '0.1s'
+    transitionDuration: '0.1s',
   },
   buildInfo: {
     width: '100%',
@@ -120,12 +125,12 @@ const styles = StyleSheet.create({
     animationKeyframes: [
       {
         '0%': { transform: [{ translateY: '100%' }] },
-        '100%': { transform: [{ translateY: '0%' }] }
-      }
+        '100%': { transform: [{ translateY: '0%' }] },
+      },
     ],
     animationTimingFunction: 'ease-out',
-    animationIterationCount: 1
-  }
+    animationIterationCount: 1,
+  },
 });
 
 export default Comparison;

@@ -5,7 +5,7 @@ import { Pool } from 'mysql';
 
 export default function setup(pool: Pool): () => Promise<boolean> {
   const setup = (): Promise<boolean> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       pool.getConnection((err, client) => {
         if (err) {
           client.release();
@@ -22,17 +22,17 @@ CREATE TABLE IF NOT EXISTS builds(
   artifacts BLOB,
   CHECK (meta IS NULL OR JSON_VALID(meta))
 )`,
-          err => {
+          (err) => {
             if (err) {
               client.release();
               throw err;
             }
-            client.query('ALTER TABLE builds ADD INDEX (revision, parentRevision, branch)', err => {
+            client.query('ALTER TABLE builds ADD INDEX (revision, parentRevision, branch)', (err) => {
               if (err) {
                 client.release();
                 throw err;
               }
-              client.query('ALTER TABLE builds ADD INDEX (timestamp)', err => {
+              client.query('ALTER TABLE builds ADD INDEX (timestamp)', (err) => {
                 if (err) {
                   client.release();
                   throw err;

@@ -35,8 +35,8 @@ export default async function createBuild(config: Config, opts: Options = { skip
       sizes: {
         stat: stat.stat,
         gzip: stat.gzip,
-        brotli: stat.brotli
-      }
+        brotli: stat.brotli,
+      },
     });
     return memo;
   }, []);
@@ -56,14 +56,14 @@ export default async function createBuild(config: Config, opts: Options = { skip
     const revisionUrl = toPath({ revision });
     revision = {
       value: revision,
-      url: revisionUrl
+      url: revisionUrl,
     };
 
     if (parentRevision) {
       const parentRevisionUrl = toPath({ revision: parentRevision });
       parentRevision = {
         value: parentRevision,
-        url: parentRevisionUrl
+        url: parentRevisionUrl,
       };
     }
   }
@@ -76,9 +76,9 @@ export default async function createBuild(config: Config, opts: Options = { skip
       revision,
       subject,
       timestamp,
-      ...(opts.meta || {})
+      ...(opts.meta || {}),
     },
-    artifacts
+    artifacts,
   };
 
   return build;

@@ -12,7 +12,7 @@ describe('Snackbar', () => {
     document.body.appendChild(portal);
 
     const { queryAllByRole, queryAllByText } = render(<Snackbar text="foobar" />, {
-      container: portal
+      container: portal,
     });
 
     expect(queryAllByRole('alert')).toHaveLength(1);

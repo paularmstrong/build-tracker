@@ -35,6 +35,6 @@ export default async function getConfig(path?: string): Promise<Config> {
   return {
     baseDir: process.cwd(),
     cwd: process.cwd(),
-    ...result.config
+    ...result.config,
   };
 }

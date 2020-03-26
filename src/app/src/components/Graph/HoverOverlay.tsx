@@ -23,15 +23,9 @@ interface Props {
   yScale: ScaleLinear<number, number>;
 }
 
-const handleMoveLine = memoize(
-  (line, xPos): void => {
-    select(line)
-      .transition()
-      .duration(250)
-      .attr('x1', xPos)
-      .attr('x2', xPos);
-  }
-);
+const handleMoveLine = memoize((line, xPos): void => {
+  select(line).transition().duration(250).attr('x1', xPos).attr('x2', xPos);
+});
 
 const HoverOverlay = (props: Props): React.ReactElement => {
   const { data, height, onHoverArtifacts, onSelectRevision, selectedRevisions, width, xScale, yScale } = props;
@@ -52,7 +46,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
           const isPrev = Math.abs(xGetter(curr) - x) > Math.abs(xGetter(prev.value) - x);
           return {
             index: isPrev ? prev.index : index,
-            value: isPrev ? prev.value : curr
+            value: isPrev ? prev.value : curr,
           };
         },
         { index: 0, value: domain[0] }
@@ -64,7 +58,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
   const handleClick = React.useCallback(
     (event: React.MouseEvent<SVGRectElement>): void => {
       const {
-        nativeEvent: { offsetX }
+        nativeEvent: { offsetX },
       } = event;
 
       const revision = buildRevisionFromX(offsetX - Offset.LEFT);
@@ -84,7 +78,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
   const handleMouseMove = React.useCallback(
     (event: React.MouseEvent<SVGRectElement>): void => {
       const {
-        nativeEvent: { offsetX, offsetY = Offset.TOP, pageX, pageY }
+        nativeEvent: { offsetX, offsetY = Offset.TOP, pageX, pageY },
       } = event;
 
       setOffsetX(offsetX);
@@ -95,7 +89,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
       handleMoveLine(lineRef.current, xPos);
 
       const yValue = yScale.invert(offsetY - Offset.TOP);
-      const hoveredArtifact = data.find(data => {
+      const hoveredArtifact = data.find((data) => {
         return data[revision.index][0] <= yValue && data[revision.index][1] >= yValue;
       });
       hoveredArtifact && setHoveredArtifact(hoveredArtifact.key);
@@ -132,7 +126,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
         style={styles.rect}
         width={width}
       />
-      {selectedRevisions.map(revision => {
+      {selectedRevisions.map((revision) => {
         const x = xGetter(revision);
         return (
           <line
@@ -160,14 +154,14 @@ const styles = {
     fill: 'none',
     strokeWidth: '3px',
     strokeDasharray: '5 3',
-    opacity: 0
+    opacity: 0,
   },
   selectedLine: {
     stroke: Theme.Color.White,
     fill: 'none',
     strokeWidth: '1px',
-    strokeDasharray: '2 2'
-  }
+    strokeDasharray: '2 2',
+  },
 };
 
 export default HoverOverlay;

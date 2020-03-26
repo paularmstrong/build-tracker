@@ -80,8 +80,8 @@ describe('ArtifactDelta', () => {
           level: 'error',
           passing: false,
           sizeKey: 'stat',
-          type: 'delta'
-        }
+          type: 'delta',
+        },
       ]);
     });
 
@@ -100,8 +100,8 @@ describe('ArtifactDelta', () => {
           level: 'error',
           passing: true,
           sizeKey: 'stat',
-          type: 'percentDelta'
-        }
+          type: 'percentDelta',
+        },
       ]);
     });
 
@@ -120,8 +120,8 @@ describe('ArtifactDelta', () => {
           level: 'warn',
           passing: false,
           sizeKey: 'stat',
-          type: 'size'
-        }
+          type: 'size',
+        },
       ]);
     });
   });
@@ -132,7 +132,7 @@ describe('ArtifactDelta', () => {
         'tacos',
         [
           { level: BudgetLevel.ERROR, type: BudgetType.SIZE, sizeKey: 'stat', maximum: 5 },
-          { level: BudgetLevel.WARN, type: BudgetType.SIZE, sizeKey: 'stat', maximum: 4 }
+          { level: BudgetLevel.WARN, type: BudgetType.SIZE, sizeKey: 'stat', maximum: 4 },
         ],
         { stat: 4 },
         { stat: 3 },
@@ -146,8 +146,8 @@ describe('ArtifactDelta', () => {
           level: 'warn',
           passing: false,
           sizeKey: 'stat',
-          type: 'size'
-        }
+          type: 'size',
+        },
       ]);
     });
   });
@@ -160,7 +160,7 @@ describe('ArtifactDelta', () => {
         level: 'error',
         passing: false,
         sizeKey: 'stat',
-        type: 'percentDelta'
+        type: 'percentDelta',
       };
       const ad = new ArtifactDelta(
         'tacos',
@@ -176,7 +176,7 @@ describe('ArtifactDelta', () => {
         hashChanged: false,
         hashChangeUnexpected: false,
         budgets: [budget],
-        failingBudgets: [budget]
+        failingBudgets: [budget],
       });
     });
   });

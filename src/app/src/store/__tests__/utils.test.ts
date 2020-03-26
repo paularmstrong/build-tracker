@@ -16,7 +16,7 @@ describe('searchParamsToStore', () => {
 
   test('reduces activeArtifacts to an object', () => {
     expect(searchParamsToStore('?activeArtifacts=main&activeArtifacts=vendor&activeArtifacts=shared')).toEqual({
-      activeArtifacts: { main: true, vendor: true, shared: true }
+      activeArtifacts: { main: true, vendor: true, shared: true },
     });
   });
 
@@ -36,7 +36,7 @@ describe('searchParamsToStore', () => {
 
   test('sets comparedRevisions to an array', () => {
     expect(searchParamsToStore('comparedRevisions=123&comparedRevisions=abc')).toEqual({
-      comparedRevisions: ['123', 'abc']
+      comparedRevisions: ['123', 'abc'],
     });
   });
 });

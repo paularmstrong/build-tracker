@@ -30,29 +30,25 @@ const Menu = (props: Props): React.ReactElement => {
   React.useEffect(() => {
     if (ref.current && relativeTo.current) {
       const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
-      ref.current.measure(
-        (_x: number, _y: number, menuWidth: number, menuHeight: number): void => {
-          relativeTo.current.measureInWindow(
-            (x: number, y: number, _width: number, height: number): void => {
-              let top = y + height;
-              let left = x;
-              // too far right
-              if (left + menuWidth > windowWidth) {
-                left = windowWidth - menuWidth;
-              }
-              // too far left
-              else if (left < 0) {
-                left = 0;
-              }
-              // too close to bottom
-              if (top + menuHeight > windowHeight) {
-                top = y - menuHeight;
-              }
-              ref.current && setPosition({ left, top });
-            }
-          );
-        }
-      );
+      ref.current.measure((_x: number, _y: number, menuWidth: number, menuHeight: number): void => {
+        relativeTo.current.measureInWindow((x: number, y: number, _width: number, height: number): void => {
+          let top = y + height;
+          let left = x;
+          // too far right
+          if (left + menuWidth > windowWidth) {
+            left = windowWidth - menuWidth;
+          }
+          // too far left
+          else if (left < 0) {
+            left = 0;
+          }
+          // too close to bottom
+          if (top + menuHeight > windowHeight) {
+            top = y - menuHeight;
+          }
+          ref.current && setPosition({ left, top });
+        });
+      });
     }
   }, [relativeTo]);
 
@@ -70,7 +66,7 @@ const Menu = (props: Props): React.ReactElement => {
         style={[
           styles.root,
           position.top > 0 && { top: position.top, left: position.left },
-          position.top > 0 && styles.show
+          position.top > 0 && styles.show,
         ]}
       >
         {React.Children.toArray(children)}
@@ -99,13 +95,13 @@ const styles = StyleSheet.create({
     transitionDuration: '0.1s',
     transitionTimingFunction: Theme.MotionTiming.Accelerate,
     transform: [{ scale: 0.85 }],
-    opacity: 0
+    opacity: 0,
   },
 
   show: {
     transform: [{ scale: 1 }],
-    opacity: 1
-  }
+    opacity: 1,
+  },
 });
 
 export default Menu;

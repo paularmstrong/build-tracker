@@ -42,7 +42,7 @@ export default class Build<M extends BuildMeta = BuildMeta> {
   public constructor(meta: M, artifacts: Array<Artifact>) {
     this._meta = Object.freeze(meta);
     this._artifacts = new Map();
-    artifacts.forEach(artifact => {
+    artifacts.forEach((artifact) => {
       this._artifacts.set(artifact.name, artifact);
     });
   }
@@ -82,8 +82,8 @@ export default class Build<M extends BuildMeta = BuildMeta> {
   public get artifactSizes(): Array<string> {
     if (!this._sizeKeys) {
       this._sizeKeys = new Set();
-      this._artifacts.forEach(artifact => {
-        Object.keys(artifact.sizes).forEach(k => {
+      this._artifacts.forEach((artifact) => {
+        Object.keys(artifact.sizes).forEach((k) => {
           this._sizeKeys.add(k);
         });
       });
@@ -117,7 +117,7 @@ export default class Build<M extends BuildMeta = BuildMeta> {
   public getTotals(artifactFilters?: ArtifactFilters): ArtifactSizes {
     if (!this._totals) {
       this._totals = {};
-      this._artifacts.forEach(artifact => {
+      this._artifacts.forEach((artifact) => {
         Object.entries(artifact.sizes).forEach(([key, value]) => {
           if (!this._totals[key]) {
             this._totals[key] = 0;
@@ -129,8 +129,8 @@ export default class Build<M extends BuildMeta = BuildMeta> {
 
     if (artifactFilters && artifactFilters.length) {
       const totals = { ...this._totals };
-      Array.from(this._artifacts.keys()).forEach(artifactName => {
-        if (artifactFilters.some(filter => filter.test(artifactName))) {
+      Array.from(this._artifacts.keys()).forEach((artifactName) => {
+        if (artifactFilters.some((filter) => filter.test(artifactName))) {
           Object.entries(this._totals).forEach(([key, value]) => {
             const size = this._artifacts.get(artifactName).sizes[key];
             totals[key] = value - size;

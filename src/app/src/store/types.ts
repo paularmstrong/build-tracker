@@ -10,12 +10,12 @@ export enum FetchState {
   NONE,
   FETCHING,
   FETCHED,
-  ERROR
+  ERROR,
 }
 
 export enum GraphType {
   AREA = 'AREA',
-  STACKED_BAR = 'STACKED_BAR'
+  STACKED_BAR = 'STACKED_BAR',
 }
 
 export interface State {

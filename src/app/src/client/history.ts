@@ -4,4 +4,4 @@
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import { createBrowserHistory, createMemoryHistory } from 'history';
 
-export default (canUseDOM ? createBrowserHistory() : createMemoryHistory());
+export default canUseDOM ? createBrowserHistory() : createMemoryHistory();

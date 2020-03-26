@@ -26,7 +26,7 @@ describe('Ripple', () => {
       const styles = StyleSheet.flatten(views[2].props.style);
       expect(styles).toMatchObject({
         height: 900,
-        width: 900
+        width: 900,
       });
     });
   });
@@ -60,7 +60,7 @@ describe('Ripple', () => {
         left: -10,
         top: -30,
         width: 100,
-        height: 100
+        height: 100,
       });
     });
 
@@ -77,7 +77,7 @@ describe('Ripple', () => {
       const ripple = queryAllByType(View)[2];
       const styles = StyleSheet.flatten(ripple.props.style);
       expect(styles).toMatchObject({
-        height: 0
+        height: 0,
       });
     });
   });
@@ -114,7 +114,7 @@ describe('Ripple', () => {
         left: -10,
         top: -30,
         width: 0,
-        height: 0
+        height: 0,
       });
     });
 
@@ -149,7 +149,7 @@ describe('Ripple', () => {
       const ripple = queryAllByType(View)[2];
       const styles = StyleSheet.flatten(ripple.props.style);
       expect(styles).toMatchObject({
-        height: 0
+        height: 0,
       });
     });
   });

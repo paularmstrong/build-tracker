@@ -17,7 +17,7 @@ const DrawerLink = (props: Props): React.ReactElement => {
 
   return (
     <Hoverable>
-      {isHovered => {
+      {(isHovered) => {
         return (
           <Text
             accessibilityRole="link"
@@ -36,11 +36,11 @@ const DrawerLink = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   root: {
     borderRadius: Theme.BorderRadius.Normal,
-    color: Theme.Color.Primary40
+    color: Theme.Color.Primary40,
   },
   rootHovered: {
-    backgroundColor: Theme.Color.Primary00
-  }
+    backgroundColor: Theme.Color.Primary00,
+  },
 });
 
 export default DrawerLink;

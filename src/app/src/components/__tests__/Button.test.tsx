@@ -45,7 +45,7 @@ describe('Button', () => {
         fireEvent(getByType(TouchableOpacity), 'pressIn', { nativeEvent: { locationX: 0, locationY: 0 } });
         expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
           shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 3
+          shadowRadius: 3,
         });
       });
 
@@ -55,7 +55,7 @@ describe('Button', () => {
         fireEvent(getByType(TouchableOpacity), 'pressOut', { nativeEvent: { locationX: 0, locationY: 0 } });
         expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
           shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5
+          shadowRadius: 5,
         });
       });
 
@@ -64,12 +64,12 @@ describe('Button', () => {
         fireEvent(getByType(TouchableOpacity), 'pressIn', { nativeEvent: { locationX: 0, locationY: 0 } });
         expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
           shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5
+          shadowRadius: 5,
         });
         fireEvent(getByType(TouchableOpacity), 'pressOut', { nativeEvent: { locationX: 0, locationY: 0 } });
         expect(StyleSheet.flatten(getByType(Ripple).props.style)).toMatchObject({
           shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 5
+          shadowRadius: 5,
         });
       });
     });

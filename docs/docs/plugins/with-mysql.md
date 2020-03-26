@@ -26,8 +26,8 @@ module.exports = withMysql({
     host: '', // default: process.env.MYSQLHOST
     database: '', // default: process.env.MYSQLDATABASE
     password: '', // default: process.env.MYSQLPASSWORD
-    port: 3306 // default: process.env.MYSQLPORT
-  }
+    port: 3306, // default: process.env.MYSQLPORT
+  },
 });
 ```
 

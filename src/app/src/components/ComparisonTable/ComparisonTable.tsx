@@ -40,7 +40,7 @@ const ComparisonTable = (props: Props): React.ReactElement => {
     onFocusRevision,
     onHoverArtifacts,
     onRemoveRevision,
-    sizeKey
+    sizeKey,
   } = props;
 
   const matrix = comparator.toJSON();
@@ -81,11 +81,11 @@ const ComparisonTable = (props: Props): React.ReactElement => {
     <Table onMouseLeave={handleMouseOut} style={styles.table}>
       <Thead>
         <HeaderRow onFocusRevision={onFocusRevision} onRemoveRevision={onRemoveRevision} row={matrix.header} />
-        {matrix.groups.map(row => {
+        {matrix.groups.map((row) => {
           const { artifactNames, text: groupName } = row[0];
           const isActive = Object.keys(activeArtifacts)
-            .filter(artifactName => artifactNames.includes(artifactName))
-            .every(artifactName => activeArtifacts[artifactName]);
+            .filter((artifactName) => artifactNames.includes(artifactName))
+            .every((artifactName) => activeArtifacts[artifactName]);
           return (
             <GroupRow
               isActive={isActive}
@@ -130,8 +130,8 @@ const ComparisonTable = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   table: {
-    position: 'relative'
-  }
+    position: 'relative',
+  },
 });
 
 export default ComparisonTable;

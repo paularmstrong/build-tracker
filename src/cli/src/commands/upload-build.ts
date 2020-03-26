@@ -19,17 +19,17 @@ export const handler = async (args: Args): Promise<void> => {
     branch: args.branch,
     meta: args.meta,
     parentRevision: args['parent-revision'],
-    skipDirtyCheck: args['skip-dirty-check']
+    skipDirtyCheck: args['skip-dirty-check'],
   });
 
   try {
     await uploadBuild(config, build, process.env.BT_API_AUTH_TOKEN, {
-      log: input => {
+      log: (input) => {
         process.stdout.write(`${input}\n`);
       },
-      error: input => {
+      error: (input) => {
         process.stderr.write(`${input}\n`);
-      }
+      },
     });
   } catch (e) {
     process.exit(1);

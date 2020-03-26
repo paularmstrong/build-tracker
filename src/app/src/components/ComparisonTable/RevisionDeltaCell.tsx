@@ -21,7 +21,7 @@ export const RevisionDeltaCell = (props: Props): React.ReactElement => {
   return (
     <Th accessibilityLabel={`Delta from ${againstRevision} to ${revision}`} style={props.style}>
       <Hoverable>
-        {isHovered => (
+        {(isHovered) => (
           <View ref={viewRef} testID="delta">
             <Text style={styles.delta}>{`𝚫${deltaIndex}`}</Text>
             {isHovered ? (
@@ -39,8 +39,8 @@ export const RevisionDeltaCell = (props: Props): React.ReactElement => {
 
 const styles = StyleSheet.create({
   delta: {
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 });
 
 export default React.memo(RevisionDeltaCell);

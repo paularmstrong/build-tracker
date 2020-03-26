@@ -15,7 +15,7 @@ module.exports = (env, reporter) => ({
   devServer: {
     contentBase: SRC_ROOT,
     hot: true,
-    noInfo: true
+    noInfo: true,
   },
   devtool: IS_PROD ? false : 'cheap-module-eval-source-map',
   module: {
@@ -24,29 +24,29 @@ module.exports = (env, reporter) => ({
       {
         test: /\.(png)$/i,
         loader: require.resolve('file-loader'),
-        options: { outputPath: '../client/static', publicPath: '/client/static', name: '[name].[hash:8].[ext]' }
-      }
-    ]
+        options: { outputPath: '../client/static', publicPath: '/client/static', name: '[name].[hash:8].[ext]' },
+      },
+    ],
   },
   resolve: {
     alias: {
-      'react-native$': 'react-native-web'
+      'react-native$': 'react-native-web',
     },
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
   },
   node: {
     global: false,
-    __dirname: true
+    __dirname: true,
   },
   optimization: {
     minimize: false,
     sideEffects: true,
-    splitChunks: {}
+    splitChunks: {},
   },
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(DIST_ROOT, 'server')
+    path: path.join(DIST_ROOT, 'server'),
   },
   plugins: [
     !IS_PROD &&
@@ -54,8 +54,8 @@ module.exports = (env, reporter) => ({
       new WebpackBar({
         name: 'Server',
         color: 'blue',
-        reporters: ['fancy', reporter]
+        reporters: ['fancy', reporter],
       }),
-    !IS_PROD && new webpack.HotModuleReplacementPlugin()
-  ].filter(Boolean)
+    !IS_PROD && new webpack.HotModuleReplacementPlugin(),
+  ].filter(Boolean),
 });

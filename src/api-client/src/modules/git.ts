@@ -4,47 +4,34 @@
 import spawn from './spawn';
 
 export function isDirty(cwd: string = process.cwd()): Promise<boolean> {
-  return spawn('git', ['status', '-s'], { cwd }).then(
-    (buffer: Buffer): boolean => {
-      return !/^\s*$/.test(buffer.toString());
-    }
-  );
+  return spawn('git', ['status', '-s'], { cwd }).then((buffer: Buffer): boolean => {
+    return !/^\s*$/.test(buffer.toString());
+  });
 }
 
 export function getDefaultBranch(cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['remote', 'show', 'origin'], { cwd }).then(
-    (buffer: Buffer): string => {
-      const matches = buffer.toString().match(/HEAD branch: (\S+)/);
-      return matches[1];
-    }
-  );
+  return spawn('git', ['remote', 'show', 'origin'], { cwd }).then((buffer: Buffer): string => {
+    const matches = buffer.toString().match(/HEAD branch: (\S+)/);
+    return matches[1];
+  });
 }
 
 export function getBranch(cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd }).then(
-    (buffer: Buffer): string => {
-      return buffer.toString().trim();
-    }
-  );
+  return spawn('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd }).then((buffer: Buffer): string => {
+    return buffer.toString().trim();
+  });
 }
 
 export function getMergeBase(branch: string, cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['merge-base', 'HEAD', `origin/${branch}`], { cwd }).then(
-    (buffer: Buffer): string => {
-      return buffer.toString().trim();
-    }
-  );
+  return spawn('git', ['merge-base', 'HEAD', `origin/${branch}`], { cwd }).then((buffer: Buffer): string => {
+    return buffer.toString().trim();
+  });
 }
 
 export function getParentRevision(sha: string, cwd: string = process.cwd()): Promise<string> {
-  return spawn('git', ['log', '--pretty=%P', '-n', '1', sha], { cwd }).then(
-    (buffer: Buffer): string => {
-      return buffer
-        .toString()
-        .trim()
-        .split(' ')[0];
-    }
-  );
+  return spawn('git', ['log', '--pretty=%P', '-n', '1', sha], { cwd }).then((buffer: Buffer): string => {
+    return buffer.toString().trim().split(' ')[0];
+  });
 }
 
 export function getCurrentRevision(cwd: string = process.cwd()): Promise<string> {
@@ -66,7 +53,7 @@ export function getRevisionDetails(sha: string, cwd: string = process.cwd()): Pr
       return {
         timestamp: parseInt(timestamp, 10),
         name,
-        subject
+        subject,
       };
     }
   );

@@ -33,7 +33,7 @@ describe('create-build', () => {
         o: true,
         out: true,
         'skip-dirty-check': false,
-        skipDirtyCheck: false
+        skipDirtyCheck: false,
       });
     });
   });

@@ -19,7 +19,7 @@ const Table = (props: Props): React.ReactElement<Props> =>
     {
       ...props,
       style: [styles.root, props.style],
-      viewBox: '0 0 24 24'
+      viewBox: '0 0 24 24',
     },
     <g>
       <path fill="none" d="M0 0h24v24H0V0z" />

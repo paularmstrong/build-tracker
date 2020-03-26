@@ -24,7 +24,7 @@ const Drawer: React.RefForwardingComponent<Handles, Props> = (
   React.useImperativeHandle(ref, () => ({
     show: () => {
       setForceShow(true);
-    }
+    },
   }));
 
   const hideDrawerHandler = React.useCallback(() => {
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     transitionProperty: 'left',
     transitionDuration: '0.25s',
     transitionTimingFunction: Theme.MotionTiming.Decelerate,
-    zIndex: 10
+    zIndex: 10,
   },
 
   hidden: {
@@ -77,12 +77,12 @@ const styles = StyleSheet.create({
     shadowColor: Theme.Color.Black,
     shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0,
-    shadowRadius: 35
+    shadowRadius: 35,
   },
 
   forceShow: {
     left: 0,
-    shadowOpacity: 0.5
+    shadowOpacity: 0.5,
   },
 
   scrim: {
@@ -96,12 +96,12 @@ const styles = StyleSheet.create({
     opacity: 0,
     transitionProperty: 'opacity',
     transitionDuration: '0.25s',
-    transitionTimingFunction: Theme.MotionTiming.Decelerate
+    transitionTimingFunction: Theme.MotionTiming.Decelerate,
   },
 
   showScrim: {
-    opacity: 0.32
-  }
+    opacity: 0.32,
+  },
 });
 
 export default React.forwardRef(Drawer);

@@ -19,12 +19,12 @@ const Latest: FunctionComponent<RouteComponentProps<{ limit?: string }>> = (prop
   React.useEffect(() => {
     dispatch(setFetchState(FetchState.FETCHING));
     fetch(`${url}/api/builds/${limit}`)
-      .then(response => response.json())
-      .then(builds => {
+      .then((response) => response.json())
+      .then((builds) => {
         if (!Array.isArray(builds)) {
           throw new Error('Bad response');
         }
-        dispatch(setBuilds(builds.map(buildStruct => new Build(buildStruct.meta, buildStruct.artifacts))));
+        dispatch(setBuilds(builds.map((buildStruct) => new Build(buildStruct.meta, buildStruct.artifacts))));
         dispatch(setFetchState(FetchState.FETCHED));
       })
       .catch(() => {

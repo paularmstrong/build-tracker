@@ -10,14 +10,14 @@ import BuildComparator, {
   RevisionCell,
   RevisionDeltaCell,
   TotalCell,
-  TotalDeltaCell
+  TotalDeltaCell,
 } from '..';
 
 const build1 = new Build(
   { branch: 'master', revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 },
   [
     { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
-    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
+    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
   ]
 );
 // Same as build 1 but different revision
@@ -25,7 +25,7 @@ const build1b = new Build(
   { branch: 'master', revision: '1234567abcdeg', parentRevision: '1234567abcdef', timestamp: 1234567 },
   [
     { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
-    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
+    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
   ]
 );
 
@@ -33,7 +33,7 @@ const build2 = new Build(
   { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
   [
     { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
-    { name: 'churros~burritos~tacos', hash: 'def', sizes: { stat: 469, gzip: 120 } }
+    { name: 'churros~burritos~tacos', hash: 'def', sizes: { stat: 469, gzip: 120 } },
   ]
 );
 // Alternative to build2 with burritos
@@ -41,7 +41,7 @@ const build2b = new Build(
   { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
   [
     { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
-    { name: 'burritos', hash: 'def', sizes: { stat: 456, gzip: 90 } }
+    { name: 'burritos', hash: 'def', sizes: { stat: 456, gzip: 90 } },
   ]
 );
 
@@ -55,7 +55,7 @@ describe('BuildComparator', () => {
         budgets: [budget],
         builds: [build1, build2],
         artifactFilters,
-        groups: [{ artifactNames: [], artifactMatch: /tacos/, budgets: [budget], name: 'tacos group' }]
+        groups: [{ artifactNames: [], artifactMatch: /tacos/, budgets: [budget], name: 'tacos group' }],
       });
       const deserialized = BuildComparator.deserialize(original.serialize());
       expect(deserialized.builds).toEqual(original.builds);
@@ -69,7 +69,7 @@ describe('BuildComparator', () => {
         { branch: 'master', revision: 'abcdef', parentRevision: build1.getMetaValue('revision'), timestamp: 1234566 },
         [
           { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
-          { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } }
+          { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
         ]
       );
       const comparator = new BuildComparator({ builds: [build2, build3, build1] });
@@ -94,8 +94,8 @@ describe('BuildComparator', () => {
           sizes: { gzip: -2, stat: 0 },
           percents: {
             gzip: -0.044444444444444446,
-            stat: 0
-          }
+            stat: 0,
+          },
         })
       );
     });
@@ -137,7 +137,7 @@ describe('BuildComparator', () => {
     test('throws an error if some builds have size keys that others do not', () => {
       expect(() => {
         new BuildComparator({
-          builds: [new Build(build1.meta, [{ name: 'tacos', hash: 'abc', sizes: { tacos: 123 } }]), build2]
+          builds: [new Build(build1.meta, [{ name: 'tacos', hash: 'abc', sizes: { tacos: 123 } }]), build2],
         });
       }).toThrowErrorMatchingInlineSnapshot(`"builds provided do not have same size keys for artifacts"`);
     });
@@ -149,7 +149,7 @@ describe('BuildComparator', () => {
 
     test('returns an empty array if there are no artifacts', () => {
       const comparator = new BuildComparator({
-        builds: [new Build(build1.meta, [])]
+        builds: [new Build(build1.meta, [])],
       });
       expect(comparator.sizeKeys).toEqual([]);
     });
@@ -180,7 +180,7 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.matrixHeader[0]).toEqual({
         type: 'text',
-        text: ''
+        text: '',
       });
     });
 
@@ -188,11 +188,11 @@ describe('BuildComparator', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.matrixHeader[1]).toEqual({
         type: 'revision',
-        revision: build1.getMetaValue('revision')
+        revision: build1.getMetaValue('revision'),
       });
       expect(comparator.matrixHeader[2]).toEqual({
         type: 'revision',
-        revision: build2.getMetaValue('revision')
+        revision: build2.getMetaValue('revision'),
       });
     });
 
@@ -202,7 +202,7 @@ describe('BuildComparator', () => {
         type: 'revisionDelta',
         deltaIndex: 1,
         againstRevision: build1.getMetaValue('revision'),
-        revision: build2.getMetaValue('revision')
+        revision: build2.getMetaValue('revision'),
       });
     });
   });
@@ -210,10 +210,10 @@ describe('BuildComparator', () => {
   describe('matrixArtifacts', () => {
     test('includes a row for each artifact', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
-      expect(comparator.matrixArtifacts.map(r => r[0])).toEqual([
+      expect(comparator.matrixArtifacts.map((r) => r[0])).toEqual([
         { type: 'artifact', text: 'churros~burritos~tacos' },
         { type: 'artifact', text: 'burritos' },
-        { type: 'artifact', text: 'tacos' }
+        { type: 'artifact', text: 'tacos' },
       ]);
     });
 
@@ -222,12 +222,12 @@ describe('BuildComparator', () => {
       expect(comparator.matrixArtifacts[2][1]).toEqual({
         type: 'total',
         name: 'tacos',
-        sizes: { gzip: 45, stat: 123 }
+        sizes: { gzip: 45, stat: 123 },
       });
       expect(comparator.matrixArtifacts[2][2]).toEqual({
         type: 'total',
         name: 'tacos',
-        sizes: { gzip: 43, stat: 123 }
+        sizes: { gzip: 43, stat: 123 },
       });
     });
 
@@ -238,7 +238,7 @@ describe('BuildComparator', () => {
         hashChanged: false,
         name: 'tacos',
         percents: { gzip: -0.044444444444444446, stat: 0 },
-        sizes: { gzip: -2, stat: 0 }
+        sizes: { gzip: -2, stat: 0 },
       });
     });
   });
@@ -249,7 +249,7 @@ describe('BuildComparator', () => {
       expect(comparator.matrixGroups[0][0]).toEqual({
         type: 'group',
         text: 'All',
-        artifactNames: ['churros~burritos~tacos', 'burritos', 'tacos']
+        artifactNames: ['churros~burritos~tacos', 'burritos', 'tacos'],
       });
     });
 
@@ -258,12 +258,12 @@ describe('BuildComparator', () => {
       expect(comparator.matrixGroups[0][1]).toEqual({
         type: 'total',
         name: 'All',
-        sizes: { gzip: 135, stat: 579 }
+        sizes: { gzip: 135, stat: 579 },
       });
       expect(comparator.matrixGroups[0][2]).toEqual({
         type: 'total',
         name: 'All',
-        sizes: { gzip: 163, stat: 592 }
+        sizes: { gzip: 163, stat: 592 },
       });
     });
 
@@ -277,31 +277,31 @@ describe('BuildComparator', () => {
         hashChanged: true,
         hashChangeUnexpected: false,
         sizes: { gzip: 28, stat: 13 },
-        percents: { gzip: 0.2074074074074074, stat: 0.022452504317789293 }
+        percents: { gzip: 0.2074074074074074, stat: 0.022452504317789293 },
       });
     });
 
     test('includes totals for each group', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
-        groups: [{ name: 'stuff', artifactNames: ['churros~burritos~tacos', 'burritos'] }]
+        groups: [{ name: 'stuff', artifactNames: ['churros~burritos~tacos', 'burritos'] }],
       });
       expect(comparator.matrixGroups[1][1]).toEqual({
         type: 'total',
         name: 'stuff',
-        sizes: { gzip: 90, stat: 456 }
+        sizes: { gzip: 90, stat: 456 },
       });
       expect(comparator.matrixGroups[1][2]).toEqual({
         type: 'total',
         name: 'stuff',
-        sizes: { gzip: 120, stat: 469 }
+        sizes: { gzip: 120, stat: 469 },
       });
     });
 
     test('includes deltas for each group', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
-        groups: [{ name: 'stuff', artifactNames: ['churros~burritos~tacos', 'burritos'] }]
+        groups: [{ name: 'stuff', artifactNames: ['churros~burritos~tacos', 'burritos'] }],
       });
       expect(comparator.matrixGroups[1][3]).toEqual({
         type: 'totalDelta',
@@ -311,24 +311,24 @@ describe('BuildComparator', () => {
         budgets: [],
         failingBudgets: [],
         percents: { gzip: 0.3333333333333333, stat: 0.02850877192982456 },
-        sizes: { gzip: 30, stat: 13 }
+        sizes: { gzip: 30, stat: 13 },
       });
     });
 
     test('includes data for artifactMatch regex', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
-        groups: [{ name: 'stuff', artifactNames: ['burritos'], artifactMatch: /^tac/ }]
+        groups: [{ name: 'stuff', artifactNames: ['burritos'], artifactMatch: /^tac/ }],
       });
       expect(comparator.matrixGroups[1][1]).toEqual({
         type: 'total',
         name: 'stuff',
-        sizes: { gzip: 135, stat: 579 }
+        sizes: { gzip: 135, stat: 579 },
       });
       expect(comparator.matrixGroups[1][2]).toEqual({
         type: 'total',
         name: 'stuff',
-        sizes: { gzip: 43, stat: 123 }
+        sizes: { gzip: 43, stat: 123 },
       });
       expect(comparator.matrixGroups[1][3]).toEqual({
         type: 'totalDelta',
@@ -338,7 +338,7 @@ describe('BuildComparator', () => {
         budgets: [],
         failingBudgets: [],
         percents: { gzip: -0.6814814814814815, stat: -0.7875647668393783 },
-        sizes: { gzip: -92, stat: -456 }
+        sizes: { gzip: -92, stat: -456 },
       });
     });
   });
@@ -352,7 +352,7 @@ describe('BuildComparator', () => {
     test('includes the groups', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
-        groups: [{ name: 'yum', artifactNames: ['burritos', 'tacos'] }]
+        groups: [{ name: 'yum', artifactNames: ['burritos', 'tacos'] }],
       });
       expect(comparator.toJSON().groups).toBe(comparator.matrixGroups);
     });
@@ -400,7 +400,7 @@ describe('BuildComparator', () => {
     test('can filter artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       const artifactFilter = (row): boolean => {
-        return row.some(cell => {
+        return row.some((cell) => {
           if (cell.sizes && 'gzip' in cell.sizes) {
             return cell.sizes.gzip > 50;
           }
@@ -453,9 +453,9 @@ describe('BuildComparator', () => {
           churros: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 100, sizeKey: 'gzip' }],
           tacos: [
             { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' },
-            { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }
-          ]
-        }
+            { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' },
+          ],
+        },
       });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
         "|                          |  1234567 |  8901234 |                  Δ1 |
@@ -472,8 +472,8 @@ describe('BuildComparator', () => {
         builds: [build1, build2],
         budgets: [
           { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' },
-          { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }
-        ]
+          { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' },
+        ],
       });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
         "|                          |  1234567 |  8901234 |                  Δ1 |
@@ -488,7 +488,7 @@ describe('BuildComparator', () => {
     test('includes warning emoji for total budget failures', () => {
       const comparator = new BuildComparator({
         builds: [build1, build2],
-        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }]
+        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
       });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
 "|                          |  1234567 |  8901234 |                  Δ1 |
@@ -502,7 +502,7 @@ describe('BuildComparator', () => {
 
     test('includes hash emoji for unexpected hash changes', () => {
       const comparator = new BuildComparator({
-        builds: [build1, build2b]
+        builds: [build1, build2b],
       });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
         "|          |  1234567 |  8901234 |               Δ1 |
@@ -520,14 +520,14 @@ describe('BuildComparator', () => {
           {
             artifactNames: ['churros~burritos~tacos', 'burritos'],
             budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
-            name: 'warning'
+            name: 'warning',
           },
           {
             artifactNames: ['churros~burritos~tacos', 'tacos'],
             budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
-            name: 'error'
-          }
-        ]
+            name: 'error',
+          },
+        ],
       });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
 "|                          |  1234567 |  8901234 |                   Δ1 |
@@ -568,7 +568,7 @@ describe('BuildComparator', () => {
     test('can filter artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       const artifactFilter = (row): boolean => {
-        return row.some(cell => {
+        return row.some((cell) => {
           if (cell.sizes && 'gzip' in cell.sizes) {
             return cell.sizes.gzip > 50;
           }
@@ -620,9 +620,9 @@ tacos,123,123,-0.04"
           churros: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 100, sizeKey: 'gzip' }],
           tacos: [
             { level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' },
-            { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }
-          ]
-        }
+            { level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' },
+          ],
+        },
       });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
 "#️⃣: *burritos* hash changed without any file size change
@@ -639,14 +639,14 @@ tacos,123,123,-0.04"
           {
             artifactNames: ['churros~burritos~tacos', 'burritos'],
             budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
-            name: 'warning'
+            name: 'warning',
           },
           {
             artifactNames: ['churros~burritos~tacos', 'tacos'],
             budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
-            name: 'error'
-          }
-        ]
+            name: 'error',
+          },
+        ],
       });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
 "⚠️: *Group \\"All\\"* failed the gzip budget size limit of 0 KiB by 0.16 KiB
@@ -660,8 +660,8 @@ tacos,123,123,-0.04"
         builds: [build1, build2],
         budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
         artifactBudgets: {
-          tacos: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }]
-        }
+          tacos: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }],
+        },
       });
 
       expect(comparator.toSummary(false).join('\n')).toMatchInlineSnapshot(`

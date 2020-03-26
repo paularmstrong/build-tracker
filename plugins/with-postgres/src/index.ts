@@ -24,14 +24,14 @@ export default function withPostgres(config: Omit<ServerConfig, 'queries'> & { p
     queries: {
       build: {
         byRevision: queries.getByRevision,
-        insert: queries.insert
+        insert: queries.insert,
       },
       builds: {
         byRevisions: queries.getByRevisions,
         byRevisionRange: queries.getByRevisionRange,
         byTimeRange: queries.getByTimeRange,
-        recent: queries.getRecent
-      }
-    }
+        recent: queries.getRecent,
+      },
+    },
   };
 }

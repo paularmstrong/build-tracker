@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     position: 'sticky',
     top: 0,
     zIndex: 4,
-    height: 'calc(4rem - 1px)'
-  }
+    height: 'calc(4rem - 1px)',
+  },
 });
 
 export default React.memo(HeaderRow);

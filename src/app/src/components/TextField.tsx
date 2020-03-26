@@ -46,7 +46,7 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
   );
 
   const handleChange = React.useCallback(
-    value => {
+    (value) => {
       setValue(value);
       onChangeText && onChangeText(value);
     },
@@ -61,7 +61,7 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
 
   return (
     <Hoverable>
-      {isHovered => (
+      {(isHovered) => (
         <View style={[styles.root, style]}>
           <View style={[styles.content, isFocused && styles.contentFocused]}>
             <View
@@ -95,18 +95,18 @@ const TextField = (props: Props, ref?: React.RefObject<TextInput>): React.ReactE
 
 const styles = StyleSheet.create({
   root: {
-    display: 'flex'
+    display: 'flex',
   },
 
   content: {
     borderBottomWidth: 1,
     borderBottomColor: Theme.Color.Gray50,
     transitionProperty: 'border-bottom-color',
-    transitionDuration: '0.1s'
+    transitionDuration: '0.1s',
   },
 
   contentFocused: {
-    borderBottomColor: Theme.Color.Primary40
+    borderBottomColor: Theme.Color.Primary40,
   },
 
   labelBox: {
@@ -118,65 +118,65 @@ const styles = StyleSheet.create({
     alignContent: 'stretch',
     display: 'flex',
     transitionProperty: 'background-color',
-    transitionDuration: '0.1s'
+    transitionDuration: '0.1s',
   },
 
   labelBoxHovered: {
-    backgroundColor: Theme.Color.Gray20
+    backgroundColor: Theme.Color.Gray20,
   },
 
   labelInput: {
     display: 'flex',
     flexGrow: 1,
-    flexShrink: 1
+    flexShrink: 1,
   },
 
   textInput: {
     paddingTop: '1.65rem',
     paddingBottom: '0.85rem',
-    outlineStyle: 'none'
+    outlineStyle: 'none',
   },
 
   helpText: {
     paddingHorizontal: Theme.Spacing.Normal,
-    fontSize: Theme.FontSize.Xsmall
+    fontSize: Theme.FontSize.Xsmall,
   },
 
   label: {
     transitionProperty: 'transform',
     transitionDuration: '0.1s',
     position: 'absolute',
-    paddingVertical: '1.25rem'
+    paddingVertical: '1.25rem',
   },
 
   labelMoved: {
-    transform: [{ translateY: '-0.8rem' }]
+    transform: [{ translateY: '-0.8rem' }],
   },
 
   labelText: {
     transitionProperty: 'color font-size',
     transitionDuration: '0.1s',
-    color: Theme.Color.Gray50
+    color: Theme.Color.Gray50,
   },
 
   labelTextMoved: {
     fontSize: Theme.FontSize.Xsmall,
-    color: Theme.Color.Primary40
+    color: Theme.Color.Primary40,
   },
 
   icon: {
     color: Theme.Color.Gray50,
     marginVertical: '1.25rem',
     flexGrow: 0,
-    fontSize: Theme.FontSize.Normal
+    fontSize: Theme.FontSize.Normal,
   },
 
   leadingIcon: {
-    marginEnd: Theme.Spacing.Xsmall
+    marginEnd: Theme.Spacing.Xsmall,
   },
   trailingIcon: {
-    marginStart: Theme.Spacing.Xsmall
-  }
+    marginStart: Theme.Spacing.Xsmall,
+  },
 });
 
 export default React.forwardRef<TextInput, Props>(TextField);

@@ -37,7 +37,7 @@ const initialState = Object.freeze({
   disabledArtifactsVisible: true,
   graphType: GraphType.AREA,
   sizeKey: '',
-  url: 'https://build-tracker.local'
+  url: 'https://build-tracker.local',
 });
 
 describe('AppBarView', () => {
@@ -70,7 +70,7 @@ describe('AppBarView', () => {
     let seededState;
     beforeEach(() => {
       const comparator = new Comparator({
-        builds: [new Build(buildA.meta, buildA.artifacts), new Build(buildB.meta, buildB.artifacts)]
+        builds: [new Build(buildA.meta, buildA.artifacts), new Build(buildB.meta, buildB.artifacts)],
       });
       seededState = Object.freeze({
         ...initialState,
@@ -79,10 +79,10 @@ describe('AppBarView', () => {
           return memo;
         }, {}),
         activeComparator: new Comparator({
-          builds: [new Build(buildA.meta, buildA.artifacts), new Build(buildB.meta, buildB.artifacts)]
+          builds: [new Build(buildA.meta, buildA.artifacts), new Build(buildB.meta, buildB.artifacts)],
         }),
         comparator,
-        comparedRevisions: [buildA.meta.revision, buildB.meta.revision]
+        comparedRevisions: [buildA.meta.revision, buildB.meta.revision],
       });
 
       clipboardSpy = jest.spyOn(Clipboard, 'setString').mockImplementation(() => {});

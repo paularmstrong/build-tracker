@@ -11,8 +11,8 @@ module.exports = {
       'packages/comparator',
       'packages/formatting',
       'packages/server',
-      'packages/types'
+      'packages/types',
     ],
-    Plugins: ['plugins/plugins', 'plugins/withPostgres', 'plugins/withMariadb', 'plugins/withMysql']
-  }
+    Plugins: ['plugins/plugins', 'plugins/withPostgres', 'plugins/withMariadb', 'plugins/withMysql'],
+  },
 };

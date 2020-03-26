@@ -12,7 +12,7 @@ describe('upload-build', () => {
         $0: expect.any(String),
         _: [],
         'skip-dirty-check': false,
-        skipDirtyCheck: false
+        skipDirtyCheck: false,
       });
     });
   });

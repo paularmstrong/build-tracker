@@ -110,11 +110,11 @@ module.exports = {
           level: BudgetLevel.ERROR,
           sizeKey: 'gzip',
           type: BudgetType.SIZE,
-          maximum: 150000
-        }
-      ]
-    }
-  }
+          maximum: 150000,
+        },
+      ],
+    },
+  },
 };
 ```
 
@@ -133,11 +133,11 @@ module.exports = {
           level: BudgetLevel.WARN,
           sizeKey: 'gzip',
           type: BudgetType.PERCENT_DELTA,
-          maximum: 0.5
-        }
-      ]
-    }
-  }
+          maximum: 0.5,
+        },
+      ],
+    },
+  },
 };
 ```
 
@@ -161,10 +161,10 @@ module.exports = {
         // An array of budgets
         budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 150000 }],
         // A name for the group
-        name: 'Initial'
-      }
-    ]
-  }
+        name: 'Initial',
+      },
+    ],
+  },
 };
 ```
 
@@ -181,8 +181,8 @@ module.exports = {
       level: BudgetLevel.ERROR,
       sizeKey: 'brotli',
       type: BudgetType.SIZE,
-      maximum: 1000000
-    }
-  ]
+      maximum: 1000000,
+    },
+  ],
 };
 ```

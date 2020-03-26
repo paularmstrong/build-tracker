@@ -15,7 +15,7 @@ const Logo = (props: Props): React.ReactElement<Props> =>
     {
       ...props,
       style: [styles.root, props.style],
-      viewBox: '0 0 512 512'
+      viewBox: '0 0 512 512',
     },
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g transform="translate(295.000000, 11.000000)">

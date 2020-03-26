@@ -30,7 +30,7 @@ export const ArtifactCell = (props: Props): React.ReactElement => {
     onDisable,
     onEnable,
     onFocus,
-    style
+    style,
   } = props;
   const brighterColor = hsl(color);
   brighterColor.s = 0.2;
@@ -50,7 +50,7 @@ export const ArtifactCell = (props: Props): React.ReactElement => {
     <Th style={style}>
       <View style={styles.artifact}>
         <Hoverable>
-          {isHovered => (
+          {(isHovered) => (
             <View>
               <TouchableOpacity accessibilityRole="button" onPress={handlePress} style={styles.name}>
                 <Text
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   artifact: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: Theme.Spacing.Xxsmall
+    paddingVertical: Theme.Spacing.Xxsmall,
   },
   name: {
     flexShrink: 1,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     maxWidth: '15vw',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingEnd: Theme.Spacing.Xsmall
+    paddingEnd: Theme.Spacing.Xsmall,
   },
   nameText: {
     width: '100%',
@@ -99,14 +99,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     display: 'block',
     overflow: 'hidden',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
   },
   switch: {
-    paddingStart: Theme.Spacing.Xsmall
+    paddingStart: Theme.Spacing.Xsmall,
   },
   hoveredText: {
-    color: Theme.Color.Primary30
-  }
+    color: Theme.Color.Primary30,
+  },
 });
 
 export default React.memo(ArtifactCell);

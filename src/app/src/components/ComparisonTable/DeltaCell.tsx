@@ -28,19 +28,19 @@ export interface Color {
 export const happy: Color = {
   red: 6,
   green: 176,
-  blue: 41
+  blue: 41,
 };
 
 export const danger: Color = {
   red: 249,
   green: 84,
-  blue: 84
+  blue: 84,
 };
 
 export const warning: Color = {
   red: 237,
   green: 170,
-  blue: 46
+  blue: 46,
 };
 
 export const scale = ({ red, blue, green }: Color, percentDelta: number): string =>
@@ -53,8 +53,8 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   const viewRef: React.RefObject<View> = React.useRef(null);
 
   const failingBudgets = cell.failingBudgets;
-  const errorBudgets = failingBudgets.filter(budget => budget.level === BudgetLevel.ERROR);
-  const warningBudgets = failingBudgets.filter(budget => budget.level === BudgetLevel.WARN);
+  const errorBudgets = failingBudgets.filter((budget) => budget.level === BudgetLevel.ERROR);
+  const warningBudgets = failingBudgets.filter((budget) => budget.level === BudgetLevel.WARN);
 
   let backgroundColor = 'transparent';
   if (errorBudgets.length) {
@@ -74,7 +74,7 @@ export const DeltaCell = (props: Props): React.ReactElement => {
   const text = formatBytes(sizeDelta);
   const hashChangedOnly = cell.hashChangeUnexpected;
   const tooltipText = failingBudgets.length
-    ? failingBudgets.map(budget => formatBudgetResult(budget, cell.name)).join(', ')
+    ? failingBudgets.map((budget) => formatBudgetResult(budget, cell.name)).join(', ')
     : hashChangedOnly
     ? formatUnexpectedHashChange(cell.name, false)
     : `"${cell.name}" changed by ${stringChange}`;
@@ -83,7 +83,7 @@ export const DeltaCell = (props: Props): React.ReactElement => {
     <Td accessibilityLabel={tooltipText} style={[style, { backgroundColor }]}>
       {text ? (
         <Hoverable>
-          {isHovered => (
+          {(isHovered) => (
             <View ref={viewRef} style={styles.textWrapper} testID="delta">
               {sizeDelta !== 0 || hashChangedOnly ? (
                 <Text>
@@ -111,8 +111,8 @@ export const DeltaCell = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   textWrapper: {
     flexDirection: 'row',
-    justifyContent: 'flex-end'
-  }
+    justifyContent: 'flex-end',
+  },
 });
 
 export default React.memo(DeltaCell);

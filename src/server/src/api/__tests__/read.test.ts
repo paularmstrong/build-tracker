@@ -11,18 +11,18 @@ describe('read', () => {
     build = { meta: { revision: '123', parentRevision: '456', timestamp: Date.now() }, artifacts: [] };
     queries = {
       build: {
-        byRevision: jest.fn(() => Promise.resolve(build))
+        byRevision: jest.fn(() => Promise.resolve(build)),
       },
       builds: {
         byRevisions: jest.fn(() => Promise.resolve([build])),
         byRevisionRange: jest.fn(() => Promise.resolve([build])),
         byTimeRange: jest.fn(() => Promise.resolve([build])),
-        recent: jest.fn(() => Promise.resolve([build]))
-      }
+        recent: jest.fn(() => Promise.resolve([build])),
+      },
     };
 
     config = {
-      queries
+      queries,
     };
   });
 
@@ -33,7 +33,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/build/1234567890')
-        .then(res => {
+        .then((res) => {
           expect(queries.build.byRevision).toHaveBeenCalledWith('1234567890');
           expect(res.body).toEqual(build);
         });
@@ -46,7 +46,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/build/1234567890')
-        .catch(res => {
+        .catch((res) => {
           expect(res.status).toBe(500);
         });
     });
@@ -59,7 +59,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/range/1234567..abcdef')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.byRevisionRange).toHaveBeenCalledWith('1234567', 'abcdef');
           expect(res.body).toEqual([build]);
         });
@@ -72,7 +72,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/range/1234567..abcdef')
-        .catch(res => {
+        .catch((res) => {
           expect(res.status).toBe(500);
         });
     });
@@ -85,7 +85,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/time/1234567..2345678')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.byTimeRange).toHaveBeenCalledWith(1234567, 2345678, 'master');
           expect(res.body).toEqual([build]);
         });
@@ -97,7 +97,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/time/1234567..2345678?branch=tacos')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.byTimeRange).toHaveBeenCalledWith(1234567, 2345678, 'tacos');
           expect(res.body).toEqual([build]);
         });
@@ -109,7 +109,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/time/1234567..2345678')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.byTimeRange).toHaveBeenCalledWith(1234567, 2345678, 'burritos');
           expect(res.body).toEqual([build]);
         });
@@ -122,7 +122,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/time/1234567..2345678')
-        .catch(res => {
+        .catch((res) => {
           expect(res.status).toBe(500);
         });
     });
@@ -135,7 +135,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/list/1234567/abcdef/239587')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.byRevisions).toHaveBeenCalledWith(['1234567', 'abcdef', '239587']);
           expect(res.body).toEqual([build]);
         });
@@ -148,7 +148,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/list/1234567/abcdef/239587')
-        .catch(res => {
+        .catch((res) => {
           expect(res.status).toBe(500);
         });
     });
@@ -161,7 +161,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.recent).toHaveBeenCalledWith(undefined, 'master');
           expect(res.body).toEqual([build]);
         });
@@ -173,7 +173,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/4')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.recent).toHaveBeenCalledWith(4, 'master');
           expect(res.body).toEqual([build]);
         });
@@ -185,7 +185,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/2?branch=tacos')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.recent).toHaveBeenCalledWith(2, 'tacos');
           expect(res.body).toEqual([build]);
         });
@@ -197,7 +197,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds/10')
-        .then(res => {
+        .then((res) => {
           expect(queries.builds.recent).toHaveBeenCalledWith(10, 'burritos');
           expect(res.body).toEqual([build]);
         });
@@ -210,7 +210,7 @@ describe('read', () => {
 
       return request(app)
         .get('/api/builds')
-        .catch(res => {
+        .catch((res) => {
           expect(res.status).toBe(500);
         });
     });

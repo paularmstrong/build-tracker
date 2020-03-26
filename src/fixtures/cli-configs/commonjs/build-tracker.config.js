@@ -5,11 +5,11 @@ module.exports = {
   artifacts: ['../fakedist/*.js'],
   baseDir: path.resolve(__dirname, 'fakedist'),
   cwd: __dirname,
-  filenameHash: fileName => {
+  filenameHash: (fileName) => {
     const parts = path.basename(fileName, '.js').split('.');
     return parts.length > 1 ? parts[parts.length - 1] : null;
   },
-  nameMapper: fileName => {
+  nameMapper: (fileName) => {
     return path.basename(fileName, '.js');
-  }
+  },
 };

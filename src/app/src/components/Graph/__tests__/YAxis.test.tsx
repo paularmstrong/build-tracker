@@ -8,9 +8,7 @@ import { render } from '@testing-library/react';
 import { scaleLinear } from 'd3-scale';
 import YAxis from '../YAxis';
 
-const scale = scaleLinear()
-  .range([100, 0])
-  .domain([0, 100]);
+const scale = scaleLinear().range([100, 0]).domain([0, 100]);
 
 describe('YAxis', () => {
   let mockCall, selectSpy;

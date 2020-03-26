@@ -19,7 +19,7 @@ import { fireEvent, render } from 'react-native-testing-library';
 const builds = [
   new Build(buildDataA.meta, buildDataA.artifacts),
   new Build(buildDataB.meta, buildDataB.artifacts),
-  new Build(buildDataC.meta, buildDataC.artifacts)
+  new Build(buildDataC.meta, buildDataC.artifacts),
 ];
 
 describe('Graph', () => {
@@ -34,7 +34,7 @@ describe('Graph', () => {
           comparedRevisions: [],
           graphType: GraphType.AREA,
           hoveredArtifacts: [],
-          sizeKey: 'stat'
+          sizeKey: 'stat',
         })}
       >
         <Graph comparator={comparator} />
@@ -58,7 +58,7 @@ describe('Graph', () => {
           comparedRevisions: [],
           graphType: GraphType.AREA,
           hoveredArtifacts: [],
-          sizeKey: 'stat'
+          sizeKey: 'stat',
         })}
       >
         <Graph comparator={comparator} />
@@ -79,7 +79,7 @@ describe('Graph', () => {
           comparedRevisions: [],
           graphType: GraphType.STACKED_BAR,
           hoveredArtifacts: [],
-          sizeKey: 'stat'
+          sizeKey: 'stat',
         })}
       >
         <Graph comparator={comparator} />

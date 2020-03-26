@@ -27,7 +27,7 @@ const BuildInfo = (props: Props): React.ReactElement => {
   const { focusedRevision, style } = props;
 
   const build = useSelector((state: State) =>
-    state.comparator.builds.find(build => build.getMetaValue('revision') === focusedRevision)
+    state.comparator.builds.find((build) => build.getMetaValue('revision') === focusedRevision)
   );
   const revision = build.getMetaValue('revision');
   const revisionUrl = build.getMetaUrl('revision');
@@ -67,7 +67,7 @@ const BuildInfo = (props: Props): React.ReactElement => {
             </Td>
           </Tr>
           {Object.keys(build.meta)
-            .filter(metaKey => metaKey !== 'revision' && metaKey !== 'timestamp')
+            .filter((metaKey) => metaKey !== 'revision' && metaKey !== 'timestamp')
             .map((metaKey: 'revision' | 'parentRevision' | 'branch') => {
               const value = build.getMetaValue(metaKey);
               const url = build.getMetaUrl(metaKey);
@@ -92,24 +92,24 @@ const BuildInfo = (props: Props): React.ReactElement => {
 const styles = StyleSheet.create({
   root: {
     paddingVertical: Theme.Spacing.Normal,
-    paddingHorizontal: Theme.Spacing.Large
+    paddingHorizontal: Theme.Spacing.Large,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   headerText: {
     fontWeight: Theme.FontWeight.Bold,
-    fontSize: Theme.FontSize.Normal
+    fontSize: Theme.FontSize.Normal,
   },
   infoCell: {
-    textAlign: 'left'
+    textAlign: 'left',
   },
   footer: {
     alignItems: 'flex-start',
-    paddingTop: Theme.Spacing.Normal
-  }
+    paddingTop: Theme.Spacing.Normal,
+  },
 });
 
 export default BuildInfo;

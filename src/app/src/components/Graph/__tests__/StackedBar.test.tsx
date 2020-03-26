@@ -16,12 +16,12 @@ describe('StackedBar', () => {
     const builds = [
       new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { gzip: 123 } },
-        { name: 'vendor', hash: '123', sizes: { gzip: 123 } }
+        { name: 'vendor', hash: '123', sizes: { gzip: 123 } },
       ]),
       new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { gzip: 123 } },
-        { name: 'vendor', hash: '123', sizes: { gzip: 123 } }
-      ])
+        { name: 'vendor', hash: '123', sizes: { gzip: 123 } },
+      ]),
     ];
     const comparator = new Comparator({ builds });
 
@@ -33,12 +33,8 @@ describe('StackedBar', () => {
     });
     const data = dataStack(comparator.builds);
 
-    const xScale = scaleBand()
-      .rangeRound([0, 100])
-      .domain(['123', 'abc']);
-    const yScale = scaleLinear()
-      .range([400, 0])
-      .domain([0, 400]);
+    const xScale = scaleBand().rangeRound([0, 100]).domain(['123', 'abc']);
+    const yScale = scaleLinear().range([400, 0]).domain([0, 400]);
     const { getByLabelText } = render(
       <svg>
         <StackedBar
@@ -62,12 +58,12 @@ describe('StackedBar', () => {
   test('can render if an artifact does not exist in a build', () => {
     const builds = [
       new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
-        { name: 'main', hash: '123', sizes: { stat: 456 } }
+        { name: 'main', hash: '123', sizes: { stat: 456 } },
       ]),
       new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 489 } },
-        { name: 'vendor', hash: '123', sizes: { stat: 123 } }
-      ])
+        { name: 'vendor', hash: '123', sizes: { stat: 123 } },
+      ]),
     ];
     const comparator = new Comparator({ builds });
 
@@ -79,12 +75,8 @@ describe('StackedBar', () => {
     });
     const data = dataStack(comparator.builds);
 
-    const xScale = scaleBand()
-      .rangeRound([0, 100])
-      .domain(['123', 'abc']);
-    const yScale = scaleLinear()
-      .range([400, 0])
-      .domain([0, 400]);
+    const xScale = scaleBand().rangeRound([0, 100]).domain(['123', 'abc']);
+    const yScale = scaleLinear().range([400, 0]).domain([0, 400]);
     const { getByLabelText } = render(
       <svg>
         <StackedBar
@@ -112,12 +104,12 @@ describe('StackedBar', () => {
     const builds = [
       new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 456 } },
-        { name: 'vendor', hash: '123', sizes: { stat: 123 } }
+        { name: 'vendor', hash: '123', sizes: { stat: 123 } },
       ]),
       new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 489 } },
-        { name: 'vendor', hash: '123', sizes: { stat: 123 } }
-      ])
+        { name: 'vendor', hash: '123', sizes: { stat: 123 } },
+      ]),
     ];
     const comparator = new Comparator({ builds });
 
@@ -129,12 +121,8 @@ describe('StackedBar', () => {
     });
     const data = dataStack(comparator.builds);
 
-    const xScale = scaleBand()
-      .rangeRound([0, 100])
-      .domain(['123', 'abc']);
-    const yScale = scaleLinear()
-      .range([400, 0])
-      .domain([0, 400]);
+    const xScale = scaleBand().rangeRound([0, 100]).domain(['123', 'abc']);
+    const yScale = scaleLinear().range([400, 0]).domain([0, 400]);
     const { getByLabelText } = render(
       <svg>
         <StackedBar

@@ -26,7 +26,7 @@ const Area = (props: Props): React.ReactElement => {
   const gRef = React.useRef(null);
 
   const graphColorScale = React.useMemo(() => {
-    return d => {
+    return (d) => {
       const color = hsl(colorScale(artifactNames.indexOf(d.key)));
       if (hoveredArtifacts.length && !hoveredArtifacts.includes(d.key)) {
         color.l = 0.75;
@@ -40,10 +40,7 @@ const Area = (props: Props): React.ReactElement => {
     const contents = select(gRef.current);
 
     const groups = contents.selectAll('g.artifactGroup').data(data, (d: { key: string }): string => d.key);
-    groups
-      .transition()
-      .duration(150)
-      .style('fill', graphColorScale);
+    groups.transition().duration(150).style('fill', graphColorScale);
 
     groups.exit().remove();
 
@@ -51,12 +48,12 @@ const Area = (props: Props): React.ReactElement => {
       .enter()
       .append('g')
       .attr('class', 'artifactGroup')
-      .attr('aria-label', d => d.key)
+      .attr('aria-label', (d) => d.key)
       .style('fill', graphColorScale)
       // @ts-ignore
       .merge(groups)
       .selectAll('rect.artifact')
-      .data(d => d);
+      .data((d) => d);
 
     rects.exit().remove();
 
@@ -64,16 +61,16 @@ const Area = (props: Props): React.ReactElement => {
       .enter()
       .append('rect')
       .attr('class', 'artifact')
-      .attr('x', d => xScale(d.data.getMetaValue('revision')))
+      .attr('x', (d) => xScale(d.data.getMetaValue('revision')))
       .attr('y', () => height)
       .attr('width', xScale.bandwidth())
       .attr('height', 0)
       .merge(rects)
       .transition()
       .duration(150)
-      .attr('x', d => xScale(d.data.getMetaValue('revision')))
-      .attr('y', d => yScale(d[1]))
-      .attr('height', d => yScale(d[0]) - yScale(d[1]))
+      .attr('x', (d) => xScale(d.data.getMetaValue('revision')))
+      .attr('y', (d) => yScale(d[1]))
+      .attr('height', (d) => yScale(d[0]) - yScale(d[1]))
       .attr('width', xScale.bandwidth());
   }, [data, graphColorScale, height, xScale, yScale]);
 

@@ -52,27 +52,27 @@ const styles = StyleSheet.create({
   layout: {
     flexDirection: 'row',
     height: '100vh',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   main: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     height: '100vh',
-    width: '100vw'
+    width: '100vw',
   },
   column: {
     flexGrow: 3,
     flexShrink: 1,
     height: '100vh',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
   loading: {
     flexGrow: 1,
     alignSelf: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   chart: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   table: {
     flexGrow: 1,
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     maxWidth: '40vw',
     borderLeftColor: Theme.Color.Gray10,
-    borderLeftWidth: StyleSheet.hairlineWidth
-  }
+    borderLeftWidth: StyleSheet.hairlineWidth,
+  },
 });
 
 export default Main;

@@ -43,7 +43,7 @@ export const props = (config: AppConfig, url: string): RequestHandler => (
     budgets: config.budgets || [],
     hideAttribution: !!config.hideAttribution,
     name: config.name || 'Build Tracker',
-    defaultSizeKey: config.defaultSizeKey
+    defaultSizeKey: config.defaultSizeKey,
   };
   next();
 };
@@ -68,7 +68,7 @@ export default function runBuildTracker(config: ServerConfig): Application {
     const webpack = require('webpack');
     const compiler = webpack(require(path.join(APP_ROOT, 'config/webpack.config'))({ port }));
     app.use(middleware(compiler, { noInfo: true, publicPath: '/', serverSideRender: true }));
-    app.use(require('webpack-hot-middleware')(compiler.compilers.find(compiler => compiler.name === 'client')));
+    app.use(require('webpack-hot-middleware')(compiler.compilers.find((compiler) => compiler.name === 'client')));
     app.use(require('webpack-hot-server-middleware')(compiler));
   } else {
     const serverRenderer = require(path.join(APP_ROOT, 'dist/server/main')).default;

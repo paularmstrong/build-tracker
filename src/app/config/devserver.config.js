@@ -8,12 +8,12 @@ module.exports = {
   port: 3000,
   queries: {
     build: {
-      byRevision: () => Promise.resolve(fakeBuild)
+      byRevision: () => Promise.resolve(fakeBuild),
     },
     builds: {
       byRevisions: () => Promise.resolve([fakeBuild]),
       byRevisionRange: () => Promise.resolve([fakeBuild]),
-      byTimeRange: () => Promise.resolve([fakeBuild])
-    }
-  }
+      byTimeRange: () => Promise.resolve([fakeBuild]),
+    },
+  },
 };

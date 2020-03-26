@@ -29,5 +29,5 @@ AppRegistry.registerComponent('App', () => App);
 AppRegistry.runApplication('App', {
   hydrate: true,
   initialProps: {},
-  rootTag: document.getElementById('root')
+  rootTag: document.getElementById('root'),
 });

@@ -16,16 +16,16 @@ module.exports = withMaria({
       {
         name: 'Web App',
         artifactMatch: /^app\/client/,
-        budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 150000 }]
-      }
-    ]
+        budgets: [{ level: BudgetLevel.ERROR, sizeKey: 'gzip', type: BudgetType.SIZE, maximum: 150000 }],
+      },
+    ],
   },
   mariadb: {
     user: 'root',
     password: 'tacos',
     database: 'buildtracker',
     host: '127.0.0.1',
-    port: 3307
+    port: 3307,
   },
-  url: 'http://localhost:3000'
+  url: 'http://localhost:3000',
 });

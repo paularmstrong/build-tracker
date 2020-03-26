@@ -31,7 +31,7 @@ export const insertBuild = (
 
   if (validationErrors.length) {
     res.status(400);
-    res.send({ errors: validationErrors.map(v => v.message) });
+    res.send({ errors: validationErrors.map((v) => v.message) });
     return;
   }
 
@@ -41,11 +41,11 @@ export const insertBuild = (
       queries
         .byRevision(build.getMetaValue('parentRevision'))
         .then(
-          parentBuildData => {
+          (parentBuildData) => {
             const parentBuild = new Build(parentBuildData.meta, parentBuildData.artifacts);
             return [parentBuild, build];
           },
-          error => {
+          (error) => {
             if (error instanceof NotFoundError) {
               return [build];
             } else {
@@ -53,27 +53,27 @@ export const insertBuild = (
             }
           }
         )
-        .then(builds => ({
+        .then((builds) => ({
           comparator: new Comparator({
             artifactBudgets: artifactConfig.budgets,
             artifactFilters: artifactConfig.filters,
             builds,
             budgets,
-            groups: artifactConfig.groups
-          })
+            groups: artifactConfig.groups,
+          }),
         }))
-        .then(context => {
+        .then((context) => {
           return onInserted(context.comparator).then(() => context);
         })
         .then(({ comparator }) => {
           const response: ApiReturn = {
             comparatorData: comparator.serialize(),
-            summary: comparator.toSummary()
+            summary: comparator.toSummary(),
           };
           res.send(response);
         })
     )
-    .catch(error => {
+    .catch((error) => {
       res.status(error.status || 500);
       res.send({ error: error.message });
     });

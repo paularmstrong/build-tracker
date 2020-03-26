@@ -26,12 +26,12 @@ export default function makeStore(initialState: Partial<State> = {}): Store<Stat
     name: 'Build Tracker',
     snacks: [],
     sizeKey: '',
-    ...initialState
+    ...initialState,
   });
   if (process.env.NODE_ENV !== 'production' && canUseDOM && !window.hasOwnProperty('redux')) {
     Object.defineProperty(window, 'redux', {
       writable: false,
-      value: store
+      value: store,
     });
   }
   return store;

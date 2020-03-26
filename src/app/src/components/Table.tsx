@@ -32,13 +32,13 @@ export const Td = (props: TableProps): React.ReactElement =>
 
 const styles = StyleSheet.create({
   table: {
-    borderCollapse: 'collapse'
+    borderCollapse: 'collapse',
   },
   group: {
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
   },
   row: {
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
   },
   cell: {
     boxSizing: 'border-box',
@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
     borderColor: Theme.Color.Gray10,
     margin: 0,
     paddingHorizontal: Theme.Spacing.Xsmall,
-    textAlign: 'right'
-  }
+    textAlign: 'right',
+  },
 });

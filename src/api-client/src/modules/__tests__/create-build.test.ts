@@ -24,20 +24,20 @@ describe('createBuild', () => {
 
   test('gets parent revision if branch is same as default branch', async () => {
     await expect(createBuild(config, { skipDirtyCheck: true })).resolves.toMatchObject({
-      meta: { parentRevision: '7654321' }
+      meta: { parentRevision: '7654321' },
     });
   });
 
   test('gets the merge base if not on the default branch', async () => {
     getBranchSpy.mockReturnValue(Promise.resolve('tacos'));
     await expect(createBuild(config, { skipDirtyCheck: true })).resolves.toMatchObject({
-      meta: { parentRevision: '1234567' }
+      meta: { parentRevision: '1234567' },
     });
   });
 
   test('uses the provided parent-revision', async () => {
     await expect(createBuild(config, { parentRevision: 'abcdefg', skipDirtyCheck: true })).resolves.toMatchObject({
-      meta: { parentRevision: 'abcdefg' }
+      meta: { parentRevision: 'abcdefg' },
     });
   });
 
@@ -45,7 +45,7 @@ describe('createBuild', () => {
     isDirtySpy.mockReturnValue(Promise.resolve(true));
 
     await expect(createBuild(config, { branch: 'burritos', skipDirtyCheck: true })).resolves.toMatchObject({
-      meta: expect.objectContaining({ branch: 'burritos' })
+      meta: expect.objectContaining({ branch: 'burritos' }),
     });
     expect(getBranchSpy).not.toHaveBeenCalled();
   });
@@ -73,7 +73,7 @@ describe('createBuild', () => {
         revision: 'abcdefg',
         timestamp: 1234567890,
         author: 'Jimmy',
-        subject: 'tacos'
+        subject: 'tacos',
       },
       artifacts: [
         {
@@ -82,8 +82,8 @@ describe('createBuild', () => {
           sizes: {
             brotli: 49,
             gzip: 73,
-            stat: 64
-          }
+            stat: 64,
+          },
         },
         {
           hash: '415dec15fc798bb79f499aeff00258fb',
@@ -91,8 +91,8 @@ describe('createBuild', () => {
           sizes: {
             brotli: 49,
             gzip: 54,
-            stat: 34
-          }
+            stat: 34,
+          },
         },
         {
           hash: 'fc4bcd175441f89862f9d81e37599416',
@@ -100,10 +100,10 @@ describe('createBuild', () => {
           sizes: {
             brotli: 49,
             gzip: 82,
-            stat: 82
-          }
-        }
-      ]
+            stat: 82,
+          },
+        },
+      ],
     });
   });
 
@@ -113,8 +113,8 @@ describe('createBuild', () => {
     await expect(createBuild(configWithFormatUrl, { skipDirtyCheck: true })).resolves.toMatchObject({
       meta: {
         revision: { url: 'https://github.com/paularmstrong/build-tracker/commit/abcdefg', value: 'abcdefg' },
-        parentRevision: { url: 'https://github.com/paularmstrong/build-tracker/commit/1234567', value: '1234567' }
-      }
+        parentRevision: { url: 'https://github.com/paularmstrong/build-tracker/commit/1234567', value: '1234567' },
+      },
     });
   });
 
@@ -122,10 +122,10 @@ describe('createBuild', () => {
     await expect(
       createBuild(config, {
         meta: { foo: 'bar', baz: { url: 'https://buildtracker.dev', value: 'baz' } },
-        skipDirtyCheck: true
+        skipDirtyCheck: true,
       })
     ).resolves.toMatchObject({
-      meta: { revision: 'abcdefg', foo: 'bar', baz: { url: 'https://buildtracker.dev', value: 'baz' } }
+      meta: { revision: 'abcdefg', foo: 'bar', baz: { url: 'https://buildtracker.dev', value: 'baz' } },
     });
   });
 });

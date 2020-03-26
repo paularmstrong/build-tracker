@@ -6,7 +6,7 @@ import getCSP from '../csp';
 describe('CSP', () => {
   test('gets the nonce from a function', () => {
     expect(getCSP()).toMatchObject({
-      scriptSrc: ["'self'", "'strict-dynamic'", expect.any(Function)]
+      scriptSrc: ["'self'", "'strict-dynamic'", expect.any(Function)],
     });
 
     // @ts-ignore
@@ -15,7 +15,7 @@ describe('CSP', () => {
 
   test('sets unsafe-eval only if explicitly told', () => {
     expect(getCSP(true)).toMatchObject({
-      scriptSrc: ["'self'", "'unsafe-eval'", "'strict-dynamic'", expect.any(Function)]
+      scriptSrc: ["'self'", "'unsafe-eval'", "'strict-dynamic'", expect.any(Function)],
     });
   });
 });

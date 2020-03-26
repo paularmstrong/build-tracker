@@ -10,10 +10,10 @@ import { NotFoundError } from '@build-tracker/api-errors';
 import request from 'supertest';
 
 const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, [
-  { hash: '123', name: 'tacos', sizes: { stat: 231 } }
+  { hash: '123', name: 'tacos', sizes: { stat: 231 } },
 ]);
 const parentBuild = new Build({ branch: 'master', revision: 'def', parentRevision: '123', timestamp: Date.now() }, [
-  { hash: '123', name: 'tacos', sizes: { stat: 123 } }
+  { hash: '123', name: 'tacos', sizes: { stat: 123 } },
 ]);
 
 describe('insert build handler', () => {
@@ -21,11 +21,11 @@ describe('insert build handler', () => {
   beforeEach(() => {
     queries = {
       byRevision: jest.fn(() => Promise.resolve(parentBuild)),
-      insert: jest.fn(() => Promise.resolve('1234'))
+      insert: jest.fn(() => Promise.resolve('1234')),
     };
     config = {
       artifacts: {},
-      queries
+      queries,
     };
     app = express();
     app.use(bodyParser.json());
@@ -60,7 +60,7 @@ describe('insert build handler', () => {
         .send({ meta: build.meta, artifacts: build.artifacts })
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .then(res => {
+        .then((res) => {
           expect(res.status).toEqual(500);
           expect(res.body).toEqual({ error: 'Something went wrong.' });
         });
@@ -79,7 +79,7 @@ describe('insert build handler', () => {
         .send({ meta: build.meta, artifacts: build.artifacts })
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .then(res => {
+        .then((res) => {
           expect(res.body.comparatorData).toEqual(comparator.serialize());
           expect(res.body.summary).toEqual(comparator.toSummary());
         });
@@ -94,11 +94,11 @@ describe('insert build handler', () => {
         .send({ meta: { timestamp: 'foobar' }, artifacts: [] })
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
-        .then(res => {
+        .then((res) => {
           expect(res.status).toEqual(400);
           expect(res.body.errors).toEqual([
             '"revision" expected to receive "string", but value was "undefined"',
-            '"timestamp" expected to receive "timestamp", but value was "foobar"'
+            '"timestamp" expected to receive "timestamp", but value was "foobar"',
           ]);
         });
     });
@@ -121,9 +121,9 @@ describe('insert build handler', () => {
             // @ts-ignore
             const [comparator] = handleInsert.mock.calls[0];
             // @ts-ignore
-            expect(comparator.builds.map(build => build.getMetaValue('revision'))).toEqual([
+            expect(comparator.builds.map((build) => build.getMetaValue('revision'))).toEqual([
               parentBuild.getMetaValue('revision'),
-              build.getMetaValue('revision')
+              build.getMetaValue('revision'),
             ]);
           });
       });
@@ -135,11 +135,11 @@ describe('insert build handler', () => {
     beforeEach(() => {
       queries = {
         byRevision: jest.fn(() => Promise.reject(new NotFoundError())),
-        insert: jest.fn(() => Promise.resolve('1234'))
+        insert: jest.fn(() => Promise.resolve('1234')),
       };
       config = {
         artifacts: {},
-        queries
+        queries,
       };
       app = express();
       app.use(bodyParser.json());
@@ -173,7 +173,7 @@ describe('insert build handler', () => {
           .send({ meta: build.meta, artifacts: build.artifacts })
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
-          .then(res => {
+          .then((res) => {
             expect(res.body.comparatorData).toEqual(comparator.serialize());
             expect(res.body.summary).toEqual(comparator.toSummary());
           });
@@ -196,8 +196,8 @@ describe('insert build handler', () => {
             // @ts-ignore
             const [comparator] = handleInsert.mock.calls[0];
             // @ts-ignore
-            expect(comparator.builds.map(build => build.getMetaValue('revision'))).toEqual([
-              build.getMetaValue('revision')
+            expect(comparator.builds.map((build) => build.getMetaValue('revision'))).toEqual([
+              build.getMetaValue('revision'),
             ]);
           });
       });

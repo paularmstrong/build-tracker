@@ -25,7 +25,7 @@ describe('DeltaCell', () => {
             percents: { stat: 0.5 },
             hashChanged: true,
             hashChangeUnexpected: false,
-            sizes: { stat: 4300 }
+            sizes: { stat: 4300 },
           }}
           sizeKey="stat"
         />
@@ -44,7 +44,7 @@ describe('DeltaCell', () => {
             percents: { stat: 0 },
             hashChanged: false,
             hashChangeUnexpected: false,
-            sizes: { stat: 0 }
+            sizes: { stat: 0 },
           }}
           sizeKey="stat"
         />
@@ -63,7 +63,7 @@ describe('DeltaCell', () => {
             percents: { stat: -0.5 },
             hashChanged: true,
             hashChangeUnexpected: false,
-            sizes: { stat: -134 }
+            sizes: { stat: -134 },
           }}
           sizeKey="stat"
         />
@@ -83,7 +83,7 @@ describe('DeltaCell', () => {
             percents: { stat: 0 },
             hashChanged: true,
             hashChangeUnexpected: true,
-            sizes: { stat: 0 }
+            sizes: { stat: 0 },
           }}
           sizeKey="stat"
         />
@@ -99,7 +99,7 @@ describe('DeltaCell', () => {
         sizeKey: 'stat',
         passing: false,
         actual: 5,
-        expected: 2
+        expected: 2,
       };
       const { queryAllByType } = render(
         <DeltaCell
@@ -111,7 +111,7 @@ describe('DeltaCell', () => {
             percents: { stat: 0 },
             hashChanged: false,
             hashChangeUnexpected: false,
-            sizes: { stat: 5 }
+            sizes: { stat: 5 },
           }}
           sizeKey="stat"
         />
@@ -126,7 +126,7 @@ describe('DeltaCell', () => {
         sizeKey: 'stat',
         passing: false,
         actual: 5,
-        expected: 2
+        expected: 2,
       };
       const { queryAllByType } = render(
         <DeltaCell
@@ -138,7 +138,7 @@ describe('DeltaCell', () => {
             percents: { stat: 0 },
             hashChanged: false,
             hashChangeUnexpected: false,
-            sizes: { stat: 5 }
+            sizes: { stat: 5 },
           }}
           sizeKey="stat"
         />
@@ -159,13 +159,13 @@ describe('DeltaCell', () => {
             percents: { gzip: -1 },
             hashChanged: true,
             hashChangeUnexpected: false,
-            sizes: { gzip: -4300 }
+            sizes: { gzip: -4300 },
           }}
           sizeKey="gzip"
         />
       );
       expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({
-        backgroundColor: 'rgba(6,176,41,1)'
+        backgroundColor: 'rgba(6,176,41,1)',
       });
     });
 
@@ -180,13 +180,13 @@ describe('DeltaCell', () => {
             percents: { gzip: 0.9 },
             hashChanged: true,
             hashChangeUnexpected: false,
-            sizes: { gzip: 4300 }
+            sizes: { gzip: 4300 },
           }}
           sizeKey="gzip"
         />
       );
       expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({
-        backgroundColor: 'rgba(249,84,84,0.9)'
+        backgroundColor: 'rgba(249,84,84,0.9)',
       });
     });
 
@@ -201,13 +201,13 @@ describe('DeltaCell', () => {
             percents: { gzip: 0 },
             hashChanged: true,
             hashChangeUnexpected: true,
-            sizes: { gzip: 0 }
+            sizes: { gzip: 0 },
           }}
           sizeKey="gzip"
         />
       );
       expect(StyleSheet.flatten(getByType(Td).props.style)).toMatchObject({
-        backgroundColor: 'rgba(237,170,46,0.5)'
+        backgroundColor: 'rgba(237,170,46,0.5)',
       });
     });
 
@@ -222,7 +222,7 @@ describe('DeltaCell', () => {
             percents: { gzip: 0 },
             hashChanged: false,
             hashChangeUnexpected: false,
-            sizes: { gzip: 0 }
+            sizes: { gzip: 0 },
           }}
           sizeKey="gzip"
         />
@@ -248,7 +248,7 @@ describe('DeltaCell', () => {
             percents: { gzip: 1 },
             hashChanged: false,
             hashChangeUnexpected: false,
-            sizes: { gzip: 1024 }
+            sizes: { gzip: 1024 },
           }}
           sizeKey="gzip"
         />
@@ -268,7 +268,7 @@ describe('DeltaCell', () => {
             percents: { gzip: 1 },
             hashChanged: false,
             hashChangeUnexpected: false,
-            sizes: { gzip: 1024 }
+            sizes: { gzip: 1024 },
           }}
           sizeKey="gzip"
         />

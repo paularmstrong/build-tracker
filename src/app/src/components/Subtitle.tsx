@@ -18,8 +18,8 @@ const styles = StyleSheet.create({
   subtitle: {
     color: Theme.Color.Gray50,
     fontSize: Theme.FontSize.Normal,
-    marginBottom: Theme.Spacing.Xsmall
-  }
+    marginBottom: Theme.Spacing.Xsmall,
+  },
 });
 
 export default Subtitle;

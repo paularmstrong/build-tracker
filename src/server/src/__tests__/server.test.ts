@@ -24,7 +24,7 @@ describe('server', () => {
       app.get('/', localsToBody);
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           expect(res.body.nonce).toEqual(nonceValue);
         });
     });
@@ -37,10 +37,10 @@ describe('server', () => {
         app.get('/', localsToBody);
         return request(app)
           .get('/')
-          .then(res => {
+          .then((res) => {
             expect(res.body.props).toMatchObject({
               artifactConfig: config.artifacts,
-              url: 'https://build-tracker.local'
+              url: 'https://build-tracker.local',
             });
           });
       });
@@ -52,10 +52,10 @@ describe('server', () => {
         app.get('/', localsToBody);
         return request(app)
           .get('/')
-          .then(res => {
+          .then((res) => {
             expect(res.body.props).toMatchObject({
               artifactConfig: { budgets: {}, filters: [], groups: [] },
-              url: 'https://build-tracker.local'
+              url: 'https://build-tracker.local',
             });
           });
       });
@@ -67,10 +67,10 @@ describe('server', () => {
         app.get('/', localsToBody);
         return request(app)
           .get('/')
-          .then(res => {
+          .then((res) => {
             expect(res.body.props).toMatchObject({
               artifactConfig: { budgets: {}, filters: [/foo/], groups: [] },
-              url: 'https://build-tracker.local'
+              url: 'https://build-tracker.local',
             });
           });
       });
@@ -82,9 +82,9 @@ describe('server', () => {
         app.get('/', localsToBody);
         return request(app)
           .get('/')
-          .then(res => {
+          .then((res) => {
             expect(res.body.props).toMatchObject({
-              url: 'https://build-tracker.local'
+              url: 'https://build-tracker.local',
             });
           });
       });
@@ -96,9 +96,9 @@ describe('server', () => {
         app.get('/', localsToBody);
         return request(app)
           .get('/')
-          .then(res => {
+          .then((res) => {
             expect(res.body.props).toMatchObject({
-              name: 'Build Tracker'
+              name: 'Build Tracker',
             });
           });
       });
@@ -111,9 +111,9 @@ describe('server', () => {
       app.get('/', localsToBody);
       return request(app)
         .get('/')
-        .then(res => {
+        .then((res) => {
           expect(res.body.props).toMatchObject({
-            name: 'Tacos'
+            name: 'Tacos',
           });
         });
     });

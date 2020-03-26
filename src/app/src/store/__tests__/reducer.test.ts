@@ -26,14 +26,14 @@ const initialState: State = Object.freeze({
   snacks: [],
   defaultSizeKey: 'stat',
   sizeKey: '',
-  url: 'https://build-tracker.local'
+  url: 'https://build-tracker.local',
 });
 
 const buildA = new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: Date.now() - 400 }, [
-  { name: 'tacos', hash: '123', sizes: { stat: 123, gzip: 45 } }
+  { name: 'tacos', hash: '123', sizes: { stat: 123, gzip: 45 } },
 ]);
 const buildB = new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: Date.now() }, [
-  { name: 'tacos', hash: 'abc', sizes: { stat: 125, gzip: 47 } }
+  { name: 'tacos', hash: 'abc', sizes: { stat: 125, gzip: 47 } },
 ]);
 
 describe('reducer', () => {
@@ -81,7 +81,7 @@ describe('reducer', () => {
         { branch: 'master', revision: '123', parentRevision: '000', timestamp: Date.now() - 400 },
         [
           { name: 'tacos', hash: '123', sizes: { stat: 123, gzip: 45 } },
-          { name: 'burritos', hash: '123', sizes: { stat: 123, gzip: 45 } }
+          { name: 'burritos', hash: '123', sizes: { stat: 123, gzip: 45 } },
         ]
       );
 
@@ -134,7 +134,7 @@ describe('reducer', () => {
     test('adding updates the active comparator', () => {
       const state = reducer({ ...initialState, builds: [buildA, buildB] }, Actions.addComparedRevision('123'));
       expect(state.comparedRevisions).toEqual(['123']);
-      expect(state.activeComparator.builds.map(b => b.getMetaValue('revision'))).toEqual(['123']);
+      expect(state.activeComparator.builds.map((b) => b.getMetaValue('revision'))).toEqual(['123']);
     });
 
     test('removing updates the active comparator', () => {
@@ -153,7 +153,7 @@ describe('reducer', () => {
           activeComparator: new Comparator({ builds: [buildA] }),
           builds: [buildA, buildB],
           comparedRevisions: ['123'],
-          focusedRevision: '123'
+          focusedRevision: '123',
         },
         Actions.removeComparedRevision('123')
       );
@@ -167,7 +167,7 @@ describe('reducer', () => {
           activeComparator: new Comparator({ builds: [buildA, buildB] }),
           builds: [buildA, buildB],
           comparedRevisions: ['123', 'abc'],
-          focusedRevision: '123'
+          focusedRevision: '123',
         },
         Actions.clearComparedRevisions()
       );

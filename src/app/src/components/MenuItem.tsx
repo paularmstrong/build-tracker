@@ -22,7 +22,7 @@ const Item = (props: Props): React.ReactElement => {
 
   return (
     <Hoverable>
-      {isHovered => (
+      {(isHovered) => (
         <Ripple
           accessibilityRole="menuitem"
           nativeID={nativeID}
@@ -47,11 +47,11 @@ const styles = StyleSheet.create({
     minWidth: 112,
     transitionProperty: 'background-color',
     transitionDuration: '0.2s',
-    transitionTimingFunction: Theme.MotionTiming.Standard
+    transitionTimingFunction: Theme.MotionTiming.Standard,
   },
 
   rootHover: {
-    backgroundColor: 'rgba(0,0,0,0.1)'
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 
   content: {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     paddingVertical: Theme.Spacing.Xsmall,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingHorizontal: Theme.Spacing.Normal
+    paddingHorizontal: Theme.Spacing.Normal,
   },
 
   icon: {
@@ -70,11 +70,11 @@ const styles = StyleSheet.create({
     marginEnd: Theme.Spacing.Small,
     transitionProperty: 'color',
     transitionDuration: '0.2s',
-    transitionTimingFunction: Theme.MotionTiming.Standard
+    transitionTimingFunction: Theme.MotionTiming.Standard,
   },
   iconHover: {
-    color: Theme.Color.Gray40
-  }
+    color: Theme.Color.Gray40,
+  },
 });
 
 export default Item;

@@ -44,10 +44,10 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
   public get artifactSizes(): Array<string> {
     if (!this._sizeKeys) {
       this._sizeKeys = new Set();
-      this._baseBuild.artifactSizes.forEach(key => {
+      this._baseBuild.artifactSizes.forEach((key) => {
         this._sizeKeys.add(key);
       });
-      this._prevBuild.artifactSizes.forEach(key => {
+      this._prevBuild.artifactSizes.forEach((key) => {
         this._sizeKeys.add(key);
       });
       if (
@@ -80,7 +80,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
     if (!this._artifactNames) {
       this._artifactNames = new Set();
       const mapNames = (name): void => {
-        if (!this._artifactFilters.some(filter => filter.test(name))) {
+        if (!this._artifactFilters.some((filter) => filter.test(name))) {
           this._artifactNames.add(name);
         }
       };
@@ -101,7 +101,7 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
   public get artifactDeltas(): Array<ArtifactDelta> {
     if (!this._artifactDeltas) {
       this._artifactDeltas = new Map();
-      this.artifactNames.forEach(artifactName => {
+      this.artifactNames.forEach((artifactName) => {
         const baseArtifact = this._baseBuild.getArtifact(artifactName);
         const prevArtifact = this._prevBuild.getArtifact(artifactName);
 
@@ -134,11 +134,11 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
   public get groupDeltas(): Map<string, ArtifactDelta> {
     if (!this._groupDeltas) {
       this._groupDeltas = new Map();
-      this._groups.forEach(group => {
+      this._groups.forEach((group) => {
         let artifactNames = group.artifactNames ? [...group.artifactNames] : [];
         if (group.artifactMatch) {
           artifactNames = artifactNames.concat(
-            Array.from(this.artifactNames).filter(name => group.artifactMatch.test(name))
+            Array.from(this.artifactNames).filter((name) => group.artifactMatch.test(name))
           );
         }
 

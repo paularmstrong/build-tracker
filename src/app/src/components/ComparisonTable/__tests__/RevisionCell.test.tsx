@@ -125,12 +125,12 @@ describe('RevisionCell', () => {
 
       fireEvent.mouseEnter(getByLabelText('Build 1234567'));
       expect(getByLabelText('Build 1234567').style).toMatchObject({
-        'background-color': 'rgb(199, 235, 255)'
+        'background-color': 'rgb(199, 235, 255)',
       });
 
       fireEvent.mouseLeave(getByLabelText('Build 1234567'));
       expect(getByLabelText('Build 1234567').style).not.toMatchObject({
-        'background-color': 'rgb(199, 235, 255)'
+        'background-color': 'rgb(199, 235, 255)',
       });
     });
   });

@@ -31,7 +31,7 @@ const Button = (props: Props): React.ReactElement => {
     onPress,
     style,
     title,
-    type = 'text'
+    type = 'text',
   } = props;
   const rippleColor =
     ['outlined', 'text'].indexOf(type) !== -1
@@ -74,7 +74,7 @@ const Button = (props: Props): React.ReactElement => {
       !disabled && isActive && styles[`${type}Active`],
       !disabled && isActive && styles[`${type}${color}Active`],
       !disabled && isActive && isRaised && styles['raisedActive'],
-      !disabled && isActive && isRaised && styles[`raised${color}Active`]
+      !disabled && isActive && isRaised && styles[`raised${color}Active`],
     ];
   };
 
@@ -98,7 +98,7 @@ const Button = (props: Props): React.ReactElement => {
 
   return (
     <Hoverable>
-      {isHovered => (
+      {(isHovered) => (
         <Ripple
           accessibilityLabel={accessibilityLabel || title}
           accessibilityRole="button"
@@ -111,7 +111,7 @@ const Button = (props: Props): React.ReactElement => {
             rootStyles.root,
             ..._getRootStyles(isHovered),
             iconOnly && type === 'text' && rootStyles.shape,
-            style
+            style,
           ]}
         >
           <View pointerEvents="none" style={[rootStyles.content, iconOnly && rootStyles.contentIconOnly]}>
@@ -137,11 +137,11 @@ const rootStyles = StyleSheet.create({
     transitionDuration: '0.2s, 0.2s, 0.2s',
     transitionTimingFunction: Theme.MotionTiming.Standard,
     height: '100%',
-    position: 'relative'
+    position: 'relative',
   },
 
   iconOnly: {
-    flexShrink: 0
+    flexShrink: 0,
   },
 
   content: {
@@ -149,136 +149,136 @@ const rootStyles = StyleSheet.create({
     height: '2.5rem',
     paddingHorizontal: Theme.Spacing.Normal,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   contentIconOnly: {
     width: '2.5rem',
-    paddingHorizontal: Theme.Spacing.None
+    paddingHorizontal: Theme.Spacing.None,
   },
 
   rootHover: {
-    backgroundColor: 'rgba(0,0,0,0.1)'
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 
   outlined: {
     borderWidth: 2,
-    borderColor: Theme.Color.Primary40
+    borderColor: Theme.Color.Primary40,
   },
   outlinedHover: {
-    borderColor: Theme.Color.Primary60
+    borderColor: Theme.Color.Primary60,
   },
   outlinedActive: {
-    borderColor: Theme.Color.Primary10
+    borderColor: Theme.Color.Primary10,
   },
   outlinedsecondary: {
-    borderColor: Theme.Color.Secondary40
+    borderColor: Theme.Color.Secondary40,
   },
   outlinedsecondaryHover: {
-    borderColor: Theme.Color.Secondary60
+    borderColor: Theme.Color.Secondary60,
   },
   outlinedsecondaryActive: {
-    borderColor: Theme.Color.Secondary10
+    borderColor: Theme.Color.Secondary10,
   },
 
   raised: {
     shadowOffset: { width: 0, height: 2 },
     shadowColor: Theme.Color.Black,
     shadowOpacity: 0.3,
-    shadowRadius: 5
+    shadowRadius: 5,
   },
   raisedHover: {
     shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10
+    shadowRadius: 10,
   },
   raisedActive: {
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3
+    shadowRadius: 3,
   },
 
   shape: {
-    borderRadius: Theme.BorderRadius.Infinite
+    borderRadius: Theme.BorderRadius.Infinite,
   },
   shapeRaised: {
-    borderRadius: Theme.BorderRadius.Infinite
+    borderRadius: Theme.BorderRadius.Infinite,
   },
 
   // Primary40 colors
   bgprimary: {
-    backgroundColor: Theme.Color.Primary40
+    backgroundColor: Theme.Color.Primary40,
   },
   bgprimaryHover: {
-    backgroundColor: Theme.Color.Primary30
+    backgroundColor: Theme.Color.Primary30,
   },
 
   // Secondary40colors
   bgsecondary: {
-    backgroundColor: Theme.Color.Secondary40
+    backgroundColor: Theme.Color.Secondary40,
   },
   bgsecondaryHover: {
-    backgroundColor: Theme.Color.Secondary30
-  }
+    backgroundColor: Theme.Color.Secondary30,
+  },
 });
 
 const textStyles = StyleSheet.create({
   root: {
     fontWeight: '500',
     color: Theme.TextColor.White,
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
 
   primary: {
-    color: Theme.Color.Primary40
+    color: Theme.Color.Primary40,
   },
   primaryDisabled: {
-    color: Theme.Color.Gray30
+    color: Theme.Color.Gray30,
   },
   secondary: {
-    color: Theme.Color.Secondary40
+    color: Theme.Color.Secondary40,
   },
   secondaryDisabled: {
-    color: Theme.Color.Gray30
+    color: Theme.Color.Gray30,
   },
 
   bgprimary: {
-    color: Theme.TextColor.Primary40
+    color: Theme.TextColor.Primary40,
   },
 
   bgsecondary: {
-    color: Theme.TextColor.Secondary40
-  }
+    color: Theme.TextColor.Secondary40,
+  },
 });
 
 const iconStyles = StyleSheet.create({
   withText: {
     marginEnd: '0.5rem',
-    marginStart: '-0.25rem'
+    marginStart: '-0.25rem',
   },
 
   iconOnly: {
-    fontSize: Theme.FontSize.Medium
+    fontSize: Theme.FontSize.Medium,
   },
 
   primary: {
-    color: Theme.Color.Primary40
+    color: Theme.Color.Primary40,
   },
   primaryDisabled: {
-    color: Theme.Color.Gray30
+    color: Theme.Color.Gray30,
   },
   secondary: {
-    color: Theme.Color.Secondary40
+    color: Theme.Color.Secondary40,
   },
   secondaryDisabled: {
-    color: Theme.Color.Gray30
+    color: Theme.Color.Gray30,
   },
 
   bgprimary: {
-    color: Theme.TextColor.Primary40
+    color: Theme.TextColor.Primary40,
   },
 
   bgsecondary: {
-    color: Theme.TextColor.Secondary40
-  }
+    color: Theme.TextColor.Secondary40,
+  },
 });
 
 export default Button;

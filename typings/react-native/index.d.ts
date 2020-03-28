@@ -443,6 +443,7 @@ export interface Insets {
  * @see React.DOMAtributes
  */
 export interface Touchable {
+  autoFocus?: boolean;
   onTouchStart?: (event: GestureResponderEvent) => void;
   onTouchMove?: (event: GestureResponderEvent) => void;
   onTouchEnd?: (event: GestureResponderEvent) => void;
@@ -695,7 +696,8 @@ export interface TransformsStyle {
     | TranslateXTransform
     | TranslateYTransform
     | SkewXTransform
-    | SkewYTransform)[];
+    | SkewYTransform
+  )[];
   transformMatrix?: Array<number>;
   rotation?: number;
   scaleX?: number;
@@ -1581,6 +1583,7 @@ export type AccessibilityRole =
   | 'button'
   | 'checkbox'
   | 'combobox'
+  | 'dialog'
   | 'header'
   | 'image'
   | 'imagebutton'
@@ -1643,6 +1646,8 @@ export interface ViewProps extends GestureResponderHandlers, Touchable, Accessib
   hitSlop?: Insets;
 
   href?: string;
+
+  onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
 
   /**
    * Invoked on mount and layout changes with

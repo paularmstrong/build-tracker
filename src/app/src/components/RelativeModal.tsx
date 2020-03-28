@@ -61,7 +61,7 @@ const Menu = (props: Props): React.ReactElement => {
         testID="overlay"
       />
       <View
-        accessibilityRole={accessibilityRole}
+        accessibilityRole={accessibilityRole || 'dialog'}
         ref={ref}
         style={[
           styles.root,

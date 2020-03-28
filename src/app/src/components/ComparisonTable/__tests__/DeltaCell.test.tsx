@@ -10,6 +10,7 @@ import { Td } from '../../Table';
 import WarningIcon from '../../../icons/Warning';
 import { BudgetLevel, BudgetType } from '@build-tracker/types';
 import { fireEvent, render } from 'react-native-testing-library';
+import { formatBudgetResult, formatUnexpectedHashChange } from '@build-tracker/formatting';
 import { StyleSheet, Text } from 'react-native';
 
 describe('DeltaCell', () => {
@@ -276,6 +277,119 @@ describe('DeltaCell', () => {
       fireEvent(getByTestId('delta'), 'mouseEnter');
       fireEvent(getByTestId('delta'), 'mouseLeave');
       expect(queryAllByProps({ accessibilityRole: 'tooltip' })).toHaveLength(0);
+    });
+  });
+
+  describe('modal dialog', () => {
+    test('shows and hides modal dialog when closed', () => {
+      const { getByProps, getByText } = render(
+        <DeltaCell
+          cell={{
+            type: CellType.DELTA,
+            budgets: [],
+            failingBudgets: [],
+            name: 'tacos',
+            percents: { gzip: 0.2, stat: 0.5 },
+            hashChanged: true,
+            hashChangeUnexpected: false,
+            sizes: { gzip: 2400, stat: 4300 },
+          }}
+          sizeKey="stat"
+        />
+      );
+      fireEvent.press(getByText('4.2 KiB'));
+      expect(getByProps({ role: 'dialog' })).not.toBeNull();
+      fireEvent.press(getByProps({ role: 'button', 'aria-label': 'Close' }));
+      expect(() => getByProps({ role: 'dialog' })).toThrow();
+    });
+
+    test('renders all stat size information in a modal dialog', () => {
+      const { getByText, queryAllByText } = render(
+        <DeltaCell
+          cell={{
+            type: CellType.DELTA,
+            budgets: [],
+            failingBudgets: [],
+            name: 'tacos',
+            percents: { gzip: 0.2, stat: 0.5 },
+            hashChanged: true,
+            hashChangeUnexpected: false,
+            sizes: { gzip: 2400, stat: 4300 },
+          }}
+          sizeKey="stat"
+        />
+      );
+      fireEvent.press(getByText('4.2 KiB'));
+      expect(queryAllByText('gzip')).toHaveLength(1);
+      expect(queryAllByText('2.34 KiB (20.000%)')).toHaveLength(1);
+      expect(queryAllByText('gzip')).toHaveLength(1);
+      expect(queryAllByText('4.2 KiB (50.000%)')).toHaveLength(1);
+    });
+
+    test('renders a footer with a text summary of failing budgets', () => {
+      const budget0 = {
+        level: BudgetLevel.ERROR,
+        type: BudgetType.SIZE,
+        sizeKey: 'stat',
+        passing: false,
+        actual: 5,
+        expected: 2,
+      };
+      const budget1 = {
+        level: BudgetLevel.WARN,
+        type: BudgetType.DELTA,
+        sizeKey: 'stat',
+        passing: false,
+        actual: 5,
+        expected: 2,
+      };
+      const budget2 = {
+        level: BudgetLevel.WARN,
+        type: BudgetType.PERCENT_DELTA,
+        sizeKey: 'stat',
+        passing: false,
+        actual: 5,
+        expected: 2,
+      };
+      const { getByText, queryAllByText } = render(
+        <DeltaCell
+          cell={{
+            type: CellType.DELTA,
+            budgets: [budget0, budget1, budget2],
+            failingBudgets: [budget0, budget1],
+            name: 'tacos',
+            percents: { gzip: 0.2, stat: 0.5 },
+            hashChanged: true,
+            hashChangeUnexpected: false,
+            sizes: { gzip: 2400, stat: 4300 },
+          }}
+          sizeKey="stat"
+        />
+      );
+      fireEvent.press(getByText('4.2 KiB'));
+      expect(queryAllByText(formatBudgetResult(budget0, 'tacos', true))).toHaveLength(1);
+      expect(queryAllByText(formatBudgetResult(budget1, 'tacos', true))).toHaveLength(1);
+      expect(queryAllByText(formatBudgetResult(budget2, 'tacos', true))).toHaveLength(0);
+    });
+
+    test('renders a footer with a text summary of unexpected hash change', () => {
+      const { getByText, queryAllByText } = render(
+        <DeltaCell
+          cell={{
+            type: CellType.DELTA,
+            budgets: [],
+            failingBudgets: [],
+            name: 'tacos',
+            percents: { gzip: 0.2, stat: 0.5 },
+            hashChanged: true,
+            hashChangeUnexpected: true,
+            sizes: { gzip: 2400, stat: 4300 },
+          }}
+          sizeKey="stat"
+        />
+      );
+      fireEvent.press(getByText('4.2 KiB'));
+      expect(queryAllByText(formatUnexpectedHashChange('tacos', true))).toHaveLength(1);
     });
   });
 });

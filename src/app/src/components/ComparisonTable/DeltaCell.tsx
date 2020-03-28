@@ -2,12 +2,16 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { BudgetLevel } from '@build-tracker/types';
+import CloseIcon from '../../icons/Close';
 import ErrorIcon from '../../icons/Error';
 import HashIcon from '../../icons/Hash';
 import Hoverable from '../Hoverable';
 import React from 'react';
+import RelativeModal from '../RelativeModal';
 import RelativeTooltip from '../RelativeTooltip';
+import TabularMetadata from '../TabularMetadata';
 import { Td } from '../Table';
+import { TouchableOpacity } from 'react-native';
 import WarningIcon from '../../icons/Warning';
 import { DeltaCell as Cell, TotalDeltaCell as TDCell } from '@build-tracker/comparator';
 import { formatBudgetResult, formatBytes, formatUnexpectedHashChange } from '@build-tracker/formatting';
@@ -46,11 +50,14 @@ export const warning: Color = {
 export const scale = ({ red, blue, green }: Color, percentDelta: number): string =>
   `rgba(${red},${green},${blue},${Math.max(Math.min(Math.abs(percentDelta), 1), 0)})`;
 
+const formatPercentChange = (percentDelta: number): string => `${(percentDelta * 100).toFixed(3)}%`;
+
 export const DeltaCell = (props: Props): React.ReactElement => {
   const { cell, sizeKey, style } = props;
   const sizeDelta = cell.sizes[sizeKey];
   const percentDelta = cell.percents[sizeKey];
   const viewRef: React.RefObject<View> = React.useRef(null);
+  const cellRef = React.useRef();
 
   const failingBudgets = cell.failingBudgets;
   const errorBudgets = failingBudgets.filter((budget) => budget.level === BudgetLevel.ERROR);
@@ -69,7 +76,7 @@ export const DeltaCell = (props: Props): React.ReactElement => {
     backgroundColor = scale(happy, percentDelta);
   }
 
-  const stringChange = `${sizeDelta} bytes (${(percentDelta * 100).toFixed(3)}%)`;
+  const stringChange = `${sizeDelta} bytes (${formatPercentChange(percentDelta)})`;
 
   const text = formatBytes(sizeDelta);
   const hashChangedOnly = cell.hashChangeUnexpected;
@@ -79,30 +86,66 @@ export const DeltaCell = (props: Props): React.ReactElement => {
     ? formatUnexpectedHashChange(cell.name, false)
     : `"${cell.name}" changed by ${stringChange}`;
 
+  const [dialogVisible, setDialogVisible] = React.useState(false);
+
+  const handlePress = React.useCallback((): void => {
+    setDialogVisible(true);
+  }, [setDialogVisible]);
+
+  const handleDismissDialog = React.useCallback((): void => {
+    setDialogVisible(false);
+  }, [setDialogVisible]);
+
+  const tableData = Object.keys(cell.sizes).reduce((memo: Array<[string, string]>, sizeKey: string): Array<
+    [string, string]
+  > => {
+    memo.push([sizeKey, `${formatBytes(cell.sizes[sizeKey])} (${formatPercentChange(cell.percents[sizeKey])})`]);
+    return memo;
+  }, []);
+
+  const tableFooter = failingBudgets.length ? (
+    failingBudgets.map((budget, index) => <Text key={index}>{formatBudgetResult(budget, cell.name, true)}</Text>)
+  ) : hashChangedOnly ? (
+    <Text>{formatUnexpectedHashChange(cell.name, true)}</Text>
+  ) : null;
+
   return (
     <Td accessibilityLabel={tooltipText} style={[style, { backgroundColor }]}>
       {text ? (
-        <Hoverable>
-          {(isHovered) => (
-            <View ref={viewRef} style={styles.textWrapper} testID="delta">
-              {sizeDelta !== 0 || hashChangedOnly ? (
-                <Text>
-                  {errorBudgets.length ? (
-                    <ErrorIcon />
-                  ) : warningBudgets.length ? (
-                    <WarningIcon />
-                  ) : hashChangedOnly ? (
-                    <HashIcon />
-                  ) : (
-                    ''
-                  )}{' '}
-                </Text>
-              ) : null}
-              {sizeDelta !== 0 ? <Text>{text}</Text> : null}
-              {isHovered ? <RelativeTooltip relativeTo={viewRef} text={tooltipText} /> : null}
-            </View>
-          )}
-        </Hoverable>
+        <TouchableOpacity onPress={handlePress} ref={cellRef}>
+          <Hoverable>
+            {(isHovered) => (
+              <View ref={viewRef} style={styles.textWrapper} testID="delta">
+                {sizeDelta !== 0 || hashChangedOnly ? (
+                  <Text>
+                    {errorBudgets.length ? (
+                      <ErrorIcon />
+                    ) : warningBudgets.length ? (
+                      <WarningIcon />
+                    ) : hashChangedOnly ? (
+                      <HashIcon />
+                    ) : (
+                      ''
+                    )}{' '}
+                  </Text>
+                ) : null}
+                {sizeDelta !== 0 ? <Text>{text}</Text> : null}
+                {isHovered ? <RelativeTooltip relativeTo={viewRef} text={tooltipText} /> : null}
+              </View>
+            )}
+          </Hoverable>
+          {dialogVisible ? (
+            <RelativeModal onDismiss={handleDismissDialog} portalRootID="menuPortal" relativeTo={cellRef}>
+              <TabularMetadata
+                data={tableData}
+                footer={<View>{tableFooter}</View>}
+                icon={CloseIcon}
+                onClose={handleDismissDialog}
+                title={`${cell.name} delta`}
+              />
+            </RelativeModal>
+          ) : null}
+        </TouchableOpacity>
       ) : null}
     </Td>
   );

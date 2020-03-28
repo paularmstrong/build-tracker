@@ -1,36 +1,42 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import * as Theme from '../theme';
+import { BuildMetaItem } from '@build-tracker/build';
 import Button from './Button';
 import CollapseIcon from '../icons/Collapse';
 import { formatSha } from '@build-tracker/formatting';
 import React from 'react';
 import RemoveIcon from '../icons/Remove';
 import { State } from '../store/types';
-import TextLink from './TextLink';
+import TabularMetadata from './TabularMetadata';
+import { View } from 'react-native';
 import { removeComparedRevision, setFocusedRevision } from '../store/actions';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { Table, Tbody, Td, Th, Tr } from './Table';
 import { useDispatch, useSelector } from 'react-redux';
 
 interface Props {
   focusedRevision: string;
-  style?: StyleProp<ViewStyle>;
 }
 
-const titleCase = (value: string): string => {
-  return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
-};
+const buildMetaSort = ['revision', 'timestamp'];
+
+function formatTimestamp(timestamp: number): string {
+  const dateTime = new Date(parseInt(`${timestamp}000`, 10));
+  return `${dateTime
+    .toLocaleDateString('ja', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\//g, '-')} ${dateTime.toLocaleTimeString()}`;
+}
 
 const BuildInfo = (props: Props): React.ReactElement => {
-  const { focusedRevision, style } = props;
+  const { focusedRevision } = props;
 
   const build = useSelector((state: State) =>
     state.comparator.builds.find((build) => build.getMetaValue('revision') === focusedRevision)
   );
   const revision = build.getMetaValue('revision');
-  const revisionUrl = build.getMetaUrl('revision');
 
   const dispatch = useDispatch();
 
@@ -42,74 +48,35 @@ const BuildInfo = (props: Props): React.ReactElement => {
     dispatch(removeComparedRevision(focusedRevision));
   }, [dispatch, focusedRevision]);
 
+  const tableData = Object.keys(build.meta).reduce((memo: Array<[string, BuildMetaItem]>, metaKey: string): Array<
+    [string, BuildMetaItem]
+  > => {
+    const sortIndex = buildMetaSort.indexOf(metaKey);
+    const value = metaKey === 'timestamp' ? formatTimestamp(build.meta[metaKey]) : build.meta[metaKey];
+    if (sortIndex >= 0) {
+      memo.splice(sortIndex, 0, [metaKey, value]);
+    } else {
+      memo.push([metaKey, value]);
+    }
+    return memo;
+  }, []);
+
   return (
-    <View style={[styles.root, style]}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Build: {formatSha(revision)}</Text>
-        <Button icon={CollapseIcon} iconOnly onPress={handleClose} title="Collapse details" />
-      </View>
-      <Table>
-        <Tbody>
-          <Tr>
-            <Th>
-              <Text>Revision</Text>
-            </Th>
-            <Td style={styles.infoCell}>
-              {revisionUrl ? <TextLink href={revisionUrl} text={revision} /> : <Text>{revision}</Text>}
-            </Td>
-          </Tr>
-          <Tr>
-            <Th>
-              <Text>Date</Text>
-            </Th>
-            <Td style={styles.infoCell}>
-              <Text>{build.timestamp.toLocaleString()}</Text>
-            </Td>
-          </Tr>
-          {Object.keys(build.meta)
-            .filter((metaKey) => metaKey !== 'revision' && metaKey !== 'timestamp')
-            .map((metaKey: 'revision' | 'parentRevision' | 'branch') => {
-              const value = build.getMetaValue(metaKey);
-              const url = build.getMetaUrl(metaKey);
-              return (
-                <Tr key={metaKey}>
-                  <Th>
-                    <Text>{titleCase(metaKey)}</Text>
-                  </Th>
-                  <Td style={styles.infoCell}>{url ? <TextLink href={url} text={value} /> : <Text>{value}</Text>}</Td>
-                </Tr>
-              );
-            })}
-        </Tbody>
-      </Table>
-      <View style={styles.footer}>
-        <Button color="secondary" icon={RemoveIcon} onPress={handleRemove} title="Remove build" />
-      </View>
+    <View>
+      <TabularMetadata
+        closeButtonLabel="Collapse details"
+        data={tableData}
+        footer={
+          <View>
+            <Button color="secondary" icon={RemoveIcon} onPress={handleRemove} title="Remove build" />
+          </View>
+        }
+        icon={CollapseIcon}
+        onClose={handleClose}
+        title={`Build: ${formatSha(revision)}`}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  root: {
-    paddingVertical: Theme.Spacing.Normal,
-    paddingHorizontal: Theme.Spacing.Large,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerText: {
-    fontWeight: Theme.FontWeight.Bold,
-    fontSize: Theme.FontSize.Normal,
-  },
-  infoCell: {
-    textAlign: 'left',
-  },
-  footer: {
-    alignItems: 'flex-start',
-    paddingTop: Theme.Spacing.Normal,
-  },
-});
 
 export default BuildInfo;

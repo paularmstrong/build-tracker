@@ -4,13 +4,12 @@
 import { BuildMetaItem } from '@build-tracker/build';
 import Button from './Button';
 import CollapseIcon from '../icons/Collapse';
-import { formatSha } from '@build-tracker/formatting';
-import lightFormat from 'date-fns/lightFormat';
 import React from 'react';
 import RemoveIcon from '../icons/Remove';
 import { State } from '../store/types';
 import TabularMetadata from './TabularMetadata';
 import { View } from 'react-native';
+import { formatDatetime, formatSha } from '@build-tracker/formatting';
 import { removeComparedRevision, setFocusedRevision } from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -22,7 +21,7 @@ const buildMetaSort = ['revision', 'timestamp'];
 
 function formatTimestamp(timestamp: number): string {
   const dateTime = new Date(parseInt(`${timestamp}000`, 10));
-  return lightFormat(dateTime, 'yyyy-MM-dd hh:mm:ss a');
+  return formatDatetime(dateTime);
 }
 
 const BuildInfo = (props: Props): React.ReactElement => {

@@ -72,3 +72,15 @@ export function formatUnexpectedHashChange(artifactName: string, useEmoji = fals
   const prefix = getPrefix(artifactName, 'hash', useEmoji);
   return `${prefix} hash changed without any file size change`;
 }
+
+export function formatDatetime(date: Date): string {
+  const dateString = date
+    .toLocaleDateString('ja', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\//g, '-');
+  const timeString = date.toLocaleTimeString();
+  return `${dateString} ${timeString}`;
+}

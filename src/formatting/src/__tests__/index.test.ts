@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import { BudgetLevel, BudgetType } from '@build-tracker/types';
-import { formatBudgetResult, formatBytes, formatSha } from '../';
+import { formatBudgetResult, formatBytes, formatDatetime, formatSha } from '../';
 
 describe('formatBytes', () => {
   describe('defaults', () => {
@@ -41,6 +41,12 @@ describe('formatBytes', () => {
 describe('formatSha', () => {
   test('slices the sha to 7 characters', () => {
     expect(formatSha('1234567abcdef')).toEqual('1234567');
+  });
+});
+
+describe('formatDatetime', () => {
+  test('returns a datetime string', () => {
+    expect(formatDatetime(new Date(2020, 0, 1, 2, 3, 4))).toEqual('01-01-2020 2:03:04 AM');
   });
 });
 

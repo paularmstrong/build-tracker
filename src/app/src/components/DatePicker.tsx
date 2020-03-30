@@ -108,13 +108,13 @@ const DatePicker = (props: Props): React.ReactElement => {
               return (
                 <View key={index} style={styles.day}>
                   <Button
-                    accessibilityLabel={formatDate(day.date, 'YYYY-MM-DD')}
+                    accessibilityLabel={formatDate(day.date, 'yyyy-MM-dd')}
                     color={today ? 'secondary' : 'primary'}
                     disabled={!inRange}
                     onPress={() => {
                       onSelect(day.date);
                     }}
-                    title={formatDate(day.date, 'D')}
+                    title={formatDate(day.date, 'd')}
                     type={isSelected ? 'unelevated' : 'text'}
                   />
                 </View>

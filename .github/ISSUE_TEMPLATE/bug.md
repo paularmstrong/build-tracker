@@ -3,7 +3,16 @@ name: 🐛 Bug Report
 about: If something isn't working as expected 🤔.
 ---
 
-# Problem
+<!--
+
+IMPORTANT!
+Follow the format of this template or your issue will be automatically closed
+by a bot. Following this template helps keep the quality of bug reports
+high, which will help them be addressed sooner.
+
+-->
+
+## Problem
 
 <!--
 Add a short explanation of your problem or use-case
@@ -12,7 +21,7 @@ Example:
 When I click the drawer link, nothing happens!
 -->
 
-**Steps to Reproduce:**
+## Steps to Reproduce
 
 <!--
 Include a list of steps that anyone can take to reproduce the bug
@@ -24,7 +33,7 @@ Example:
 3. Click "Documentation" link
 -->
 
-**Expected Result**
+## Expected Result
 
 <!--
 Write out what you expect to see or have happen when running the previous steps
@@ -33,7 +42,7 @@ Example:
 The link should open a new page to the documentation
 -->
 
-**Actual Result**
+## Actual Result
 
 <!--
 Write out what *actually* happens when running the previous steps

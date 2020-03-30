@@ -2,23 +2,23 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import * as Theme from '../theme';
-import addDays from 'date-fns/add_days';
-import addMonths from 'date-fns/add_months';
+import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
 import ArrowLeftIcon from '../icons/ArrowLeft';
 import ArrowRightIcon from '../icons/ArrowRight';
 import Button from './Button';
-import endOfMonth from 'date-fns/end_of_month';
+import endOfMonth from 'date-fns/endOfMonth';
 import formatDate from 'date-fns/format';
-import getDaysInMonth from 'date-fns/get_days_in_month';
-import isSameDay from 'date-fns/is_same_day';
-import isSameMonth from 'date-fns/is_same_month';
-import isToday from 'date-fns/is_today';
+import getDaysInMonth from 'date-fns/getDaysInMonth';
+import isSameDay from 'date-fns/isSameDay';
+import isSameMonth from 'date-fns/isSameMonth';
+import isToday from 'date-fns/isToday';
 import React from 'react';
 import RelativeModal from './RelativeModal';
-import startOfMonth from 'date-fns/start_of_month';
-import startOfToday from 'date-fns/start_of_today';
-import startOfWeek from 'date-fns/start_of_week';
-import subMonths from 'date-fns/sub_months';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfToday from 'date-fns/startOfToday';
+import startOfWeek from 'date-fns/startOfWeek';
+import subMonths from 'date-fns/subMonths';
 import { StyleSheet, Text, View } from 'react-native';
 
 interface Props extends React.ComponentProps<typeof RelativeModal> {

@@ -5,6 +5,7 @@ import { BuildMetaItem } from '@build-tracker/build';
 import Button from './Button';
 import CollapseIcon from '../icons/Collapse';
 import { formatSha } from '@build-tracker/formatting';
+import lightFormat from 'date-fns/lightFormat';
 import React from 'react';
 import RemoveIcon from '../icons/Remove';
 import { State } from '../store/types';
@@ -21,13 +22,7 @@ const buildMetaSort = ['revision', 'timestamp'];
 
 function formatTimestamp(timestamp: number): string {
   const dateTime = new Date(parseInt(`${timestamp}000`, 10));
-  return `${dateTime
-    .toLocaleDateString('ja', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    })
-    .replace(/\//g, '-')} ${dateTime.toLocaleTimeString()}`;
+  return lightFormat(dateTime, 'yyyy-MM-dd hh:mm:ss a');
 }
 
 const BuildInfo = (props: Props): React.ReactElement => {

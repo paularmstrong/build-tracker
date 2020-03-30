@@ -2,7 +2,7 @@
  * Copyright (c) 2019 Paul Armstrong
  */
 import formatDate from 'date-fns/format';
-import isValid from 'date-fns/is_valid';
+import isValid from 'date-fns/isValid';
 import React from 'react';
 import TextField from '../components/TextField';
 import {

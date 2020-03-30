@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import formatDate from 'date-fns/lightFormat';
-import isValid from 'date-fns/isValid';
+import formatDate from 'date-fns/format';
+import isValid from 'date-fns/is_valid';
 import React from 'react';
 import TextField from '../components/TextField';
 import {
@@ -26,7 +26,7 @@ interface Props extends TextInputProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const format = 'yyyy-MM-dd';
+const format = 'YYYY-MM-DD';
 
 const DateTextField = (props: Props): React.ReactElement => {
   const { initialValue, label, maxDate, minDate, onSet, onSubmitEditing, style, ...textInputProps } = props;

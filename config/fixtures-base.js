@@ -1,6 +1,6 @@
 const glob = require('glob');
 const path = require('path');
-const subDays = require('date-fns/subDays');
+const subDays = require('date-fns/sub_days');
 const { UnimplementedError } = require('@build-tracker/api-errors');
 
 module.exports = (fixtureType, overrides = {}) => {

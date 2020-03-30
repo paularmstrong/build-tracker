@@ -3,13 +3,13 @@
  */
 import * as Theme from '../../theme';
 import Build from '@build-tracker/build';
-import { formatSha } from '@build-tracker/formatting';
 import memoize from 'memoize-one';
 import { Offset } from './Offset';
 import React from 'react';
 import { select } from 'd3-selection';
 import { Series } from 'd3-shape';
 import Tooltip from '../Tooltip';
+import { formatDatetime, formatSha } from '@build-tracker/formatting';
 import { ScaleBand, ScaleLinear, ScalePoint } from 'd3-scale';
 
 interface Props {
@@ -113,17 +113,7 @@ const HoverOverlay = (props: Props): React.ReactElement => {
 
     const dataSeries = data.find((d) => d.key === hoveredArtifact);
     const buildDate = dataSeries[revision.index].data.timestamp;
-    const formattedDate =
-      // Output date as YYYY-MM-DD
-      buildDate
-        .toLocaleDateString('ja', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })
-        .replace(/\//g, '-') +
-      ' ' +
-      buildDate.toLocaleTimeString();
+    const formattedDate = formatDatetime(buildDate);
 
     return `
 Revision: ${formatSha(revision.value)}

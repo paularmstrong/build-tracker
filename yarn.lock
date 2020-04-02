@@ -12487,10 +12487,10 @@ react-native-testing-library@^1.11.1:
   dependencies:
     pretty-format "^24.0.0"
 
-react-native-web@^0.12.0:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.12.1.tgz#9402a70fe4ebdd3b77ea5f387fa2f6c74fc4e3f7"
-  integrity sha512-CWhkGips1PPQn+AO+sfqJE6aBoG5v9dsMmhV9YEX0uo4fyHk369IE6eI5tBEgpSn3NPq6NnPk2mmnzLACyma1Q==
+react-native-web@0.0.0-9616e446e:
+  version "0.0.0-9616e446e"
+  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.0.0-9616e446e.tgz#0cac53a5fde14b7df49f6210d83b195cca644010"
+  integrity sha512-GyMGvkNU61rVGv+Wl+X+SB9dwuG9W+r2Wh6MZ66PlZ4okt98S13ygbNk3biRsIAFsFe3ZJJVtq+mH+dfVJjp8A==
   dependencies:
     array-find-index "^1.0.2"
     create-react-class "^15.6.2"

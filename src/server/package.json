@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "1.0.0-beta.14",
+  "version": "1.0.0-beta.15",
   "description": "Build Tracker node.js web server",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -22,12 +22,12 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/api-errors": "^1.0.0-beta.12",
-    "@build-tracker/app": "^1.0.0-beta.14",
-    "@build-tracker/build": "^1.0.0-beta.14",
-    "@build-tracker/comparator": "^1.0.0-beta.14",
-    "@build-tracker/formatting": "^1.0.0-beta.14",
-    "@build-tracker/types": "^1.0.0-beta.14",
+    "@build-tracker/api-errors": "^1.0.0-beta.15",
+    "@build-tracker/app": "^1.0.0-beta.15",
+    "@build-tracker/build": "^1.0.0-beta.15",
+    "@build-tracker/comparator": "^1.0.0-beta.15",
+    "@build-tracker/formatting": "^1.0.0-beta.15",
+    "@build-tracker/types": "^1.0.0-beta.15",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
     "@types/helmet": "^0.0.43",
@@ -42,7 +42,7 @@
     "yargs": "^15.0.0"
   },
   "devDependencies": {
-    "@build-tracker/fixtures": "^1.0.0-beta.12",
+    "@build-tracker/fixtures": "^1.0.0-beta.15",
     "node-mocks-http": "^1.7.3",
     "supertest": "^4.0.0",
     "ts-node": "^8.0.2",

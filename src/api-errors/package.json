@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/api-errors",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.15",
   "description": "Build Tracker API errors",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",

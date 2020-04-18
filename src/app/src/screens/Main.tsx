@@ -4,6 +4,7 @@
 import * as Theme from '../theme';
 import AppBarView from '../views/AppBar';
 import { Handles as DrawerHandles } from '../components/Drawer';
+import DrawerView from '../views/Drawer';
 import Graph from '../views/Graph';
 import React from 'react';
 import Snacks from '../views/Snacks';
@@ -23,6 +24,7 @@ const Main = (): React.ReactElement => {
 
   return (
     <View style={styles.layout}>
+      <DrawerView ref={drawerRef} />
       <View accessibilityRole="main" style={styles.main}>
         <View style={[styles.column, styles.chart]}>
           <AppBarView drawerRef={drawerRef} />

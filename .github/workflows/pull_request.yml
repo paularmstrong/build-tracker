@@ -111,10 +111,11 @@ jobs:
       - run: yarn install --frozen-lockfile
       - name: Build
         run: yarn build
-      - uses: paularmstrong/build-tracker-action@master
+      - uses: paularmstrong/build-tracker-action@comment-options
         with:
           BT_CLI_CONFIG: ./demo/build-tracker-cli.config.js
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_API_AUTH_TOKEN: ${{ secrets.BT_API_AUTH_TOKEN }}
-          BT_FILTER_TABLE_ROWS: true
+          BT_COMMENT: warnings
+          BT_COMMENT_FILTER_TABLE_ROWS: true
           BT_FAIL_ON_ERROR: false

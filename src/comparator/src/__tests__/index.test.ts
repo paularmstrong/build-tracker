@@ -625,9 +625,9 @@ tacos,123,123,-0.04"
         },
       });
       expect(comparator.toSummary().join('\n')).toMatchInlineSnapshot(`
-"#️⃣: *burritos* hash changed without any file size change
-⚠️: *tacos* failed the gzip budget size limit of 0 KiB by 0.04 KiB
-🚨: *tacos* failed the gzip budget size limit of 0.03 KiB by 0.01 KiB"
+"⚠️: *tacos* failed the gzip budget size limit of 0 KiB by 0.04 KiB
+🚨: *tacos* failed the gzip budget size limit of 0.03 KiB by 0.01 KiB
+#️⃣: *burritos* hash changed without any file size change"
 `);
     });
 
@@ -678,6 +678,196 @@ Error: *tacos* failed the gzip budget size limit of 0.03 KiB by 0.01 KiB"
     test('can render success without emoji', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toSummary(false).join('\n')).toMatchInlineSnapshot(`"Success: No failing budgets"`);
+    });
+  });
+
+  describe('errors', () => {
+    test('returns empty array for no errors', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.errors).toEqual([]);
+    });
+
+    test('when there is an All budget error, returns that', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+      });
+      expect(comparator.errors).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'All',
+            result: {
+              sizeKey: 'gzip',
+              passing: false,
+              expected: 1,
+              actual: 163,
+              type: BudgetType.SIZE,
+              level: BudgetLevel.ERROR,
+            },
+          },
+        ])
+      );
+    });
+
+    test('when there are group errors, returns them', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [
+          {
+            artifactNames: ['churros~burritos~tacos', 'tacos'],
+            budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+            name: 'group name',
+          },
+        ],
+      });
+      expect(comparator.errors).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'group name',
+            result: {
+              sizeKey: 'gzip',
+              passing: false,
+              expected: 1,
+              actual: 163,
+              type: BudgetType.SIZE,
+              level: BudgetLevel.ERROR,
+            },
+          },
+        ])
+      );
+    });
+
+    test('when there are artifact errors, returns them', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        artifactBudgets: {
+          tacos: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }],
+        },
+      });
+      expect(comparator.errors).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'tacos',
+            result: {
+              sizeKey: 'gzip',
+              passing: false,
+              expected: 30,
+              actual: 43,
+              type: BudgetType.SIZE,
+              level: BudgetLevel.ERROR,
+            },
+          },
+        ])
+      );
+    });
+
+    test('calculated value is cached', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.ERROR, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+      });
+      expect(comparator.errors).toBe(comparator.errors);
+    });
+  });
+
+  describe('warnings', () => {
+    test('returns empty array for no warnings', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2] });
+      expect(comparator.warnings).toEqual([]);
+    });
+
+    test('when there is an All budget warning, returns that', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+      });
+      expect(comparator.warnings).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'All',
+            result: {
+              sizeKey: 'gzip',
+              passing: false,
+              expected: 1,
+              actual: 163,
+              type: BudgetType.SIZE,
+              level: BudgetLevel.WARN,
+            },
+          },
+        ])
+      );
+    });
+
+    test('when there are group warnings, returns them', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        groups: [
+          {
+            artifactNames: ['churros~burritos~tacos', 'tacos'],
+            budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+            name: 'group name',
+          },
+        ],
+      });
+      expect(comparator.warnings).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'group name',
+            result: {
+              sizeKey: 'gzip',
+              passing: false,
+              expected: 1,
+              actual: 163,
+              type: BudgetType.SIZE,
+              level: BudgetLevel.WARN,
+            },
+          },
+        ])
+      );
+    });
+
+    test('when there are artifact warnings, returns them', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        artifactBudgets: {
+          tacos: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 30, sizeKey: 'gzip' }],
+        },
+      });
+      expect(comparator.warnings).toEqual(
+        expect.arrayContaining([
+          {
+            name: 'tacos',
+            result: {
+              sizeKey: 'gzip',
+              passing: false,
+              expected: 30,
+              actual: 43,
+              type: BudgetType.SIZE,
+              level: BudgetLevel.WARN,
+            },
+          },
+        ])
+      );
+    });
+
+    test('calculated value is cached', () => {
+      const comparator = new BuildComparator({
+        builds: [build1, build2],
+        budgets: [{ level: BudgetLevel.WARN, type: BudgetType.SIZE, maximum: 1, sizeKey: 'gzip' }],
+      });
+      expect(comparator.warnings).toBe(comparator.warnings);
+    });
+  });
+
+  describe('unexpectedHashChanges', () => {
+    test('returns unexpected hash changes', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2b] });
+      expect(comparator.unexpectedHashChanges).toEqual([{ name: 'burritos' }]);
+    });
+
+    test('calculated value is cached', () => {
+      const comparator = new BuildComparator({ builds: [build1, build2b] });
+      expect(comparator.unexpectedHashChanges).toBe(comparator.unexpectedHashChanges);
     });
   });
 });

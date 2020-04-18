@@ -142,6 +142,26 @@ const deserializeRegExp = (input: string): RegExp => {
   return new RegExp(m[1], m[2] || '');
 };
 
+const getFailingBudgetsFromRow = (
+  rows: Array<ArtifactRow | GroupRow>,
+  level?: BudgetLevel
+): Array<{ name: string; result: BudgetResult }> => {
+  return rows.reduce((failures, row) => {
+    row.forEach((cell) => {
+      if (cell.type !== CellType.TOTAL_DELTA && cell.type !== CellType.DELTA) {
+        return;
+      }
+      cell.failingBudgets.forEach((budget) => {
+        if (level && budget.level !== level) {
+          return;
+        }
+        failures.push({ name: row[0].text, result: budget });
+      });
+    });
+    return failures;
+  }, []);
+};
+
 interface ComparatorOptions {
   artifactBudgets?: ArtifactBudgets;
   artifactFilters?: ArtifactFilters;
@@ -165,6 +185,10 @@ export default class BuildComparator {
   private _matrixHeader: ComparisonMatrix['header'];
   private _matrixGroups: ComparisonMatrix['groups'];
   private _matrixArtifacts: ComparisonMatrix['artifacts'];
+
+  private _errors: Array<{ name: string; result: BudgetResult }>;
+  private _warnings: Array<{ name: string; result: BudgetResult }>;
+  private _unexpectedHashChanges: Array<{ name: string }>;
 
   public constructor({ artifactBudgets, artifactFilters, budgets, builds, groups }: ComparatorOptions) {
     this.builds = builds
@@ -327,6 +351,43 @@ export default class BuildComparator {
     return this._matrixArtifacts;
   }
 
+  public get errors(): Array<{ name: string; result: BudgetResult }> {
+    if (!this._errors) {
+      const groupResults = getFailingBudgetsFromRow(this.matrixGroups, BudgetLevel.ERROR);
+      const artifactResults = getFailingBudgetsFromRow(this.matrixArtifacts, BudgetLevel.ERROR);
+
+      this._errors = [...groupResults, ...artifactResults].filter(Boolean);
+    }
+    return this._errors;
+  }
+
+  public get warnings(): Array<{ name: string; result: BudgetResult }> {
+    if (!this._warnings) {
+      const groupResults = getFailingBudgetsFromRow(this.matrixGroups, BudgetLevel.WARN);
+      const artifactResults = getFailingBudgetsFromRow(this.matrixArtifacts, BudgetLevel.WARN);
+
+      this._warnings = [...groupResults, ...artifactResults].filter(Boolean);
+    }
+    return this._warnings;
+  }
+
+  public get unexpectedHashChanges(): Array<{ name: string }> {
+    if (!this._unexpectedHashChanges) {
+      this._unexpectedHashChanges = this.matrixArtifacts.reduce((memo, row) => {
+        row.forEach((cell) => {
+          if (cell.type !== CellType.DELTA) {
+            return;
+          }
+          if (cell.hashChangeUnexpected) {
+            memo.push({ name: cell.name });
+          }
+        });
+        return memo;
+      }, []);
+    }
+    return this._unexpectedHashChanges;
+  }
+
   private _getArtifactRow(artifactName: string): ArtifactRow {
     const cells = this.buildDeltas.map(
       (buildDeltas, i): Array<TextCell | TotalCell | DeltaCell> => {
@@ -475,35 +536,16 @@ export default class BuildComparator {
   }
 
   public toSummary(useEmoji = true): Array<string> {
-    const groupResults = this.matrixGroups.reduce((memo, row): Array<string> => {
-      row.forEach((cell) => {
-        if (cell.type !== CellType.TOTAL_DELTA) {
-          return;
-        }
-        cell.failingBudgets.forEach((budget) => {
-          memo.push(formatBudgetResult(budget, `Group "${row[0].text}"`, useEmoji));
-        });
-      });
-      return memo;
-    }, []);
-
-    const artifactResults = this.matrixArtifacts.reduce((memo, row): Array<string> => {
-      row.forEach((cell) => {
-        if (cell.type !== CellType.DELTA) {
-          return;
-        }
-        cell.failingBudgets.forEach((budget) => {
-          memo.push(formatBudgetResult(budget, row[0].text, useEmoji));
-        });
-
-        if (cell.hashChangeUnexpected) {
-          memo.push(formatUnexpectedHashChange(row[0].text, useEmoji));
-        }
-      });
-      return memo;
-    }, []);
-
-    const output = [...groupResults, ...artifactResults].filter(Boolean);
+    const groupResults = getFailingBudgetsFromRow(this.matrixGroups).map(({ name, result }) => {
+      return formatBudgetResult(result, `Group "${name}"`, useEmoji);
+    });
+    const artifactResults = getFailingBudgetsFromRow(this.matrixArtifacts).map(({ name, result }) => {
+      return formatBudgetResult(result, name, useEmoji);
+    });
+    const unexpectedHashChanges = this.unexpectedHashChanges.map(({ name }) => {
+      return formatUnexpectedHashChange(name, useEmoji);
+    });
+    const output = [...groupResults, ...artifactResults, ...unexpectedHashChanges].filter(Boolean);
     if (output.length === 0) {
       return [`${useEmoji ? '✅' : 'Success:'} No failing budgets`];
     }

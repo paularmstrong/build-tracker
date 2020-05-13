@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "cross-env NODE_ENV=production babel src -d dist -x [.tsx,.ts,.jsx,.js] --root-mode=upward",
     "clean": "rimraf dist",
     "tsc": "tsc --noEmit"
   },

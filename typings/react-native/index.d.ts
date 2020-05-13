@@ -5868,11 +5868,11 @@ export namespace Animated {
   type Base = Animated;
 
   class Animated {
-    // Internal class, no public API.
+    // Internal class, no API.
   }
 
   class AnimatedWithChildren extends Animated {
-    // Internal class, no public API.
+    // Internal class, no API.
   }
 
   class AnimatedInterpolation extends AnimatedWithChildren {

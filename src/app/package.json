@@ -35,6 +35,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.9.4",
     "@build-tracker/build": "^1.0.0-beta.15",
     "@build-tracker/comparator": "^1.0.0-beta.16",
     "@build-tracker/fixtures": "^1.0.0-beta.15",
@@ -52,6 +53,7 @@
     "@types/react-dom": "^16.8.2",
     "@types/react-redux": "^7.1.2",
     "@types/react-router": "^5.0.3",
+    "babel-loader": "^8.1.0",
     "chalk": "^2.4.2",
     "file-loader": "^4.2.0",
     "mkdirp": "^0.5.1",
@@ -59,7 +61,6 @@
     "react-test-renderer": "^16.8.3",
     "redux-mock-store": "^1.5.3",
     "supertest": "^4.0.0",
-    "ts-loader": "^5.3.3",
     "webpack": "^4.29.5",
     "webpack-bundle-analyzer": "^3.1.0",
     "webpack-cli": "^3.2.3",

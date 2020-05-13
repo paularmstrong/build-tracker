@@ -34,74 +34,74 @@ export interface ArtifactSizes {
 }
 
 export default class Build<M extends BuildMeta = BuildMeta> {
-  private _meta: M;
-  private _artifacts: Map<string, Artifact>;
-  private _totals: ArtifactSizes;
-  private _sizeKeys: Set<string>;
+  #meta: M;
+  #artifacts: Map<string, Artifact>;
+  #totals: ArtifactSizes;
+  #sizeKeys: Set<string>;
 
-  public constructor(meta: M, artifacts: Array<Artifact>) {
-    this._meta = Object.freeze(meta);
-    this._artifacts = new Map();
+  constructor(meta: M, artifacts: Array<Artifact>) {
+    this.#meta = Object.freeze(meta);
+    this.#artifacts = new Map();
     artifacts.forEach((artifact) => {
-      this._artifacts.set(artifact.name, artifact);
+      this.#artifacts.set(artifact.name, artifact);
     });
   }
 
-  public static fromJSON<M extends BuildMeta = BuildMeta>(build: { meta: M; artifacts: Array<Artifact> }): Build<M> {
+  static fromJSON<M extends BuildMeta = BuildMeta>(build: { meta: M; artifacts: Array<Artifact> }): Build<M> {
     return new Build(build.meta, build.artifacts);
   }
 
-  public toJSON(): { meta: M; artifacts: Array<Artifact> } {
-    return { meta: this.meta, artifacts: Array.from(this._artifacts.values()) };
+  toJSON(): { meta: M; artifacts: Array<Artifact> } {
+    return { meta: this.meta, artifacts: Array.from(this.#artifacts.values()) };
   }
 
-  public get meta(): M {
-    return this._meta;
+  get meta(): M {
+    return this.#meta;
   }
 
-  public get timestamp(): Date {
-    return new Date(parseInt(`${this._meta.timestamp}000`, 10));
+  get timestamp(): Date {
+    return new Date(parseInt(`${this.#meta.timestamp}000`, 10));
   }
 
-  public getMetaValue(key: keyof Omit<M, 'timestamp'>): string {
-    const val = this._meta[key];
+  getMetaValue(key: keyof Omit<M, 'timestamp'>): string {
+    const val = this.#meta[key];
     // @ts-ignore
     return typeof val === 'object' && val.hasOwnProperty('value') ? val.value : val;
   }
 
-  public getMetaUrl(key: keyof Omit<M, 'timestamp'>): string | undefined {
-    const val = this._meta[key];
+  getMetaUrl(key: keyof Omit<M, 'timestamp'>): string | undefined {
+    const val = this.#meta[key];
     // @ts-ignore
     return typeof val === 'object' && val.hasOwnProperty('url') ? val.url : undefined;
   }
 
-  public get artifacts(): Array<Artifact> {
-    return Array.from(this._artifacts.values());
+  get artifacts(): Array<Artifact> {
+    return Array.from(this.#artifacts.values());
   }
 
-  public get artifactSizes(): Array<string> {
-    if (!this._sizeKeys) {
-      this._sizeKeys = new Set();
-      this._artifacts.forEach((artifact) => {
+  get artifactSizes(): Array<string> {
+    if (!this.#sizeKeys) {
+      this.#sizeKeys = new Set();
+      this.#artifacts.forEach((artifact) => {
         Object.keys(artifact.sizes).forEach((k) => {
-          this._sizeKeys.add(k);
+          this.#sizeKeys.add(k);
         });
       });
     }
-    return Array.from(this._sizeKeys);
+    return Array.from(this.#sizeKeys);
   }
 
-  public getArtifact(name: string): Artifact {
-    return this._artifacts.get(name);
+  getArtifact(name: string): Artifact {
+    return this.#artifacts.get(name);
   }
 
-  public get artifactNames(): Array<string> {
-    return Array.from(this._artifacts.keys());
+  get artifactNames(): Array<string> {
+    return Array.from(this.#artifacts.keys());
   }
 
-  public getSum(artifactNames: Array<string>): ArtifactSizes {
+  getSum(artifactNames: Array<string>): ArtifactSizes {
     return artifactNames.reduce((sum: ArtifactSizes, artifactName: string) => {
-      const artifact = this._artifacts.get(artifactName);
+      const artifact = this.#artifacts.get(artifactName);
       if (artifact) {
         Object.entries(artifact.sizes).forEach(([key, value]) => {
           if (!sum[key]) {
@@ -114,25 +114,25 @@ export default class Build<M extends BuildMeta = BuildMeta> {
     }, {});
   }
 
-  public getTotals(artifactFilters?: ArtifactFilters): ArtifactSizes {
-    if (!this._totals) {
-      this._totals = {};
-      this._artifacts.forEach((artifact) => {
+  getTotals(artifactFilters?: ArtifactFilters): ArtifactSizes {
+    if (!this.#totals) {
+      this.#totals = {};
+      this.#artifacts.forEach((artifact) => {
         Object.entries(artifact.sizes).forEach(([key, value]) => {
-          if (!this._totals[key]) {
-            this._totals[key] = 0;
+          if (!this.#totals[key]) {
+            this.#totals[key] = 0;
           }
-          this._totals[key] += value;
+          this.#totals[key] += value;
         });
       });
     }
 
     if (artifactFilters && artifactFilters.length) {
-      const totals = { ...this._totals };
-      Array.from(this._artifacts.keys()).forEach((artifactName) => {
+      const totals = { ...this.#totals };
+      Array.from(this.#artifacts.keys()).forEach((artifactName) => {
         if (artifactFilters.some((filter) => filter.test(artifactName))) {
-          Object.entries(this._totals).forEach(([key, value]) => {
-            const size = this._artifacts.get(artifactName).sizes[key];
+          Object.entries(this.#totals).forEach(([key, value]) => {
+            const size = this.#artifacts.get(artifactName).sizes[key];
             totals[key] = value - size;
           });
         }
@@ -140,6 +140,6 @@ export default class Build<M extends BuildMeta = BuildMeta> {
       return totals;
     }
 
-    return this._totals;
+    return this.#totals;
   }
 }

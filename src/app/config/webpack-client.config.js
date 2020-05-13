@@ -25,7 +25,13 @@ module.exports = (env, reporter) => ({
   },
   devtool: IS_PROD ? false : 'cheap-module-eval-source-map',
   module: {
-    rules: [{ test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ }],
+    rules: [
+      {
+        test: /\.[t|j]sx?$/,
+        use: { loader: 'babel-loader', options: { cacheDirectory: true, rootMode: 'upward' } },
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
     alias: {

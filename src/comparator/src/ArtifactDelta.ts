@@ -6,83 +6,83 @@ import { Budget, BudgetResult } from '@build-tracker/types';
 import { delta, percentDelta } from './artifact-math';
 
 export default class ArtifactDelta {
-  private _name: string;
-  private _budgets: Array<Budget>;
-  private _results: Array<BudgetResult>;
-  private _sizes: ArtifactSizes;
-  private _prevSizes: ArtifactSizes;
-  private _hashChanged: boolean;
+  #name: string;
+  #budgets: Array<Budget>;
+  #results: Array<BudgetResult>;
+  #sizes: ArtifactSizes;
+  #prevSizes: ArtifactSizes;
+  #hashChanged: boolean;
 
-  public constructor(
+  constructor(
     name: string,
     budgets: Array<Budget>,
     sizes: ArtifactSizes,
     prevSizes: ArtifactSizes,
     hashChanged: boolean
   ) {
-    this._name = name;
-    this._budgets = budgets;
-    this._sizes = sizes;
-    this._prevSizes = prevSizes;
-    this._hashChanged = hashChanged;
+    this.#name = name;
+    this.#budgets = budgets;
+    this.#sizes = sizes;
+    this.#prevSizes = prevSizes;
+    this.#hashChanged = hashChanged;
   }
 
-  public get name(): string {
-    return this._name;
+  get name(): string {
+    return this.#name;
   }
 
-  public get sizes(): ArtifactSizes {
-    return Object.keys(this._sizes).reduce(
+  get sizes(): ArtifactSizes {
+    return Object.keys(this.#sizes).reduce(
       (memo, sizeKey) => {
         // @ts-ignore
-        memo[sizeKey] = delta(sizeKey, this._sizes, this._prevSizes);
+        memo[sizeKey] = delta(sizeKey, this.#sizes, this.#prevSizes);
         return memo;
       },
-      { ...this._sizes }
+      { ...this.#sizes }
     );
   }
 
-  public get percents(): ArtifactSizes {
-    return Object.keys(this._sizes).reduce(
+  get percents(): ArtifactSizes {
+    return Object.keys(this.#sizes).reduce(
       (memo, sizeKey) => {
         // @ts-ignore
-        memo[sizeKey] = percentDelta(sizeKey, this._sizes, this._prevSizes);
+        memo[sizeKey] = percentDelta(sizeKey, this.#sizes, this.#prevSizes);
         return memo;
       },
-      { ...this._sizes }
+      { ...this.#sizes }
     );
   }
 
-  public get hashChanged(): boolean {
-    return this._hashChanged;
+  get hashChanged(): boolean {
+    return this.#hashChanged;
   }
 
-  public get hashChangeUnexpected(): boolean {
+  get hashChangeUnexpected(): boolean {
     return (
-      this._hashChanged &&
+      this.#hashChanged &&
       this.failingBudgets.length === 0 &&
       Object.keys(this.sizes).every((sizeKey) => this.sizes[sizeKey] === 0)
     );
   }
 
-  public get budgets(): Array<BudgetResult> {
-    if (!this._results) {
+  get budgets(): Array<BudgetResult> {
+    if (!this.#results) {
       const sizes = this.sizes;
       const percents = this.percents;
 
-      this._results = [];
-      this._budgets.forEach((budget) => {
+      this.#results = [];
+      this.#budgets.forEach((budget) => {
         const { level, maximum, sizeKey, type } = budget;
         const actual =
           type === 'delta'
             ? sizes[sizeKey]
             : type === 'percentDelta'
             ? percents[sizeKey]
-            : this._sizes
-            ? this._sizes[sizeKey]
+            : this.#sizes
+            ? this.#sizes[sizeKey]
             : 0;
         const expected = maximum;
-        this._results.push({
+        this.#results.push({
           actual,
           expected,
           level,
@@ -92,14 +92,14 @@ export default class ArtifactDelta {
         });
       });
     }
-    return this._results;
+    return this.#results;
   }
 
-  public get failingBudgets(): Array<BudgetResult> {
+  get failingBudgets(): Array<BudgetResult> {
     return this.budgets.filter((budget) => budget.passing === false);
   }
 
-  public toObject(): {} {
+  toObject(): {} {
     return {
       name: this.name,
       sizes: this.sizes,

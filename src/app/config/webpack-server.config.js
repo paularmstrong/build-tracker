@@ -20,7 +20,14 @@ module.exports = (env, reporter) => ({
   devtool: IS_PROD ? false : 'cheap-module-eval-source-map',
   module: {
     rules: [
-      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
+      {
+        test: /\.[t|j]sx?$/,
+        use: {
+          loader: 'babel-loader',
+          options: { cacheDirectory: true, rootMode: 'upward' },
+        },
+        exclude: /node_modules/,
+      },
       {
         test: /\.(png)$/i,
         loader: require.resolve('file-loader'),

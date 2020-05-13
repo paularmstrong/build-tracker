@@ -14,58 +14,58 @@ export interface DeltaOptions {
 }
 
 export default class BuildDelta<M extends BuildMeta = BuildMeta> {
-  private _baseBuild: Build<M>;
-  private _prevBuild: Build<M>;
+  #baseBuild: Build<M>;
+  #prevBuild: Build<M>;
 
-  private _artifactBudgets: ArtifactBudgets;
-  private _artifactDeltas: Map<string, ArtifactDelta>;
-  private _artifactFilters: ArtifactFilters;
-  private _artifactNames: Set<string>;
-  private _groups: Array<Group>;
-  private _groupDeltas: Map<string, ArtifactDelta>;
-  private _sizeKeys: Set<string>;
+  #artifactBudgets: ArtifactBudgets;
+  #artifactDeltas: Map<string, ArtifactDelta>;
+  #artifactFilters: ArtifactFilters;
+  #artifactNames: Set<string>;
+  #groups: Array<Group>;
+  #groupDeltas: Map<string, ArtifactDelta>;
+  #sizeKeys: Set<string>;
 
-  public constructor(baseBuild: Build<M>, prevBuild: Build<M>, options: DeltaOptions = {}) {
-    this._baseBuild = baseBuild;
-    this._prevBuild = prevBuild;
-    this._artifactBudgets = options.artifactBudgets || emptyObject;
-    this._artifactFilters = options.artifactFilters || [];
-    this._groups = options.groups || [];
+  constructor(baseBuild: Build<M>, prevBuild: Build<M>, options: DeltaOptions = {}) {
+    this.#baseBuild = baseBuild;
+    this.#prevBuild = prevBuild;
+    this.#artifactBudgets = options.artifactBudgets || emptyObject;
+    this.#artifactFilters = options.artifactFilters || [];
+    this.#groups = options.groups || [];
   }
 
-  public get baseBuild(): Build<M> {
-    return this._baseBuild;
+  get baseBuild(): Build<M> {
+    return this.#baseBuild;
   }
 
-  public get prevBuild(): Build<M> {
-    return this._prevBuild;
+  get prevBuild(): Build<M> {
+    return this.#prevBuild;
   }
 
-  public get artifactSizes(): Array<string> {
-    if (!this._sizeKeys) {
-      this._sizeKeys = new Set();
-      this._baseBuild.artifactSizes.forEach((key) => {
-        this._sizeKeys.add(key);
+  get artifactSizes(): Array<string> {
+    if (!this.#sizeKeys) {
+      this.#sizeKeys = new Set();
+      this.#baseBuild.artifactSizes.forEach((key) => {
+        this.#sizeKeys.add(key);
       });
-      this._prevBuild.artifactSizes.forEach((key) => {
-        this._sizeKeys.add(key);
+      this.#prevBuild.artifactSizes.forEach((key) => {
+        this.#sizeKeys.add(key);
       });
       if (
-        this._sizeKeys.size !== this._baseBuild.artifactSizes.length ||
-        this._sizeKeys.size !== this._prevBuild.artifactSizes.length
+        this.#sizeKeys.size !== this.#baseBuild.artifactSizes.length ||
+        this.#sizeKeys.size !== this.#prevBuild.artifactSizes.length
       ) {
         throw new Error('Size keys do not match between builds');
       }
     }
 
-    return Array.from(this._sizeKeys);
+    return Array.from(this.#sizeKeys);
   }
 
-  public getArtifactDelta(name: string): ArtifactDelta {
-    if (!this._artifactDeltas) {
+  getArtifactDelta(name: string): ArtifactDelta {
+    if (!this.#artifactDeltas) {
       this.artifactDeltas;
     }
-    if (!this._artifactDeltas.has(name)) {
+    if (!this.#artifactDeltas.has(name)) {
       // @ts-ignore
       const noSize: A = this.artifactSizes.reduce((memo, key) => {
         memo[key] = 0;
@@ -73,24 +73,24 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
       }, {});
       return new ArtifactDelta(name, [], noSize, noSize, false);
     }
-    return this._artifactDeltas.get(name);
+    return this.#artifactDeltas.get(name);
   }
 
-  public get artifactNames(): Set<string> {
-    if (!this._artifactNames) {
-      this._artifactNames = new Set();
+  get artifactNames(): Set<string> {
+    if (!this.#artifactNames) {
+      this.#artifactNames = new Set();
       const mapNames = (name): void => {
-        if (!this._artifactFilters.some((filter) => filter.test(name))) {
-          this._artifactNames.add(name);
+        if (!this.#artifactFilters.some((filter) => filter.test(name))) {
+          this.#artifactNames.add(name);
         }
       };
-      this._baseBuild.artifactNames.forEach(mapNames);
-      this._prevBuild.artifactNames.forEach(mapNames);
+      this.#baseBuild.artifactNames.forEach(mapNames);
+      this.#prevBuild.artifactNames.forEach(mapNames);
     }
-    return this._artifactNames;
+    return this.#artifactNames;
   }
 
-  private get _fauxArtifactSizes(): ArtifactSizes {
+  get #fauxArtifactSizes(): ArtifactSizes {
     // @ts-ignore
     return this.artifactSizes.reduce((memo, sizeKey) => {
       memo[sizeKey] = 0;
@@ -98,16 +98,16 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
     }, {});
   }
 
-  public get artifactDeltas(): Array<ArtifactDelta> {
-    if (!this._artifactDeltas) {
-      this._artifactDeltas = new Map();
+  get artifactDeltas(): Array<ArtifactDelta> {
+    if (!this.#artifactDeltas) {
+      this.#artifactDeltas = new Map();
       this.artifactNames.forEach((artifactName) => {
-        const baseArtifact = this._baseBuild.getArtifact(artifactName);
-        const prevArtifact = this._prevBuild.getArtifact(artifactName);
+        const baseArtifact = this.#baseBuild.getArtifact(artifactName);
+        const prevArtifact = this.#prevBuild.getArtifact(artifactName);
 
-        const sizes = baseArtifact ? baseArtifact.sizes : this._fauxArtifactSizes;
-        const prevSizes = prevArtifact ? prevArtifact.sizes : this._fauxArtifactSizes;
-        const budgets = [...(this._artifactBudgets[artifactName] || []), ...(this._artifactBudgets['*'] || [])];
+        const sizes = baseArtifact ? baseArtifact.sizes : this.#fauxArtifactSizes;
+        const prevSizes = prevArtifact ? prevArtifact.sizes : this.#fauxArtifactSizes;
+        const budgets = [...(this.#artifactBudgets[artifactName] || []), ...(this.#artifactBudgets['*'] || [])];
 
         const delta = new ArtifactDelta(
           artifactName,
@@ -117,24 +117,24 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
           !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash
         );
 
-        this._artifactDeltas.set(artifactName, delta);
+        this.#artifactDeltas.set(artifactName, delta);
       });
     }
 
-    return Array.from(this._artifactDeltas.values());
+    return Array.from(this.#artifactDeltas.values());
   }
 
-  public getGroupDelta(groupName: string): ArtifactDelta {
-    if (!this._groupDeltas) {
+  getGroupDelta(groupName: string): ArtifactDelta {
+    if (!this.#groupDeltas) {
       this.groupDeltas;
     }
-    return this._groupDeltas.get(groupName);
+    return this.#groupDeltas.get(groupName);
   }
 
-  public get groupDeltas(): Map<string, ArtifactDelta> {
-    if (!this._groupDeltas) {
-      this._groupDeltas = new Map();
-      this._groups.forEach((group) => {
+  get groupDeltas(): Map<string, ArtifactDelta> {
+    if (!this.#groupDeltas) {
+      this.#groupDeltas = new Map();
+      this.#groups.forEach((group) => {
         let artifactNames = group.artifactNames ? [...group.artifactNames] : [];
         if (group.artifactMatch) {
           artifactNames = artifactNames.concat(
@@ -142,27 +142,27 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
           );
         }
 
-        const baseSum = this._baseBuild.getSum(artifactNames);
-        const prevSum = this._prevBuild.getSum(artifactNames);
+        const baseSum = this.#baseBuild.getSum(artifactNames);
+        const prevSum = this.#prevBuild.getSum(artifactNames);
 
         const hashChanged = artifactNames.reduce((changed, artifactName) => {
-          const baseArtifact = this._baseBuild.getArtifact(artifactName);
-          const prevArtifact = this._prevBuild.getArtifact(artifactName);
+          const baseArtifact = this.#baseBuild.getArtifact(artifactName);
+          const prevArtifact = this.#prevBuild.getArtifact(artifactName);
           return changed ? true : !baseArtifact || !prevArtifact || baseArtifact.hash !== prevArtifact.hash;
         }, false);
 
         const delta = new ArtifactDelta(
           group.name,
           group.budgets || [],
-          baseSum || this._fauxArtifactSizes,
-          prevSum || this._fauxArtifactSizes,
+          baseSum || this.#fauxArtifactSizes,
+          prevSum || this.#fauxArtifactSizes,
           hashChanged
         );
 
-        this._groupDeltas.set(group.name, delta);
+        this.#groupDeltas.set(group.name, delta);
       });
     }
 
-    return this._groupDeltas;
+    return this.#groupDeltas;
   }
 }

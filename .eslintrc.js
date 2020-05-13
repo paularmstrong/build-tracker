@@ -1,24 +1,24 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    sourceType: 'module'
+    sourceType: 'module',
   },
   extends: ['prettier', 'prettier/@typescript-eslint', 'plugin:react/recommended', 'plugin:jest/recommended'],
   plugins: ['@typescript-eslint', 'markdown', 'json', 'prettier', 'react', 'react-hooks', 'jest'],
   env: {
     es6: true,
     node: true,
-    browser: true
+    browser: true,
   },
   globals: {
     document: false,
     navigator: false,
-    window: false
+    window: false,
   },
   settings: {
     react: {
-      version: 'detect'
-    }
+      version: 'detect',
+    },
   },
   rules: {
     'no-console': 'error',
@@ -34,7 +34,6 @@ module.exports = {
     '@typescript-eslint/class-name-casing': 'error',
     '@typescript-eslint/consistent-type-assertions': 'error',
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
-    '@typescript-eslint/explicit-member-accessibility': 'error',
     '@typescript-eslint/indent': 'off',
     '@typescript-eslint/interface-name-prefix': 'error',
     '@typescript-eslint/member-delimiter-style': 'error',
@@ -65,7 +64,7 @@ module.exports = {
     'react/prop-types': 'off',
 
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'error'
+    'react-hooks/exhaustive-deps': 'error',
   },
-  overrides: [{ files: ['*.js'], rules: { '@typescript-eslint/explicit-function-return-type': 'off' } }]
+  overrides: [{ files: ['*.js'], rules: { '@typescript-eslint/explicit-function-return-type': 'off' } }],
 };

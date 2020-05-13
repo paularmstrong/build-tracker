@@ -28,10 +28,10 @@ jest.mock('../../components/Drawer', () => {
     children: React.ReactElement;
   }
   class Drawer extends React.Component<Props> {
-    public render(): React.ReactElement {
+    render(): React.ReactElement {
       return <>{this.props.children}</>;
     }
-    public show(): void {}
+    show(): void {}
   }
   return Drawer;
 });

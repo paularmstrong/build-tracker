@@ -56,20 +56,20 @@ interface State {
 }
 
 class Hoverable extends React.Component<Props, State> {
-  public state = { isHovered: false };
+  state = { isHovered: false };
 
-  public render(): React.ReactElement {
+  render(): React.ReactElement {
     const { children } = this.props;
     const { isHovered } = this.state;
     const child = typeof children === 'function' ? children(isHovered) : children;
 
     return React.cloneElement(React.Children.only(child), {
-      onMouseEnter: this._handleMouseEnter,
-      onMouseLeave: this._handleMouseLeave,
+      onMouseEnter: this.#handleMouseEnter,
+      onMouseLeave: this.#handleMouseLeave,
     });
   }
 
-  private _handleMouseEnter = (): void => {
+  #handleMouseEnter = (): void => {
     const { isHovered } = this.state;
     if (hover.isEnabled && !isHovered) {
       const { onHoverIn } = this.props;
@@ -80,7 +80,7 @@ class Hoverable extends React.Component<Props, State> {
     }
   };
 
-  private _handleMouseLeave = (): void => {
+  #handleMouseLeave = (): void => {
     const { isHovered } = this.state;
     if (isHovered) {
       const { onHoverOut } = this.props;

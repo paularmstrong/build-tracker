@@ -37,7 +37,8 @@ export default function spawn(command: string, args?: ReadonlyArray<string>, opt
 
     proc.on('close', (code) => {
       if (code !== 0) {
-        return reject({ code, stderr: Buffer.concat(stderr).toString(), errors });
+        const invocation = `${command} ${(args || []).join(' ')}`;
+        return reject({ code, stderr: Buffer.concat(stderr).toString(), errors, invocation });
       }
       resolve(Buffer.concat(stdout));
     });

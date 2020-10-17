@@ -15,7 +15,7 @@ export default function setup(pool: Pool): () => Promise<boolean> {
           `
 CREATE TABLE IF NOT EXISTS builds(
   revision VARCHAR(64) PRIMARY KEY NOT NULL,
-  branch VARCHAR(64) NOT NULL,
+  branch VARCHAR(256) NOT NULL,
   parentRevision VARCHAR(64),
   timestamp INT NOT NULL,
   meta VARCHAR(1024),
@@ -37,8 +37,14 @@ CREATE TABLE IF NOT EXISTS builds(
                   client.release();
                   throw err;
                 }
-                client.release();
-                resolve(true);
+                client.query('ALTER TABLE builds MODIFY branch VARCHAR(256)', (err) => {
+                  if (err) {
+                    client.release();
+                    throw err;
+                  }
+                  client.release();
+                  resolve(true);
+                });
               });
             });
           }

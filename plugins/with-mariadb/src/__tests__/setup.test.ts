@@ -35,6 +35,11 @@ describe('withMariadb setup', () => {
     expect(query).toHaveBeenCalledWith('CREATE INDEX IF NOT EXISTS timestamp ON builds (timestamp)');
   });
 
+  test('alters the branch column to length 256', async () => {
+    await expect(setupFn()).resolves.toBe(true);
+    expect(query).toHaveBeenCalledWith('ALTER TABLE builds MODIFY branch VARCHAR(256)');
+  });
+
   test('releases the client on complete', async () => {
     await expect(setupFn()).resolves.toBe(true);
     expect(release).toHaveBeenCalled();

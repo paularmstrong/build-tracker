@@ -8,7 +8,9 @@ export default function setup(pool: Pool): () => Promise<boolean> {
     return new Promise((resolve) => {
       pool.getConnection((err, client) => {
         if (err) {
-          client.release();
+          if (client) {
+            client.release();
+          }
           throw err;
         }
         client.query(

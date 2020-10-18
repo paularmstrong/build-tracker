@@ -4,7 +4,7 @@
 import { Pool } from 'mariadb';
 
 export default function setup(pool: Pool): () => Promise<boolean> {
-  const setup = async (): Promise<boolean> => {
+  return async function setup(): Promise<boolean> {
     const client = await pool.getConnection();
     try {
       await client.query(`
@@ -27,7 +27,4 @@ CREATE TABLE IF NOT EXISTS builds(
     client.release();
     return Promise.resolve(true);
   };
-  return setup;
 }
-
-module.exports = setup;

@@ -4,7 +4,7 @@
 import { Pool } from 'mysql';
 
 export default function setup(pool: Pool): () => Promise<boolean> {
-  const setup = (): Promise<boolean> => {
+  return async function setup(): Promise<boolean> {
     return new Promise((resolve) => {
       pool.getConnection((err, client) => {
         if (err) {
@@ -52,8 +52,4 @@ CREATE TABLE IF NOT EXISTS builds(
       });
     });
   };
-
-  return setup;
 }
-
-module.exports = setup;

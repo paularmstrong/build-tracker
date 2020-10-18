@@ -4,7 +4,7 @@
 import { Pool } from 'pg';
 
 export default function setup(pool: Pool): () => Promise<boolean> {
-  const setup = async (): Promise<boolean> => {
+  return async function setup(): Promise<boolean> {
     const client = await pool.connect();
     try {
       await client.query(`CREATE TABLE IF NOT EXISTS builds(
@@ -25,7 +25,4 @@ export default function setup(pool: Pool): () => Promise<boolean> {
     client.release();
     return Promise.resolve(true);
   };
-  return setup;
 }
-
-module.exports = setup;

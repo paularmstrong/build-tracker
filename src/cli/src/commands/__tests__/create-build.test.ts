@@ -47,7 +47,7 @@ describe('create-build', () => {
 
     test('writes the artifact stats to stdout', async () => {
       await expect(Command.handler({ config, out: true, 'skip-dirty-check': true })).resolves.toBeUndefined();
-      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('"parentRevision": "7654321",'));
+      expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching('"parentRevision": "'));
     });
 
     test('converts JSON string-encoded metadata', async () => {

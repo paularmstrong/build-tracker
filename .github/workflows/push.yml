@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 10.x
+          node-version: 12.x
       - run: npm install -g yarn
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 10.x
+          node-version: 12.x
       - run: npm install -g yarn
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -68,7 +68,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 10.x
+          node-version: 12.x
       - run: npm install -g yarn
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path

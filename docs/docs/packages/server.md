@@ -132,13 +132,13 @@ Separate from individual artifacts, budgets can be set across the sum of all art
 ```ts
 enum BudgetLevel {
   WARN = 'warn',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 enum BudgetType {
   DELTA = 'delta',
   PERCENT_DELTA = 'percentDelta',
-  SIZE = 'size'
+  SIZE = 'size',
 }
 
 interface Budget {
@@ -183,7 +183,7 @@ This is a useful setting if you use and track a branch that is not `master` in y
 
 #### `dev?: boolean = false`
 
-Set the server into development mode. This is only recommended if you are [contributing](/docs/contributing) to Build Tracker.
+Set the server into development mode. This is only recommended if you are [contributing](../guides/contributing) to Build Tracker.
 
 #### `handlers?: Handlers`
 
@@ -203,7 +203,7 @@ The default size type used to represent files. For example, `gzip` or `brotli`.
 
 ### Database integration
 
-The following options should generally be handled by a [Build Tracker plugin](/docs/plugins). You can always override them or write your own custom queries and DB setup if you like.
+The following options should generally be handled by a [Build Tracker plugin](../plugins/plugins). You can always override them or write your own custom queries and DB setup if you like.
 
 #### `setup?: () => Promise<boolean>`
 

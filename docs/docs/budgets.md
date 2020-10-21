@@ -91,7 +91,7 @@ For this budget type, `maximum` is a float value where `1.0` is a 100% delta inc
 
 ## Setting performance budgets with Build Tracker
 
-Using the [`@build-tracker/server configuration`](/docs/packages/servver#basic-configuration), there are a number of possible ways to set budgets: on individual artifacts, every artifact, groups of artifacts, and all artifacts.
+Using the [`@build-tracker/server configuration`](packages/server#basic-configuration), there are a number of possible ways to set budgets: on individual artifacts, every artifact, groups of artifacts, and all artifacts.
 
 ### Budgets for individual and every artifact
 

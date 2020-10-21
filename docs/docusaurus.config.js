@@ -3,18 +3,21 @@ module.exports = {
   tagline: 'Track your application’s performance budgets and prevent unexpected bloat.',
   url: 'https://buildtracker.dev',
   baseUrl: '/',
+  onBrokenLinks: 'throw',
   favicon: 'img/favicon.png',
   organizationName: 'paularmstrong', // Usually your GitHub org/user name.
   projectName: 'build-tracker', // Usually your repo name.
   themeConfig: {
-    disableDarkMode: true,
+    colorMode: {
+      disableSwitch: true,
+    },
     navbar: {
       title: 'Build Tracker',
       logo: {
         alt: 'Build Tracker Logo',
         src: 'img/logo.svg',
       },
-      links: [
+      items: [
         { to: 'docs/installation', label: 'Docs', position: 'left' },
         { to: 'docs/guides/guides', label: 'Guides', position: 'left' },
         { to: 'blog', label: 'Blog', position: 'right' },
@@ -32,7 +35,7 @@ module.exports = {
       algoliaOptions: {},
     },
     footer: {
-      logo: { src: 'img/logo.svg', alt: '' },
+      logo: { src: 'img/logo.svg', alt: 'Build Tracker' },
       links: [
         {
           title: 'Docs',
@@ -82,6 +85,10 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/paularmstrong/build-tracker/edit/master/docs/',
+        },
+        blog: {
+          showReadingTime: true,
+          editUrl: 'https://github.com/paularmstrong/build-tracker/edit/master/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

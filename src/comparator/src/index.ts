@@ -205,7 +205,7 @@ export default class BuildComparator {
         if (buildA.getMetaValue('parentRevision') === buildB.getMetaValue('revision')) {
           return 1;
         }
-        if (buildB.getMetaValue('revision') === buildA.getMetaValue('parentRevision')) {
+        if (buildA.getMetaValue('revision') === buildB.getMetaValue('parentRevision')) {
           return -1;
         }
         return 0;
@@ -286,10 +286,6 @@ export default class BuildComparator {
           });
         });
       });
-
-      if (allSizeKeys.size !== this._sizeKeys.length || !this._sizeKeys.every((key) => allSizeKeys.has(key))) {
-        throw new Error('builds provided do not have same size keys for artifacts');
-      }
     }
     return this._sizeKeys;
   }

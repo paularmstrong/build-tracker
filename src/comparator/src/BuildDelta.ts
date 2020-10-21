@@ -50,12 +50,6 @@ export default class BuildDelta<M extends BuildMeta = BuildMeta> {
       this._prevBuild.artifactSizes.forEach((key) => {
         this._sizeKeys.add(key);
       });
-      if (
-        this._sizeKeys.size !== this._baseBuild.artifactSizes.length ||
-        this._sizeKeys.size !== this._prevBuild.artifactSizes.length
-      ) {
-        throw new Error('Size keys do not match between builds');
-      }
     }
 
     return Array.from(this._sizeKeys);

@@ -65,8 +65,15 @@ describe('BuildComparator', () => {
 
   describe('builds', () => {
     test('sorts by timestamp, then parentRevision', () => {
+      const build2 = new Build(
+        { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef1', timestamp: 8901234 },
+        [
+          { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
+          { name: 'churros~burritos~tacos', hash: 'def', sizes: { stat: 469, gzip: 120 } },
+        ]
+      );
       const build3 = new Build(
-        { branch: 'master', revision: 'abcdef', parentRevision: build1.getMetaValue('revision'), timestamp: 1234566 },
+        { branch: 'master', revision: 'abcdef1', parentRevision: build1.getMetaValue('revision'), timestamp: 1234566 },
         [
           { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
           { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
@@ -76,6 +83,16 @@ describe('BuildComparator', () => {
       expect(comparator.builds[0]).toBe(build1);
       expect(comparator.builds[1]).toBe(build3);
       expect(comparator.builds[2]).toBe(build2);
+
+      const comparatorRev = new BuildComparator({ builds: [build1, build2, build3] });
+      expect(comparatorRev.builds[0]).toBe(build1);
+      expect(comparatorRev.builds[1]).toBe(build3);
+      expect(comparatorRev.builds[2]).toBe(build2);
+
+      const comparatorRev2 = new BuildComparator({ builds: [build3, build1, build2] });
+      expect(comparatorRev2.builds[0]).toBe(build1);
+      expect(comparatorRev2.builds[1]).toBe(build3);
+      expect(comparatorRev2.builds[2]).toBe(build2);
     });
   });
 
@@ -132,14 +149,6 @@ describe('BuildComparator', () => {
     test('gets a list of size keys available', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.sizeKeys).toEqual(['gzip', 'stat']);
-    });
-
-    test('throws an error if some builds have size keys that others do not', () => {
-      expect(() => {
-        new BuildComparator({
-          builds: [new Build(build1.meta, [{ name: 'tacos', hash: 'abc', sizes: { tacos: 123 } }]), build2],
-        });
-      }).toThrowErrorMatchingInlineSnapshot(`"builds provided do not have same size keys for artifacts"`);
     });
 
     test('returns an empty array if there are no builds', () => {
@@ -372,8 +381,21 @@ describe('BuildComparator', () => {
         | All                      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
         | churros\\\\~burritos\\\\~tacos |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
         | burritos                 | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-        | tacos                    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+        | tacos                    | 0.04 KiB | 0.04 KiB |      -0 KiB (-4.4%) |"
       `);
+    });
+
+    test('Allows comparing even when sizeKeys are not present', () => {
+      const comparator = new BuildComparator({
+        builds: [new Build(build1.meta, [{ name: 'tacos', hash: 'abc', sizes: { tacos: 123 } }]), build2],
+      });
+      expect(comparator.toMarkdown({ sizeKey: 'tacos' })).toMatchInlineSnapshot(`
+"|                          |  1234567 | 8901234 |           Δ1 |
+| :----------------------- | -------: | ------: | -----------: |
+| All                      | 0.12 KiB |   0 KiB | 0 KiB (0.0%) |
+| tacos                    | 0.12 KiB |   0 KiB | 0 KiB (0.0%) |
+| churros\\\\~burritos\\\\~tacos |    0 KiB |   0 KiB | 0 KiB (0.0%) |"
+`);
     });
 
     test('handles 0 artifacts', () => {
@@ -419,10 +441,10 @@ describe('BuildComparator', () => {
     test('does not include filtered artifacts', () => {
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
       expect(comparator.toMarkdown()).toMatchInlineSnapshot(`
-        "|       |  1234567 |  8901234 |            Δ1 |
-        | :---- | -------: | -------: | ------------: |
-        | All   | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |
-        | tacos | 0.04 KiB | 0.04 KiB | 0 KiB (-4.4%) |"
+        "|       |  1234567 |  8901234 |             Δ1 |
+        | :---- | -------: | -------: | -------------: |
+        | All   | 0.04 KiB | 0.04 KiB | -0 KiB (-4.4%) |
+        | tacos | 0.04 KiB | 0.04 KiB | -0 KiB (-4.4%) |"
       `);
     });
 
@@ -463,7 +485,7 @@ describe('BuildComparator', () => {
         | All                      | 0.13 KiB | 0.16 KiB |    0.03 KiB (20.7%) |
         | churros\\\\~burritos\\\\~tacos |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
         | burritos                 | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-        | tacos                    | 0.04 KiB | 0.04 KiB |    🚨 0 KiB (-4.4%) |"
+        | tacos                    | 0.04 KiB | 0.04 KiB |   🚨 -0 KiB (-4.4%) |"
       `);
     });
 
@@ -481,7 +503,7 @@ describe('BuildComparator', () => {
         | All                      | 0.13 KiB | 0.16 KiB | 🚨 0.03 KiB (20.7%) |
         | churros\\\\~burritos\\\\~tacos |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
         | burritos                 | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-        | tacos                    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+        | tacos                    | 0.04 KiB | 0.04 KiB |      -0 KiB (-4.4%) |"
       `);
     });
 
@@ -496,7 +518,7 @@ describe('BuildComparator', () => {
 | All                      | 0.13 KiB | 0.16 KiB | ⚠️ 0.03 KiB (20.7%) |
 | churros\\\\~burritos\\\\~tacos |    0 KiB | 0.12 KiB |   0.12 KiB (100.0%) |
 | burritos                 | 0.09 KiB |    0 KiB | -0.09 KiB (-100.0%) |
-| tacos                    | 0.04 KiB | 0.04 KiB |       0 KiB (-4.4%) |"
+| tacos                    | 0.04 KiB | 0.04 KiB |      -0 KiB (-4.4%) |"
 `);
     });
 
@@ -537,7 +559,7 @@ describe('BuildComparator', () => {
 | error                    | 0.04 KiB | 0.16 KiB | 🚨 0.12 KiB (262.2%) |
 | churros\\\\~burritos\\\\~tacos |    0 KiB | 0.12 KiB |    0.12 KiB (100.0%) |
 | burritos                 | 0.09 KiB |    0 KiB |  -0.09 KiB (-100.0%) |
-| tacos                    | 0.04 KiB | 0.04 KiB |        0 KiB (-4.4%) |"
+| tacos                    | 0.04 KiB | 0.04 KiB |       -0 KiB (-4.4%) |"
 `);
     });
   });
@@ -546,12 +568,12 @@ describe('BuildComparator', () => {
     test('gets a CSV formatted table', () => {
       const comparator = new BuildComparator({ builds: [build1, build2] });
       expect(comparator.toCsv()).toMatchInlineSnapshot(`
-        ",1234567,8901234,Δ1
-        All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
-        churros~burritos~tacos,0 KiB,0.12 KiB,0.12 KiB (100.0%)
-        burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)
-        tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
-      `);
+",1234567,8901234,Δ1
+All,0.13 KiB,0.16 KiB,0.03 KiB (20.7%)
+churros~burritos~tacos,0 KiB,0.12 KiB,0.12 KiB (100.0%)
+burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)
+tacos,0.04 KiB,0.04 KiB,-0 KiB (-4.4%)"
+`);
     });
 
     test('can specify a different size key', () => {
@@ -587,8 +609,8 @@ burritos,0.09 KiB,0 KiB,-0.09 KiB (-100.0%)"
       const comparator = new BuildComparator({ builds: [build1, build2], artifactFilters });
       expect(comparator.toCsv()).toMatchInlineSnapshot(`
 ",1234567,8901234,Δ1
-All,0.04 KiB,0.04 KiB,0 KiB (-4.4%)
-tacos,0.04 KiB,0.04 KiB,0 KiB (-4.4%)"
+All,0.04 KiB,0.04 KiB,-0 KiB (-4.4%)
+tacos,0.04 KiB,0.04 KiB,-0 KiB (-4.4%)"
 `);
     });
 

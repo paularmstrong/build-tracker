@@ -57,22 +57,6 @@ describe('BuildDelta', () => {
       const bd = new BuildDelta(buildA, buildB);
       expect(bd.artifactSizes).toEqual(['stat', 'gzip']);
     });
-
-    test('throws an error if builds do not have same artifact size keys', () => {
-      const bd = new BuildDelta(
-        buildA,
-        new Build(
-          {
-            branch: 'master',
-            revision: { value: '123', url: 'https://build-tracker.local' },
-            parentRevision: 'abc',
-            timestamp: Date.now(),
-          },
-          [{ name: 'tacos', hash: 'abc', sizes: {} }]
-        )
-      );
-      expect(() => bd.artifactSizes).toThrow();
-    });
   });
 
   describe('artifactNames', () => {

@@ -4,18 +4,20 @@
 import { Pool } from 'mysql';
 
 export default function setup(pool: Pool): () => Promise<boolean> {
-  const setup = (): Promise<boolean> => {
+  return async function setup(): Promise<boolean> {
     return new Promise((resolve) => {
       pool.getConnection((err, client) => {
         if (err) {
-          client.release();
+          if (client) {
+            client.release();
+          }
           throw err;
         }
         client.query(
           `
 CREATE TABLE IF NOT EXISTS builds(
   revision VARCHAR(64) PRIMARY KEY NOT NULL,
-  branch VARCHAR(64) NOT NULL,
+  branch VARCHAR(256) NOT NULL,
   parentRevision VARCHAR(64),
   timestamp INT NOT NULL,
   meta VARCHAR(1024),
@@ -37,8 +39,14 @@ CREATE TABLE IF NOT EXISTS builds(
                   client.release();
                   throw err;
                 }
-                client.release();
-                resolve(true);
+                client.query('ALTER TABLE builds MODIFY branch VARCHAR(256)', (err) => {
+                  if (err) {
+                    client.release();
+                    throw err;
+                  }
+                  client.release();
+                  resolve(true);
+                });
               });
             });
           }
@@ -46,8 +54,4 @@ CREATE TABLE IF NOT EXISTS builds(
       });
     });
   };
-
-  return setup;
 }
-
-module.exports = setup;

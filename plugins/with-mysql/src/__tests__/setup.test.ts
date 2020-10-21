@@ -43,6 +43,11 @@ describe('withMysql setup', () => {
     expect(query).toHaveBeenCalledWith('ALTER TABLE builds ADD INDEX (timestamp)', expect.any(Function));
   });
 
+  test('alters the branch column to length 256', async () => {
+    await expect(setupFn()).resolves.toBe(true);
+    expect(query).toHaveBeenCalledWith('ALTER TABLE builds MODIFY branch VARCHAR(256)', expect.any(Function));
+  });
+
   test('releases the client on complete', async () => {
     await expect(setupFn()).resolves.toBe(true);
     expect(release).toHaveBeenCalled();

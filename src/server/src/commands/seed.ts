@@ -31,10 +31,12 @@ export const handler = async (args: Args): Promise<void> => {
 
   await config.setup();
 
-  glob.sync(`${path.join(fixturePath, 'builds')}/*.json`).forEach(async (build) => {
+  const builds = glob.sync(`${path.join(fixturePath, 'builds-medium')}/*.json`);
+
+  for (const build of builds) {
     const buildData = require(build);
     await config.queries.build.insert(new Build(buildData.meta, buildData.artifacts));
-  });
+  }
 
   return Promise.resolve();
 };

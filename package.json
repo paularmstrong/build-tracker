@@ -6,11 +6,16 @@
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "src/*",
-    "plugins/*",
-    "./docs"
-  ],
+  "workspaces": {
+    "packages": [
+      "src/*",
+      "plugins/*",
+      "./docs"
+    ],
+    "nohoist": [
+      "**/html-minifier-terser"
+    ]
+  },
   "scripts": {
     "dev": "ts-node src/server/src/index.ts run -c ./config/fixtures.js",
     "dev:large": "ts-node src/server/src/index.ts run -c ./config/fixtures-large.js",

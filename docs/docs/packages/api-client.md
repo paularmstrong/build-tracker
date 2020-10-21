@@ -154,7 +154,7 @@ interface APIResponse {
 }
 ```
 
-More can be done with the data. Check out the [Continuous Integration guide](guides/ci.md) for more ideas.
+More can be done with the data. Check out the [Continuous Integration guide](guides/advanced-ci.md) for more ideas.
 
 ## API
 

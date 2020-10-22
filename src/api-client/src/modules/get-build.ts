@@ -18,7 +18,6 @@ export default async function getBuild(
   logger: Logger = { log: noop, error: noop }
 ): Promise<Build> {
   const { applicationUrl } = config;
-
   // Call through to api/build/:revision
   const url = new URL(`${applicationUrl}/api/builds/${revision}`);
   const httpProtocol = applicationUrl.startsWith('https:') ? https : http;

@@ -1,4 +1,6 @@
-// eslint-disable-next-line header/header
+/**
+ * Copyright (c) 2019 Paul Armstrong
+ */
 import Build from '@build-tracker/build';
 import { BuildMetaItem } from '@build-tracker/build';
 import { Config } from './config';

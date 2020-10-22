@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/server",
-  "version": "1.0.0-beta.16",
+  "version": "1.0.0-beta.17",
   "description": "Build Tracker node.js web server",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@build-tracker/api-errors": "^1.0.0-beta.15",
-    "@build-tracker/app": "^1.0.0-beta.16",
+    "@build-tracker/app": "^1.0.0-beta.17",
     "@build-tracker/build": "^1.0.0-beta.15",
-    "@build-tracker/comparator": "^1.0.0-beta.16",
+    "@build-tracker/comparator": "^1.0.0-beta.17",
     "@build-tracker/formatting": "^1.0.0-beta.15",
     "@build-tracker/types": "^1.0.0-beta.15",
     "@types/body-parser": "^1.17.0",

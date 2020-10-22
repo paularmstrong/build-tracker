@@ -21,7 +21,7 @@ export default async function getBuild(
 ): Promise<Build> {
   const { applicationUrl } = config;
   // Call through to api/build/:revision
-  const url = new URL(`${applicationUrl}/api/builds/${revision}`);
+  const url = new URL(`${applicationUrl}/api/build/${revision}`);
   const httpProtocol = applicationUrl.startsWith('https:') ? https : http;
   const requestOptions = {
     host: url.hostname.replace(`${httpProtocol}//`, ''),

@@ -3,6 +3,7 @@
  */
 
 export { default as createBuild } from './modules/create-build';
+export { default as getBuild } from './modules/get-build';
 export { Config, default as getConfig } from './modules/config';
 export { default as statArtifacts } from './modules/stat-artifacts';
 export { default as uploadBuild } from './modules/upload-build';

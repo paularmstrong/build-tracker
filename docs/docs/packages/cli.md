@@ -64,6 +64,15 @@ Lower-level than `create-build`, this command will get artifact stats for the cu
 | `--config`, `-c` | Set path to the build-tracker API config file | [Found via cosmiconfig](api-client#configuration) |
 | `--out`, `-o`    | Write the stats to stdout                     | `true`                                            |
 
+### `get-build`
+
+Retrieve a build by revision
+
+| option, alias      | description                                   | default                                           |
+| ------------------ | --------------------------------------------- | ------------------------------------------------- |
+| `--config`, `-c`   | Set path to the build-tracker API config file | [Found via cosmiconfig](api-client#configuration) |
+| `--revision`, `-r` | Get the build using revision                  |                                                   |
+
 ### `version`
 
 Output the version number of the `bt-cli`.

@@ -186,7 +186,18 @@ createBuild(config, {
 });
 ```
 
-### `statArtifacts(config): Map<string, Stat>`
+### `getBuild(config: Config, revision: string): Promise<Build>`
+
+Gets a `Build` via a revision string.
+
+```js
+import { getBuild, getConfig } from '@build-tracker/api-client';
+
+const config = await getConfig();
+return await getBuild(config, 'abcdef');
+```
+
+### `statArtifacts(config: Config): Map<string, Stat>`
 
 Reads the artifacts from disk and builds a map of filenames to size stats. This is done automatically by `createBuild`; it is only included in case you want to create builds with a custom script.
 

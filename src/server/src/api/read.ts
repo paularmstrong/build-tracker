@@ -5,7 +5,7 @@ import { Queries } from '../types';
 import { ServerConfig } from '../server';
 import { Request, RequestHandler, Response } from 'express';
 
-const DEFAULT_BRANCH = 'master';
+const DEFAULT_BRANCH = 'main';
 
 export const queryByRevision = (queries: Queries['build']): RequestHandler => (req: Request, res: Response): void => {
   const { revision } = req.params;

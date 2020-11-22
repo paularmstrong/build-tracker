@@ -86,7 +86,7 @@ describe('read', () => {
       return request(app)
         .get('/api/builds/time/1234567..2345678')
         .then((res) => {
-          expect(queries.builds.byTimeRange).toHaveBeenCalledWith(1234567, 2345678, 'master');
+          expect(queries.builds.byTimeRange).toHaveBeenCalledWith(1234567, 2345678, 'main');
           expect(res.body).toEqual([build]);
         });
     });
@@ -162,7 +162,7 @@ describe('read', () => {
       return request(app)
         .get('/api/builds')
         .then((res) => {
-          expect(queries.builds.recent).toHaveBeenCalledWith(undefined, 'master');
+          expect(queries.builds.recent).toHaveBeenCalledWith(undefined, 'main');
           expect(res.body).toEqual([build]);
         });
     });
@@ -174,7 +174,7 @@ describe('read', () => {
       return request(app)
         .get('/api/builds/4')
         .then((res) => {
-          expect(queries.builds.recent).toHaveBeenCalledWith(4, 'master');
+          expect(queries.builds.recent).toHaveBeenCalledWith(4, 'main');
           expect(res.body).toEqual([build]);
         });
     });

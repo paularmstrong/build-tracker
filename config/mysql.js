@@ -9,7 +9,7 @@ const { BudgetLevel, BudgetType } = require('@build-tracker/types');
  */
 
 module.exports = withMysql({
-  defaultBranch: 'master',
+  defaultBranch: 'main',
   dev: true,
   artifacts: {
     groups: [

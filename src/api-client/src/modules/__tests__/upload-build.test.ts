@@ -9,7 +9,7 @@ import uploadBuild from '../upload-build';
 
 const build = {
   meta: {
-    branch: 'master',
+    branch: 'main',
     revision: '1234567',
     parentRevision: 'abcdefg',
     timestamp: 1234567,

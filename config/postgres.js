@@ -12,7 +12,7 @@ config();
  */
 
 module.exports = withPostgres({
-  defaultBranch: 'master',
+  defaultBranch: 'main',
   dev: true,
   artifacts: {
     groups: [

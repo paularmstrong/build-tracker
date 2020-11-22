@@ -13,37 +13,28 @@ import BuildComparator, {
   TotalDeltaCell,
 } from '..';
 
-const build1 = new Build(
-  { branch: 'master', revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 },
-  [
-    { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
-    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
-  ]
-);
+const build1 = new Build({ branch: 'main', revision: '1234567abcdef', parentRevision: 'abcdef', timestamp: 1234567 }, [
+  { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
+  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
+]);
 // Same as build 1 but different revision
 const build1b = new Build(
-  { branch: 'master', revision: '1234567abcdeg', parentRevision: '1234567abcdef', timestamp: 1234567 },
+  { branch: 'main', revision: '1234567abcdeg', parentRevision: '1234567abcdef', timestamp: 1234567 },
   [
     { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
     { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
   ]
 );
 
-const build2 = new Build(
-  { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
-  [
-    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
-    { name: 'churros~burritos~tacos', hash: 'def', sizes: { stat: 469, gzip: 120 } },
-  ]
-);
+const build2 = new Build({ branch: 'main', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 }, [
+  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
+  { name: 'churros~burritos~tacos', hash: 'def', sizes: { stat: 469, gzip: 120 } },
+]);
 // Alternative to build2 with burritos
-const build2b = new Build(
-  { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 },
-  [
-    { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
-    { name: 'burritos', hash: 'def', sizes: { stat: 456, gzip: 90 } },
-  ]
-);
+const build2b = new Build({ branch: 'main', revision: '8901234abcdef', parentRevision: 'abcdef', timestamp: 8901234 }, [
+  { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },
+  { name: 'burritos', hash: 'def', sizes: { stat: 456, gzip: 90 } },
+]);
 
 const artifactFilters = [/burritos/, /churros/];
 
@@ -66,14 +57,14 @@ describe('BuildComparator', () => {
   describe('builds', () => {
     test('sorts by timestamp, then parentRevision', () => {
       const build2 = new Build(
-        { branch: 'master', revision: '8901234abcdef', parentRevision: 'abcdef1', timestamp: 8901234 },
+        { branch: 'main', revision: '8901234abcdef', parentRevision: 'abcdef1', timestamp: 8901234 },
         [
           { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 43 } },
           { name: 'churros~burritos~tacos', hash: 'def', sizes: { stat: 469, gzip: 120 } },
         ]
       );
       const build3 = new Build(
-        { branch: 'master', revision: 'abcdef1', parentRevision: build1.getMetaValue('revision'), timestamp: 1234566 },
+        { branch: 'main', revision: 'abcdef1', parentRevision: build1.getMetaValue('revision'), timestamp: 1234566 },
         [
           { name: 'burritos', hash: 'abc', sizes: { stat: 456, gzip: 90 } },
           { name: 'tacos', hash: 'abc', sizes: { stat: 123, gzip: 45 } },

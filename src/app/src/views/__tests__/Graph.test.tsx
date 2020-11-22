@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import React from 'react';
 import { render } from 'react-native-testing-library';
 
-const build = new Build({ branch: 'master', revision: '1234565', parentRevision: 'abcdef', timestamp: 123 }, []);
+const build = new Build({ branch: 'main', revision: '1234565', parentRevision: 'abcdef', timestamp: 123 }, []);
 
 describe('Graph', () => {
   test('renders an empty message if no builds in comparator', () => {

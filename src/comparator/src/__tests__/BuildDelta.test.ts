@@ -13,7 +13,7 @@ describe('BuildDelta', () => {
 
     buildA = new Build(
       {
-        branch: 'master',
+        branch: 'main',
         revision: { value: '123', url: 'https://build-tracker.local' },
         parentRevision: 'abc',
         timestamp: Date.now(),
@@ -25,7 +25,7 @@ describe('BuildDelta', () => {
     );
     buildB = new Build(
       {
-        branch: 'master',
+        branch: 'main',
         revision: { value: '456', url: 'https://build-tracker.local' },
         parentRevision: 'abc',
         timestamp: Date.now(),

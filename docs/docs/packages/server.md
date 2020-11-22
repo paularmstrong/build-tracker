@@ -175,11 +175,11 @@ module.exports = {
 
 ## Server & application options
 
-#### `defaultBranch?: string = 'master'`
+#### `defaultBranch?: string = 'main'`
 
 Your application will graph this branch by default and ignore builds from other branches.
 
-This is a useful setting if you use and track a branch that is not `master` in your git repository.
+This is a useful setting if you use and track a branch that is not `main` in your git repository.
 
 #### `dev?: boolean = false`
 

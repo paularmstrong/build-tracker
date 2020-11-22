@@ -6,11 +6,11 @@ import Queries from '../queries';
 import { NotFoundError, UnimplementedError } from '@build-tracker/api-errors';
 
 const row1Result = {
-  meta: { branch: 'master', revision: '12345', timestamp: 1111 },
+  meta: { branch: 'main', revision: '12345', timestamp: 1111 },
   artifacts: [],
 };
 const row2Result = {
-  meta: { branch: 'master', revision: 'abcde', timestamp: 2222 },
+  meta: { branch: 'main', revision: 'abcde', timestamp: 2222 },
   artifacts: [],
 };
 const row1 = {
@@ -49,7 +49,7 @@ describe('withMariadb queries', () => {
       const now = Date.now();
       const build = {
         meta: {
-          branch: 'master',
+          branch: 'main',
           revision: { value: '12345', url: 'https://build-tracker.local' },
           timestamp: now,
           parentRevision: 'abcdef',
@@ -62,7 +62,7 @@ describe('withMariadb queries', () => {
         query
       ).toHaveBeenCalledWith(
         'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES (?, ?, ?, ?, ?, ?)',
-        ['master', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
+        ['main', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
       );
     });
   });
@@ -109,11 +109,11 @@ describe('withMariadb queries', () => {
   describe('getRecent', () => {
     test('returns N most recent', async () => {
       query.mockReturnValue(Promise.resolve([row2, row1]));
-      await expect(queries.getRecent(2, 'master')).resolves.toEqual([row1Result, row2Result]);
+      await expect(queries.getRecent(2, 'main')).resolves.toEqual([row1Result, row2Result]);
       expect(
         query
       ).toHaveBeenCalledWith('SELECT meta, artifacts FROM builds WHERE branch = ? ORDER BY timestamp DESC LIMIT ?', [
-        'master',
+        'main',
         2,
       ]);
     });

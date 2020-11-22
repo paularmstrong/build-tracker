@@ -14,11 +14,11 @@ import { scaleLinear, scalePoint } from 'd3-scale';
 describe('Area', () => {
   test('only draws the active artifacts', () => {
     const builds = [
-      new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
+      new Build({ branch: 'main', revision: '123', parentRevision: '000', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { gzip: 123 } },
         { name: 'vendor', hash: '123', sizes: { gzip: 123 } },
       ]),
-      new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
+      new Build({ branch: 'main', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { gzip: 123 } },
         { name: 'vendor', hash: '123', sizes: { gzip: 123 } },
       ]),
@@ -56,10 +56,10 @@ describe('Area', () => {
 
   test('can render if an artifact does not exist in a build', () => {
     const builds = [
-      new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
+      new Build({ branch: 'main', revision: '123', parentRevision: '000', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 456 } },
       ]),
-      new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
+      new Build({ branch: 'main', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 489 } },
         { name: 'vendor', hash: '123', sizes: { stat: 123 } },
       ]),
@@ -100,11 +100,11 @@ describe('Area', () => {
 
   test('reduces luminance of non-hovered artifacts', () => {
     const builds = [
-      new Build({ branch: 'master', revision: '123', parentRevision: '000', timestamp: 0 }, [
+      new Build({ branch: 'main', revision: '123', parentRevision: '000', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 456 } },
         { name: 'vendor', hash: '123', sizes: { stat: 123 } },
       ]),
-      new Build({ branch: 'master', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
+      new Build({ branch: 'main', revision: 'abc', parentRevision: '123', timestamp: 0 }, [
         { name: 'main', hash: '123', sizes: { stat: 489 } },
         { name: 'vendor', hash: '123', sizes: { stat: 123 } },
       ]),

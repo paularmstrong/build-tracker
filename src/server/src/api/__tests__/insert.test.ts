@@ -9,10 +9,10 @@ import { insertBuild } from '../insert';
 import { NotFoundError } from '@build-tracker/api-errors';
 import request from 'supertest';
 
-const build = new Build({ branch: 'master', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, [
+const build = new Build({ branch: 'main', revision: 'abc', parentRevision: 'def', timestamp: Date.now() }, [
   { hash: '123', name: 'tacos', sizes: { stat: 231 } },
 ]);
-const parentBuild = new Build({ branch: 'master', revision: 'def', parentRevision: '123', timestamp: Date.now() }, [
+const parentBuild = new Build({ branch: 'main', revision: 'def', parentRevision: '123', timestamp: Date.now() }, [
   { hash: '123', name: 'tacos', sizes: { stat: 123 } },
 ]);
 

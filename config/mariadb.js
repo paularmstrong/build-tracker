@@ -9,7 +9,7 @@ const { BudgetLevel, BudgetType } = require('@build-tracker/types');
  */
 
 module.exports = withMaria({
-  defaultBranch: 'master',
+  defaultBranch: 'main',
   dev: true,
   artifacts: {
     groups: [

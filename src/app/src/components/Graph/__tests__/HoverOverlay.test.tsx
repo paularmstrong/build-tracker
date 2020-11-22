@@ -14,19 +14,19 @@ import { scaleLinear, scalePoint } from 'd3-scale';
 const xScale = scalePoint().range([0, 300]).domain(['1234567abcdef', 'abcdefg1234567', 'abcd', '1234']);
 const yScale = scaleLinear().range([400, 0]).domain([0, 168]);
 const builds = [
-  new Build({ branch: 'master', revision: '1234567abcdef', parentRevision: '000', timestamp: 0 }, [
+  new Build({ branch: 'main', revision: '1234567abcdef', parentRevision: '000', timestamp: 0 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
     { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),
-  new Build({ branch: 'master', revision: 'abcdefg1234567', parentRevision: '123', timestamp: 1 }, [
+  new Build({ branch: 'main', revision: 'abcdefg1234567', parentRevision: '123', timestamp: 1 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
     { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),
-  new Build({ branch: 'master', revision: 'abcd', parentRevision: '123', timestamp: 2 }, [
+  new Build({ branch: 'main', revision: 'abcd', parentRevision: '123', timestamp: 2 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
     { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),
-  new Build({ branch: 'master', revision: '1234', parentRevision: '123', timestamp: 3 }, [
+  new Build({ branch: 'main', revision: '1234', parentRevision: '123', timestamp: 3 }, [
     { name: 'main', hash: '123', sizes: { gzip: 123 } },
     { name: 'vendor', hash: '123', sizes: { gzip: 45 } },
   ]),

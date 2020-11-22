@@ -41,7 +41,7 @@ describe('withPostgres', () => {
       const now = Date.now();
       const build = {
         meta: {
-          branch: 'master',
+          branch: 'main',
           revision: { value: '12345', url: 'https://build-tracker.local' },
           timestamp: now,
           parentRevision: 'abcdef',
@@ -54,7 +54,7 @@ describe('withPostgres', () => {
           query
         ).toHaveBeenCalledWith(
           'INSERT INTO builds (branch, revision, timestamp, parentRevision, meta, artifacts) VALUES ($1, $2, $3, $4, $5, $6)',
-          ['master', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
+          ['main', '12345', now, 'abcdef', JSON.stringify(build.meta), JSON.stringify(build.artifacts)]
         );
         expect(res).toEqual('12345');
       });
@@ -64,7 +64,7 @@ describe('withPostgres', () => {
       const queries = new Queries(new Pool());
       const now = Date.now();
       const build = {
-        meta: { branch: 'master', revision: 'abcdef', timestamp: now, parentRevision: '12345' },
+        meta: { branch: 'main', revision: 'abcdef', timestamp: now, parentRevision: '12345' },
         artifacts: [],
       };
       query.mockReturnValue(Promise.resolve({ rowCount: 0 }));
@@ -76,8 +76,8 @@ describe('withPostgres', () => {
 
   describe('getByRevisions', () => {
     test('selects meta and artifacts', () => {
-      const row1 = { meta: { branch: 'master', revision: '12345' }, artifacts: [] };
-      const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
+      const row1 = { meta: { branch: 'main', revision: '12345' }, artifacts: [] };
+      const row2 = { meta: { branch: 'main', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getByRevisions(['12345', 'abcde']).then((res) => {
@@ -108,8 +108,8 @@ describe('withPostgres', () => {
 
   describe('getByTimeRange', () => {
     test('selects meta and artifacts', () => {
-      const row1 = { meta: { branch: 'master', revision: '12345' }, artifacts: [] };
-      const row2 = { meta: { branch: 'master', revision: 'abcde' }, artifacts: [] };
+      const row1 = { meta: { branch: 'main', revision: '12345' }, artifacts: [] };
+      const row2 = { meta: { branch: 'main', revision: 'abcde' }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row1, row2] }));
       const queries = new Queries(new Pool());
       return queries.getByTimeRange(12345, 67890, 'tacos').then((res) => {
@@ -134,16 +134,16 @@ describe('withPostgres', () => {
 
   describe('getRecent', () => {
     test('returns N most recent', () => {
-      const row1 = { meta: { branch: 'master', revision: '12345', timestamp: 1111 }, artifacts: [] };
-      const row2 = { meta: { branch: 'master', revision: 'abcde', timestamp: 2222 }, artifacts: [] };
+      const row1 = { meta: { branch: 'main', revision: '12345', timestamp: 1111 }, artifacts: [] };
+      const row2 = { meta: { branch: 'main', revision: 'abcde', timestamp: 2222 }, artifacts: [] };
       query.mockReturnValue(Promise.resolve({ rowCount: 2, rows: [row2, row1] }));
       const queries = new Queries(new Pool());
-      return queries.getRecent(2, 'master').then((res) => {
+      return queries.getRecent(2, 'main').then((res) => {
         expect(
           query
         ).toHaveBeenCalledWith(
           'SELECT meta, artifacts FROM builds WHERE branch = $1 ORDER BY timestamp DESC LIMIT $2',
-          ['master', 2]
+          ['main', 2]
         );
         expect(res).toEqual([row1, row2]);
       });

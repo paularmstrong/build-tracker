@@ -177,7 +177,7 @@ import { createBuild, getConfig } from '@build-tracker/api-client';
 
 const config = await getConfig();
 createBuild(config, {
-  branch: 'master', // optional, in case your git state is not on a branch
+  branch: 'main', // optional, in case your git state is not on a branch
   meta: {}, // optional additional metadata to provide in the build
   parentRevision: '123456', // optional, in case your git state cannot find the merge-base
   skipDirtyCheck: false, // set to true to bypass enforcing no local changes in your git work tree

@@ -151,7 +151,9 @@ Artifact: ${hoveredArtifact}
         );
       })}
       <line data-testid="hoverline" pointerEvents="none" ref={lineRef} style={styles.hoverLine} y1={0} y2={height} />
-      {!isNaN(offsetX) ? <Tooltip left={absPosition.left} top={absPosition.top} text={getTooltipText()} /> : null}
+      {offsetX !== null && isFinite(offsetX) ? (
+        <Tooltip left={absPosition.left} top={absPosition.top} text={getTooltipText()} />
+      ) : null}
     </g>
   );
 };

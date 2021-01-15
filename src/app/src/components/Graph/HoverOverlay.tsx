@@ -108,10 +108,13 @@ const HoverOverlay = (props: Props): React.ReactElement => {
     select(lineRef.current).style('opacity', 1);
   }, []);
 
-  const getTooltipText = React.useCallback((): string => {
+  const tooltipText = React.useMemo((): string | void => {
     const revision = buildRevisionFromX(offsetX - Offset.LEFT);
 
     const dataSeries = data.find((d) => d.key === hoveredArtifact);
+    if (!dataSeries) {
+      return null;
+    }
     const buildDate = dataSeries[revision.index].data.timestamp;
     const formattedDate = formatDatetime(buildDate);
 
@@ -151,9 +154,7 @@ Artifact: ${hoveredArtifact}
         );
       })}
       <line data-testid="hoverline" pointerEvents="none" ref={lineRef} style={styles.hoverLine} y1={0} y2={height} />
-      {offsetX !== null && isFinite(offsetX) ? (
-        <Tooltip left={absPosition.left} top={absPosition.top} text={getTooltipText()} />
-      ) : null}
+      {offsetX && tooltipText ? <Tooltip left={absPosition.left} top={absPosition.top} text={tooltipText} /> : null}
     </g>
   );
 };

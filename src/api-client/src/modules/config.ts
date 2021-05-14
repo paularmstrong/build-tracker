@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2019 Paul Armstrong
  */
-import cosmiconfig from 'cosmiconfig';
+import { cosmiconfig } from 'cosmiconfig';
 
 export interface ApiReturn {
   comparatorData: string;

@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/comparator",
-  "version": "1.0.0-beta.17",
+  "version": "1.0.0",
   "description": "Build Tracker tool for comparing two or more builds",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -19,9 +19,9 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/build": "^1.0.0-beta.15",
-    "@build-tracker/formatting": "^1.0.0-beta.15",
-    "@build-tracker/types": "^1.0.0-beta.15",
+    "@build-tracker/build": "^1.0.0",
+    "@build-tracker/formatting": "^1.0.0",
+    "@build-tracker/types": "^1.0.0",
     "markdown-table": "^1.1.2"
   },
   "gitHead": "156788a6a199fc25e21adf354c106defd002afbf",

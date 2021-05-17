@@ -1,6 +1,6 @@
 {
   "name": "@build-tracker/plugin-with-mysql",
-  "version": "1.0.0-beta.17",
+  "version": "1.0.0",
   "description": "Build Tracker server plugin for MariaDB",
   "author": "Paul Armstrong <paul@spaceyak.com>",
   "repository": "git@github.com:paularmstrong/build-tracker.git",
@@ -19,9 +19,9 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@build-tracker/api-errors": "^1.0.0-beta.15",
-    "@build-tracker/build": "^1.0.0-beta.15",
-    "@build-tracker/server": "^1.0.0-beta.17",
+    "@build-tracker/api-errors": "^1.0.0",
+    "@build-tracker/build": "^1.0.0",
+    "@build-tracker/server": "^1.0.0",
     "@types/dotenv": "^6.1.0",
     "@types/mysql": "^2.15.7",
     "dotenv": "^7.0.0",

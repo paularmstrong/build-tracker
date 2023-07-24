@@ -1,5 +1,8 @@
 # Build Tracker [![Action status](https://github.com/paularmstrong/build-tracker/workflows/On%20push/badge.svg)](https://github.com/paularmstrong/build-tracker/actions)
 
+> **Warning**
+> Build Tracker needs some love. While the functionality is all present and works great, it's pretty out of date and would greatly benefit from your help.
+
 <img src="https://buildtracker.dev/img/ogImage.png" alt="Build Tracker logo" width="70%" />
 
 ## Documentation
